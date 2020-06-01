@@ -2,48 +2,62 @@
 
 Sounds is a fork of the Flutter Sound project.
 
+Sounds is almost a complete rewrite of the dart code from Flutter Sound.
+The aim of the rewrite has been resolve a number of issues apparent in Flutter Sound:
+* jank during playback.
+* crashes due to threading issues.
+* redesign the api so it is clean and consistent.
+* design an api that will accomodate future expansion of the core feature set.
+* provide additional features.
+* Hide internal apis from the public api.
+* Provide a consistent error handling mechanisim via exceptions.
+* Remove duplicated code.
+* Bring the code in line with Google's recommended best practices.
+
 <img src="https://raw.githubusercontent.com/bsutton/sounds/master/SoundsLogo.png" width="70%" height="70%" />
 
 <p align="left">
   <a href="https://pub.dartlang.org/packages/sounds"><img alt="pub version" src="https://img.shields.io/pub/v/sounds.svg?style=flat-square"></a>
 </p>
 
-This package provides audio recording and playback functionalities for both `android` and `ios` platforms
+## Overview
+The Sounds package is a Flutter package that provides audio recording and playback functionality for both the `android` and `ios` platforms.
 
-Sounds provides both an api and widgets for recording and playback.
+Sounds provides both a high level api and widgets for recording and playback.
 
-We support playback from:
-Assets
-Files
-URL
-Native Streams (with sync).
+The api is designed so you can use the supplied widgets or roll your own.
 
-To control recording and playback: 
+The Sounds package supports playback from:
+* Assets
+* Files
+* URL
+* Native Streams (with sync).
+
+## Features
+The Sounds package includes the following features
 * Play audio without any UI
-* Play audio using the built in SoundPlayerUI
+* Play audio using the built in SoundPlayerUI Widget.
 * Play audio using the OSs' Media Player
 * Roll your own UI utilising the Sounds api.
 * Record audio without any UI
-* Record audio using the builtin SoundRecorderUI
+* Record audio using the builtin SoundRecorderUI Widget.
 * Roll your own Recording UI utilising the Sounds api.
+* Support for releasing/resuming resources when the app pauses/resumes.
 
 
 The key classes are:
 
 ## Api classes
 
-QuickPlay - instantly play audio either using the OSs' audio UI or headless.
+QuickPlay - instantly play an audio file (no ui). Perfect for the odd beep.
 
-Track - Defines a track including artist and a link to the media.
+Track - Defines a track including the artist details and the audio media.
 
 Album - play a collection of tracks via the OSs' audio UI.
 
-SoundPlayer - provides migration path from 3.0 FlutterTrackPlayer
+SoundPlayer - provides an api for playing audio including pause/resume/seek.
 
-SoundPlayer - provides migration path from 3.0 SoundPlayer
-
-SoundRecorder -  api to records audio.
-
+SoundRecorder - api for recording audio.
 
 ## Widgets
 
@@ -55,63 +69,28 @@ RecorderPlaybackController - pairs a SoundPlayerUI and SoundRecorderUI to provid
 
 Note: there are some limitations on the supported codecs. See the [codec] section below.
 
-![Demo](https://user-images.githubusercontent.com/27461460/77531555-77c9ec00-6ed6-11ea-9813-320f943b08cc.gif)
-
-# Migration Guide
-
-## `3.x.x` to `4.0.0`.
-
-To migrate to  you must do some minor changes in your configurations files.
-Please refer to the **FFmpeg** section below.
-
-## `4.0.0` to `5.0.0`
-The Sounds team have undertaken a major re-architecture of the api in order to provide a solid and flexible foundation moving forward.
-
-The aims of 5.0.0 were:
-
-* Make the api simplier to use.
-* Improve documentation
-* Deliver 'out of the box' widgets for recording and playback.
-* Resolve architecual issues which have caused a number of hard to resolve race conditions resulting in crashes.
-* Hide internal apis from the public api.
-* Provide a consistent error handling mechanisim via exceptions.
-* Remove duplicated code.
-* Bring the code in line with Google's recommended best practices.
+![Demo](https://raw.githubusercontent.com/bsutton/sounds/master/example.png)
 
 
-### Players
 
-In `5.0.0` the `FlutterTrackPlayer` and `SoundPlayer` have been depreacted in favor of a single class `SoundPlayer`.
+# Playback via api
+The Sounds package uses a 'Track' class to hold the audio media and meta data for both playback and recording.
 
-`SoundPlayer` now has two constructors:
+Sounds allows you to recorded to a Track and then immediately play the track back to the user.
 
-Code that previously used `TrackPlayer` should now call the `SoundPlayer.withUI()` constructor.
-
-Code that used the old `SoundPlayer` should now call the `SoundPlayer.noUI()` constructor.
-
-The equivalent method names on the `SoundPlayer` class have also been shortend.
-
-Example changes:
-
-`SoundPlayer.startPlayer()` -> `SoundPlayer.play()`
-`SoundPlayer.pausePlayer()` -> `SoundPlayer.pause()`
-`SoundPlayer.stopPlayer()` ->  `SoundPlayer.stop()`
-
-The new `play` methods replaces both `startPlayer(uri)` and `startPlayerFromBuffer()` and can
-now take a `Track`.
-
-### Track
-A Track now holds track information as well as the audio media.
+## Track
+The Track class holds track information as well as the audio media.
 
 The Track class has the following constructors:
 * `Track.fromFile`
+* `Track.fromAsset`
 * `Track.fromBuffer`
 * `Track.fromURL`
 
 
-To play a track from a path use:
+To play a track from a file use:
 ```dart
-var player SoundPlayer.withUI();
+var player = SoundPlayer.withUI();
 player.onStopped = ({wasUser}) => player.release();
 player.seekTo(Duration(seconds: 5)); // yes, you can call seek before play.
 player.play(Track.fromURL(uri));
@@ -120,13 +99,22 @@ player.play(Track.fromURL(uri));
 To play a track from a buffer use:
 
 ```dart
-var player SoundPlayer.withUI();
+var player = SoundPlayer.withUI();
 player.onStopped = ({wasUser}) => player.release();
 player.seekTo(Duration(seconds: 5));
 player.play(Track.fromBuffer(buffer));
 ```
 
-The Track class constructors have been simplified to take just the path (or buffer) and a codec.
+To play a track from an asset use:
+
+```dart
+var player = SoundPlayer.withUI();
+player.onStopped = ({wasUser}) => player.release();
+player.seekTo(Duration(seconds: 5));
+player.play(Track.fromAsset('asset/somfile.aac'));
+```
+
+The Track class constructors take a file path, asset, url or buffer and a codec.
 
 The Track details are now set via properties:
 
@@ -141,11 +129,80 @@ player.play(track);
 
 ### Monitoring
 
-Soundss now uses streams to allow you to monitor both recording and playback progress.
+Sounds uses streams to allow you to monitor both recording and playback progress.
 
 You can now use a StreamBuilder which will greatly simplify the construction of UI components (or you can use one of the new Sounds UI widgets).
 
-#### SoundPlayer
+#### SoundPlayer Monitoring
+
+To obtain a subscription to the `SoundPlayer` stream:
+
+```dart 
+var Stream<PlaybackDisposition> = SoundPlayer.noUI().dispositionStream(interval);
+```
+
+The result is a stream of `PlaybackDisposition`s which includes both the audio's duration (length) and current position.
+
+
+#### SoundRecorder
+The `SoundRecorder` subscription model is the same as for the `SoundPlayer` except that a set of `RecordingDisposition`s are streamed :
+
+```dart
+var Stream<RecordingDisposition>
+  = SoundRecorder(). dispositionStream(interval);
+```
+
+The `RecordingDisposition` contains both the duration of the recording and the decibels.
+
+```dart
+class RecordingDisposition {
+  final Duration duration;
+  final double decibels;
+}
+```
+
+
+# QuickPlay
+The Sounds package includes a number of convenience classes to make playback easy.
+
+
+`QuickPlay` plays a single audio file immediatley (there is no `play` method).
+
+This is ideal for small audio files and has the benefit that it frees its own resources.
+
+The audio file is played from start to end. You can't monitor nor stop the stream.
+
+```dart
+QuickPlay.fromFile('beep.aac', volume: 0.5);
+QuickPlay.fromTrack(Track.fromAsset('assets/ring.aac'), volume: 0.5);
+```
+
+`Album` allows you to create an album of Track (statically or dynamically) and play them sequentially via the OSs' UI.
+
+
+# Migration from Flutter Sound to Sounds
+
+## Playback
+
+In the Sounds package the `TrackPlayer` and `FlutterSoundPlayer` have been depreacted in favor of a single class `SoundPlayer`.
+
+`SoundPlayer` now has two constructors:
+
+Code that previously used `TrackPlayer` should now call the `SoundPlayer.withUI()` constructor.
+
+Code that used the `FlutterSoundPlayer` should now call the `SoundPlayer.noUI()` constructor.
+
+The equivalent method names on the `FlutterSoundPlayer` class have also been shortend.
+
+Example changes:
+
+`FlutterSoundPlayer.startPlayer()` -> `SoundPlayer.play()`
+`FlutterSoundPlayer.pausePlayer()` -> `SoundPlayer.pause()`
+`FlutterSoundPlayer.stopPlayer()` ->  `SoundPlayer.stop()`
+
+The new `play` methods replaces both `startPlayer(uri)` and `startPlayerFromBuffer()` and now takes a `Track`.
+
+## subscription
 
 In the SoundPlayer the original `SoundPlayer` subscription model is now been unified into a single stream via:
 
@@ -155,54 +212,20 @@ var Stream<PlaybackDisposition> = SoundPlayer.noUI().dispositionStream(interval)
 
 The result is a stream of `PlaybackDisposition`s which includes both the audio's duration (length) and current position.
 
-The following methods have been replaced by `dispositionStream`:
-* setSubscriptionDuration
-* setPlayerCallback
-
-#### SoundRecorder
-The `SoundRecorder` subscription model is now been unified into a single stream via:
-
-```dart
-var Stream<RecordingDisposition>
-  = SoundRecorder(). dispositionStream(interval);
-```
-
-The `RecordingDisposition` contains both the duration of the recording and the decibels (previously DbPeak).
-
-```dart
-class RecordingDisposition {
-  final Duration duration;
-
-  final double decibels;
-```
+## Recording
+The `FlutterSoundRecorder` has been replaced with `SoundRecorder`.
+Changes to the recorder a similar to the changes made to the player.
 
 
-### Types
+## Types
 Types and enums now consistently use camelCase.
 
 e.g.
 `t_PLAYER_STATE.IS_STOPPED -> PlayerState.isStopped`
 
-### New classes
-`5.0.0` introduces a number of new convenience classes:
-
-`QuickPlay` plays a single audio file immediatley (there is no `play` method).
-
-This is ideal for small audio files and has the benefit that it frees its own resources.
-
-```dart
-QuickPlay.fromFile('path to file', volume: 0.5);
-QuickPlay.fromTrack(Track.fromFile('path to file'), volume: 0.5);
-```
-
-`Album` allows you to create an album of Track (statically or dynamically) and play them sequentiall via the OSs' UI.
 
 
-
-
-
-
-## Install
+# Install
 
 For help on adding as a dependency, view the [documentation](https://flutter.io/using-packages/).
 
@@ -216,10 +239,9 @@ There is a huge impact on the memory used, but the **LITE** flavor will not be a
 - Record OGG_OPUS on iOS
 And will not be able to offer some helping functions, like `CodecHelper.FFmpegGetMediaInformation()` or `CodecHelper.duration()`
 
-Add `sounds` or `sound_lite` as a dependency in pubspec.yaml. The actual versions are `^sound: 0.8.0` and `^sounds_lite: 0.8.0`
-Be aware that **it is not released version**, and probably not good to use it in a released App.
-The API is actually not stabilized and will change very soon.
+Add `sounds` or `sounds_lite` as a dependency in pubspec.yaml. The actual versions are `^sound: 0.8.0` and `^sounds_lite: 0.8.0`
 
+Note: going forward codec support will be moved into a separate set of packages.
 
 ```
 dependencies:
@@ -239,11 +261,11 @@ The Sounds sources [are here](https://github.com/bsutton/sounds).
 
 ### FFmpeg
 
-sounds makes use of flutter_ffmpeg. In contrary to Sounds Version 3.x.x, in Version 4.0.x your App can be built without any Flutter-FFmpeg dependency.
+Sounds makes use of flutter_ffmpeg. 
 
+```flutter_ffmpeg audio-lts``` is embedding inside the Sounds package. If your App needs to use FFmpeg, you must use the embedded version inside Sounds instead of adding a new dependency in your pubspec.yaml.
 
-```flutter_ffmpeg audio-lts``` is now embedding inside Sounds. If your App needs to use FFmpeg, you must use the embedded version inside Sounds instead of adding a new dependency in your pubspec.yaml.
-
+Note: this will change once the codecs are broken out into a separate package.
 
 ## Post Installation
 
@@ -266,7 +288,7 @@ sounds makes use of flutter_ffmpeg. In contrary to Sounds Version 3.x.x, in Vers
   ```
 
 
-# Using Sounds
+# Using the Sounds package
 
 ## QuickPlay
 The QuickPlay class provides the simplest means of playing audio.
@@ -304,7 +326,7 @@ The API is documented in detail at [pub.dev](https://pub.dev/documentation/sound
 
 ## Play audio from an asset
 
-To play audio from a project asset copy the file to your assets directory in the root of your dart project.
+To play audio from a project asset copy the file to your assets directory in the root of your dart project. (i.e. under the folder that contains your pubspec.yaml.)
 
 ```assets/sample.acc```
 
@@ -334,10 +356,9 @@ You must be certain to release the player once you have finished playing the aud
 
 You can reuse a `SoundPlayer` as many times as you want as long as you call `SoundPlayer.release()` once you are done with it.
 
-Track.fromFile uses the passed filename extension to determine the correct codec to play. If you need to play a file with an extension that doesn't match one of the known file extensions then you MUST pass in the codec.
+`Track.fromFile` uses the passed filename extension to determine the correct codec to play. If you need to play a file with an extension that doesn't match one of the known file extensions then you MUST pass in the codec.
 
-See the [codec](https://pub.dev/documentation/sounds/latest/codec/codec-library.html) documentation
-for details on the supported codecs.
+See the [codec](https://pub.dev/documentation/sounds/latest/codec/codec-library.html) documentation for details on the supported codecs.
 
 ## Specify a codec
 
@@ -353,11 +374,9 @@ player.play(Track.fromFile('sample.blit', codec: Codec.mp3));
 
 You can play a remote audio file by passing a URL to QuickPlay.
 
-See the [codec](https://pub.dev/documentation/sounds/latest/codec/codec-library.html) documentation
-for details on the supported codecs.
+See the [codec](https://pub.dev/documentation/sounds/latest/codec/codec-library.html) documentation for details on the supported codecs.
 
 ```dart
-
 var player = SoundPlayer.noUI();
 player.onStopped = ({wasUser}) => player.release();
 player.play(Track.fromURL('https://some audio file', codec: Codec.mp3););
@@ -367,8 +386,7 @@ player.play(Track.fromURL('https://some audio file', codec: Codec.mp3););
 When playing a audio file from a buffer you MUST provide the codec.
 
 
-See the [codec](https://pub.dev/documentation/sounds/latest/codec/codec-library.html) documentation
-for details on the supported codecs.
+See the [codec](https://pub.dev/documentation/sounds/latest/codec/codec-library.html) documentation for details on the supported codecs.
 
 ```dart
 Uint8List buffer = ....
@@ -379,7 +397,7 @@ player.play(Track.fromBuffer(buffer, codec: Codec.mp3));
 
 ## Play audio allowing the user to control playback via OSs' UI
 
-SoundPlayer can display the OSs' Audio player UI allowing the user to control playback.
+`SoundPlayer` can display the OSs' Audio player UI allowing the user to control playback.
 
 ```dart
 var player = SoundPlayer.withUI();
@@ -392,7 +410,7 @@ player.play(Track.fromFile('sample.blit', codec: Codec.mp3));
 The OSs' media player has three buttons, skip forward, skip backwards and pause.
 By default the skip buttons are disabled and the pause button enabled.
 
-You can modify the the state of these buttons with the `SoundPlaye.withUI` constructor.
+You can modify the the state of these buttons with the `SoundPlayer.withUI` constructor.
 
 ```dart
 var player = SoundPlayer.withUI(canPause:true, canSkipBackward:false
@@ -402,8 +420,8 @@ player.play(Track.fromFile('sample.blit', codec: Codec.mp3));
 ```
 
 ## Display artist details
-You can also have the OSs' audio player display artist details by
-using a `Track`.
+You can also have the OSs' audio player display the artist details by
+specifying properties on a `Track`.
 
 ```dart
 var track = Track.fromFile('sample.aac');
@@ -439,8 +457,7 @@ player.onStopped = ({wasUser}) => player.release();
 album.play();
 ```
 By default an Ablum displays the OSs' audio UI.
-You can suppress the UI via by passing in SoundPlayer.noUI() to the Album.
-
+You can suppress the UI via by passing in `SoundPlayer.noUI()` to the Album in which case the `Tracks` will be played sequentially until they complete. (I'm not certain this is actually useful).
 
 ```dart
 var album = Album.fromTracks([
@@ -474,7 +491,7 @@ album.play();
 ```
 
 ## Controlling Playback
-An SoundPlayer provides fined grained control over how the audio is played as well as been able to monitor playback and respond to user events.
+The `SoundPlayer` provides fined grained control over how the audio is played as well as been able to monitor playback and respond to user events.
 
 Importantly `SoundPlayer` also allows you to play multiple audio files using the same session. 
 
@@ -505,7 +522,7 @@ player.release();
 ## Monitor playback position
 If you are building your own widget you might want to display a progress bar that displays the current playback position.
 
-The easiest way to do this is via the SoundPlayerUI widget but if you want to write your own then you will want to use the `dispositionStream` with a StreamBuilder.
+The easiest way to do this is via the `SoundPlayerUI` widget but if you want to write your own then you will want to use the `dispositionStream` with a StreamBuilder.
 
 To use a `dispositionStream` you need to create an `SoundPlayer`.
 
@@ -580,13 +597,13 @@ The following codecs are supported by sounds:
 
 This table will be updated as codecs are added.
 
-## SoundRecorder Usage
+# SoundRecorder Usage
 The `SoundRecorder` class provides an api for recording audio.
 
 The `SoundRecorder` does not have a UI so you must either build your own or you can use Sounds's `SoundRecorderUI` widget.
 
 
-#### Recording
+## Recording
 
 When you have finished with your `SoundRecorder` you MUST call `SoundRecorder.release()`.
 
@@ -600,29 +617,9 @@ recorder.onStopped = ({wasUser}) {
 });
 recorder.record(track);
 ```
-### recording to a temporary file
 
-SoundRecoder can also create a temporary file to record into. After recording completes you can access the temporary file
-via `SoundRecorder.path`.
 
-Deleting the temporary file is your responsiblity!
-
-```dart
-var tmpFile = Track.fromFile(Codec.aac);
-Track track = Track.fromFile(tmpFile);
-SoundRecorder recorder = SoundRecorder(track)
-
-recorder.onStopped = ({wasUser}) {
-	recorder.release();
-	// now play the track back.
-	var player = QuickPlay.fromTrack(track)
-});
-
-recorder.start();
-
-```
-
-SoundRecorder requests the necessary permissions (microphone and storage) when you call `SoundRecorder.start()`.
+`SoundRecorder` requests the necessary permissions (microphone and storage) when you call `SoundRecorder.start()`.
 
 If you want to control the permissions yourself you need to set `SoundRecorder.requestPermission = false`.
 
@@ -633,9 +630,9 @@ recorder.requestPermission = false;
 recorder.start();
 ```
 
-### Listen to duration and dbLevel updates
+## Monitoring duration and dbLevels.
 
-SoundRecorder provides a stream that you can listen to to get live updates as the recording progresses.
+`SoundRecorder` provides a stream that you can listen to to get live updates as the recording progresses.
 
 The stream of `RecordingDisposition` events contain the duration of the recording and the instantanous dB level.
 
@@ -678,16 +675,18 @@ Currently a limited set of Codecs are supported by `SoundRecorder`.
 For example, to encode with OPUS you do the following :
 
 ```dart
-var recorder = SoundRecorder.toTemp(codec: Codec.opus);
-recorder.start();
+var recorder = SoundRecorder();
+recorder.record(Track.fromFile('path to file', codec: Codec.aac));
+
 ```
 
-#### Stop recorder
+## Stop recorder
 You can programatically stop the recorder by calling  `stop()`.
 
 ```dart
-var recorder = SoundRecorder.toTemp(codec: Codec.opus);
-recorder.start();
+var recorder = SoundRecorder();
+recorder.record(Track.fromFile('path to file', codec: Codec.aac));
+
 
 /// some widget event
 void onTap()
@@ -707,7 +706,7 @@ void dispose() {
 }
 ```
 
-#### Pause recorder
+## Pause recorder
 
 On Android this API verb needs al least SDK-24.
 
@@ -724,7 +723,7 @@ await recoder.resume();
 ```
 
 ## SoundRecorderUI
-Soundss contains a standard SoundRecorderUI widget that allows you to record.
+Sounds contains a standard `SoundRecorderUI` widget that allows you to record.
 
 ```dart
 
@@ -756,6 +755,8 @@ After calling this function, the caller is calling `requestFocus()/abandonFocus(
 You can refer to [iOS documentation](https://developer.apple.com/documentation/avfoundation/avSoundPlayer/1771734-setcategory) to understand the parameters needed for `iosSetCategory()` and to the [Android documentation](https://developer.android.com/reference/android/media/AudioFocusRequest) to understand the parameter needed for `androidAudioFocusRequest()`.
 
 Remark : those three functions do NOT work on Android before SDK 26.
+
+Note: these platform specific methods are under review with the intent to remove any/all platform specific elements to the api.
 
 ```dart
 if (_hushOthers)
@@ -790,10 +791,13 @@ await player.seekTo(Duration(seconds: 1));
 
 
 #### Setting volume.
+The volume is a value between 0.0 and 1.0. 
+The volume defaults to 1.0.
+
+Note: this method is under review and may be moved to an argument on the `play` method.
 
 ```dart
-/// 1.0 is default
-/// Currently, volume can be changed when the player is running. 
+/// Currently, volume can only be changed when the player is running. 
 /// You must ensure that the play method has completed before calling
 /// setVolume.
 var player = SoundPlayer.noUI();
@@ -814,96 +818,8 @@ void dispose() {
 	super.dispose();
 }
 ```
-
-## TrackPlayer
-
-TrackPlayer is a new Sounds module which is able to show controls on the lock screen.
-Using TrackPlayer is very simple : just use the TrackPlayer constructor instead of the regular FlutterQuickPlay.
-
-```dart
-trackPlayer = TrackPlayer();
-```
-
-You call `startPlayerFromTrack` to play a sound. This function takes in 1 required argument and 4 optional arguments:
-
-- a `Track`, which is the track that the player is going to play;
-- `onFinished:()` : A call back function for specifying what to do when the song is finished
-- `onPaused: (boolean)` : A call back function for specifying what to do when the user press the `pause/resume` button on the lock screen.
-- `onSkipBackward:()`, A call back function for specifying what to do when the user press the skip-backward button on the lock screen
-- `onSkipForward:()`, A call back function for specifying what to do when the user press the skip-forward button on the lock screen
-
-If `onSkipBackward:()` is not specified then the button is not shown on the lock screen.
-If `onSkipForward:()` is not specified, then the  button is not shown on the lock screen.
-If `onPaused: (boolean)` is not specified, then Sounds will handle itself the pause/resume function.
-There is actually no way to hide the pause button on the lock screen.
-
-If `onPaused: (boolean)` is specified, then Sounds will not handle itself the pause/resume function and it will be the App responsability to handle correctly this function. The boolean argument is `true` if the playback is playing (and probably must me paused). The boolean argument is `false` if the playback is in 'pause' state (and probably must be resumed).
-
-```dart
-path = await trackPlayer.startPlayerFromTrack
-(
-	track,
-	whenFinished: ( )
-	{
-		print( 'I hope you enjoyed listening to this song' );
-	},
-  onPaused: ( boolean mustBePaused)
-  {
-    if( mustBePaused )
-            trackPlayer.pause();
-    else
-            trackPlayer.resume();
-  },
-	onSkipBackward: ( )
-	{
-		print( 'Skip backward' );
-		stopPlayer( );
-		startPlayer( );
-	},
-	onSkipForward: ( )
-	{
-		print( 'Skip forward' );
-		stopPlayer( );
-		startPlayer( );
-	},
-        onPaused: ( boolean mustBePaused)
-        {
-                if( mustBePaused )
-                        trackPlayer.pause();
-                else
-                        trackPlayer.resume();
-        },
-
-
-);
-
-```
-
-#### Create a `Track` object
-
-In order to play a sound when you initialized the player with the audio player features, you must create a `Track` object to pass to `startPlayerFromTrack`.
-
-The `Track` class is provided by the sounds package. It has a number of constructors which support
-each of the different audio sources.
-
-```dart
-Track.fromFile(path);
-Track.fromURL(url);
-Track.fromBuffer(buffer);
-```
-
-- `Track.fromFile` (required): a `String` representing the path that points to the audio file to play.
-- `Track.fromURL` (required): a `String` representing a URL that points to the audio file to play.
-- `Track.fromBuffer` (required): a `Uint8List`, a buffer that contains an audio file. 
-
-The Track class also has a number of properties that you can set.
-
-- `title`: the `String` to display in the notification as the title of the track;
-- `artist` the `String` to display in the notification as the name of the artist of the track;
-- `album` the `String to display in the notification as the name of the album for this track.
-- `albumArtUrl` a `String` representing the URL that points to the image to display in the notification as album art.
-- `albumArtFile`  a `String` representing a local file that points to the image to display in the notification as album art.
-- or `albumArtAsset` : the name of an asset to show in the nofitication
+# Tracks
+Tracks allow you to specify meta data some of which can be displayed on the OSs UI or the `SoundPlayerUI`.
 
 ```dart
 // Create with the path to the audio file
@@ -932,7 +848,7 @@ You can specify just one field for the Album Art to display on the lock screen. 
 
 If no Album Art field is specified, Sounds will try to display the App icon.
 
-## Informations on a record
+## Informations on a audio file
 
 There are two utilities functions that you can use to have informations on a file.
 
@@ -942,7 +858,7 @@ There are two utilities functions that you can use to have informations on a fil
 The informations got with FFmpegGetMediaInformation() are [documented here](https://pub.dev/packages/flutter_ffmpeg).
 The integer returned by CodecHelper.duration() is an estimation of the number of milli-seconds for the given record.
 
-```
+```dart 
 int duration = await CodecHelper.duration( this._path[_codec.index] );
 Map<dynamic, dynamic> info = await CodecHelper.FFmpegGetMediaInformation( uri );
 ```
@@ -952,13 +868,13 @@ Map<dynamic, dynamic> info = await CodecHelper.FFmpegGetMediaInformation( uri );
 - [x] Seeking example in `Example` project
 - [x] Volume Control
 - [x] Sync timing for recorder callback handler
-- [ ] Record PCM on Android
-- [ ] Record OPUS on Android
-- [ ] Streaming records to speech to text
+- [ ] Enable support of third party Codecs
+- [ ] Embed Codec into a to MediaFormat.
+
 
 ### DEBUG
 
-When you face below error,
+When you face the following  error,
 
 ```
 * What went wrong:
