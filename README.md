@@ -1,6 +1,8 @@
 # Sounds
 
-<img src="https://raw.githubusercontent.com/bsutton/sounds/master/Logotype primary.png" width="70%" height="70%" />
+Sounds is a fork of the Flutter Sound project.
+
+<img src="https://raw.githubusercontent.com/bsutton/sounds/master/SoundsLogo.png" width="70%" height="70%" />
 
 <p align="left">
   <a href="https://pub.dartlang.org/packages/sounds"><img alt="pub version" src="https://img.shields.io/pub/v/sounds.svg?style=flat-square"></a>
