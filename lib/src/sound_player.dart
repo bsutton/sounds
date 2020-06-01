@@ -1,17 +1,17 @@
 /*
- * This file is part of Flutter-Sound (Flauto).
+ * This file is part of Sounds .
  *
- *   Flutter-Sound (Flauto) is free software: you can redistribute it and/or modify
+ *   Sounds  is free software: you can redistribute it and/or modify
  *   it under the terms of the Lesser GNU General Public License
  *   version 3 (LGPL3) as published by the Free Software Foundation.
  *
- *   Flutter-Sound (Flauto) is distributed in the hope that it will be useful,
+ *   Sounds  is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU General Public License for more details.
  *
  *   You should have received a copy of the Lesser GNU General Public License
- *   along with Flutter-Sound (Flauto).  If not, see <https://www.gnu.org/licenses/>.
+ *   along with Sounds .  If not, see <https://www.gnu.org/licenses/>.
  */
 
 import 'dart:async';
@@ -42,7 +42,7 @@ import 'util/log.dart';
 /// use the OSs' built in Media Player [SoundPlayer.withIU].
 ///
 /// You can use the headless mode to build you own UI for playing sound
-/// or use Flutter Sounds own [SoundPlayerUI] widget.
+/// or use Soundss own [SoundPlayerUI] widget.
 ///
 /// Once you have finished using a [SoundPlayer] you MUST call
 /// [SoundPlayer.release] to free up any resources.
@@ -591,7 +591,7 @@ class SoundPlayer implements SlotEntry {
     /// the SoundPlayer's own state management.
     /// Really we need a consistent source of 'state' and this should come
     /// up from the OS. The problem is that whilst TrackPlayer.java provides
-    /// these state changes the FlutterSoundPlayer does not.
+    /// these state changes the SoundPlayer does not.
     /// I'm also not certain how to get a 'start' event out of android's
     /// MediaPlayer it will emmit an onPrepared event but I don't know
     /// if this happens in association with a start or whether it can happen
@@ -716,7 +716,7 @@ class SoundPlayer implements SlotEntry {
   }
 
   /// Returns true if the specified decoder is supported
-  ///  by flutter_sound on this platform
+  ///  by sounds on this platform
   Future<bool> isSupported(Codec codec) async {
     return _initializeAndRun<bool>(() async {
       // For decoding ogg/opus on ios, we need to support two steps :
@@ -731,7 +731,7 @@ class SoundPlayer implements SlotEntry {
 
   /// For iOS only.
   /// If this function is not called,
-  /// everything is managed by default by flutter_sound.
+  /// everything is managed by default by sounds.
   /// If this function is called,
   /// it is probably called just once when the app starts.
   ///
@@ -811,7 +811,7 @@ class SoundPlayer implements SlotEntry {
 
   /// For Android only.
   /// If this function is not called, everything is
-  ///  managed by default by flutter_sound.
+  ///  managed by default by sounds.
   /// If this function is called, it is probably called
   ///  just once when the app starts.
   /// After calling this function, the caller is responsible

@@ -1,17 +1,17 @@
 /*
- * This file is part of Flutter-Sound.
+ * This file is part of Sounds.
  *
- *   Flutter-Sound is free software: you can redistribute it and/or modify
+ *   Sounds is free software: you can redistribute it and/or modify
  *   it under the terms of the Lesser GNU General Public License
  *   version 3 (LGPL3) as published by the Free Software Foundation.
  *
- *   Flutter-Sound is distributed in the hope that it will be useful,
+ *   Sounds is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU General Public License for more details.
  *
  *   You should have received a copy of the Lesser GNU General Public License
- *   along with Flutter-Sound.  If not, see <https://www.gnu.org/licenses/>.
+ *   along with Sounds.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 import 'dart:async';
@@ -41,24 +41,24 @@ class SoundRecorderPlugin extends BasePlugin {
     return _self;
   }
   SoundRecorderPlugin._internal()
-      : super('com.dooboolab.flutter_sound_recorder', _slots);
+      : super('com.bsutton.sounds.sounds_recorder', _slots);
 
   ///
   void initializeRecorder(
       covariant sound_recorder.SoundRecorder recorder) async {
     await invokeMethod(
-        recorder, 'initializeFlautoRecorder', <String, dynamic>{});
+        recorder, 'initializeSoundRecorder', <String, dynamic>{});
   }
 
   /// Releases the slot used by the connector.
   /// To use a plugin you start by calling [register]
   /// and finish by calling [release].
   void releaseRecorder(sound_recorder.SoundRecorder recorder) async {
-    await invokeMethod(recorder, 'releaseFlautoRecorder', <String, dynamic>{});
+    await invokeMethod(recorder, 'releaseSoundRecorder', <String, dynamic>{});
   }
 
   /// Returns true if the specified encoder is supported by
-  /// flutter_sound on this platform
+  /// sounds on this platform
   Future<bool> isSupported(
       sound_recorder.SoundRecorder recorder, Codec codec) async {
     return await invokeMethod(recorder, 'isEncoderSupported',

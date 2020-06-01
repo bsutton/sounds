@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_sound/flutter_sound.dart';
+import 'package:sounds/sounds.dart';
 
 import '../util/log.dart';
 import 'demo_active_codec.dart';
@@ -42,7 +42,7 @@ class RecordingPlayer extends StatelessWidget {
 
         if (track != null) {
           track.title = title;
-          track.artist = "By flutter_sound";
+          track.artist = "By sounds";
 
           if (Platform.isIOS) {
             track.albumArtAsset = 'AppIcon';

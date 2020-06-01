@@ -1,17 +1,17 @@
 /*
- * This file is part of Flutter-Sound.
+ * This file is part of Sounds.
  *
- *   Flutter-Sound is free software: you can redistribute it and/or modify
+ *   Sounds is free software: you can redistribute it and/or modify
  *   it under the terms of the Lesser GNU General Public License
  *   version 3 (LGPL3) as published by the Free Software Foundation.
  *
- *   Flutter-Sound is distributed in the hope that it will be useful,
+ *   Sounds is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU General Public License for more details.
  *
  *   You should have received a copy of the Lesser GNU General Public License
- *   along with Flutter-Sound.  If not, see <https://www.gnu.org/licenses/>.
+ *   along with Sounds.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 import 'package:flutter/foundation.dart';
@@ -61,12 +61,12 @@ class LocalTime {
     return LocalTime(hour: now.hour, minute: now.minute, second: now.second);
   }
 
-///
+  ///
   LocalTime addDuration(Duration duration) {
     return LocalTime.fromDateTime(toDateTime().add(duration));
   }
 
-///
+  ///
   bool isAfter(LocalTime rhs) {
     if (rhs == null) {
       return true;
@@ -76,22 +76,22 @@ class LocalTime {
         (hour == rhs.hour && minute == rhs.minute && second > rhs.second);
   }
 
-///
+  ///
   bool isAfterOrEqual(LocalTime rhs) {
     return isAfter(rhs) || isEqual(rhs);
   }
 
-///
+  ///
   bool isBefore(LocalTime rhs) {
     return !isAfter(rhs) && !isEqual(rhs);
   }
 
-///
+  ///
   bool isBeforeOrEqual(LocalTime rhs) {
     return isBefore(rhs) || isEqual(rhs);
   }
 
-///
+  ///
   bool isEqual(LocalTime rhs) {
     if (rhs == null) {
       return false;
@@ -99,7 +99,7 @@ class LocalTime {
     return hour == rhs.hour && minute == rhs.minute && second == rhs.second;
   }
 
-///
+  ///
   DateTime atDate(LocalDate date) {
     return DateTime(date.year, date.month, date.day, hour, minute, second);
   }

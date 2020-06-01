@@ -1,17 +1,17 @@
 /*
- * This file is part of Flutter-Sound.
+ * This file is part of Sounds.
  *
- *   Flutter-Sound is free software: you can redistribute it and/or modify
+ *   Sounds is free software: you can redistribute it and/or modify
  *   it under the terms of the Lesser GNU General Public License
  *   version 3 (LGPL3) as published by the Free Software Foundation.
  *
- *   Flutter-Sound is distributed in the hope that it will be useful,
+ *   Sounds is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU General Public License for more details.
  *
  *   You should have received a copy of the Lesser GNU General Public License
- *   along with Flutter-Sound.  If not, see <https://www.gnu.org/licenses/>.
+ *   along with Sounds.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 import 'dart:async';
@@ -32,7 +32,7 @@ class SoundPlayerTrackPlugin extends PlayerBasePlugin {
     return _self;
   }
   SoundPlayerTrackPlugin._internal()
-      : super('com.dooboolab.flutter_sound_track_player');
+      : super('com.bsutton.sounds.sounds_track_player');
 
   /// Plays the given [track]. [canSkipForward] and [canSkipBackward] must be
   /// passed to provide information on whether the user can skip to the next

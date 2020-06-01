@@ -1,24 +1,24 @@
 /*
- * This file is part of Flutter-Sound (Flauto).
+ * This file is part of Sounds .
  *
- *   Flutter-Sound (Flauto) is free software: you can redistribute it and/or modify
+ *   Sounds  is free software: you can redistribute it and/or modify
  *   it under the terms of the Lesser GNU General Public License
  *   version 3 (LGPL3) as published by the Free Software Foundation.
  *
- *   Flutter-Sound (Flauto) is distributed in the hope that it will be useful,
+ *   Sounds  is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU General Public License for more details.
  *
  *   You should have received a copy of the Lesser GNU General Public License
- *   along with Flutter-Sound (Flauto).  If not, see <https://www.gnu.org/licenses/>.
+ *   along with Sounds .  If not, see <https://www.gnu.org/licenses/>.
  */
 
 
 /*
- * flauto is a flutter_sound module.
+ * flauto is a sounds module.
  * Its purpose is to offer higher level functionnalities, using MediaService/MediaBrowser.
- * This module may use flutter_sound module, but flutter_sound module may not depends on this module.
+ * This module may use sounds module, but sounds module may not depends on this module.
  */
 
 #import "TrackPlayer.h"
@@ -43,7 +43,7 @@ static TrackPlayerManager* trackPlayerManager; // Singleton
 
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar
 {
-        _channel = [FlutterMethodChannel methodChannelWithName:@"com.dooboolab.flutter_sound_track_player"
+        _channel = [FlutterMethodChannel methodChannelWithName:@"com.bsutton.sounds.sound_track_player"
                                         binaryMessenger:[registrar messenger]];
         trackPlayerManager = [[TrackPlayerManager alloc] init]; // In super class
         [registrar addMethodCallDelegate:trackPlayerManager channel:_channel];
@@ -72,7 +72,7 @@ extern void TrackPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
         flautoPlayerSlots[slotNo] = [NSNull null];
 }
 
-- (FlautoPlayerManager*)getManager
+- (SoundPlayerManager*)getManager
 {
         return trackPlayerManager;
 }
@@ -179,7 +179,7 @@ extern void TrackPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 }
 
 
-- (FlautoPlayerManager*) getPlugin
+- (SoundPlayerManager*) getPlugin
 {
         return trackPlayerManager;
 }
@@ -228,7 +228,7 @@ extern void TrackPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
                 if ([path class] == [NSNull class])
                 {
                         // No path was given, get the path to a default sound
-                        audioFileURL = [NSURL fileURLWithPath:[GetDirectoryOfType_FlutterSound(NSCachesDirectory) stringByAppendingString:@"sound.aac"]];
+                        audioFileURL = [NSURL fileURLWithPath:[GetDirectoryOfType_Sounds(NSCachesDirectory) stringByAppendingString:@"sound.aac"]];
                 // This file name is not good. Perhaps the codec is not AAC. !
                 } else
                 {
@@ -506,8 +506,8 @@ extern void TrackPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 }
 
 
-// post fix with _FlutterSound to avoid conflicts with common libs including path_provider
-static NSString* GetDirectoryOfType_FlutterSound(NSSearchPathDirectory dir)
+// post fix with _Sound to avoid conflicts with common libs including path_provider
+static NSString* GetDirectoryOfType_Sounds(NSSearchPathDirectory dir)
 {
         NSArray* paths = NSSearchPathForDirectoriesInDomains(dir, NSUserDomainMask, YES);
         return [paths.firstObject stringByAppendingString:@"/"];

@@ -1,50 +1,50 @@
 ## 4.0.2+1
 
-- Fix a crash that we had when accessing the global variable AndroidActivity from `BackGroundAudioSerice.java` [#317](https://github.com/dooboolab/flutter_sound/issues/317)
+- Fix a crash that we had when accessing the global variable AndroidActivity from `BackGroundAudioSerice.java` [#317](https://github.com/bsutton/sounds/issues/317)
 
 ## 4.0.1+1
 
-- "s.static_framework = true" in flutter_sound.podspec
+- "s.static_framework = true" in sounds.podspec
 
 ## 4.0.0
 
-- Adds pedantic lints and major refactoring of example with bug fixes. [#279](https://github.com/dooboolab/flutter_sound/pull/279)
-- Native code is directely linked with FFmpeg. Flutter Sound App does not need any more to depends on flutter_ffmpeg [#265](https://github.com/dooboolab/flutter_sound/issues/265) and [273](https://github.com/dooboolab/flutter_sound/issues/273)
+- Adds pedantic lints and major refactoring of example with bug fixes. [#279](https://github.com/bsutton/sounds/pull/279)
+- Native code is directely linked with FFmpeg. Sounds App does not need any more to depends on flutter_ffmpeg [#265](https://github.com/bsutton/sounds/issues/265) and [273](https://github.com/bsutton/sounds/issues/273)
 - Add a new parameter in the Track structure : albumArtFile
-- A new flutter plugin is born : `flutter_sound_lite` [#291](https://github.com/dooboolab/flutter_sound/issues/291)
-- Adds a new parameter `whenPaused:` to the `startPlayerFromTrack()` function. [#314](https://github.com/dooboolab/flutter_sound/issues/314)
-- Fix bug for displaying a remote albumArt on Android. [#290](https://github.com/dooboolab/flutter_sound/issues/290)
+- A new flutter plugin is born : `sounds_lite` [#291](https://github.com/bsutton/sounds/issues/291)
+- Adds a new parameter `whenPaused:` to the `startPlayerFromTrack()` function. [#314](https://github.com/bsutton/sounds/issues/314)
+- Fix bug for displaying a remote albumArt on Android. [#290](https://github.com/bsutton/sounds/issues/290)
 
 ##3.1.10
 
-- Trying to catch Android crash during a dirty Timer. [#289](https://github.com/dooboolab/flutter_sound/issues/289)
+- Trying to catch Android crash during a dirty Timer. [#289](https://github.com/bsutton/sounds/issues/289)
 
 ## 3.1.9
 
-- Trying to fix the Android crash when AndroidActivity is null [#296](https://github.com/dooboolab/flutter_sound/issues/296)
+- Trying to fix the Android crash when AndroidActivity is null [#296](https://github.com/bsutton/sounds/issues/296)
 
 ## 3.1.8
 
-- Fix a bug ('async') when the app forget to initalize its Flutter Sound module. [#287](https://github.com/dooboolab/flutter_sound/issues/287)
+- Fix a bug ('async') when the app forget to initalize its Sounds module. [#287](https://github.com/bsutton/sounds/issues/287)
 
 ## 3.1.7
 
 - Codec PCM for recorder on iOS
-- Optional argument ```requestPermission``` before ```startRecorder()``` so that the App can control itself the recording permissions. [#283](https://github.com/dooboolab/flutter_sound/pull/283)
+- Optional argument ```requestPermission``` before ```startRecorder()``` so that the App can control itself the recording permissions. [#283](https://github.com/bsutton/sounds/pull/283)
 
 
 ## 3.1.6+1
 
-- Fix a bug when initializing for Flutter Embedded V1 on Android [#267](https://github.com/dooboolab/flutter_sound/issues/267)
-- Add _removePlayerCallback, _removeRecorderCallback() and _removeDbPeakCallback() inside release() [#248](https://github.com/dooboolab/flutter_sound/pull/248)
-- Fix conflict with permission_handler 5.x.x [#274](https://github.com/dooboolab/flutter_sound/pull/274)
-- On iOS, ```setMeteringEnabled:YES``` is called during ```setDbLevelEnabled()``` [#252](https://github.com/dooboolab/flutter_sound/pull/252), [#251](https://github.com/dooboolab/flutter_sound/issues/251)
-- The call to ```initialize()``` is now optional [271](https://github.com/dooboolab/flutter_sound/issues/271)
-- README : [#265](https://github.com/dooboolab/flutter_sound/issues/265)
+- Fix a bug when initializing for Flutter Embedded V1 on Android [#267](https://github.com/bsutton/sounds/issues/267)
+- Add _removePlayerCallback, _removeRecorderCallback() and _removeDbPeakCallback() inside release() [#248](https://github.com/bsutton/sounds/pull/248)
+- Fix conflict with permission_handler 5.x.x [#274](https://github.com/bsutton/sounds/pull/274)
+- On iOS, ```setMeteringEnabled:YES``` is called during ```setDbLevelEnabled()``` [#252](https://github.com/bsutton/sounds/pull/252), [#251](https://github.com/bsutton/sounds/issues/251)
+- The call to ```initialize()``` is now optional [271](https://github.com/bsutton/sounds/issues/271)
+- README : [#265](https://github.com/bsutton/sounds/issues/265)
 
 ## 3.1.5
 
-- Fix README : [#268](https://github.com/dooboolab/flutter_sound/pull/268)
+- Fix README : [#268](https://github.com/bsutton/sounds/pull/268)
 
 ## 3.1.4
 
@@ -56,39 +56,39 @@
 
 ## 3.1.3
 
-- The `isRecording` variable is false when the recorder is paused [#266](https://github.com/dooboolab/flutter_sound/issues/266)
+- The `isRecording` variable is false when the recorder is paused [#266](https://github.com/bsutton/sounds/issues/266)
 
 ## 3.1.2
 
-- Flutter Sound depends on permission_handler: ^4.4.0 [#263](https://github.com/dooboolab/flutter_sound/issues/263)
+- Sounds depends on permission_handler: ^4.4.0 [#263](https://github.com/bsutton/sounds/issues/263)
 
 ## 3.1.0
 
-- flutter_sound modules are re-entrant [#250](https://github.com/dooboolab/flutter_sound/issues/250) and [#232](https://github.com/dooboolab/flutter_sound/issues/232)
-  - We can open several `FlutterSoundPlayer` at the same time
-  - We can open several `FlutterSoundRecorder` at the same time
-- Add new API verbs : [#244](https://github.com/dooboolab/flutter_sound/issues/244)
-  - flutterSoundHelper.getLastFFmpegReturnCode()
-  - flutterSoundHelper.getLastFFmpegCommandOutput()
-  - flutterSoundHelper.FFmpegGetMediaInformation() which return info on the given record
-  - flutterSoundHelper.duration() which return the number of milli-seconds for the given record
-- Add new API verbs : [##242](https://github.com/dooboolab/flutter_sound/issues/242)
-  - FlutterSoundRecorder.pauseRecorder()
-  - FlutterSoundRecorder.resumeRecorder()
-- flutter_sound is now compatible with permission_handler 5.x.x [#259](https://github.com/dooboolab/flutter_sound/issues/259)
-- API to control the `audiofocus` [#219](https://github.com/dooboolab/flutter_sound/issues/219)
-- API to set the `audio-category` (i.e. duck-others) [#219](https://github.com/dooboolab/flutter_sound/issues/219)
-- AndroidX and Android embbeded-V2 support [#203](https://github.com/dooboolab/flutter_sound/issues/203)
-- Add a parameter to `startPlayer` to specify a callback when the song is finished [#215](https://github.com/dooboolab/flutter_sound/issues/215)
+- sounds modules are re-entrant [#250](https://github.com/bsutton/sounds/issues/250) and [#232](https://github.com/bsutton/sounds/issues/232)
+  - We can open several `SoundPlayer` at the same time
+  - We can open several `SoundRecorder` at the same time
+- Add new API verbs : [#244](https://github.com/bsutton/sounds/issues/244)
+  - CodecHelper.getLastFFmpegReturnCode()
+  - CodecHelper.getLastFFmpegCommandOutput()
+  - CodecHelper.FFmpegGetMediaInformation() which return info on the given record
+  - CodecHelper.duration() which return the number of milli-seconds for the given record
+- Add new API verbs : [##242](https://github.com/bsutton/sounds/issues/242)
+  - SoundRecorder.pauseRecorder()
+  - SoundRecorder.resumeRecorder()
+- sounds is now compatible with permission_handler 5.x.x [#259](https://github.com/bsutton/sounds/issues/259)
+- API to control the `audiofocus` [#219](https://github.com/bsutton/sounds/issues/219)
+- API to set the `audio-category` (i.e. duck-others) [#219](https://github.com/bsutton/sounds/issues/219)
+- AndroidX and Android embbeded-V2 support [#203](https://github.com/bsutton/sounds/issues/203)
+- Add a parameter to `startPlayer` to specify a callback when the song is finished [#215](https://github.com/bsutton/sounds/issues/215)
 - License is now LGPL 3.0 instead of MIT
 
 ## 3.0.0+1
 
-- bugfix [#254](https://github.com/dooboolab/flutter_sound/issues/254)
+- bugfix [#254](https://github.com/bsutton/sounds/issues/254)
 
 ## 3.0.0
 
-- Module `flauto` for controlling flutter_sound from the lock-screen [219](https://github.com/dooboolab/flutter_sound/issues/219) and [#243](https://github.com/dooboolab/flutter_sound/pull/243)
+- Module `flauto` for controlling sounds from the lock-screen [219](https://github.com/bsutton/sounds/issues/219) and [#243](https://github.com/bsutton/sounds/pull/243)
   > Highly honor [Larpoux](https://github.com/Larpoux), [bsutton](https://github.com/bsutton), [salvatore373](https://github.com/salvatore373) :tada:!
 
 ## 2.1.1
@@ -97,30 +97,30 @@
 
 ## 2.0.5
 
-- Hotfix [#221](https://github.com/dooboolab/flutter_sound/issues/221)
-- Use AAC-LC format instead of MPEG-4 [#209](https://github.com/dooboolab/flutter_sound/pull/209)
+- Hotfix [#221](https://github.com/bsutton/sounds/issues/221)
+- Use AAC-LC format instead of MPEG-4 [#209](https://github.com/bsutton/sounds/pull/209)
 
 ## 2.0.4
 
-- OGG/OPUS support on iOS [#199](https://github.com/dooboolab/flutter_sound/pull/199)
+- OGG/OPUS support on iOS [#199](https://github.com/bsutton/sounds/pull/199)
 
 ## 2.0.3
 
-- Resolve [#194](https://github.com/dooboolab/flutter_sound/issues/194)
+- Resolve [#194](https://github.com/bsutton/sounds/issues/194)
   - `stopReocorder` resolve path.
-- Resolve [#198](https://github.com/dooboolab/flutter_sound/issues/198)
+- Resolve [#198](https://github.com/bsutton/sounds/issues/198)
   - Improve static handler in android.
 
 ## 2.0.1
 
 - Add compatibility for android sdk 19.
 - Add `androidx` compatibility.
-- Resolve [#193](https://github.com/dooboolab/flutter_sound/issues/193)
+- Resolve [#193](https://github.com/bsutton/sounds/issues/193)
   - Restore default `startRecorder`
 
 ## 1.9.0
 
-- Fix issue [#175](https://github.com/dooboolab/flutter_sound/issues/175)
+- Fix issue [#175](https://github.com/bsutton/sounds/issues/175)
   - add functions
     . isEncoderSupported(t_CODEC codec);
     . isDecoderSupported(t_CODEC codec);
@@ -133,19 +133,19 @@
 
 ## 1.7.0
 
-- startPlayerFromBuffer, to play from a buffer [#170](https://github.com/dooboolab/flutter_sound/pull/170)
+- startPlayerFromBuffer, to play from a buffer [#170](https://github.com/bsutton/sounds/pull/170)
 
 ## 1.6.0
 
 - Set android default encoding option to `AAC`.
 - Fix android default poor sound.
-  - Resolve [#155](https://github.com/dooboolab/flutter_sound/issues/155)
-  - Resolve [#95](https://github.com/dooboolab/flutter_sound/issues/95)
-  - Resolve [#75](https://github.com/dooboolab/flutter_sound/issues/79)
+  - Resolve [#155](https://github.com/bsutton/sounds/issues/155)
+  - Resolve [#95](https://github.com/bsutton/sounds/issues/95)
+  - Resolve [#75](https://github.com/bsutton/sounds/issues/79)
 
 ## 1.5.2
 
-- Postfix `GetDirectoryType` to avoid conflicts [#147](https://github.com/dooboolab/flutter_sound/pull/147)
+- Postfix `GetDirectoryType` to avoid conflicts [#147](https://github.com/bsutton/sounds/pull/147)
 
 ## 1.5.1
 
@@ -153,40 +153,40 @@
 
 ## 1.5.0
 
-- Use `NSCachesDirectory` instead of `NSTemporaryDirectory` [#141](https://github.com/dooboolab/flutter_sound/pull/141)
+- Use `NSCachesDirectory` instead of `NSTemporaryDirectory` [#141](https://github.com/bsutton/sounds/pull/141)
 
 ## 1.4.8
 
-- Resolve [#129](https://github.com/dooboolab/flutter_sound/issues/129)
+- Resolve [#129](https://github.com/bsutton/sounds/issues/129)
 
 ## 1.4.7
 
 - Resolve few issues on `ios` record path.
 - Resolve issue `playing` status so player can resume.
-- Resolve [#134](https://github.com/dooboolab/flutter_sound/issues/134)
-- Resolve [#135](https://github.com/dooboolab/flutter_sound/issues/135)
+- Resolve [#134](https://github.com/bsutton/sounds/issues/134)
+- Resolve [#135](https://github.com/bsutton/sounds/issues/135)
 
 ## 1.4.4
 
-- Stopped recording generating infinite db values [#131](https://github.com/dooboolab/flutter_sound/pull/131)
+- Stopped recording generating infinite db values [#131](https://github.com/bsutton/sounds/pull/131)
 
 ## 1.4.3
 
-- Improved db calcs [#123](https://github.com/dooboolab/flutter_sound/pull/123)
+- Improved db calcs [#123](https://github.com/bsutton/sounds/pull/123)
 
 ## 1.4.2
 
-- Fixed 'mediaplayer went away with unhandled events' bug [#104](https://github.com/dooboolab/flutter_sound/pull/104)
+- Fixed 'mediaplayer went away with unhandled events' bug [#104](https://github.com/bsutton/sounds/pull/104)
 
 ## 1.4.1
 
-- Fixed 'mediaplayer went away with unhandled events' bug [#83](https://github.com/dooboolab/flutter_sound/pull/83)
+- Fixed 'mediaplayer went away with unhandled events' bug [#83](https://github.com/bsutton/sounds/pull/83)
 
 ## 1.4.0
 
-- AndroidX compatibility improved [#68](https://github.com/dooboolab/flutter_sound/pull/68)
-- iOS: Fixes for seekToPlayer [#72](https://github.com/dooboolab/flutter_sound/pull/72)
-- iOS: Setup configuration for using bluetooth microphone recording input [#73](https://github.com/dooboolab/flutter_sound/pull/73)
+- AndroidX compatibility improved [#68](https://github.com/bsutton/sounds/pull/68)
+- iOS: Fixes for seekToPlayer [#72](https://github.com/bsutton/sounds/pull/72)
+- iOS: Setup configuration for using bluetooth microphone recording input [#73](https://github.com/bsutton/sounds/pull/73)
 
 ## 1.3.6
 
@@ -197,22 +197,22 @@
 
 ## 1.3.+
 
-- Support db/meter [#41](https://github.com/dooboolab/flutter_sound/pull/41)
-- Show wrong recorder timer text [#47](https://github.com/dooboolab/flutter_sound/pull/47)
-- Add ability to specify Android & iOS encoder [#49](https://github.com/dooboolab/flutter_sound/pull/49)
-- Adjust db range and fix nullable check in ios [#59](https://github.com/dooboolab/flutter_sound/pull/59)
-- Android: Recording operations on a separate command queue [#66](https://github.com/dooboolab/flutter_sound/pull/66)
+- Support db/meter [#41](https://github.com/bsutton/sounds/pull/41)
+- Show wrong recorder timer text [#47](https://github.com/bsutton/sounds/pull/47)
+- Add ability to specify Android & iOS encoder [#49](https://github.com/bsutton/sounds/pull/49)
+- Adjust db range and fix nullable check in ios [#59](https://github.com/bsutton/sounds/pull/59)
+- Android: Recording operations on a separate command queue [#66](https://github.com/bsutton/sounds/pull/66)
 - Android: Remove reference to non-AndroidX classes which improves compatibility
 
 ## 1.2.+
 
-- Fixed sound distorting when playing recorded audio again. Issue [#14](https://github.com/dooboolab/flutter_sound/issues/14).
-- Fixed `seekToPlayer` for android. Issue [#10](https://github.com/dooboolab/flutter_sound/issues/10).
+- Fixed sound distorting when playing recorded audio again. Issue [#14](https://github.com/bsutton/sounds/issues/14).
+- Fixed `seekToPlayer` for android. Issue [#10](https://github.com/bsutton/sounds/issues/10).
 
 * Expose recorder `sampleRate` and `numChannel`.
 * Do not append `tmp` when filePath provided in `ios`.
 * Resolve `regression` issue in `1.2.3` which caused in `1.2.2`.
-* Reduce the size of audio file in `1.2.4`. Related [#26](https://github.com/dooboolab/flutter_sound/issues/26).
+* Reduce the size of audio file in `1.2.4`. Related [#26](https://github.com/bsutton/sounds/issues/26).
 * Fixed `recording` issue in android in `1.2.5`.
 * Changed `seekToPlayer` to place exact `secs` instead adding it.
 * Fix file URI for recording and playing in iOS.

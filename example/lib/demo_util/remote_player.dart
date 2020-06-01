@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_sound/flutter_sound.dart';
+import 'package:sounds/sounds.dart';
 
 import 'demo_active_codec.dart';
 import 'demo_player_state.dart';
@@ -42,7 +42,7 @@ class RemotePlayer extends StatelessWidget {
       track = Track.fromURL(exampleAudioFilePath, codec: ActiveCodec().codec);
 
       track.title = "Remote mpeg playback.";
-      track.artist = "By flutter_sound";
+      track.artist = "By sounds";
       track.albumArtUrl = albumArtPath;
 
       if (Platform.isIOS) {

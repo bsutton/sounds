@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_sound/flutter_sound.dart';
+import 'package:sounds/sounds.dart';
 
 import '../util/log.dart';
 import '../util/temp_file.dart';

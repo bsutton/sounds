@@ -1,6 +1,6 @@
 ext.flutterFFmpegPackage = 'audio-lts'
 
-group 'com.dooboolab.fluttersound'
+group 'com.bsutton.sounds'
 version '1.0-SNAPSHOT'
 
 

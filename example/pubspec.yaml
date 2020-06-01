@@ -1,5 +1,5 @@
-name: flutter_sound_demo
-description: Demonstrates how to use the flutter_sound plugin.
+name: sounds_demo
+description: Demonstrates how to use the sounds plugin.
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -12,7 +12,7 @@ version: 1.0.0+1
 dependencies:
   flutter:
     sdk: flutter
-  flutter_sound:
+  sounds:
     path: ../
 
   # The following adds the Cupertino Icons font to your application.
@@ -29,9 +29,9 @@ dev_dependencies:
     sdk: flutter
 
  # Brett added flutter driver for plugin integration tests
-  e2e: ^0.2.1
-  flutter_driver:
-    sdk: flutter    
+#  e2e: ^0.2.1
+#  flutter_driver:
+#    sdk: flutter    
 
 
 # For information on the generic Dart part of this file, see the

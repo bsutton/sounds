@@ -1,14 +1,14 @@
-# Flutter Sound
+# Sounds
 
-<img src="https://raw.githubusercontent.com/dooboolab/flutter_sound/master/Logotype primary.png" width="70%" height="70%" />
+<img src="https://raw.githubusercontent.com/bsutton/sounds/master/Logotype primary.png" width="70%" height="70%" />
 
 <p align="left">
-  <a href="https://pub.dartlang.org/packages/flutter_sound"><img alt="pub version" src="https://img.shields.io/pub/v/flutter_sound.svg?style=flat-square"></a>
+  <a href="https://pub.dartlang.org/packages/sounds"><img alt="pub version" src="https://img.shields.io/pub/v/sounds.svg?style=flat-square"></a>
 </p>
 
 This package provides audio recording and playback functionalities for both `android` and `ios` platforms
 
-Flutter Sound provides both an api and widgets for recording and playback.
+Sounds provides both an api and widgets for recording and playback.
 
 We support playback from:
 Assets
@@ -20,10 +20,10 @@ To control recording and playback:
 * Play audio without any UI
 * Play audio using the built in SoundPlayerUI
 * Play audio using the OSs' Media Player
-* Roll your own UI utilising the Flutter Sound api.
+* Roll your own UI utilising the Sounds api.
 * Record audio without any UI
 * Record audio using the builtin SoundRecorderUI
-* Roll your own Recording UI utilising the Flutter Sound api.
+* Roll your own Recording UI utilising the Sounds api.
 
 
 The key classes are:
@@ -38,7 +38,7 @@ Album - play a collection of tracks via the OSs' audio UI.
 
 SoundPlayer - provides migration path from 3.0 FlutterTrackPlayer
 
-SoundPlayer - provides migration path from 3.0 FlutterSoundPlayer
+SoundPlayer - provides migration path from 3.0 SoundPlayer
 
 SoundRecorder -  api to records audio.
 
@@ -63,7 +63,7 @@ To migrate to  you must do some minor changes in your configurations files.
 Please refer to the **FFmpeg** section below.
 
 ## `4.0.0` to `5.0.0`
-The Flutter Sound team have undertaken a major re-architecture of the api in order to provide a solid and flexible foundation moving forward.
+The Sounds team have undertaken a major re-architecture of the api in order to provide a solid and flexible foundation moving forward.
 
 The aims of 5.0.0 were:
 
@@ -79,21 +79,21 @@ The aims of 5.0.0 were:
 
 ### Players
 
-In `5.0.0` the `FlutterTrackPlayer` and `FlutterSoundPlayer` have been depreacted in favor of a single class `SoundPlayer`.
+In `5.0.0` the `FlutterTrackPlayer` and `SoundPlayer` have been depreacted in favor of a single class `SoundPlayer`.
 
 `SoundPlayer` now has two constructors:
 
 Code that previously used `TrackPlayer` should now call the `SoundPlayer.withUI()` constructor.
 
-Code that used the old `FlutterSoundPlayer` should now call the `SoundPlayer.noUI()` constructor.
+Code that used the old `SoundPlayer` should now call the `SoundPlayer.noUI()` constructor.
 
 The equivalent method names on the `SoundPlayer` class have also been shortend.
 
 Example changes:
 
-`FlutterSoundPlayer.startPlayer()` -> `SoundPlayer.play()`
-`FlutterSoundPlayer.pausePlayer()` -> `SoundPlayer.pause()`
-`FlutterSoundPlayer.stopPlayer()` ->  `SoundPlayer.stop()`
+`SoundPlayer.startPlayer()` -> `SoundPlayer.play()`
+`SoundPlayer.pausePlayer()` -> `SoundPlayer.pause()`
+`SoundPlayer.stopPlayer()` ->  `SoundPlayer.stop()`
 
 The new `play` methods replaces both `startPlayer(uri)` and `startPlayerFromBuffer()` and can
 now take a `Track`.
@@ -139,9 +139,9 @@ player.play(track);
 
 ### Monitoring
 
-Flutter sounds now uses streams to allow you to monitor both recording and playback progress.
+Soundss now uses streams to allow you to monitor both recording and playback progress.
 
-You can now use a StreamBuilder which will greatly simplify the construction of UI components (or you can use one of the new Flutter Sound UI widgets).
+You can now use a StreamBuilder which will greatly simplify the construction of UI components (or you can use one of the new Sounds UI widgets).
 
 #### SoundPlayer
 
@@ -198,56 +198,49 @@ QuickPlay.fromTrack(Track.fromFile('path to file'), volume: 0.5);
 
 
 
-## Free Read
-
-[Medium Blog](https://medium.com/@dooboolab/flutter-sound-plugin-audio-recorder-player-e5a455a8beaf)
 
 
 ## Install
 
 For help on adding as a dependency, view the [documentation](https://flutter.io/using-packages/).
 
-Flutter Sound comes in two flavors :
-- the **FULL** flavor : flutter_sound
-- the **LITE** flavor : flutter_sound_lite
+Sounds comes in two flavors :
+- the **FULL** flavor : sounds
+- the **LITE** flavor : sounds_lite
 
 The big difference between the two flavors is that the **LITE** flavor does not have `mobile_ffmpeg` embedded inside.
 There is a huge impact on the memory used, but the **LITE** flavor will not be able to do some codecs :
 - Playback OGG/OPUS on iOS
 - Record OGG_OPUS on iOS
-And will not be able to offer some helping functions, like `FlutterSoundHelper.FFmpegGetMediaInformation()` or `FlutterSoundHelper.duration()`
+And will not be able to offer some helping functions, like `CodecHelper.FFmpegGetMediaInformation()` or `CodecHelper.duration()`
 
-Add `flutter_sound` or `flutter_sound_lite` as a dependency in pubspec.yaml. The actual versions are `^flutter_sound: 5.0.0-beta.1` and `^flutter_sound_lite: 5.0.0-beta.1`
+Add `sounds` or `sound_lite` as a dependency in pubspec.yaml. The actual versions are `^sound: 0.8.0` and `^sounds_lite: 0.8.0`
 Be aware that **it is not released version**, and probably not good to use it in a released App.
 The API is actually not stabilized and will change very soon.
-The actual released App is `flutter_sound: ^4.0.0`
+
 
 ```
 dependencies:
   flutter:
     sdk: flutter
-  flutter_sound: ^5.0.0-beta.1
+  sounds: ^0.8.0
 ```
 or
 ```
 dependencies:
   flutter:
     sdk: flutter
-  flutter_sound_lite: ^5.0.0-beta.1
+  sounds_lite: ^0.8.0
 ```
 
-The Flutter-Sound sources [are here](https://github.com/dooboolab/flutter_sound).
+The Sounds sources [are here](https://github.com/bsutton/sounds).
 
 ### FFmpeg
 
-flutter_sound makes use of flutter_ffmpeg. In contrary to Flutter Sound Version 3.x.x, in Version 4.0.x your App can be built without any Flutter-FFmpeg dependency.
+sounds makes use of flutter_ffmpeg. In contrary to Sounds Version 3.x.x, in Version 4.0.x your App can be built without any Flutter-FFmpeg dependency.
 
-If you come from Flutter Sound Version 3.x.x, you must remove this dependency from your ```pubspec.yaml```.
-You must also delete the line ```ext.flutterFFmpegPackage = 'audio-lts'``` from your ```android/build.gradle```
-and the special line ```pod name+'/audio-lts', :path => File.join(symlink, 'ios')``` in your Podfile.
-If you do not do that, you will have duplicates modules during your App building.
 
-```flutter_ffmpeg audio-lts``` is now embedding inside flutter_sound. If your App needs to use FFmpeg, you must use the embedded version inside flutter_sound instead of adding a new dependency in your pubspec.yaml.
+```flutter_ffmpeg audio-lts``` is now embedding inside Sounds. If your App needs to use FFmpeg, you must use the embedded version inside Sounds instead of adding a new dependency in your pubspec.yaml.
 
 
 ## Post Installation
@@ -271,7 +264,7 @@ If you do not do that, you will have duplicates modules during your App building
   ```
 
 
-# Using Flutter Sound
+# Using Sounds
 
 ## QuickPlay
 The QuickPlay class provides the simplest means of playing audio.
@@ -301,11 +294,11 @@ If you need a UI to allow your user to control playback then you have three opti
 1) Use `SoundPlayer.withUI()` 
 This will display the OSs' audio player allowing the user to control playback.
 
-2) Use Flutter Sound's SoundPlayerUI widget which provide a HTML5 like audio player.
+2) Use Sounds's SoundPlayerUI widget which provide a HTML5 like audio player.
 
 3) Directly use `SoundPlayer.noUI()` to roll your own widget. You can start with the SoundPlayerUI code as an example of how to do this.
 
-The API is documented in detail at [pub.dev](https://pub.dev/documentation/flutter_sound/latest/)
+The API is documented in detail at [pub.dev](https://pub.dev/documentation/sounds/latest/)
 
 ## Play audio from an asset
 
@@ -341,7 +334,7 @@ You can reuse a `SoundPlayer` as many times as you want as long as you call `Sou
 
 Track.fromFile uses the passed filename extension to determine the correct codec to play. If you need to play a file with an extension that doesn't match one of the known file extensions then you MUST pass in the codec.
 
-See the [codec](https://pub.dev/documentation/flutter_sound/latest/codec/codec-library.html) documentation
+See the [codec](https://pub.dev/documentation/sounds/latest/codec/codec-library.html) documentation
 for details on the supported codecs.
 
 ## Specify a codec
@@ -358,7 +351,7 @@ player.play(Track.fromFile('sample.blit', codec: Codec.mp3));
 
 You can play a remote audio file by passing a URL to QuickPlay.
 
-See the [codec](https://pub.dev/documentation/flutter_sound/latest/codec/codec-library.html) documentation
+See the [codec](https://pub.dev/documentation/sounds/latest/codec/codec-library.html) documentation
 for details on the supported codecs.
 
 ```dart
@@ -372,7 +365,7 @@ player.play(Track.fromURL('https://some audio file', codec: Codec.mp3););
 When playing a audio file from a buffer you MUST provide the codec.
 
 
-See the [codec](https://pub.dev/documentation/flutter_sound/latest/codec/codec-library.html) documentation
+See the [codec](https://pub.dev/documentation/sounds/latest/codec/codec-library.html) documentation
 for details on the supported codecs.
 
 ```dart
@@ -413,7 +406,7 @@ using a `Track`.
 ```dart
 var track = Track.fromFile('sample.aac');
 track.title = 'Reckless';
-track.artist = 'Flutter Sound';
+track.artist = 'Sounds';
 track.albumArtUrl = 'http://some image url';
 
 var player = SoundPlayer.withUI()
@@ -423,7 +416,7 @@ player.fromTrack(track);
 The title, artist and album art will be displayed on the OSs' Audio Player.
 
 # Albums
-Flutter Sound supports the concept of Albums which are, as you would expect, a collection of `Track`s which can be played in order.
+Sounds supports the concept of Albums which are, as you would expect, a collection of `Track`s which can be played in order.
 
 The `Album` uses the OSs Media Player to display the tracks as they are played.
 
@@ -574,7 +567,7 @@ class MyWidgetState
 
 ## Codec compatibility
 
-The following codecs are supported by flutter_sound:
+The following codecs are supported by sounds:
 
 |                 | AAC | OGG/Opus | CAF/Opus | MP3 | OGG/Vorbis | PCM |
 | :-------------- | :-: | :------: | :------- | :-- | :--------- | :-- |
@@ -588,7 +581,7 @@ This table will be updated as codecs are added.
 ## SoundRecorder Usage
 The `SoundRecorder` class provides an api for recording audio.
 
-The `SoundRecorder` does not have a UI so you must either build your own or you can use Flutter Sound's `SoundRecorderUI` widget.
+The `SoundRecorder` does not have a UI so you must either build your own or you can use Sounds's `SoundRecorderUI` widget.
 
 
 #### Recording
@@ -729,7 +722,7 @@ await recoder.resume();
 ```
 
 ## SoundRecorderUI
-Flutter Sounds contains a standard SoundRecorderUI widget that allows you to record.
+Soundss contains a standard SoundRecorderUI widget that allows you to record.
 
 ```dart
 
@@ -747,7 +740,7 @@ void build(BuildContext build)
 
 #### iosSetCategory(), androidFocusRequest(), requestFocus() and abandonFocus()  - (optional)
 
-Those three functions are optional. If you do not control the audio focus with the function `requestFocus()`, flutter_sound will request the audio focus each time you call 'play()' on either the `SoundPlayer` or `QuickPlay`.
+Those three functions are optional. If you do not control the audio focus with the function `requestFocus()`, sounds will request the audio focus each time you call 'play()' on either the `SoundPlayer` or `QuickPlay`.
 The focus will be automatically release it when playback is finished or when you call the `stop()` method on the `SoundPlayer`.
 
 
@@ -822,7 +815,7 @@ void dispose() {
 
 ## TrackPlayer
 
-TrackPlayer is a new flutter_sound module which is able to show controls on the lock screen.
+TrackPlayer is a new Sounds module which is able to show controls on the lock screen.
 Using TrackPlayer is very simple : just use the TrackPlayer constructor instead of the regular FlutterQuickPlay.
 
 ```dart
@@ -839,10 +832,10 @@ You call `startPlayerFromTrack` to play a sound. This function takes in 1 requir
 
 If `onSkipBackward:()` is not specified then the button is not shown on the lock screen.
 If `onSkipForward:()` is not specified, then the  button is not shown on the lock screen.
-If `onPaused: (boolean)` is not specified, then flutter_sound will handle itself the pause/resume function.
+If `onPaused: (boolean)` is not specified, then Sounds will handle itself the pause/resume function.
 There is actually no way to hide the pause button on the lock screen.
 
-If `onPaused: (boolean)` is specified, then flutter_sound will not handle itself the pause/resume function and it will be the App responsability to handle correctly this function. The boolean argument is `true` if the playback is playing (and probably must me paused). The boolean argument is `false` if the playback is in 'pause' state (and probably must be resumed).
+If `onPaused: (boolean)` is specified, then Sounds will not handle itself the pause/resume function and it will be the App responsability to handle correctly this function. The boolean argument is `true` if the playback is playing (and probably must me paused). The boolean argument is `false` if the playback is in 'pause' state (and probably must be resumed).
 
 ```dart
 path = await trackPlayer.startPlayerFromTrack
@@ -888,7 +881,7 @@ path = await trackPlayer.startPlayerFromTrack
 
 In order to play a sound when you initialized the player with the audio player features, you must create a `Track` object to pass to `startPlayerFromTrack`.
 
-The `Track` class is provided by the flutter_sound package. It has a number of constructors which support
+The `Track` class is provided by the sounds package. It has a number of constructors which support
 each of the different audio sources.
 
 ```dart
@@ -935,21 +928,21 @@ You can specify just one field for the Album Art to display on the lock screen. 
 - albumArtFile
 - albumArtFile
 
-If no Album Art field is specified, Flutter Sound will try to display the App icon.
+If no Album Art field is specified, Sounds will try to display the App icon.
 
 ## Informations on a record
 
 There are two utilities functions that you can use to have informations on a file.
 
-- FlutterSoundHelper.FFmpegGetMediaInformation(_<A_file_path>_);
-- FlutterSoundHelper.duration(_<A_file_path>_)
+- CodecHelper.FFmpegGetMediaInformation(_<A_file_path>_);
+- CodecHelper.duration(_<A_file_path>_)
 
 The informations got with FFmpegGetMediaInformation() are [documented here](https://pub.dev/packages/flutter_ffmpeg).
-The integer returned by flutterSound.duration() is an estimation of the number of milli-seconds for the given record.
+The integer returned by CodecHelper.duration() is an estimation of the number of milli-seconds for the given record.
 
 ```
-int duration = await flutterSoundHelper.duration( this._path[_codec.index] );
-Map<dynamic, dynamic> info = await flutterSoundHelper.FFmpegGetMediaInformation( uri );
+int duration = await CodecHelper.duration( this._path[_codec.index] );
+Map<dynamic, dynamic> info = await CodecHelper.FFmpegGetMediaInformation( uri );
 ```
 
 ### TODO
@@ -983,5 +976,5 @@ flutter.buildMode=debug
 
 I've been maintaining quite many repos these days and burning out slowly. If you could help me cheer up, buying me a cup of coffee will make my life really happy and get much energy out of it.
 <br/>
-<a href="https://www.buymeacoffee.com/dooboolab" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/purple_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
-[![Paypal](https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png)](https://paypal.me/dooboolab)
+<a href="https://www.buymeacoffee.com/bsutton" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/purple_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
+[![Paypal](https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png)](https://paypal.me/bsutton)

@@ -148,7 +148,7 @@ class Track {
 
   /// released any system resources.
   /// Under normal circumstances you don't need to call this
-  /// method all of flutter_sound classes manage it for you.
+  /// method all of sounds classes manage it for you.
   void _release() => _audio.release();
 
   /// Used to prepare a audio stream for playing.

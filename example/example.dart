@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:core';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_sound/flutter_sound.dart';
+import 'package:sounds/sounds.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 void main() {

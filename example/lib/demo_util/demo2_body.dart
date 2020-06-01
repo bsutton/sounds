@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_sound/flutter_sound.dart';
+import 'package:sounds/sounds.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 import '../util/log.dart';
@@ -12,7 +12,6 @@ import 'recorder_state.dart';
 import 'recording_player.dart';
 import 'remote_player.dart';
 import 'track_switched.dart';
-
 
 ///
 class MainBody extends StatefulWidget {

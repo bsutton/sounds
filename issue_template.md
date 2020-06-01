@@ -1,4 +1,4 @@
-### Version of flutter_sound
+### Version of sounds
 
 ## flutter doctor
 

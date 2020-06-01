@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sound/flutter_sound.dart';
+import 'package:sounds/sounds.dart';
 
 import 'demo_active_codec.dart';
 import 'demo_common.dart';

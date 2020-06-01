@@ -85,7 +85,7 @@ class TrackPlayer {
   }
 
   /// Returns true if the specified decoder is supported
-  ///  by flutter_sound on this platform
+  ///  by sounds on this platform
   Future<bool> isSupported(Codec codec) async {
     return _player.isSupported(codec);
   }

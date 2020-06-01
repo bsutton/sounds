@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:flutter_sound/flutter_sound.dart';
+import 'package:sounds/sounds.dart';
 import 'package:intl/intl.dart';
 
 import '../util/log.dart';

@@ -2,7 +2,7 @@
 
 # ------------------------------------------------------------------------------------------------------
 
-# This script is used to switch from the Flutter Sound FULL flavor to the Flutter Sound LITE flavor
+# This script is used to switch from the Sounds FULL flavor to the Sounds LITE flavor
 # (or the opposite)
 
 # If the script is called without parameter, it just analyzes the current flavor and print errors if any.
@@ -15,7 +15,7 @@
 # then it does not modify any files.
 # If you want to force the changes, add a second script parameter 'force'
 
-# The "Current Directory" must be the Flutter Sound root directory.
+# The "Current Directory" must be the Sounds root directory.
 # Note : this script uses the GNU-sed ("brew install gnu-sed" on Macos)
 
 # ------------------------------------------------------------------------------------------------------
@@ -24,7 +24,7 @@
 
 if [ ! -f "bin/flavor" ]
 then
-    	echo "This script must be called from Flutter Sound root directory"
+    	echo "This script must be called from Sounds root directory"
 	exit -1
 fi
 
@@ -42,11 +42,11 @@ fi
 check_actual_flavor()
 {
 	RES=0
-	if grep '^name: flutter_sound_lite$' pubspec.yaml > /dev/null ; then
+	if grep '^name: sounds_lite$' pubspec.yaml > /dev/null ; then
 		echo "Current flavor is LITE $(tput setaf 2) [OK]$(tput sgr 0)"
 		FLAVOR=LITE
 		return 0
-	elif  grep '^name: flutter_sound$' pubspec.yaml > /dev/null ; then
+	elif  grep '^name: sounds$' pubspec.yaml > /dev/null ; then
 		echo "Current flavor is FULL $(tput setaf 2) [OK]$(tput sgr 0)"
 		FLAVOR=FULL
 		return 0
@@ -67,12 +67,12 @@ check_example_pubspec()
 	RES=0
 	if [ $FLAVOR == 'FULL' ]; then
 
-		if grep '^ *flutter_sound:$' example/pubspec.yaml > /dev/null ; then
+		if grep '^ *sounds:$' example/pubspec.yaml > /dev/null ; then
 			echo "example flavor is FULL $(tput setaf 2) [OK]$(tput sgr 0)"
 			return 0
 		fi
 
-		if grep '^ *flutter_sound_lite:$' example/pubspec.yaml > /dev/null ; then
+		if grep '^ *sounds_lite:$' example/pubspec.yaml > /dev/null ; then
 			echo "example flavor is LITE $(tput setaf 1) [NOK]$(tput sgr 0)"
 			RES=-1
 			return -1
@@ -82,13 +82,13 @@ check_example_pubspec()
 		return -1
 
 	elif [ $FLAVOR == 'LITE' ]; then
-		if grep '^ *flutter_sound:$' example/pubspec.yaml > /dev/null ; then
+		if grep '^ *sounds:$' example/pubspec.yaml > /dev/null ; then
 			echo "example flavor is FULL $(tput setaf 1) [NOK]$(tput sgr 0)"
 			RES=-1
 			return -1
 		fi
 
-		if grep '^ *flutter_sound_lite:$' example/pubspec.yaml > /dev/null ; then
+		if grep '^ *sounds_lite:$' example/pubspec.yaml > /dev/null ; then
 			echo "example flavor is LITE $(tput setaf 2) [OK]$(tput sgr 0)"
 			return 0
 		fi
@@ -99,13 +99,13 @@ check_example_pubspec()
 
 	else
 
-		if grep '^ *flutter_sound:$' example/pubspec.yaml > /dev/null ; then
+		if grep '^ *sounds:$' example/pubspec.yaml > /dev/null ; then
 			echo "example flavor is FULL $(tput setaf 2) [OK]$(tput sgr 0)"
 			RES=-1
 			return -1
 		fi
 
-		if grep '^ *flutter_sound_lite:$' example/pubspec.yaml > /dev/null ; then
+		if grep '^ *sounds_lite:$' example/pubspec.yaml > /dev/null ; then
 			echo "example flavor is LITE $(tput setaf 2) [OK]$(tput sgr 0)"
 			RES=-1
 			return -1
@@ -119,101 +119,101 @@ check_example_pubspec()
 
 # ------------------------------------------------------------------------------------------------------
 
-# Check ios/flutter_sound.podspec
+# Check ios/sounds.podspec
 # -------------------------------
-check_flutter_sound_podspec()
+check_sounds_podspec()
 {
 	RES=0
         if [ $FLAVOR == 'FULL' ]; then
 
-        	if [ -f ios/flutter_sound_lite.podspec ]; then
-        		echo "ios/flutter_sound.podspec_lite exists $(tput setaf 1) [NOK]$(tput sgr 0)"
+        	if [ -f ios/sounds_lite.podspec ]; then
+        		echo "ios/sounds.podspec_lite exists $(tput setaf 1) [NOK]$(tput sgr 0)"
         		RES=-1
         		return -1
         	fi
 
-        	if [ ! -f ios/flutter_sound.podspec ]; then
+        	if [ ! -f ios/sounds.podspec ]; then
         		RES=-1
-        		echo "ios/flutter_sound.podspec does not exists $(tput setaf 1) [NOK]$(tput sgr 0)"
+        		echo "ios/sounds.podspec does not exists $(tput setaf 1) [NOK]$(tput sgr 0)"
         		return -1
         	fi
 
-        	echo "ios/flutter_sound.podspec exists $(tput setaf 2) [OK]$(tput sgr 0)"
+        	echo "ios/sounds.podspec exists $(tput setaf 2) [OK]$(tput sgr 0)"
 
 
-		if grep "^ *s.name *=* \'flutter_sound_lite\'$" ios/flutter_sound.podspec > /dev/null ; then
-			echo "ios/flutter_sound.podspec is LITE $(tput setaf 1) [NOK]$(tput sgr 0)"
+		if grep "^ *s.name *=* \'sounds_lite\'$" ios/sounds.podspec > /dev/null ; then
+			echo "ios/sounds.podspec is LITE $(tput setaf 1) [NOK]$(tput sgr 0)"
 			RES=-1
 			return -1
-		elif grep "^ *s.name *=* \'flutter_sound\'$" ios/flutter_sound.podspec > /dev/null ; then
-			echo "ios/flutter_sound.podspec is FULL $(tput setaf 2) [OK]$(tput sgr 0)"
+		elif grep "^ *s.name *=* \'sounds\'$" ios/sounds.podspec > /dev/null ; then
+			echo "ios/sounds.podspec is FULL $(tput setaf 2) [OK]$(tput sgr 0)"
 		else
-			echo "Cannot determine flavor in ios/flutter_sound.podspec $(tput setaf 1) [NOK]$(tput sgr 0)"
+			echo "Cannot determine flavor in ios/sounds.podspec $(tput setaf 1) [NOK]$(tput sgr 0)"
 			RES=-1
 			return -1
 		fi
 
-		if grep "^ *s.dependency *\'mobile-ffmpeg-audio\', *=* \'4.3.1.LTS\'$" ios/flutter_sound.podspec > /dev/null ; then
-			echo "dependency in ios/flutter_sound.podspec is set: $(tput setaf 2) [OK]$(tput sgr 0)"
+		if grep "^ *s.dependency *\'mobile-ffmpeg-audio\', *=* \'4.3.1.LTS\'$" ios/sounds.podspec > /dev/null ; then
+			echo "dependency in ios/sounds.podspec is set: $(tput setaf 2) [OK]$(tput sgr 0)"
 		else
-			echo "dependency in ios/flutter_sound.podspec is not set: $(tput setaf 1) [NOK]$(tput sgr 0)"
+			echo "dependency in ios/sounds.podspec is not set: $(tput setaf 1) [NOK]$(tput sgr 0)"
 			RES=-1
 			exit -1
 		fi
 
 	elif [ $FLAVOR == 'LITE' ]; then
-       		if [ -f ios/flutter_sound.podspec ]; then
-        		echo "ios/flutter_sound.podspec exists $(tput setaf 1) [NOK]$(tput sgr 0)"
+       		if [ -f ios/sounds.podspec ]; then
+        		echo "ios/sounds.podspec exists $(tput setaf 1) [NOK]$(tput sgr 0)"
         		RES=-1
         		return -1
         	fi
 
-        	if [ ! -f ios/flutter_sound_lite.podspec ]; then
-        		echo "ios/flutter_sound_lite.podspec does not exists $(tput setaf 1) [NOK]$(tput sgr 0)"
+        	if [ ! -f ios/sounds_lite.podspec ]; then
+        		echo "ios/sounds_lite.podspec does not exists $(tput setaf 1) [NOK]$(tput sgr 0)"
         		RES=-1
         		return -1
         	fi
-      		echo "ios/flutter_sound.podspec_lite exists $(tput setaf 2) [OK]$(tput sgr 0)"
+      		echo "ios/sounds.podspec_lite exists $(tput setaf 2) [OK]$(tput sgr 0)"
 
 
-		if grep "^ *s.name *=* \'flutter_sound\'$" ios/flutter_sound_lite.podspec > /dev/null ; then
-			echo "ios/flutter_sound.podspec is FULL $(tput setaf 1) [NOK]$(tput sgr 0)"
+		if grep "^ *s.name *=* \'sounds\'$" ios/sounds_lite.podspec > /dev/null ; then
+			echo "ios/sounds.podspec is FULL $(tput setaf 1) [NOK]$(tput sgr 0)"
 			RES=-1
 			return -1
-		elif grep "^ *s.name *=* \'flutter_sound_lite\'$" ios/flutter_sound_lite.podspec > /dev/null ; then
-			echo "ios/flutter_sound.podspec is LITE $(tput setaf 2) [OK]$(tput sgr 0)"
+		elif grep "^ *s.name *=* \'sounds_lite\'$" ios/sounds_lite.podspec > /dev/null ; then
+			echo "ios/sounds.podspec is LITE $(tput setaf 2) [OK]$(tput sgr 0)"
 		else
-			echo "Cannot determine flavor in ios/flutter_sound.podspec $(tput setaf 1) [NOK]$(tput sgr 0)"
+			echo "Cannot determine flavor in ios/sounds.podspec $(tput setaf 1) [NOK]$(tput sgr 0)"
 			RES=-1
 			return -1
 		fi
 
-		if grep "^ *s.dependency *\'mobile-ffmpeg-audio\', *=* \'4.3.1.LTS\'$" ios/flutter_sound_lite.podspec > /dev/null ; then
-			echo "dependency in ios/flutter_sound.podspec : $(tput setaf 1) [NOK]$(tput sgr 0)"
+		if grep "^ *s.dependency *\'mobile-ffmpeg-audio\', *=* \'4.3.1.LTS\'$" ios/sounds_lite.podspec > /dev/null ; then
+			echo "dependency in ios/sounds.podspec : $(tput setaf 1) [NOK]$(tput sgr 0)"
 		else
-			echo "dependency in ios/flutter_sound.podspec : $(tput setaf 2) [OK]$(tput sgr 0)"
+			echo "dependency in ios/sounds.podspec : $(tput setaf 2) [OK]$(tput sgr 0)"
 		fi
 	else
-		if grep "^ *s.name *=* \'flutter_sound\'$" ios/flutter_sound.podspec > /dev/null ; then
-			echo "ios/flutter_sound.podspec is FULL $(tput setaf 2) [OK]$(tput sgr 0)"
+		if grep "^ *s.name *=* \'sounds\'$" ios/sounds.podspec > /dev/null ; then
+			echo "ios/sounds.podspec is FULL $(tput setaf 2) [OK]$(tput sgr 0)"
 			RES=-1
 			return -1
-		elif grep "^ *s.name *=* \'flutter_sound_lite\'$" ios/flutter_sound.podspec > /dev/null ; then
-			echo "ios/flutter_sound.podspec is LITE $(tput setaf 2) [OK]$(tput sgr 0)"
+		elif grep "^ *s.name *=* \'sounds_lite\'$" ios/sounds.podspec > /dev/null ; then
+			echo "ios/sounds.podspec is LITE $(tput setaf 2) [OK]$(tput sgr 0)"
 			RES=-1
 			return -1
 		else
-			echo "Cannot determine flavor in ios/flutter_sound.podspec $(tput setaf 1) [NOK]$(tput sgr 0)"
+			echo "Cannot determine flavor in ios/sounds.podspec $(tput setaf 1) [NOK]$(tput sgr 0)"
 			RES=-1
 			return -1
 		fi
 
-		if grep "^ *s.dependency *\'mobile-ffmpeg-audio\', *=* \'4.3.1.LTS\'$" ios/flutter_sound.podspec > /dev/null ; then
+		if grep "^ *s.dependency *\'mobile-ffmpeg-audio\', *=* \'4.3.1.LTS\'$" ios/sounds.podspec > /dev/null ; then
 			RES=-1
-			echo "dependency in ios/flutter_sound.podspec is set : $(tput setaf 1) [NOK]$(tput sgr 0)"
+			echo "dependency in ios/sounds.podspec is set : $(tput setaf 1) [NOK]$(tput sgr 0)"
 			exit -1
 		else
-			echo "dependency in ios/flutter_sound.podspec is not set : $(tput setaf 2) [OK]$(tput sgr 0)"
+			echo "dependency in ios/sounds.podspec is not set : $(tput setaf 2) [OK]$(tput sgr 0)"
 		fi
 	fi
 
@@ -224,40 +224,40 @@ check_flutter_sound_podspec()
 
 # ------------------------------------------------------------------------------------------------------
 
-# Check ios FlutterFFmpegPlugin
+# Check ios FFmpegPlugin
 # -----------------------------
 check_ios_flavor()
 {
 	RES=0
        	if [ $FLAVOR == 'FULL' ]; then
-       		if grep "^ *#define *FULL_FLAVOR$" ios/Classes/FlutterFFmpegPlugin.h > /dev/null; then
-       			echo "ios/Classes/FlutterFFmpegPlugin.h is FULL $(tput setaf 2) [OK]$(tput sgr 0)"
-      		elif grep "^ *#define *LITE_FLAVOR$" ios/Classes/FlutterFFmpegPlugin.h > /dev/null; then
-       			echo "ios/Classes/FlutterFFmpegPlugin.h is LITE $(tput setaf 1) [NOK]$(tput sgr 0)"
+       		if grep "^ *#define *FULL_FLAVOR$" ios/Classes/FFmpegPlugin.h > /dev/null; then
+       			echo "ios/Classes/FFmpegPlugin.h is FULL $(tput setaf 2) [OK]$(tput sgr 0)"
+      		elif grep "^ *#define *LITE_FLAVOR$" ios/Classes/FFmpegPlugin.h > /dev/null; then
+       			echo "ios/Classes/FFmpegPlugin.h is LITE $(tput setaf 1) [NOK]$(tput sgr 0)"
        			RES=-1
        		else
-       			echo "ios/Classes/FlutterFFmpegPlugin.h : cannot determine flavor $(tput setaf 1) [NOK]$(tput sgr 0)"
+       			echo "ios/Classes/FFmpegPlugin.h : cannot determine flavor $(tput setaf 1) [NOK]$(tput sgr 0)"
        			RES=-1
        		fi
 	elif [ $FLAVOR == 'LITE' ]; then
-		if grep "^ *#define *FULL_FLAVOR$" ios/Classes/FlutterFFmpegPlugin.h > /dev/null; then
-       			echo "ios/Classes/FlutterFFmpegPlugin.h is FULL $(tput setaf 1) [NOK]$(tput sgr 0)"
+		if grep "^ *#define *FULL_FLAVOR$" ios/Classes/FFmpegPlugin.h > /dev/null; then
+       			echo "ios/Classes/FFmpegPlugin.h is FULL $(tput setaf 1) [NOK]$(tput sgr 0)"
        			RES=-1
-      		elif grep "^ *#define *LITE_FLAVOR$" ios/Classes/FlutterFFmpegPlugin.h > /dev/null; then
-       			echo "ios/Classes/FlutterFFmpegPlugin.h is LITE $(tput setaf 2) [OK]$(tput sgr 0)"
+      		elif grep "^ *#define *LITE_FLAVOR$" ios/Classes/FFmpegPlugin.h > /dev/null; then
+       			echo "ios/Classes/FFmpegPlugin.h is LITE $(tput setaf 2) [OK]$(tput sgr 0)"
        		else
-       			echo "ios/Classes/FlutterFFmpegPlugin.h : cannot determine flavor $(tput setaf 1) [NOK]$(tput sgr 0)"
+       			echo "ios/Classes/FFmpegPlugin.h : cannot determine flavor $(tput setaf 1) [NOK]$(tput sgr 0)"
        			RES=-1
        		fi
 
 	else
-		if grep "^ *#define *FULL_FLAVOR$" ios/Classes/FlutterFFmpegPlugin.h > /dev/null; then
-       			echo "ios/Classes/FlutterFFmpegPlugin.h is FULL $(tput setaf 2) [OK]$(tput sgr 0)"
-      		elif grep "^ *#define *LITE_FLAVOR$" ios/Classes/FlutterFFmpegPlugin.h > /dev/null; then
-       			echo "ios/Classes/FlutterFFmpegPlugin.h is LITE $(tput setaf 2) [OK]$(tput sgr 0)"
+		if grep "^ *#define *FULL_FLAVOR$" ios/Classes/FFmpegPlugin.h > /dev/null; then
+       			echo "ios/Classes/FFmpegPlugin.h is FULL $(tput setaf 2) [OK]$(tput sgr 0)"
+      		elif grep "^ *#define *LITE_FLAVOR$" ios/Classes/FFmpegPlugin.h > /dev/null; then
+       			echo "ios/Classes/FFmpegPlugin.h is LITE $(tput setaf 2) [OK]$(tput sgr 0)"
        			RES=-1
        		else
-       			echo "ios/Classes/FlutterFFmpegPlugin.h : cannot determine flavor $(tput setaf 1) [NOK]$(tput sgr 0)"
+       			echo "ios/Classes/FFmpegPlugin.h : cannot determine flavor $(tput setaf 1) [NOK]$(tput sgr 0)"
        			RES=-1
        		fi
 
@@ -274,13 +274,13 @@ check_import()
 {
 	RES=0
        	if [ $FLAVOR == 'FULL' ]; then
-       		if grep "^ *import *'package:flutter_sound_lite/" $1 > /dev/null; then
+       		if grep "^ *import *'package:sounds_lite/" $1 > /dev/null; then
        			echo "$1 : import LITE $(tput setaf 1) [NOK]$(tput sgr 0)"
        			RES=-1
        			return -1
        		fi
 	elif [ $FLAVOR == 'LITE' ]; then
-       		if grep "^ *import *'package:flutter_sound/" $1 > /dev/null; then
+       		if grep "^ *import *'package:sounds/" $1 > /dev/null; then
        			echo "$1 : import FULL $(tput setaf 1) [NOK]$(tput sgr 0)"
        			RES=-1
        			return -1
@@ -292,9 +292,9 @@ check_import()
 process_dart_file()
 {
 	if [ $2 == 'FULL' ]; then
-		gsed -i "s/^ *import *'package:flutter_sound_lite\//import 'package:flutter_sound\//" $1
+		gsed -i "s/^ *import *'package:sounds_lite\//import 'package:sounds\//" $1
 	else
-		gsed -i "s/^ *import *'package:flutter_sound\//import 'package:flutter_sound_lite\//" $1
+		gsed -i "s/^ *import *'package:sounds\//import 'package:sounds_lite\//" $1
 	fi
 }
 
@@ -306,10 +306,10 @@ check_android_ffmpeg()
 {
 	RES=0
        	if [ $FLAVOR == 'FULL' ]; then
-       		if [ -d "android/src/main/java/com/dooboolab/ffmpeg" ]; then
-      			echo  "android/src/main/java/com/dooboolab/ffmpeg exists : $(tput setaf 2) [OK]$(tput sgr 0)"
+       		if [ -d "android/src/main/java/com/bsutton/ffmpeg" ]; then
+      			echo  "android/src/main/java/com/bsutton/ffmpeg exists : $(tput setaf 2) [OK]$(tput sgr 0)"
       		else
-      			echo "android/src/main/java/com/dooboolab/ffmpeg does not exist : $(tput setaf 1) [NOK]$(tput sgr 0)"
+      			echo "android/src/main/java/com/bsutton/ffmpeg does not exist : $(tput setaf 1) [NOK]$(tput sgr 0)"
       			RES=-1
       		fi
 
@@ -322,11 +322,11 @@ check_android_ffmpeg()
 
 
        	elif [ $FLAVOR == 'LITE' ]; then
-       		if [ -d "android/src/main/java/com/dooboolab/ffmpeg" ]; then
-      			echo "android/src/main/java/com/dooboolab/ffmpeg exists : $(tput setaf 1) [NOK]$(tput sgr 0)"
+       		if [ -d "android/src/main/java/com/bsutton/ffmpeg" ]; then
+      			echo "android/src/main/java/com/bsutton/ffmpeg exists : $(tput setaf 1) [NOK]$(tput sgr 0)"
       			RES=-1
       		else
-      			echo "android/src/main/java/com/dooboolab/ffmpeg does not exist : $(tput setaf 2) [OK]$(tput sgr 0)"
+      			echo "android/src/main/java/com/bsutton/ffmpeg does not exist : $(tput setaf 2) [OK]$(tput sgr 0)"
       		fi
 
       		if [ -d "android/src/main/ffmpeg.park" ]; then
@@ -336,11 +336,11 @@ check_android_ffmpeg()
       			RES=-1
       		fi
 	else
-      		if [ -d "android/src/main/java/com/dooboolab/ffmpeg" ]; then
-      			echo "android/src/main/java/com/dooboolab/ffmpeg exists : $(tput setaf 2) [OK]$(tput sgr 0)"
+      		if [ -d "android/src/main/java/com/bsutton/ffmpeg" ]; then
+      			echo "android/src/main/java/com/bsutton/ffmpeg exists : $(tput setaf 2) [OK]$(tput sgr 0)"
       			RES=-1
       		else
-      			echo "android/src/main/java/com/dooboolab/ffmpeg does not exist : $(tput setaf 2) [OK]$(tput sgr 0)"
+      			echo "android/src/main/java/com/bsutton/ffmpeg does not exist : $(tput setaf 2) [OK]$(tput sgr 0)"
       		fi
 
       		if [ -d "android/src/main/ffmpeg.park" ]; then
@@ -406,54 +406,54 @@ check_android_build_gradle()
 
 # ------------------------------------------------------------------------------------------------------
 
-# Check Android Flauto.java
+# Check Android Sounds.java
 # -------------------------
 check_android_java()
 {
 	RES=0
       	if [ $FLAVOR == 'FULL' ]; then
-       		if grep "^ *import *com.dooboolab.ffmpeg.FlutterFFmpegPlugin;$" android/src/main/java/com/dooboolab/fluttersound/Flauto.java  > /dev/null; then
-      			echo "Flauto.java import FFmpeg : $(tput setaf 2) [OK]$(tput sgr 0)"
+       		if grep "^ *import *com.bsutton.ffmpeg.FFmpegPlugin;$" android/src/main/java/com/bsutton/sounds/Sounds.java  > /dev/null; then
+      			echo "Sounds.java import FFmpeg : $(tput setaf 2) [OK]$(tput sgr 0)"
        		else
-       			echo "Flauto.java does notimport FFmpeg : $(tput setaf 1) [NOK]$(tput sgr 0)"
+       			echo "Sounds.java does notimport FFmpeg : $(tput setaf 1) [NOK]$(tput sgr 0)"
        			RES=-1
        		fi
 
-       		if grep 'public static *final *boolean *FULL_FLAVOR *= *true;$' android/src/main/java/com/dooboolab/fluttersound/Flauto.java  > /dev/null; then
-       			echo "Flauto.java FULL_FLAVOR : $(tput setaf 2) [OK]$(tput sgr 0)"
+       		if grep 'public static *final *boolean *FULL_FLAVOR *= *true;$' android/src/main/java/com/bsutton/sounds/Sounds.java  > /dev/null; then
+       			echo "Sounds.java FULL_FLAVOR : $(tput setaf 2) [OK]$(tput sgr 0)"
        		else
-       			echo "Flauto.java FULL_FLAVOR != true : $(tput setaf 1) [NOK]$(tput sgr 0)"
+       			echo "Sounds.java FULL_FLAVOR != true : $(tput setaf 1) [NOK]$(tput sgr 0)"
        			RES=-1
        		fi
 
       	elif [ $FLAVOR == 'LITE' ]; then
-      		if grep "^ *import *com.dooboolab.ffmpeg.FlutterFFmpegPlugin;$" android/src/main/java/com/dooboolab/fluttersound/Flauto.java   > /dev/null; then
-       			echo "Flauto.java import FFmpeg : $(tput setaf 1) [NOK]$(tput sgr 0)"
+      		if grep "^ *import *com.bsutton.ffmpeg.FFmpegPlugin;$" android/src/main/java/com/bsutton/sounds/Sounds.java   > /dev/null; then
+       			echo "Sounds.java import FFmpeg : $(tput setaf 1) [NOK]$(tput sgr 0)"
        			RES=-1
        		else
-       			echo "Flauto.java does notimport FFmpeg : $(tput setaf 2) [OK]$(tput sgr 0)"
+       			echo "Sounds.java does notimport FFmpeg : $(tput setaf 2) [OK]$(tput sgr 0)"
        		fi
 
-       		if grep "public static *final *boolean *FULL_FLAVOR *= *false;$" android/src/main/java/com/dooboolab/fluttersound/Flauto.java  > /dev/null; then
-       			echo "Flauto.java LITE_FLAVOR : $(tput setaf 2) [OK]$(tput sgr 0)"
+       		if grep "public static *final *boolean *FULL_FLAVOR *= *false;$" android/src/main/java/com/bsutton/sounds/Sounds.java  > /dev/null; then
+       			echo "Sounds.java LITE_FLAVOR : $(tput setaf 2) [OK]$(tput sgr 0)"
        		else
-       			echo "Flauto.java FULL_FLAVOR == true : $(tput setaf 1) [NOK]$(tput sgr 0)"
+       			echo "Sounds.java FULL_FLAVOR == true : $(tput setaf 1) [NOK]$(tput sgr 0)"
        			RES=-1
        		fi
 
 
 	else
-       		if grep "^[ $'\t']*FlutterFFmpegPlugin.attachFFmpegPlugin *(ctx, *registrar.messenger ( *) *);$" android/src/main/java/com/dooboolab/fluttersound/Flauto.java  > /dev/null; then
-       			echo "Flauto.java initialize FFmpeg : $(tput setaf 2) [OK]$(tput sgr 0)"
+       		if grep "^[ $'\t']*FFmpegPlugin.attachFFmpegPlugin *(ctx, *registrar.messenger ( *) *);$" android/src/main/java/com/bsutton/sounds/Sounds.java  > /dev/null; then
+       			echo "Sounds.java initialize FFmpeg : $(tput setaf 2) [OK]$(tput sgr 0)"
        			RES=-1
        		else
-       			echo "Flauto.java does not initialize FFmpeg : $(tput setaf 2) [OK]$(tput sgr 0)"
+       			echo "Sounds.java does not initialize FFmpeg : $(tput setaf 2) [OK]$(tput sgr 0)"
        		fi
 
-       		if grep "^[ $'\t']*public static *final *boolean *FULL_FLAVOR *= *false$" android/src/main/java/com/dooboolab/fluttersound/Flauto.java  > /dev/null; then
-       			echo "Flauto.java LITE_FLAVOR : $(tput setaf 2) [OK]$(tput sgr 0)"
+       		if grep "^[ $'\t']*public static *final *boolean *FULL_FLAVOR *= *false$" android/src/main/java/com/bsutton/sounds/Sounds.java  > /dev/null; then
+       			echo "Sounds.java LITE_FLAVOR : $(tput setaf 2) [OK]$(tput sgr 0)"
        		else
-       			echo "Flauto.java FULL_FLAVOR == true : $(tput setaf 1) [NOK]$(tput sgr 0)"
+       			echo "Sounds.java FULL_FLAVOR == true : $(tput setaf 1) [NOK]$(tput sgr 0)"
        			RES=-1
        		fi
 
@@ -479,7 +479,7 @@ then
 		R=-1
 	fi
 
-	check_flutter_sound_podspec
+	check_sounds_podspec
 	if [ $? != 0 ] ; then
 		R=-1
 	fi
@@ -532,14 +532,14 @@ FULL)
 	echo '---------------'
 	bin/flavor
 	if [ $? == 0 ] || [ "$2" == 'force' ]; then
-		gsed -i  's/^name: flutter_sound_lite$/name: flutter_sound/' pubspec.yaml
-		gsed -i  's/^\( *\)flutter_sound_lite:$/\1flutter_sound:/' example/pubspec.yaml
-		mv ios/flutter_sound_lite.podspec ios/flutter_sound.podspec 2>/dev/null
-		gsed -i  "s/^ *s.name *=* 'flutter_sound_lite'$/s.name = 'flutter_sound'/"  ios/flutter_sound.podspec
-		gsed -i  "/s.dependency *'mobile-ffmpeg-audio', *=* '4.3.1.LTS'$/d"   ios/flutter_sound.podspec
-		gsed -i  "/^end$/i \ \ s.dependency 'mobile-ffmpeg-audio', '4.3.1.LTS'" ios/flutter_sound.podspec
-		gsed -i  "/^ *#define *[A-Z]*_FLAVOR/d"   ios/Classes/FlutterFFmpegPlugin.h
-		gsed -i  "/^ *#ifdef *[A-Z]*_FLAVOR/i #define FULL_FLAVOR" ios/Classes/FlutterFFmpegPlugin.h
+		gsed -i  's/^name: sounds_lite$/name: sounds/' pubspec.yaml
+		gsed -i  's/^\( *\)sounds_lite:$/\1sounds:/' example/pubspec.yaml
+		mv ios/sounds_lite.podspec ios/sounds.podspec 2>/dev/null
+		gsed -i  "s/^ *s.name *=* 'sounds_lite'$/s.name = 'sounds'/"  ios/sounds.podspec
+		gsed -i  "/s.dependency *'mobile-ffmpeg-audio', *=* '4.3.1.LTS'$/d"   ios/sounds.podspec
+		gsed -i  "/^end$/i \ \ s.dependency 'mobile-ffmpeg-audio', '4.3.1.LTS'" ios/sounds.podspec
+		gsed -i  "/^ *#define *[A-Z]*_FLAVOR/d"   ios/Classes/FFmpegPlugin.h
+		gsed -i  "/^ *#ifdef *[A-Z]*_FLAVOR/i #define FULL_FLAVOR" ios/Classes/FFmpegPlugin.h
 		for f in lib/*.dart
 		do
 			process_dart_file $f FULL
@@ -549,7 +549,7 @@ FULL)
 		do
 			process_dart_file $f FULL
 		done
-		mv "android/src/main/ffmpeg.park" "android/src/main/java/com/dooboolab/ffmpeg" 2>/dev/null
+		mv "android/src/main/ffmpeg.park" "android/src/main/java/com/bsutton/ffmpeg" 2>/dev/null
 
 		gsed -i  "/ext.flutterFFmpegPackage *= *'audio-lts'$/d"   android/build.gradle
 		#gsed -i  "/implementation *'com.arthenica:mobile-ffmpeg-/d"   android/build.gradle
@@ -557,11 +557,11 @@ FULL)
   		gsed -i "s/^[ \t]*\/\/implementation 'com.arthenica:mobile-ffmpeg-/    implementation 'com.arthenica:mobile-ffmpeg-/" android/build.gradle
 
 
-  		gsed -i  "/import *com.dooboolab.ffmpeg.FlutterFFmpegPlugin;$/d"  android/src/main/java/com/dooboolab/fluttersound/Flauto.java
-		gsed -i "1aimport com.dooboolab.ffmpeg.FlutterFFmpegPlugin;"  android/src/main/java/com/dooboolab/fluttersound/Flauto.java
+  		gsed -i  "/import *com.bsutton.ffmpeg.FFmpegPlugin;$/d"  android/src/main/java/com/bsutton/sounds/Sounds.java
+		gsed -i "1aimport com.bsutton.ffmpeg.FFmpegPlugin;"  android/src/main/java/com/bsutton/sounds/Sounds.java
 
- 		gsed -i  "s/^[ $'\t']*public static *final *boolean *FULL_FLAVOR *= *false;$/    public static final boolean FULL_FLAVOR = true;/"  android/src/main/java/com/dooboolab/fluttersound/Flauto.java
-		gsed -i  "s/^[ $'\t']*if *( *FULL_FLAVOR *) *;\/\/\ *{/        if (FULL_FLAVOR) \{/"  android/src/main/java/com/dooboolab/fluttersound/Flauto.java
+ 		gsed -i  "s/^[ $'\t']*public static *final *boolean *FULL_FLAVOR *= *false;$/    public static final boolean FULL_FLAVOR = true;/"  android/src/main/java/com/bsutton/sounds/Sounds.java
+		gsed -i  "s/^[ $'\t']*if *( *FULL_FLAVOR *) *;\/\/\ *{/        if (FULL_FLAVOR) \{/"  android/src/main/java/com/bsutton/sounds/Sounds.java
 	else
 		exit -1
 	fi
@@ -574,14 +574,14 @@ LITE)
 	echo '---------------'
 	bin/flavor
 	if [ $? == 0 ] || [ "$2" == 'force' ]; then
-		gsed -i  's/^name: flutter_sound$/name: flutter_sound_lite/' pubspec.yaml
-		gsed -i  's/^\( *\)flutter_sound:$/\1flutter_sound_lite:/' example/pubspec.yaml
-		mv ios/flutter_sound.podspec ios/flutter_sound_lite.podspec 2>/dev/null
-		gsed -i  "s/^ *s.name *=* 'flutter_sound'$/s.name = 'flutter_sound_lite'/"  ios/flutter_sound_lite.podspec
-		gsed -i  "/s.dependency *'mobile-ffmpeg-audio', *=* '4.3.1.LTS'$/d"   ios/flutter_sound_lite.podspec
-		gsed -i  "/^end$/i \ \ #s.dependency 'mobile-ffmpeg-audio', '4.3.1.LTS'" ios/flutter_sound_lite.podspec
-		gsed -i  "/^ *#define *[A-Z]*_FLAVOR/d"   ios/Classes/FlutterFFmpegPlugin.h
-		gsed -i  "/^ *#ifdef *[A-Z]*_FLAVOR/i #define LITE_FLAVOR" ios/Classes/FlutterFFmpegPlugin.h
+		gsed -i  's/^name: sounds$/name: sounds_lite/' pubspec.yaml
+		gsed -i  's/^\( *\)sounds:$/\1sounds_lite:/' example/pubspec.yaml
+		mv ios/sounds.podspec ios/sounds_lite.podspec 2>/dev/null
+		gsed -i  "s/^ *s.name *=* 'sounds'$/s.name = 'sounds_lite'/"  ios/sounds_lite.podspec
+		gsed -i  "/s.dependency *'mobile-ffmpeg-audio', *=* '4.3.1.LTS'$/d"   ios/sounds_lite.podspec
+		gsed -i  "/^end$/i \ \ #s.dependency 'mobile-ffmpeg-audio', '4.3.1.LTS'" ios/sounds_lite.podspec
+		gsed -i  "/^ *#define *[A-Z]*_FLAVOR/d"   ios/Classes/FFmpegPlugin.h
+		gsed -i  "/^ *#ifdef *[A-Z]*_FLAVOR/i #define LITE_FLAVOR" ios/Classes/FFmpegPlugin.h
 		for f in lib/*.dart
 		do
 			process_dart_file $f LITE
@@ -591,7 +591,7 @@ LITE)
 		do
 			process_dart_file $f LITE
 		done
-		mv "android/src/main/java/com/dooboolab/ffmpeg" "android/src/main/ffmpeg.park" 2>/dev/null
+		mv "android/src/main/java/com/bsutton/ffmpeg" "android/src/main/ffmpeg.park" 2>/dev/null
 
 		gsed -i  "/ext.flutterFFmpegPackage *= *'audio-lts'$/d"   android/build.gradle
 		#gsed -i  "/implementation *'com.arthenica:mobile-ffmpeg-/d"   android/build.gradle
@@ -599,11 +599,11 @@ LITE)
  		gsed -i "s/^[ \t]*implementation 'com.arthenica:mobile-ffmpeg-/    \/\/implementation 'com.arthenica:mobile-ffmpeg-/" android/build.gradle
 
 
-  		gsed -i  "/import *com.dooboolab.ffmpeg.FlutterFFmpegPlugin;$/d"  android/src/main/java/com/dooboolab/fluttersound/Flauto.java
-		gsed -i "1a//import com.dooboolab.ffmpeg.FlutterFFmpegPlugin;"  android/src/main/java/com/dooboolab/fluttersound/Flauto.java
+  		gsed -i  "/import *com.bsutton.ffmpeg.FFmpegPlugin;$/d"  android/src/main/java/com/bsutton/sounds/Sounds.java
+		gsed -i "1a//import com.bsutton.ffmpeg.FFmpegPlugin;"  android/src/main/java/com/bsutton/sounds/Sounds.java
 
-		gsed -i  "s/^[ $'\t']*public static *final *boolean *FULL_FLAVOR *= *true;$/    public static final boolean FULL_FLAVOR = false;/"  android/src/main/java/com/dooboolab/fluttersound/Flauto.java
-		gsed -i  "s/^[ $'\t']*if *( *FULL_FLAVOR *) *{/        if (FULL_FLAVOR) ;\/\/\{/"  android/src/main/java/com/dooboolab/fluttersound/Flauto.java
+		gsed -i  "s/^[ $'\t']*public static *final *boolean *FULL_FLAVOR *= *true;$/    public static final boolean FULL_FLAVOR = false;/"  android/src/main/java/com/bsutton/sounds/Sounds.java
+		gsed -i  "s/^[ $'\t']*if *( *FULL_FLAVOR *) *{/        if (FULL_FLAVOR) ;\/\/\{/"  android/src/main/java/com/bsutton/sounds/Sounds.java
 
 	else
 		exit -1

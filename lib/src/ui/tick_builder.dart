@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 typedef TickerBuilder = Widget Function(BuildContext context, int index);
 
 ///
-typedef OnTick = void Function (int index);
+typedef OnTick = void Function(int index);
 
 ///
 /// Acts as a timing source which causes a subtree rebuild on every tick.

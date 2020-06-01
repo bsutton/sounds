@@ -1,17 +1,17 @@
 /*
- * This file is part of Flutter-Sound.
+ * This file is part of Sounds.
  *
- *   Flutter-Sound is free software: you can redistribute it and/or modify
+ *   Sounds is free software: you can redistribute it and/or modify
  *   it under the terms of the Lesser GNU General Public License
  *   version 3 (LGPL3) as published by the Free Software Foundation.
  *
- *   Flutter-Sound is distributed in the hope that it will be useful,
+ *   Sounds is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU General Public License for more details.
  *
  *   You should have received a copy of the Lesser GNU General Public License
- *   along with Flutter-Sound.  If not, see <https://www.gnu.org/licenses/>.
+ *   along with Sounds.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 import 'dart:async';
@@ -21,7 +21,7 @@ import '../util/file_util.dart';
 
 import 'flutter_ffmpeg.dart';
 
-/// Utility class for Flutter Sound.
+/// Utility class for Sounds.
 class FFMpegUtil {
   static FFMpegUtil _self;
 
@@ -36,8 +36,8 @@ class FFMpegUtil {
   }
   FFMpegUtil._internal();
 
-  /// Check if FFmpeg is linked to flutter_sound.
-  /// (flutter_sound_lite is not linked with FFmpeg)
+  /// Check if FFmpeg is linked to sounds.
+  /// (sounds_lite is not linked with FFmpeg)
   /// Return `true` if FFmpeg is there
   Future<bool> isFFmpegAvailable() async {
     try {

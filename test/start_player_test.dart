@@ -1,6 +1,6 @@
 // import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_sound/flutter_sound.dart';
+import 'package:sounds/sounds.dart';
 // import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -35,7 +35,7 @@ void main() {
       switch (methodCall.method) {
         case 'initializeMediaPlayer':
           isinitialized = true;
-          return "Flauto Player Initialized";
+          return "Sounds Player Initialized";
 
         case 'releaseMediaPlayer':
           isReleased = true;

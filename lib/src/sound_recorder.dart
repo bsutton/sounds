@@ -1,17 +1,17 @@
 /*
- * This file is part of Flutter-Sound (Flauto).
+ * This file is part of Sounds .
  *
- *   Flutter-Sound (Flauto) is free software: you can redistribute it and/or modify
+ *   Sounds  is free software: you can redistribute it and/or modify
  *   it under the terms of the Lesser GNU General Public License
  *   version 3 (LGPL3) as published by the Free Software Foundation.
  *
- *   Flutter-Sound (Flauto) is distributed in the hope that it will be useful,
+ *   Sounds  is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU General Public License for more details.
  *
  *   You should have received a copy of the Lesser GNU General Public License
- *   along with Flutter-Sound (Flauto).  If not, see <https://www.gnu.org/licenses/>.
+ *   along with Sounds .  If not, see <https://www.gnu.org/licenses/>.
  */
 
 import 'dart:async';
@@ -22,7 +22,7 @@ import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../flutter_sound.dart';
+import '../sounds.dart';
 import 'audio_source.dart';
 import 'codec.dart';
 
@@ -350,7 +350,7 @@ class SoundRecorder implements SlotEntry {
   }
 
   /// Returns true if the specified encoder is supported by
-  /// flutter_sound on this platform
+  /// sounds on this platform
   Future<bool> isSupported(Codec codec) async {
     return _initializeAndRun<bool>(() async {
       // For encoding ogg/opus on ios, we need to support two steps :

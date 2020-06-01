@@ -1,17 +1,17 @@
 /*
- * This file is part of Flutter-Sound (Flauto).
+ * This file is part of Sounds .
  *
- *   Flutter-Sound (Flauto) is free software: you can redistribute it and/or modify
+ *   Sounds  is free software: you can redistribute it and/or modify
  *   it under the terms of the Lesser GNU General Public License
  *   version 3 (LGPL3) as published by the Free Software Foundation.
  *
- *   Flutter-Sound (Flauto) is distributed in the hope that it will be useful,
+ *   Sounds  is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU General Public License for more details.
  *
  *   You should have received a copy of the Lesser GNU General Public License
- *   along with Flutter-Sound (Flauto).  If not, see <https://www.gnu.org/licenses/>.
+ *   along with Sounds .  If not, see <https://www.gnu.org/licenses/>.
  */
 
 import 'dart:async';
@@ -23,7 +23,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart' show DateFormat;
-import 'package:flutter_sound/flutter_sound.dart';
+import 'package:sounds/sounds.dart';
 
 ///
 enum Media {
@@ -76,7 +76,7 @@ void main() {
 ///
 class MyApp extends StatefulWidget {
   @override
-  _MyAppState createState() =>  _MyAppState();
+  _MyAppState createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
@@ -211,7 +211,7 @@ class _MyAppState extends State<MyApp> {
     super.dispose();
     cancelPlayerSubscriptions();
     cancelRecorderSubscriptions();
-    releaseFlauto();
+    releaseSounds();
   }
 
   Future<void> setDuck() async {
@@ -231,11 +231,11 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  Future<void> releaseFlauto() async {
+  Future<void> releaseSounds() async {
     try {
       await playerModule.release();
       await recorderModule.release();
-    } 
+    }
     // ignore: avoid_catches_without_on_clauses
     catch (e) {
       print('Released unsuccessful');
@@ -244,20 +244,20 @@ class _MyAppState extends State<MyApp> {
   }
 
   static const List<String> paths = [
-    'flutter_sound_example.aac', // DEFAULT
-    'flutter_sound_example.aac', // CODEC_AAC
-    'flutter_sound_example.opus', // CODEC_OPUS
-    'flutter_sound_example.caf', // CODEC_CAF_OPUS
-    'flutter_sound_example.mp3', // CODEC_MP3
-    'flutter_sound_example.ogg', // CODEC_VORBIS
-    'flutter_sound_example.pcm', // CODEC_PCM
+    'sounds_example.aac', // DEFAULT
+    'sounds_example.aac', // CODEC_AAC
+    'sounds_example.opus', // CODEC_OPUS
+    'sounds_example.caf', // CODEC_CAF_OPUS
+    'sounds_example.mp3', // CODEC_MP3
+    'sounds_example.ogg', // CODEC_VORBIS
+    'sounds_example.pcm', // CODEC_PCM
   ];
 
   Future<void> getDuration() async {
     switch (_media) {
       case Media.file:
       case Media.buffer:
-        //int d = await flutterSoundHelper.duration(this._path[_codec.index]);
+        //int d = await CodecHelper.duration(this._path[_codec.index]);
         //_duration = d != null ? d / 1000.0 : null;
         break;
       case Media.asset:
@@ -278,7 +278,7 @@ class _MyAppState extends State<MyApp> {
       await recorderModule.stop();
       cancelRecorderSubscriptions();
       getDuration();
-    } 
+    }
     // ignore: avoid_catches_without_on_clauses
     catch (err) {
       print('stopRecorder error: $err');
@@ -290,7 +290,7 @@ class _MyAppState extends State<MyApp> {
 
   void startRecorder() async {
     try {
-      // String path = await flutterSoundModule.startRecorder
+      // String path = await startRecorder
       // (
       //   paths[_codec.index],
       //   codec: _codec,
@@ -331,7 +331,7 @@ class _MyAppState extends State<MyApp> {
         _isRecording = true;
         _path[_codec.index] = path;
       });
-    } 
+    }
     // ignore: avoid_catches_without_on_clauses
     catch (err) {
       print('startRecorder error: $err');
@@ -367,7 +367,7 @@ class _MyAppState extends State<MyApp> {
       var contents = await file.readAsBytes();
       print('The file is ${contents.length} bytes long.');
       return contents;
-    } 
+    }
     // ignore: avoid_catches_without_on_clauses
     catch (e) {
       print(e);
@@ -466,7 +466,7 @@ class _MyAppState extends State<MyApp> {
           codec: _codec,
 
           //title: "This is a record",
-          //artist: "from flutter_sound",
+          //artist: "from sounds",
           //albumArtUrl: albumArtUrl,
           //albumArtAsset: albumArtAsset,
           //albumArtFile: albumArtFile,
@@ -478,7 +478,7 @@ class _MyAppState extends State<MyApp> {
           //dataBuffer: dataBuffer,
           codec: _codec,
           //title: "This is a record",
-          //artist: "from flutter_sound",
+          //artist: "from sounds",
           //albumArtUrl: albumArtUrl,
           //albumArtAsset: albumArtAsset,
           //albumArtFile: albumArtFile,
@@ -540,8 +540,7 @@ class _MyAppState extends State<MyApp> {
       _addListeners();
 
       print('startPlayer: $audioFilePath');
-      // await flutterSoundModule.setVolume(1.0);
-    } 
+    }
     // ignore: avoid_catches_without_on_clauses
     catch (e) {
       print('error: $e');
@@ -919,7 +918,7 @@ class _MyAppState extends State<MyApp> {
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.only(right: 4),
-            child: Text('"Flauto":'),
+            child: Text('"Sounds":'),
           ),
           Switch(
             value: _isAudioPlayer,
@@ -1066,7 +1065,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Flutter Sound'),
+          title: const Text('Sounds'),
         ),
         body: ListView(
           children: <Widget>[

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sound/flutter_sound.dart';
+import 'package:sounds/sounds.dart';
 
 import '../util/grayed_out.dart';
 import 'demo_audio_state.dart';

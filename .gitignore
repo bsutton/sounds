@@ -8,8 +8,8 @@ pubspec.lock
 build/
 
 .idea/
-flutter_sound.iml
-flutter_sound_android.iml
+sounds.iml
+sounds_android.iml
 android/.settings/org.eclipse.buildship.core.prefs
 .vscode/launch.json
 android/.classpath

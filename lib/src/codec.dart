@@ -1,17 +1,17 @@
 /*
- * This file is part of Flutter-Sound.
+ * This file is part of Sounds.
  *
- *   Flutter-Sound is free software: you can redistribute it and/or modify
+ *   Sounds is free software: you can redistribute it and/or modify
  *   it under the terms of the Lesser GNU General Public License
  *   version 3 (LGPL3) as published by the Free Software Foundation.
  *
- *   Flutter-Sound is distributed in the hope that it will be useful,
+ *   Sounds is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU General Public License for more details.
  *
  *   You should have received a copy of the Lesser GNU General Public License
- *   along with Flutter-Sound.  If not, see <https://www.gnu.org/licenses/>.
+ *   along with Sounds.  If not, see <https://www.gnu.org/licenses/>.
  */
 import 'dart:async';
 
@@ -22,13 +22,13 @@ import 'ffmpeg/ffmpeg_util.dart';
 /// Describes the set of possible codecs.
 /// Not all codecs are support on all OSs nor all actions.
 enum Codec {
-  // this enum MUST be synchronized with fluttersound/AudioInterface.java
-  // and ios/Classes/FlutterSoundPlugin.h
+  // this enum MUST be synchronized with sounds/AudioInterface.java
+  // and ios/Classes/SoundsPlugin.h
 
   /// This is the default codec. If used
-  /// Flutter Sound will use the files extension to guess the codec.
+  /// Sounds will use the files extension to guess the codec.
   /// If the file extension doesn't match a known codec then
-  /// Flutter Sound will throw an exception in which case you need
+  /// Sounds will throw an exception in which case you need
   /// pass one of the know codec.
   fromExtension,
 

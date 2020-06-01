@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter_sound/flutter_sound.dart';
+import 'package:sounds/sounds.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:e2e/e2e.dart';
 

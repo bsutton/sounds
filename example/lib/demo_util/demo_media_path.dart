@@ -1,4 +1,4 @@
-import 'package:flutter_sound/flutter_sound.dart';
+import 'package:sounds/sounds.dart';
 
 import 'demo_common.dart';
 
@@ -8,13 +8,13 @@ class MediaPath {
 
   /// list of sample paths for each codec
   static const List<String> paths = [
-    'flutter_sound_example.aac', // DEFAULT
-    'flutter_sound_example.aac', // CODEC_AAC
-    'flutter_sound_example.opus', // CODEC_OPUS
-    'flutter_sound_example.caf', // CODEC_CAF_OPUS
-    'flutter_sound_example.mp3', // CODEC_MP3
-    'flutter_sound_example.ogg', // CODEC_VORBIS
-    'flutter_sound_example.wav', // CODEC_PCM
+    'sounds_example.aac', // DEFAULT
+    'sounds_example.aac', // CODEC_AAC
+    'sounds_example.opus', // CODEC_OPUS
+    'sounds_example.caf', // CODEC_CAF_OPUS
+    'sounds_example.mp3', // CODEC_MP3
+    'sounds_example.ogg', // CODEC_VORBIS
+    'sounds_example.wav', // CODEC_PCM
   ];
 
   final List<String> _path = [null, null, null, null, null, null, null];

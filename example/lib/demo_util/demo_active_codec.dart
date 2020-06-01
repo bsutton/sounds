@@ -1,4 +1,4 @@
-import 'package:flutter_sound/flutter_sound.dart';
+import 'package:sounds/sounds.dart';
 
 /// Factory used to track what codec is currently selected.
 class ActiveCodec {
