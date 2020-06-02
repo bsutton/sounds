@@ -1,4 +1,3 @@
-### 0.8.1
 ## 0.8.1 
 Essentially cleanup of lints formatting. 
 First pass at cleanup of readme.
