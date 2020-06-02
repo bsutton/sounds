@@ -267,10 +267,16 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
   }
 
   @override
-  void dispose() {
+  void dispose() async {
     print("stopping Player on dispose");
-    _stop(supressState: true);
-    _player.release();
+    await _stop(supressState: true);
+    await _player.release();
+
+    /// _stop should do this but analyzer insists we put it here.
+    if (_playerSubscription != null) {
+      _playerSubscription.cancel;
+      _playerSubscription = null;
+    }
     super.dispose();
   }
 
@@ -370,7 +376,6 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
       _playState = PlayState.playing;
       return null;
     }).whenComplete(() => _transitioning = false);
-    ;
   }
 
   /// start playback.

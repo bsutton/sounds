@@ -58,6 +58,7 @@ class Downloader {
           await raf.close();
           progress(PlaybackDisposition.loaded());
           Log.e("Completed downloading: $url");
+          subscription.cancel;
           completer.complete();
         },
         // ignore: avoid_types_on_closure_parameters

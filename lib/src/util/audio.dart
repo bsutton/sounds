@@ -240,7 +240,7 @@ class Audio {
     /// remux it.
     if ((Platform.isAndroid && (isBuffer || isAsset) ||
         (Platform.isIOS && codec == Codec.opusOGG))) {
-      await _writeBufferToDisk((disposition) {
+      _writeBufferToDisk((disposition) {
         _forwardStagedProgress(loadingProgress, disposition, stage, stages);
       });
       stage++;
@@ -275,7 +275,7 @@ class Audio {
     _onDisk = true;
   }
 
-  void _loadAsset() async {
+  Future<void> _loadAsset() async {
     _dataBuffer = (await rootBundle.load(path)).buffer.asUint8List();
   }
 
