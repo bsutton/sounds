@@ -59,7 +59,6 @@ void main(List<String> args) {
   print('check commit');
   checkCommited();
 
-  print('push release');
   pushRelease();
 
   print('add tag');
@@ -85,6 +84,7 @@ void publish(String pubspecPath) {
 }
 
 void pushRelease() {
+  print('Pushing release...');
   'git push'.run;
 }
 
@@ -112,8 +112,6 @@ void generateReleaseNotes(
     String projectRootPath, Version newVersion, Version currentVersion) {
   // see https://blogs.sap.com/2018/06/22/generating-release-notes-from-git-commit-messages-using-basic-shell-commands-gitgrep/
   // for better ideas.
-
-  //var currentTag = 'git --no-pager tag --list'.lastLine;
 
   var currentTag = 'git --no-pager tag --sort=-creatordate'.firstLine;
   // just the messages from each commit
@@ -186,9 +184,8 @@ void deleteGitTag(Version newVersion) {
 }
 
 void addGitTag(Version version) {
-  if (confirm(prompt: 'Create a git release tag')) {
-    var tagName = '$version';
-
+  var tagName = '$version';
+  if (confirm(prompt: 'Create a git release tag ($tagName')) {
     // Check if the tag already exists and offer to replace it if it does.
     if (tagExists(tagName)) {
       var replace = confirm(
