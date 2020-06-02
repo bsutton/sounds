@@ -1,3 +1,6 @@
+### 0.8.2
+Fixed additonal lints and fixed a bug in the downloader not closing a subscription.
+
 ## 0.8.1 
 Essentially cleanup of lints formatting. 
 First pass at cleanup of readme.
