@@ -1,5 +1,5 @@
 import 'package:intl/intl.dart';
-import 'package:logger/logger.dart';
+import 'package:logger/logger.dart' hide AnsiColor;
 
 import 'ansi_color.dart';
 import 'enum_helper.dart';
@@ -129,11 +129,12 @@ class MyLogPrinter extends LogPrinter {
   MyLogPrinter(this.currentWorkingDirectory);
 
   @override
-  void log(LogEvent event) {
+  List<String> log(LogEvent event) {
+    var output = <String>[];
     if (EnumHelper.getIndexOf(Level.values, Log.loggingLevel) >
         EnumHelper.getIndexOf(Level.values, event.level)) {
       // don't log events where the log level is set higher
-      return;
+      return output;
     }
     var formatter = DateFormat('dd HH:mm:ss.');
     var now = DateTime.now();
@@ -151,24 +152,25 @@ class MyLogPrinter extends LogPrinter {
       }
     }
 
-    print(color(
+    output.add(color(
         event.level,
         "$formattedDate ${EnumHelper.getName(event.level)} "
         "${StackTraceImpl(skipFrames: depth).formatStackTrace(methodCount: 1)} "
         "::: ${event.message}"));
 
     if (event.error != null) {
-      print(color(event.level, "${event.error}"));
+      output.add(color(event.level, "${event.error}"));
     }
 
     if (event.stackTrace != null) {
       if (event.stackTrace.runtimeType == StackTraceImpl) {
         var st = event.stackTrace as StackTraceImpl;
-        print(color(event.level, "$st"));
+        output.add(color(event.level, "$st"));
       } else {
-        print(color(event.level, "${event.stackTrace}"));
+        output.add(color(event.level, "${event.stackTrace}"));
       }
     }
+    return output;
   }
 
   ///

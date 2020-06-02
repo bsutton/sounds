@@ -195,7 +195,7 @@ class SoundRecorder implements SlotEntry {
 
   /// Called when the app is paused to release the OS resources
   /// but keep the [SoundRecorder] in a state that can be restarted.
-  void _softRelease() async {
+  Future<void> _softRelease() async {
     if (isRecording) {
       await stop();
     }

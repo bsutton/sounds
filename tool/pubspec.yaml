@@ -1,0 +1,10 @@
+name: tools
+version: 0.0.1
+description: Tools for maintaining the Sounds project
+homepage: https://github.com/bsutton/sounds
+environment:
+    sdk: ">=2.1.0 <3.0.0"
+dependencies:
+  effective_dart: ^1.2.1
+  dshell: ^1.0.0
+
