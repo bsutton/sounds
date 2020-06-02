@@ -84,7 +84,7 @@ void publish(String pubspecPath) {
 }
 
 void pushRelease() {
-  print('Pushing release...');
+  print('Pushing release to git...');
   'git push'.run;
 }
 
@@ -185,7 +185,7 @@ void deleteGitTag(Version newVersion) {
 
 void addGitTag(Version version) {
   var tagName = '$version';
-  if (confirm(prompt: 'Create a git release tag ($tagName')) {
+  if (confirm(prompt: 'Create a git release tag [$tagName]')) {
     // Check if the tag already exists and offer to replace it if it does.
     if (tagExists(tagName)) {
       var replace = confirm(
