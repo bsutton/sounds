@@ -44,7 +44,7 @@ class SoundRecorderPlugin extends BasePlugin {
       : super('com.bsutton.sounds.sounds_recorder', _slots);
 
   ///
-  void initializeRecorder(
+  Future<void> initializeRecorder(
       covariant sound_recorder.SoundRecorder recorder) async {
     await invokeMethod(
         recorder, 'initializeSoundRecorder', <String, dynamic>{});
@@ -53,7 +53,7 @@ class SoundRecorderPlugin extends BasePlugin {
   /// Releases the slot used by the connector.
   /// To use a plugin you start by calling [register]
   /// and finish by calling [release].
-  void releaseRecorder(sound_recorder.SoundRecorder recorder) async {
+  Future<void> releaseRecorder(sound_recorder.SoundRecorder recorder) async {
     await invokeMethod(recorder, 'releaseSoundRecorder', <String, dynamic>{});
   }
 

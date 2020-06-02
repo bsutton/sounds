@@ -38,14 +38,14 @@ abstract class PlayerBasePlugin extends BasePlugin {
   Future<void> play(audio_player.SoundPlayer player, Track track);
 
   /// Each Player must be initialized and registered.
-  void initializePlayer(SlotEntry player) async {
+  Future<void> initializePlayer(SlotEntry player) async {
     await invokeMethod(player, 'initializeMediaPlayer', <String, dynamic>{});
   }
 
   /// Releases the slot used by the connector.
   /// To use a plugin you start by calling [register]
   /// and finish by calling [release].
-  void releasePlayer(SlotEntry slotEntry) async {
+  Future<void> releasePlayer(SlotEntry slotEntry) async {
     await invokeMethod(slotEntry, 'releaseMediaPlayer', <String, dynamic>{});
   }
 

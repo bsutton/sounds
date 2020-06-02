@@ -266,7 +266,7 @@ class SoundPlayer implements SlotEntry {
     return _initializeAndRun(() async {
       _closeDispositionStream();
       await _softRelease();
-      await _plugin.release(this);
+      _plugin.release(this);
     });
   }
 
@@ -276,7 +276,7 @@ class SoundPlayer implements SlotEntry {
   /// The exception is if we are configured to continue
   /// playing in the backgroudn in which case
   /// this method won't be called.
-  void _softRelease() async {
+  Future<void> _softRelease() async {
     // Stop the player playback before releasing
 
     if (isPlaying) {
