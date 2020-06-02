@@ -88,6 +88,7 @@ void pushRelease() {
   'git push'.run;
 }
 
+/// Check that all files are committed.
 void checkCommited() {
   var notCommited = 'git status --porcelain'.toList();
 
