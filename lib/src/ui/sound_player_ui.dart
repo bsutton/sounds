@@ -274,7 +274,7 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
 
     /// _stop should do this but analyzer insists we put it here.
     if (_playerSubscription != null) {
-      _playerSubscription.cancel;
+      _playerSubscription.cancel();
       _playerSubscription = null;
     }
     super.dispose();
@@ -466,7 +466,7 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
     if (!_player.isStopped) {
       _player.stop().then<void>((_) {
         if (_playerSubscription != null) {
-          _playerSubscription.cancel;
+          _playerSubscription.cancel();
           _playerSubscription = null;
         }
       });
