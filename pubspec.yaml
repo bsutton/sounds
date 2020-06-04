@@ -15,7 +15,6 @@ dependencies:
   path: ^1.6.4
   pedantic: ^1.9.0
   provider: ^4.1.0
-  recase: ^3.0.0
   uuid: ^2.0.4
   flutter: 
     sdk: flutter

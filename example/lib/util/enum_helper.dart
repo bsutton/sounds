@@ -1,5 +1,3 @@
-import 'package:recase/recase.dart';
-
 ///
 /// Provides a collection of methods that help when working with
 /// enums.
@@ -31,7 +29,8 @@ class EnumHelper {
 
   ///
   static String reCase(String value) {
-    return ReCase(value).titleCase;
+    return '${value.substring(0, 1).toUpperCase()}'
+        '${value.substring(1).toLowerCase()}';
   }
 
   ///
