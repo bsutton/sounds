@@ -70,7 +70,7 @@ class _RecordPlaybackControllerState {
     Log.d('_onRecorderStarted');
     if (_playerState != null) {
       _playerState.stop().then((_) {
-        _playerState.playbackEnabled(enabled: false);
+        _playerState.enablePlayback(enabled: false);
 
         // attach the player to the recorder stream so it can
         // show the duration updating
@@ -84,7 +84,7 @@ class _RecordPlaybackControllerState {
   void _onRecorderStopped(Duration duration) {
     Log.d('_onRecorderStopped');
     if (_playerState != null) {
-      _playerState.playbackEnabled(enabled: true);
+      _playerState.enablePlayback(enabled: true);
 
       /// detach the player stream from the recorder stream.
       /// The player will now re-attached to the AudioPlayer stream
