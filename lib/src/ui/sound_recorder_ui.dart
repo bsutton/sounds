@@ -88,7 +88,7 @@ class SoundRecorderUI extends StatefulWidget {
   ///
   /// ```dart
   ///   SoundRecorderIU(track,
-  ///       informUser: (context, track)
+  ///       requestPermissions: (context, track)
   ///           {
   ///               // psuedo code
   ///               String reason;

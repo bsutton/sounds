@@ -45,6 +45,13 @@ The Sounds package includes the following features
 * Support for releasing/resuming resources when the app pauses/resumes.
 
 
+## Roadmap 
+See the [Roadmap](https://github.com/bsutton/sounds/wiki/RoadMap.md)  for details on the future of Sounds.
+
+## Contributing
+See the [Contributing](https://github.com/bsutton/sounds/wiki/Contributing.md) guide for details on contributing to Sounds.
+
+
 The key classes are:
 
 ## Api classes
