@@ -1,3 +1,6 @@
+### 0.8.4
+Fixed the wiki links.
+
 ### 0.8.3
 doco
 renamed playbackEnabled to enablePlayback

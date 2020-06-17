@@ -46,10 +46,19 @@ The Sounds package includes the following features
 
 
 ## Roadmap 
-See the [Roadmap](https://github.com/bsutton/sounds/wiki/RoadMap.md)  for details on the future of Sounds.
+See the [Roadmap](https://github.com/bsutton/sounds/wiki/RoadMap)  for details on the future of Sounds.
 
 ## Contributing
-See the [Contributing](https://github.com/bsutton/sounds/wiki/Contributing.md) guide for details on contributing to Sounds.
+See the [Contributing](https://github.com/bsutton/sounds/wiki/Contributing) guide for details on contributing to Sounds.
+
+
+# Documentation
+
+[Install](https://github.com/bsutton/sounds/wiki/Install) 
+
+[Wiki](https://github.com/bsutton/sounds/wiki/Home) 
+
+[API Reference](https://pub.dev/documentation/sounds/latest/)
 
 
 The key classes are:
@@ -78,14 +87,6 @@ Note: there are some limitations on the supported codecs. See the [codec] sectio
 
 ![Demo](https://raw.githubusercontent.com/bsutton/sounds/master/example.png)
 
-
-# Documentation
-
-[Install](https://github.com/bsutton/sounds/wiki/Install.md) 
-
-[Wiki](https://github.com/bsutton/sounds/wiki/Home.md) 
-
-[API Reference](https://pub.dev/documentation/sounds/latest/)
 
 
 ## Help Maintenance
