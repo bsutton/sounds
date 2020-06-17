@@ -1,4 +1,4 @@
-import 'package:recase/recase.dart';
+import 'recase.dart';
 
 ///
 /// Provides a collection of methods that help when working with
