@@ -1,3 +1,6 @@
+### 0.8.5
+Fixed compile error on Recase.
+
 ### 0.8.4
 Fixed the wiki links.
 
