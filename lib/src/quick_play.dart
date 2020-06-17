@@ -46,6 +46,7 @@ import 'track.dart';
 class QuickPlay {
   SoundPlayer _player;
   Track _track;
+  PlayerEventWithCause _onStopped;
 
   /// Creates a QuickPlay from a Track and immediately plays it.
   /// By default no UI is displayed.
@@ -139,7 +140,17 @@ class QuickPlay {
   Future<void> _play(double volume) async {
     _player.setVolume(volume);
     _player.audioFocus(AudioFocus.focusAndHushOthers);
-    _player.onStopped = ({wasUser}) => _player.release();
+    _player.onStopped = ({wasUser}) {
+      _player.release();
+      if (_onStopped != null) _onStopped();
+    };
     return _player.play(_track);
+  }
+
+  /// Pass a callback if you want to be notified
+  /// that audio has stopped playing.
+  /// ignore: avoid_setters_without_getters
+  set onStopped(PlayerEventWithCause onStopped) {
+    _onStopped = onStopped;
   }
 }

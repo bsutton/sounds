@@ -305,9 +305,9 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
   }
 
   /// Controls whether the Play button is enabled or not.
-  /// 
+  ///
   /// By default the Play Button is enabled.
-  /// 
+  ///
   /// Cannot toggle this whilst the player is playing or paused.
   void enablePlayback({@required bool enabled}) {
     assert(__playState != PlayState.playing && __playState != PlayState.paused);

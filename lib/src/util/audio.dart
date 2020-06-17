@@ -162,7 +162,7 @@ class Audio {
     this.codec = determineCodec(url, codec);
   }
 
-  ///
+  /// Throws [CodecNotSupportedException] if the codec is null
   Audio.fromBuffer(this._dataBuffer, this.codec) {
     _storageType = TrackStorageType.buffer;
     if (codec == null) {

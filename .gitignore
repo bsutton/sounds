@@ -26,3 +26,5 @@ example/ios/Flutter/.last_build_id
 example/ios/Podfile.lock
 .last_build_id
 Podfile.lock
+.history
+lib/.history

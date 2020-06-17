@@ -47,8 +47,12 @@ class Track {
     return '${title ?? ""} ${artist ?? ""} audio: $_audio';
   }
 
-  /// Creates a Track from a local file or asset.
+  /// Creates a Track from a path to a file
+  ///
   /// Other classes that use fromFile should also be reviewed.
+  /// Throws [CodecNotSupportedException] if the passed [Codec] is not supported
+  /// or if you don't pass the [Codec] and we are unable
+  /// to determine the [Codec] from the [path]s extension.
   Track.fromFile(String path, {Codec codec}) {
     if (path == null) {
       throw TrackPathException('The path MUST not be null.');
@@ -181,10 +185,11 @@ class Track {
   /// into this file. But you're not that stupid are you :)
   ///
   /// ```dart
-  /// var file = tempfile(Codec.mp3)
+  /// var file = Track.tempfile(Codec.mp3)
   ///
   /// print(file);
   /// > 1230811273109.mp3
+  /// ```
   ///
   static String tempFile(Codec codec) {
     return fm.FileUtil()

@@ -82,7 +82,7 @@ class SoundRecorder implements SlotEntry {
   /// error/exception will be returned from the [record] call.
   ///
   /// At a minimum SoundRecorder requires access to the microphone
-  /// and possible external storage if the recording is to be placed
+  /// and possibly external storage if the recording is to be placed
   /// on external storage.
   RequestPermission onRequestPermissions;
 
