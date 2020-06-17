@@ -31,7 +31,7 @@ class EnumHelper {
 
   ///
   static String reCase(String value) {
-    return ReCase(value).titleCase;
+    return ReCase.titleCase(value);
   }
 
   ///
