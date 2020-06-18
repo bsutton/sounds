@@ -20,7 +20,7 @@ The aim of the rewrite has been resolve a number of issues apparent in Flutter S
   <a href="https://pub.dartlang.org/packages/sounds"><img alt="pub version" src="https://img.shields.io/pub/v/sounds.svg?style=flat-square"></a>
 </p>
 
-## Overview
+# Overview
 The Sounds package is a Flutter package that provides audio recording and playback functionality for both the `android` and `ios` platforms.
 
 Sounds provides both a high level api and widgets for recording and playback.
@@ -33,7 +33,7 @@ The Sounds package supports playback from:
 * URL
 * Native Streams (with sync).
 
-## Features
+# Features
 The Sounds package includes the following features
 * Play audio without any UI
 * Play audio using the built in SoundPlayerUI Widget.
@@ -44,12 +44,22 @@ The Sounds package includes the following features
 * Roll your own Recording UI utilising the Sounds api.
 * Support for releasing/resuming resources when the app pauses/resumes.
 
+The core classes are:
 
-## Roadmap 
-See the [Roadmap](https://github.com/bsutton/sounds/wiki/RoadMap)  for details on the future of Sounds.
+| Class | Usage |
+| --- | --- |
+[SoundPlayerUI](https://github.com/bsutton/sounds/wiki/SoundPlayerUI) | A Flutter Widget Audio Player 
+[SoundRecorderUI](https://github.com/bsutton/sounds/wiki/SoundRecorderUI) | A Flutter Widget for recording
+[QuickPlay](https://github.com/bsutton/sounds/wiki/QuickPlay) | Plays an audio file without a UI.
+[SoudPlayer.noUI](https://github.com/bsutton/sounds/wiki/SoundPlayer) |  API to playback audio with fine grained control
+[SoundPlayer.withUI](https://github.com/bsutton/sounds/wiki/SoundPlayer) | API to playback audio using the OS's Shade (media player)
+[SoundRecorder](https://github.com/bsutton/sounds/wiki/SoundRecorder) | API to record audio with fine grained control.
+[Track](https://github.com/bsutton/sounds/wiki/Track) | Container for audio used by all of the above classes.
+[Codec](https://github.com/bsutton/sounds/wiki/Codec) | Defines what Codec is being used.
+[RecorderPlaybackController](https://github.com/bsutton/sounds/wiki/RecorderPlaybackController) | Flutter InheritedWidget used to co-ordinate Recording and Playback in a single UI.
+[Albums](https://github.com/bsutton/sounds/wiki/Albums) | Play a sequence of Tracks via the OS's Shade (media player)
 
-## Contributing
-See the [Contributing](https://github.com/bsutton/sounds/wiki/Contributing) guide for details on contributing to Sounds.
+
 
 
 # Documentation
@@ -59,6 +69,13 @@ See the [Contributing](https://github.com/bsutton/sounds/wiki/Contributing) guid
 [Wiki](https://github.com/bsutton/sounds/wiki/Home) 
 
 [API Reference](https://pub.dev/documentation/sounds/latest/)
+
+## Roadmap 
+See the [Roadmap](https://github.com/bsutton/sounds/wiki/RoadMap)  for details on the future of Sounds.
+
+## Contributing
+See the [Contributing](https://github.com/bsutton/sounds/wiki/Contributing) guide for details on contributing to Sounds.
+
 
 
 The key classes are:
