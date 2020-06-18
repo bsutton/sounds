@@ -30,7 +30,7 @@ typedef enum
 } t_AUDIO_STATE;
 */
 
-extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar);
+extern void SoundPlayerReg(_Nullable NSObject<FlutterPluginRegistrar>* registrar);
 extern NSMutableArray* flautoPlayerSlots;
 
 
