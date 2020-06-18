@@ -1,3 +1,8 @@
+### 0.8.6
+continuing improvements to the doco.
+added _nullable to the pointer as required by the latest version of xcode.
+Fixed error no visible @interface for 'FFmpegPlugin' declares the selector 'alloc'. As the var name was the same case as the type.
+
 ### 0.8.5
 Fixed compile error on Recase.
 
