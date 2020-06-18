@@ -1,3 +1,6 @@
+### 0.8.7
+Continuing work on the doco.
+
 ### 0.8.6
 continuing improvements to the doco.
 added _nullable to the pointer as required by the latest version of xcode.
