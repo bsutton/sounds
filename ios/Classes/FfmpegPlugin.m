@@ -77,21 +77,21 @@ extern void FfmpegReg(NSObject<FlutterPluginRegistrar>* registrar)
 }
 
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
-    FFmpegPlugin* FFmpegPlugin = [[FFmpegPlugin alloc] init]; // The singleton
+    FFmpegPlugin* ffmpegPlugin = [[FFmpegPlugin alloc] init]; // The singleton
 
     FlutterMethodChannel* methodChannel = [FlutterMethodChannel methodChannelWithName:@"flutter_ffmpeg" binaryMessenger:[registrar messenger]];
-    [registrar addMethodCallDelegate:FFmpegPlugin channel:methodChannel];
+    [registrar addMethodCallDelegate:ffmpegPlugin channel:methodChannel];
 
     FlutterEventChannel* eventChannel = [FlutterEventChannel eventChannelWithName:@"flutter_ffmpeg_event" binaryMessenger:[registrar messenger]];
-    [eventChannel setStreamHandler:FFmpegPlugin];
+    [eventChannel setStreamHandler:ffmpegPlugin];
 }
 
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
 
     // ARGUMENTS
     NSArray* arguments = call.arguments[@"arguments"];
-    NSString* command = call.arguments[@"command"];
-    NSString* delimiter = call.arguments[@"delimiter"];
+    // NSString* command = call.arguments[@"command"];
+    // NSString* delimiter = call.arguments[@"delimiter"];
 
     if ([@"getPlatform" isEqualToString:call.method]) {
 
