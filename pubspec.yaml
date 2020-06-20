@@ -1,5 +1,5 @@
 name: sounds
-version: 0.8.8
+version: 0.8.9
 homepage: https://github.com/bsutton/sounds
 description: Sounds provide a complete api and Widgets for audio playback and recording. Both iOS and Android are supported.
 environment: 
@@ -15,8 +15,6 @@ dependencies:
   uuid: ^2.0.4
   flutter: 
     sdk: flutter
-
-
 dev_dependencies: 
   pedantic: ^1.9.0
   effective_dart: ^1.2.1
