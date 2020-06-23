@@ -1,9 +1,9 @@
 import 'codec.dart';
-import 'codec_manager.dart';
+import 'media_format_manager.dart';
 import 'media_container.dart';
 import 'media_format_not_supported_exception.dart';
 
-class MediaFormat {
+abstract class MediaFormat {
   Codec codec;
   MediaContainer container;
   int sampleRate;
@@ -17,18 +17,12 @@ class MediaFormat {
     this.bitRate = 16000,
   });
 
-  static MediaFormat common =
-      MediaFormat.detail(codec: CodecManager().byName('aac'));
+  /// Returns the duration of the audio file at the given [path].
+  /// The audio file at the given path MUST be the of the same
+  /// [MediaFormat] otherwise the result is undefined.
+  Future<Duration> getDuration(String path);
 
-  ///
-  static Codec determineCodec(String uri) {
-    codec = CodecHelper.determineCodec(uri);
-    if (codec == null) {
-      throw MediaFormatNotSupportedException(
-          "The uri's extension does not match any"
-          ' of the supported extensions. '
-          'You must pass in a codec.');
-    }
-    return codec;
-  }
+  /// Only codecs natively supported by the current platform should return
+  /// true.
+  bool get isNative;
 }

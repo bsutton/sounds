@@ -1,16 +1,13 @@
 import 'dart:async';
 import 'dart:typed_data';
 
-import 'package:flutter/foundation.dart';
 import 'package:meta/meta.dart';
 
-import 'codec.dart';
 import 'codec/audio.dart';
 import 'codec/codec.dart';
 import 'codec/codec_helper.dart';
 import 'codec/media_format.dart';
 import 'playback_disposition.dart';
-import 'util/audio.dart';
 import 'util/file_util.dart' as fm;
 
 typedef TrackAction = void Function(Track current);
@@ -46,6 +43,8 @@ class Track {
 
   /// Returns the length of the audio in bytes.
   int get length => _audio.length;
+
+  MediaFormat get mediaFormat => _audio.mediaFormat;
 
   @override
   String toString() {
@@ -105,11 +104,11 @@ class Track {
     }
 
     _storageType = TrackStorageType.buffer;
-    _audio = Audio.fromBuffer(buffer, codec);
+    _audio = Audio.fromBuffer(buffer, mediaFormat);
   }
 
   ///
-  Codec get codec => _audio.codec;
+  Codec get codec => _audio.mediaFormat.codec;
 
   /// true if the track is a url to the audio data.
   bool get isURL => _storageType == TrackStorageType.url;

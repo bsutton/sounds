@@ -2,14 +2,14 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:flutter/services.dart' show rootBundle;
+
 import 'package:sounds_common/src/util/downloader.dart';
 import 'package:sounds_common/src/util/file_util.dart';
 
 import '../playback_disposition.dart';
 import '../track.dart';
 import '../util/temp_media_file.dart';
-import 'codec.dart';
-import 'codec_helper.dart';
 import 'media_format.dart';
 
 /// Provide a set of tools to manage audio data.
@@ -123,8 +123,9 @@ class Audio {
     if (_duration == null) {
       _duration = Duration.zero;
 
-      if (_onDisk && FileUtil().fileLength(_storagePath) > 0) {
-        _duration = await CodecHelper.duration(_storagePath);
+      var storagePath = _storagePath;
+      if (_onDisk && FileUtil().fileLength(storagePath) > 0) {
+        _duration = await mediaFormat.getDuration(_storagePath);
       }
     }
     return _duration;
@@ -139,11 +140,10 @@ class Audio {
   }
 
   ///
-  Audio.fromFile(this.path, Codec codec) {
+  Audio.fromFile(this.path, this.mediaFormat) {
     _storageType = TrackStorageType.file;
     _storagePath = path;
     _onDisk = true;
-    this.codec = determineCodec(path, codec);
   }
 
   /// Create an [Audio] based on a flutter asset.
@@ -156,9 +156,8 @@ class Audio {
   }
 
   ///
-  Audio.fromURL(this.url, Codec codec) {
+  Audio.fromURL(this.url, this.mediaFormat) {
     _storageType = TrackStorageType.url;
-    this.codec = determineCodec(url, codec);
   }
 
   /// Throws [CodecNotSupportedException] if the codec is null
@@ -306,7 +305,7 @@ class Audio {
 
   @override
   String toString() {
-    var desc = 'Codec: $codec';
+    var desc = 'Codec: ${mediaFormat.codec}';
     if (_onDisk) {
       desc += 'storage: $_storagePath';
     }

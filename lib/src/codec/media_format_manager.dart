@@ -1,15 +1,15 @@
 import 'codec.dart';
 import 'media_format_not_supported_exception.dart';
 
-class CodecManager {
+class MediaFormatManager {
 
-  static final CodecManager _self= CodecManager._internal();
-  factory CodecManager()
+  static final MediaFormatManager _self= MediaFormatManager._internal();
+  factory MediaFormatManager()
   {
     return _self;
   }
 
-  CodecManager._internal();
+  MediaFormatManager._internal();
 
   // A map of codes with the codec name as the key.
   final _codecs = <String, Codec>{};
@@ -25,7 +25,9 @@ class CodecManager {
     }
     return codec;
   }
- static Codec getByExtension(String extension);
+ static Codec getByExtension(String extension){
+   
+ }
 
  /// returns a list of the native codecs supported by the current platform.
   static List<Codec> get nativeCodecs;

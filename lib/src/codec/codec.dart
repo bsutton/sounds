@@ -1,7 +1,7 @@
 import '../../sounds_common.dart';
 
-abstract class Codec {
-  String get name;
+class Codec {
+  String name;
 
-  Future<Duration> duration(Track track);
+  Codec(this.name);
 }
