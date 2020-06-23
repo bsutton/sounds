@@ -16,8 +16,6 @@
 
 import 'dart:async';
 import 'dart:core';
-import 'dart:io';
-import 'dart:io' show Platform;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
@@ -264,7 +262,7 @@ class SoundRecorder implements SlotEntry {
     Quality quality = Quality.low,
     MediaFormat mediaFormat,
   }) async {
-    mediaFormat ??= MediaFormat.common;
+    mediaFormat ??= NativeMediaFormat.common;
 
     var started = Completer<void>();
 

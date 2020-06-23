@@ -1,5 +1,4 @@
 // Provides additional functionality required when recording
-import 'dart:io';
 
 import 'package:path/path.dart';
 import 'package:sounds_common/sounds_common.dart';
@@ -40,7 +39,7 @@ class RecordingTrack {
       ArgumentError("Only Tracks created via [Track.fromFile] are supported");
     }
 
-    if (!this.track.mediaFormat.isNative) {
+    if (!track.mediaFormat.isNative) {
       ArgumentError('You can only record to a Track which use a natively '
           'supported Codec and Container');
     }

@@ -1,10 +1,10 @@
-import 'package:sounds/src/plugins/sound_player_plugin.dart';
 import 'package:sounds_common/sounds_common.dart';
 
 import '../sound_player.dart';
 
 /// Base class for all Native Codecs.
 abstract class NativeMediaFormat extends MediaFormat {
+  ///
   NativeMediaFormat.detail({
     Codec codec,
     int sampleRate = 16000,
