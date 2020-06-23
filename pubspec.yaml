@@ -6,15 +6,13 @@ environment:
   sdk: '>=2.1.0 <3.0.0'
   flutter: '>=1.17.0 <2.0.0'
 dependencies: 
-  flutter_spinkit: ^4.0.0
-  intl: ^0.16.1
-  logger: '>=0.7.0+2 <1.0.0'
-  path_provider: ^1.6.7
-  path: ^1.6.4
-  provider: ^4.1.0
-  uuid: ^2.0.4
   flutter: 
     sdk: flutter
+  flutter_spinkit: ^4.0.0
+  path_provider: ^1.6.7
+  provider: ^4.1.0
+  sounds_common: ^1.0.0
+  uuid: ^2.0.4
 dev_dependencies: 
   pedantic: ^1.9.0
   effective_dart: ^1.2.1
@@ -34,3 +32,7 @@ flutter:
         pluginClass: Sounds
       ios: 
         pluginClass: Sounds
+
+dependency_overrides:
+  sounds_common:
+    path: ../sounds_common        

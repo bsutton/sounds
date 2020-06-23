@@ -20,7 +20,7 @@
 import 'dart:async';
 
 import 'package:flutter/services.dart';
-import '../util/log.dart';
+import 'package:sounds_common/sounds_common.dart';
 
 ///
 class FlutterFFmpegConfig {

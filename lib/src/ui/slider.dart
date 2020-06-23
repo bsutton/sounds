@@ -17,8 +17,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-
-import '../playback_disposition.dart';
+import 'package:sounds_common/sounds_common.dart';
 
 ///
 class PlaybarSlider extends StatefulWidget {

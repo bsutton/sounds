@@ -19,14 +19,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
+import 'package:sounds_common/sounds_common.dart';
 
 import '../../sounds.dart';
-import '../codec.dart';
-import '../playback_disposition.dart';
-import '../track.dart';
-import '../util/ansi_color.dart';
-import '../util/format.dart';
-import '../util/log.dart';
 import 'grayed_out.dart';
 import 'recorder_playback_controller.dart';
 import 'slider.dart';
@@ -44,9 +39,6 @@ typedef OnLoad = Future<Track> Function(BuildContext context);
 ///   optionally displays the album title and track if the
 ///   [Track] contains those details.
 class SoundPlayerUI extends StatefulWidget {
-  /// only codec support by android unless we have a minSdk of 29
-  /// then OGG_VORBIS and OPUS are supported.
-  static const Codec standardCodec = Codec.aacADTS;
   static const int _barHeight = 60;
 
   final bool _showTitle;

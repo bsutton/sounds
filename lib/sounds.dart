@@ -14,19 +14,21 @@
  *   along with Sounds.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+export 'package:sounds_common/sounds_common.dart'
+    show
+        Codec,
+        MediaFormatNotSupportedException,
+        PlaybackDisposition,
+        Track,
+        FileUtil;
+
 export 'src/album.dart';
 export 'src/android/android_audio_focus_gain.dart';
 export 'src/audio_focus.dart';
-
-export 'src/codec.dart' show Codec, CodecNotSupportedException;
-
 export 'src/ffmpeg/ffmpeg_util.dart';
 export 'src/ios/ios_session_category.dart';
 export 'src/ios/ios_session_category_option.dart';
 export 'src/ios/ios_session_mode.dart';
-
-export 'src/playback_disposition.dart' show PlaybackDisposition;
-
 export 'src/quick_play.dart' show QuickPlay;
 export 'src/recording_disposition.dart' show RecordingDisposition;
 export 'src/sound_player.dart'
@@ -38,13 +40,9 @@ export 'src/sound_player.dart'
         onSystemResumed,
         onSystemSkipForward,
         onSystemSkipBackward;
-
 export 'src/sound_recorder.dart'
     show SoundRecorder, RecorderException, RecorderInvalidStateException;
-
-export 'src/track.dart' show Track;
 export 'src/ui/recorder_playback_controller.dart'
     show RecorderPlaybackController;
 export 'src/ui/sound_player_ui.dart' show SoundPlayerUI;
 export 'src/ui/sound_recorder_ui.dart' show SoundRecorderUI;
-export 'src/util/file_util.dart' show FileUtil;

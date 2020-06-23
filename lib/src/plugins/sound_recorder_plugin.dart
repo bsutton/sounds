@@ -15,13 +15,13 @@
  */
 
 import 'dart:async';
-import 'dart:convert';
+import 'dart:convert' as convert;
 import 'dart:math';
 
 import 'package:flutter/services.dart';
+import 'package:sounds_common/sounds_common.dart';
 
 import '../audio_source.dart';
-import '../codec.dart';
 import '../quality.dart';
 
 import '../sound_recorder.dart' as sound_recorder;
@@ -62,7 +62,7 @@ class SoundRecorderPlugin extends BasePlugin {
   Future<bool> isSupported(
       sound_recorder.SoundRecorder recorder, Codec codec) async {
     return await invokeMethod(recorder, 'isEncoderSupported',
-        <String, dynamic>{'codec': codec.index}) as bool;
+        <String, dynamic>{'codec': codec.name}) as bool;
   }
 
   ///
@@ -81,7 +81,7 @@ class SoundRecorderPlugin extends BasePlugin {
       'sampleRate': sampleRate,
       'numChannels': numChannels,
       'bitRate': bitRate,
-      'codec': codec.index,
+      'codec': codec.name,
       'audioSource': audioSource?.value,
       'iosQuality': iosQuality?.value
     };
@@ -158,8 +158,8 @@ class SoundRecorderPlugin extends BasePlugin {
 
   void _updateRecorderProgress(
       MethodCall call, sound_recorder.SoundRecorder recorder) {
-    var result =
-        json.decode(call.arguments['arg'] as String) as Map<String, dynamic>;
+    var result = convert.json.decode(call.arguments['arg'] as String)
+        as Map<String, dynamic>;
 
     var duration = Duration(
         milliseconds:

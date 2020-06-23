@@ -27,7 +27,7 @@ class ActiveCodec {
       player = SoundPlayer.noUI();
     }
 
-    _decoderSupported = await player.isSupported(codec);
+    _decoderSupported = await player.isNative(codec);
 
     _codec = codec;
   }

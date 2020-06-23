@@ -19,8 +19,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import '../util/ansi_color.dart';
-import '../util/log.dart';
+import 'package:sounds_common/sounds_common.dart';
 
 /// Used to describe any class that can be placed into a slot.
 class SlotEntry {}

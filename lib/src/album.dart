@@ -1,6 +1,6 @@
-import 'sound_player.dart';
+import 'package:sounds_common/sounds_common.dart';
 
-import 'track.dart';
+import 'sound_player.dart';
 
 typedef TrackChange = Track Function(int currentTrackIndex, Track current);
 

@@ -21,18 +21,15 @@ import 'dart:io' show Platform;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:sounds_common/sounds_common.dart';
 
 import '../sounds.dart';
 import 'audio_source.dart';
-import 'codec.dart';
 
 import 'plugins/base_plugin.dart';
 import 'plugins/sound_recorder_plugin.dart';
 import 'quality.dart';
 import 'recording_disposition.dart';
-import 'track.dart';
-import 'util/ansi_color.dart';
-import 'util/log.dart';
 import 'util/recording_disposition_manager.dart';
 import 'util/recording_track.dart';
 
@@ -263,12 +260,12 @@ class SoundRecorder implements SlotEntry {
   /// The [quality] is currently only supported on iOS.
   Future<void> record(
     Track track, {
-    int sampleRate = 16000,
-    int numChannels = 1,
-    int bitRate = 16000,
     AudioSource audioSource = AudioSource.mic,
     Quality quality = Quality.low,
+    MediaFormat mediaFormat,
   }) async {
+    mediaFormat ??= MediaFormat.common;
+
     var started = Completer<void>();
 
     /// We must not already be recording.
@@ -293,7 +290,8 @@ class SoundRecorder implements SlotEntry {
 
       /// the codec must be supported.
       if (!await isSupported(_recordingTrack.nativeCodec)) {
-        var exception = CodecNotSupportedException('Codec not supported.');
+        var exception =
+            MediaFormatNotSupportedException('Codec not supported.');
         started.completeError(exception);
         throw exception;
       }
@@ -311,9 +309,9 @@ class SoundRecorder implements SlotEntry {
         await _plugin.start(
             this,
             _recordingTrack.recordingPath,
-            sampleRate,
-            numChannels,
-            bitRate,
+            mediaFormat.sampleRate,
+            mediaFormat.numChannels,
+            mediaFormat.bitRate,
             _recordingTrack.nativeCodec,
             audioSource,
             quality);
@@ -353,13 +351,6 @@ class SoundRecorder implements SlotEntry {
   /// sounds on this platform
   Future<bool> isSupported(Codec codec) async {
     return _initializeAndRun<bool>(() async {
-      // For encoding ogg/opus on ios, we need to support two steps :
-      // - encode CAF/OPPUS (with native Apple AVFoundation)
-      // - remux CAF file format to OPUS file format (with ffmpeg)
-      if ((codec == Codec.opusOGG) && (Platform.isIOS)) {
-        codec = Codec.cafOpus;
-      }
-
       return await _plugin.isSupported(this, codec);
     });
   }
@@ -380,9 +371,6 @@ class SoundRecorder implements SlotEntry {
       await _plugin.stop(this);
 
       _recorderState = _RecorderState.isStopped;
-
-      // If requried, transcribe from the native codec to the requested codec.
-      _recordingTrack.recode();
 
       /// send final db so any listening UI is reset.
       _dispositionManager.updateDbPeakDisposition(0, force: true);

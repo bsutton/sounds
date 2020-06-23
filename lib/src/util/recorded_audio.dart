@@ -1,4 +1,4 @@
-import '../track.dart';
+import 'package:sounds_common/sounds_common.dart';
 
 /// [RecordedAudio] is used to track the audio media
 /// created during a recording session via the SoundRecorderUI.

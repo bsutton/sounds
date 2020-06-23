@@ -16,10 +16,10 @@
 
 import 'dart:async';
 
+import 'package:sounds_common/sounds_common.dart';
+
 import '../sound_player.dart' as player;
 
-import '../track.dart';
-import '../util/log.dart';
 import 'player_base_plugin.dart';
 
 ///
@@ -39,7 +39,7 @@ class SoundPlayerPlugin extends PlayerBasePlugin {
     args['path'] = trackStoragePath(track);
     // Flutter cannot transfer an enum to a native plugin.
     // We use an integer instead
-    args['codec'] = track.codec.index;
+    args['codec'] = track.codec.name;
     Log.d('calling invoke startPlayer');
     return invokeMethod(player, 'startPlayer', args);
   }

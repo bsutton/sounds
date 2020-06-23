@@ -107,7 +107,7 @@ class _MyAppState extends State<MyApp> {
 
   void setCodec(Codec codec) async {
     _encoderSupported = await recorderModule.isSupported(codec);
-    _decoderSupported = await playerModule.isSupported(codec);
+    _decoderSupported = await playerModule.isNative(codec);
 
     setState(() {
       _codec = codec;

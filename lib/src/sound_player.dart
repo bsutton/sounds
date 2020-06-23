@@ -17,21 +17,19 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:sounds_common/sounds_common.dart' as common;
+import 'package:sounds_common/sounds_common.dart';
+
 import 'android/android_audio_focus_gain.dart';
 
 import 'audio_focus.dart';
-import 'codec.dart';
 import 'ios/ios_session_category.dart';
 import 'ios/ios_session_category_option.dart';
 import 'ios/ios_session_mode.dart';
-import 'playback_disposition.dart';
 import 'plugins/base_plugin.dart';
 import 'plugins/player_base_plugin.dart';
 import 'plugins/sound_player_plugin.dart';
 import 'plugins/sound_player_track_plugin.dart';
-import 'track.dart' as t;
-import 'util/ansi_color.dart';
-import 'util/log.dart';
 
 /// An api for playing audio.
 ///
@@ -89,7 +87,7 @@ class SoundPlayer implements SlotEntry {
   Duration _seekTo;
 
   /// The track that we are currently playing.
-  t.Track _track;
+  common.Track _track;
 
   ///
   PlayerState playerState = PlayerState.isStopped;
@@ -99,8 +97,8 @@ class SoundPlayer implements SlotEntry {
   ///
 
   /// The stream source
-  StreamController<PlaybackDisposition> _playerController =
-      StreamController<PlaybackDisposition>.broadcast();
+  StreamController<common.PlaybackDisposition> _playerController =
+      StreamController<common.PlaybackDisposition>.broadcast();
 
   /// last time we sent an update via the stream.
   DateTime _lastPositionDispositionUpdate = DateTime.now();
@@ -204,7 +202,7 @@ class SoundPlayer implements SlotEntry {
     _commonInit();
   }
 
-  /// once off initialisation used by call ctors.
+  /// once off initialisation used by all ctors.
   void _commonInit() {
     _plugin.register(this);
     _plugin.onPlayerReady = _onPlayerReady;
@@ -236,7 +234,7 @@ class SoundPlayer implements SlotEntry {
       /// the intialisation.
       await _plugin.initializePlayer(this);
 
-      _setSubscriptionDuration(Duration(milliseconds: 100));
+      _setSubscriptionInterval(Duration(milliseconds: 100));
 
       /// hack until we implement [onPlayerReady] in the all the OS
       /// native plugins.
@@ -298,7 +296,7 @@ class SoundPlayer implements SlotEntry {
     }
 
     if (_track != null) {
-      t.trackRelease(_track);
+      trackRelease(_track);
     }
   }
 
@@ -311,7 +309,7 @@ class SoundPlayer implements SlotEntry {
 
   /// Starts playback.
   /// The [track] to play.
-  Future<void> play(t.Track track) async {
+  Future<void> play(common.Track track) async {
     assert(track != null);
 
     if (!isStopped) {
@@ -326,7 +324,7 @@ class SoundPlayer implements SlotEntry {
       _track = track;
 
       // Check the current codec is supported on this platform
-      if (!await isSupported(track.codec)) {
+      if (!await isNative(track.codec)) {
         var exception = PlayerInvalidStateException(
             'The selected codec ${track.codec} is not supported on '
             'this platform.');
@@ -335,7 +333,7 @@ class SoundPlayer implements SlotEntry {
       }
 
       Log.d('calling prepare stream');
-      await t.prepareStream(
+      await prepareStream(
           track, (disposition) => _playerController.add(disposition));
 
       // Not awaiting this may cause issues if someone immediately tries
@@ -515,7 +513,9 @@ class SoundPlayer implements SlotEntry {
     }
   }
 
-  Future<void> _setSubscriptionDuration(Duration interval) async {
+  /// Sets the time between callbacks from the platform specific code
+  /// used to notify use of playback progress.
+  Future<void> _setSubscriptionInterval(Duration interval) async {
     return _initializeAndRun(() async {
       assert(interval.inMilliseconds > 0);
       await _plugin.setSubscriptionDuration(this, interval);
@@ -715,16 +715,12 @@ class SoundPlayer implements SlotEntry {
     _onStopped = onStopped;
   }
 
-  /// Returns true if the specified decoder is supported
-  ///  by sounds on this platform
-  Future<bool> isSupported(Codec codec) async {
+  /// Returns true if the specified decoder is natively
+  /// supported by Sounds on this platform
+  ///
+  /// TODO: how does this interacte with CodecManager
+  Future<bool> isNative(common.Codec codec) async {
     return _initializeAndRun<bool>(() async {
-      // For decoding ogg/opus on ios, we need to support two steps :
-      // - remux OGG file format to CAF file format (with ffmpeg)
-      // - decode CAF/OPPUS (with native Apple AVFoundation)
-      if ((codec == Codec.opusOGG) && (Platform.isIOS)) {
-        codec = Codec.cafOpus;
-      }
       return await _plugin.isSupported(this, codec);
     });
   }
@@ -839,6 +835,14 @@ class SoundPlayer implements SlotEntry {
       Log.d(e.toString());
       rethrow;
     }
+  }
+
+  /// Gets the duration of the passed [track].
+  /// The [track] MUST be stored on the local file system
+  /// otherwise an [ArgumentError] will be thrown.
+  /// An Asset is not considered to be on the local file system.
+  Future<Duration> duration(common.Track track) {
+    return _plugin.duration(this, track);
   }
 }
 

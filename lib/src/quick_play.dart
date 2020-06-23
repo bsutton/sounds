@@ -18,11 +18,10 @@ import 'dart:async';
 import 'dart:typed_data' show Uint8List;
 
 import 'package:flutter/foundation.dart';
+import 'package:sounds_common/sounds_common.dart';
 
 import 'audio_focus.dart';
-import 'codec.dart';
 import 'sound_player.dart';
-import 'track.dart';
 
 /// Provides the ability to playback a single
 /// audio file from a variety of sources.
@@ -83,7 +82,7 @@ class QuickPlay {
   /// If the default [Codec.fromExtension] is used then
   /// [QuickPlay] will use the files extension to guess the codec.
   /// If the file extension doesn't match a known codec then
-  /// [QuickPlay] will throw an [CodecNotSupportedException] in which
+  /// [QuickPlay] will throw an [MediaFormatNotSupportedException] in which
   /// case you need pass one of the known codecs.
   ///
   /// By default no UI is displayed.
@@ -93,8 +92,8 @@ class QuickPlay {
   ///
   /// The [volume] must be in the range 0.0 to 1.0. Defaults to 0.5
   QuickPlay.fromFile(String path,
-      {double volume, Codec codec = Codec.fromExtension, bool withUI = false}) {
-    _track = Track.fromFile(path, codec: codec);
+      {double volume, MediaFormat mediaFormat, bool withUI = false}) {
+    _track = Track.fromFile(path, mediaFormat: mediaFormat);
     QuickPlay._internal(volume, withUI);
   }
 
@@ -103,11 +102,11 @@ class QuickPlay {
   /// The [url] of the file to download and playback
   ///
   /// The [codec] of the file the [url] points to. The default
-  /// value is [Codec.fromExtension].
-  /// If the default [Codec.fromExtension] is used then
-  /// [QuickPlay] will use the files extension to guess the codec.
+  /// value is null.
+  /// If null is passed then
+  /// [QuickPlay] will use the filename's extension to guess the codec.
   /// If the file extension doesn't match a known codec then
-  /// [QuickPlay] will throw an [CodecNotSupportedException] in which
+  /// [QuickPlay] will throw an [MediaFormatNotSupportedException] in which
   /// case you need pass one of the known codecs.
   /// By default no UI is displayed.
   ///
@@ -116,8 +115,8 @@ class QuickPlay {
   ///
   /// The [volume] must be in the range 0.0 to 1.0. Defaults to 0.5
   QuickPlay.fromURL(String url,
-      {double volume, Codec codec = Codec.fromExtension, bool withUI = false}) {
-    _track = Track.fromURL(url, codec: codec);
+      {double volume, MediaFormat mediaFormat, bool withUI = false}) {
+    _track = Track.fromURL(url, mediaFormat: mediaFormat);
     QuickPlay._internal(volume, withUI);
   }
 
@@ -130,8 +129,8 @@ class QuickPlay {
   /// but all of the UI controls are disabled.
   /// The [volume] must be in the range 0.0 to 1.0. Defaults to 0.5
   QuickPlay.fromBuffer(Uint8List dataBuffer,
-      {double volume, @required Codec codec, bool withUI = false}) {
-    _track = Track.fromBuffer(dataBuffer, codec: codec);
+      {double volume, @required MediaFormat mediaFormat, bool withUI = false}) {
+    _track = Track.fromBuffer(dataBuffer, mediaFormat: mediaFormat);
     QuickPlay._internal(volume, withUI);
   }
 

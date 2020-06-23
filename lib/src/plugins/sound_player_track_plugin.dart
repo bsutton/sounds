@@ -17,9 +17,9 @@
 import 'dart:async';
 
 import 'package:flutter/services.dart';
+import 'package:sounds_common/sounds_common.dart';
 
 import '../sound_player.dart';
-import '../track.dart';
 import 'player_base_plugin.dart';
 
 ///
@@ -47,7 +47,7 @@ class SoundPlayerTrackPlugin extends PlayerBasePlugin {
       "albumArtUrl": track.albumArtUrl,
       "albumArtAsset": track.albumArtAsset,
       // TODO is this necessary if we aren't passing a buffer?
-      "bufferCodecIndex": track.codec?.index,
+      "bufferCodecIndex": track.codec?.name,
     };
 
     if (track.isBuffer) {

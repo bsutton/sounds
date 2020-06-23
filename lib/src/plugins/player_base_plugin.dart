@@ -1,16 +1,14 @@
 import 'dart:async';
-import 'dart:convert';
+import 'dart:convert' as convert;
 import 'dart:io';
 
 import 'package:flutter/services.dart';
+import 'package:sounds_common/sounds_common.dart';
+import 'package:uuid/uuid.dart';
 
-import '../codec.dart';
 import '../ios/ios_session_category.dart';
 import '../ios/ios_session_mode.dart';
-import '../playback_disposition.dart';
 import '../sound_player.dart' as audio_player;
-import '../track.dart';
-import '../util/log.dart';
 import 'base_plugin.dart';
 
 typedef ConnectedCallback = void Function({bool result});
@@ -29,6 +27,22 @@ abstract class PlayerBasePlugin extends BasePlugin {
   PlayerBasePlugin(String registeredName) : super(registeredName, _slots);
 
   ConnectedCallback _onPlayerReady;
+
+  /// The callbackMap is used to map callbacks to a completer
+  /// created by the originator of the callback.
+  /// As we can have overlapping calls against the same entry point
+  /// we need to ensure that we map the correct response to the
+  /// correct response.
+  ///
+  /// When making a call to the plugin you should use Uuid() to create
+  /// a unique id for each call into the plugin.
+  /// When the plugin returns via a callback it should return the uuid
+  /// allowing us to 'complete' the [Completer] causing the originator
+  /// to complete its future.
+  ///
+  /// CONSIDER: adding a timeout to the completer so we are guarenteed that
+  /// the callbacks complete.
+  final _callbackMap = <String, Completer>{};
 
   /// Allows you to register for connection events.
   /// ignore: avoid_setters_without_getters
@@ -71,6 +85,23 @@ abstract class PlayerBasePlugin extends BasePlugin {
     });
   }
 
+  /// Get the duration of a track.
+  /// The track must be a file based ([Track.fromFile]) otherwise
+  /// an exception will be thrown.
+  Future<Duration> duration(SlotEntry player, Track track) async {
+    if (track.path != null) {
+      throw ArgumentError("track must be on the local file system.");
+    }
+    var callbackUuid = Uuid();
+
+    var completer = Completer<Duration>();
+    _callbackMap[callbackUuid.toString()] = completer;
+    await invokeMethod(player, 'getDuration',
+        <String, dynamic>{'path': track.path, 'uuid': callbackUuid});
+
+    return completer.future;
+  }
+
   ///
   Future<void> setVolume(SlotEntry player, double volume) async {
     var indexedVolume = Platform.isIOS ? volume * 100 : volume;
@@ -85,7 +116,7 @@ abstract class PlayerBasePlugin extends BasePlugin {
   ///
   Future<bool> isSupported(SlotEntry player, Codec codec) async {
     var result = await invokeMethod(player, 'isDecoderSupported',
-        <String, dynamic>{'codec': codec.index}) as bool;
+        <String, dynamic>{'codec': codec.name}) as bool;
     return result;
   }
 
@@ -131,7 +162,7 @@ abstract class PlayerBasePlugin extends BasePlugin {
   /// This is used internally to deserialise data coming
   /// up from the underlying OS.
   static PlaybackDisposition dispositionFromJSON(String serializedJson) {
-    var json = jsonDecode(serializedJson) as Map<String, dynamic>;
+    var json = convert.jsonDecode(serializedJson) as Map<String, dynamic>;
     var duration = Duration(
         milliseconds: double.parse(json['duration'] as String).toInt());
     var position = Duration(
@@ -196,10 +227,25 @@ abstract class PlayerBasePlugin extends BasePlugin {
         }
         break;
 
+      case "getDuration":
+        {
+          var arguments = call.arguments['arg'] as String;
+
+          var json = convert.jsonDecode(arguments) as Map<String, dynamic>;
+          var duration = Duration(
+              milliseconds:
+                  double.parse(json['milliseconds'] as String).toInt());
+          var uuid = json['uuid'] as String;
+
+          // complete the future waiting for this call to return.
+          _callbackMap[uuid].complete(duration);
+        }
+        break;
+
       /// the OS media player encounted an error
       case 'onError':
         {
-          var json = jsonDecode(call.arguments['arg'] as String)
+          var json = convert.jsonDecode(call.arguments['arg'] as String)
               as Map<String, dynamic>;
 
           var description = json['description'] as String;
