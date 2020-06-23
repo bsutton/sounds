@@ -85,19 +85,16 @@ abstract class PlayerBasePlugin extends BasePlugin {
     });
   }
 
-  /// Get the duration of a track.
-  /// The track must be a file based ([Track.fromFile]) otherwise
-  /// an exception will be thrown.
-  Future<Duration> duration(SlotEntry player, Track track) async {
-    if (track.path != null) {
-      throw ArgumentError("track must be on the local file system.");
-    }
+  /// Get the duration of an audio file located at [path].
+  Future<Duration> duration(SlotEntry player, String path) async {
+    ArgumentError.checkNotNull(player, 'player');
+    ArgumentError.checkNotNull(path, 'path');
     var callbackUuid = Uuid();
 
     var completer = Completer<Duration>();
     _callbackMap[callbackUuid.toString()] = completer;
     await invokeMethod(player, 'getDuration',
-        <String, dynamic>{'path': track.path, 'uuid': callbackUuid});
+        <String, dynamic>{'path': path, 'uuid': callbackUuid});
 
     return completer.future;
   }

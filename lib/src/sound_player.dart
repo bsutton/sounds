@@ -837,12 +837,12 @@ class SoundPlayer implements SlotEntry {
     }
   }
 
-  /// Gets the duration of the passed [track].
-  /// The [track] MUST be stored on the local file system
+  /// Gets the duration of the passed [path].
+  /// The [path] MUST be stored on the local file system
   /// otherwise an [ArgumentError] will be thrown.
   /// An Asset is not considered to be on the local file system.
-  Future<Duration> duration(common.Track track) {
-    return _plugin.duration(this, track);
+  Future<Duration> duration(String path) {
+    return _plugin.duration(this, path);
   }
 }
 
