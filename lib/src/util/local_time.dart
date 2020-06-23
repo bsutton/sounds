@@ -104,6 +104,7 @@ class LocalTime {
     return DateTime(date.year, date.month, date.day, hour, minute, second);
   }
 
+  @override
   String toString() {
     return Format.localTime(this);
   }

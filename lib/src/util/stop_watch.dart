@@ -46,10 +46,10 @@ class StopWatch {
   /// stop the stop watch and print out the duration.
   void end({bool log = true}) {
     _stopWatch.stop();
-    _description ??= "";
+    _description ??= '';
     if (log) {
       Log.d(
-        "Elapsed ${_stopWatch.elapsedMilliseconds} ms for $_description",
+        'Elapsed ${_stopWatch.elapsedMilliseconds} ms for $_description',
       );
     }
   }

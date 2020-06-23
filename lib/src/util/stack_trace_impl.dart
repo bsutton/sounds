@@ -1,5 +1,5 @@
-import "dart:core" as core show StackTrace;
-import "dart:core";
+import 'dart:core' as core show StackTrace;
+import 'dart:core';
 import 'dart:io';
 
 import 'package:path/path.dart';
@@ -83,7 +83,7 @@ class StackTraceImpl implements core.StackTrace {
         sourceFile = basename(stackFrame.sourceFile.path);
       }
       var newLine =
-          ("$sourceFile : ${stackFrame.details} : ${stackFrame.lineNo}");
+          ('$sourceFile : ${stackFrame.details} : ${stackFrame.lineNo}');
 
       if (_workingDirectory != null) {
         formatted.add('file:///$_workingDirectory$newLine');
@@ -104,14 +104,12 @@ class StackTraceImpl implements core.StackTrace {
 
   ///
   List<Stackframe> get frames {
-    if (_frames == null) {
-      _frames = _extractFrames();
-    }
+    _frames ??= _extractFrames();
     return _frames;
   }
 
   List<Stackframe> _extractFrames() {
-    var lines = _stackTrace.toString().split("\n");
+    var lines = _stackTrace.toString().split('\n');
 
     // we don't want the call to StackTrace to be on the stack.
     var skipFrames = _skipFrames;
@@ -129,14 +127,14 @@ class StackTraceImpl implements core.StackTrace {
       // file:///.../package/filename.dart:column:line
       // package:/package/.path./filename.dart:column:line
       var source = match.group(2);
-      var sourceParts = source.split(":");
+      var sourceParts = source.split(':');
       ArgumentError.value(
           sourceParts.length == 4,
-          "Stackframe source does not contain the expeted no of colons "
+          'Stackframe source does not contain the expeted no of colons '
           "'$source'");
 
-      var column = "0";
-      var lineNo = "0";
+      var column = '0';
+      var lineNo = '0';
       var sourcePath = sourceParts[1];
       if (sourceParts.length > 2) {
         lineNo = sourceParts[2];
@@ -149,7 +147,7 @@ class StackTraceImpl implements core.StackTrace {
       var details = match.group(1);
 
       sourcePath = sourcePath.replaceAll('<anonymous closure>', '()');
-      sourcePath = sourcePath.replaceAll("package:", "");
+      sourcePath = sourcePath.replaceAll('package:', '');
       // sourcePath = sourcePath.replaceFirst("<package_name>", "/lib");
 
       var frame = Stackframe(
@@ -177,7 +175,7 @@ class StackTraceImpl implements core.StackTrace {
   }
 }
 
-var _excludedSource = ["/flutter", "/ui", "/async", "isolate"];
+var _excludedSource = ['/flutter', '/ui', '/async', 'isolate'];
 
 ///
 bool isExcludedSource(Stackframe frame) {

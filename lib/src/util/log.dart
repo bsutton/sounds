@@ -99,7 +99,7 @@ class Log extends Logger {
   ///
   static void autoInit() {
     if (_self == null) {
-      init(".");
+      init('.');
     }
   }
 
@@ -111,7 +111,7 @@ class Log extends Logger {
 
     for (var frame in frames.frames) {
       _localPath = frame.sourceFile.path
-          .substring(frame.sourceFile.path.lastIndexOf("/"));
+          .substring(frame.sourceFile.path.lastIndexOf('/'));
       break;
     }
   }
@@ -146,7 +146,7 @@ class MyLogPrinter extends LogPrinter {
     for (var frame in frames.frames) {
       i++;
       var path2 = frame.sourceFile.path;
-      if (!path2.contains(Log._localPath) && !path2.contains("logger.dart")) {
+      if (!path2.contains(Log._localPath) && !path2.contains('logger.dart')) {
         depth = i - 1;
         break;
       }
@@ -154,20 +154,20 @@ class MyLogPrinter extends LogPrinter {
 
     output.add(color(
         event.level,
-        "$formattedDate ${EnumHelper.getName(event.level)} "
-        "${StackTraceImpl(skipFrames: depth).formatStackTrace(methodCount: 1)} "
-        "::: ${event.message}"));
+        '$formattedDate ${EnumHelper.getName(event.level)} '
+        '${StackTraceImpl(skipFrames: depth).formatStackTrace(methodCount: 1)} '
+        '::: ${event.message}'));
 
     if (event.error != null) {
-      output.add(color(event.level, "${event.error}"));
+      output.add(color(event.level, '${event.error}'));
     }
 
     if (event.stackTrace != null) {
       if (event.stackTrace.runtimeType == StackTraceImpl) {
         var st = event.stackTrace as StackTraceImpl;
-        output.add(color(event.level, "$st"));
+        output.add(color(event.level, '$st'));
       } else {
-        output.add(color(event.level, "${event.stackTrace}"));
+        output.add(color(event.level, '${event.stackTrace}'));
       }
     }
     return output;
@@ -175,7 +175,7 @@ class MyLogPrinter extends LogPrinter {
 
   ///
   String color(Level level, String line) {
-    var result = "";
+    var result = '';
 
     switch (level) {
       case Level.debug:

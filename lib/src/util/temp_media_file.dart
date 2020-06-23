@@ -39,7 +39,7 @@ class TempMediaFile {
   void delete() {
     if (_deleted) {
       throw TempMediaFileAlreadyDeletedException(
-          "The file $path has already been deleted");
+          'The file $path has already been deleted');
     }
     if (fm.FileUtil().exists(path)) fm.FileUtil().delete(path);
     _deleted = true;
@@ -80,7 +80,7 @@ class TempMediaFile {
           mode: FileMode.append); // Write
       bytesWritten += packetSize;
       var progress = i * increment;
-      Log.e("Progress: $progress");
+      Log.e('Progress: $progress');
       loadingProgress(PlaybackDisposition.loading(progress: progress));
     }
     // write final packet if there is a partial packet left
@@ -102,5 +102,6 @@ class TempMediaFileAlreadyDeletedException implements Exception {
   ///
   TempMediaFileAlreadyDeletedException(this._message);
 
+  @override
   String toString() => _message;
 }

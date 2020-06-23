@@ -67,23 +67,23 @@ class AnsiColor {
       {AnsiColor bgcolor = none}) {
     String output;
 
-    output = "${_fg(color.code)}${_bg(bgcolor?.code)}$text$_reset";
+    output = '${_fg(color.code)}${_bg(bgcolor?.code)}$text$_reset';
     return output;
   }
 
   static String get _reset {
-    return "$esc${resetCode}m";
+    return '$esc${resetCode}m';
   }
 
   static String _fg(int code) {
     String output;
 
     if (code == none.code) {
-      output = "";
+      output = '';
     } else if (code > 39) {
-      output = "$esc$fgColor${code}m";
+      output = '$esc$fgColor${code}m';
     } else {
-      output = "$esc${code}m";
+      output = '$esc${code}m';
     }
     return output;
   }
@@ -93,17 +93,17 @@ class AnsiColor {
     String output;
 
     if (code == none.code) {
-      output = "";
+      output = '';
     } else if (code > 49) {
-      output = "$esc$bgColor${code + 10}m";
+      output = '$esc$bgColor${code + 10}m';
     } else {
-      output = "$esc${code + 10}m";
+      output = '$esc${code + 10}m';
     }
     return output;
   }
 
   static String _emmit(String ansicode) {
-    return "$esc${ansicode}m";
+    return '$esc${ansicode}m';
   }
 
   /// ANSI Control Sequence Introducer, signals the terminal for new settings.
@@ -112,19 +112,19 @@ class AnsiColor {
   /// Resets
 
   /// Reset fg and bg colors
-  static const String resetCode = "0";
+  static const String resetCode = '0';
 
   /// Defaults the terminal's fg color without altering the bg.
-  static const String fgResetCode = "39";
+  static const String fgResetCode = '39';
 
   /// Defaults the terminal's bg color without altering the fg.
-  static const String bgResetCode = "49";
+  static const String bgResetCode = '49';
 
   /// emmit this code followed by a color code to set the fg color
-  static const String fgColor = "38;5;";
+  static const String fgColor = '38;5;';
 
   /// emmit this code followed by a color code to set the fg color
-  static const String bgColor = "48;5;";
+  static const String bgColor = '48;5;';
 
   /// Colors
   static const AnsiColor black = AnsiColor(30);

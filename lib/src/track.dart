@@ -99,9 +99,7 @@ class Track {
   /// backed by a buffer.
   ///
   Track.fromBuffer(Uint8List buffer, {@required MediaFormat mediaFormat}) {
-    if (buffer == null) {
-      buffer = Uint8List(0);
-    }
+    buffer ??= Uint8List(0);
 
     _storageType = TrackStorageType.buffer;
     _audio = Audio.fromBuffer(buffer, mediaFormat);
@@ -243,6 +241,7 @@ class TrackPathException implements Exception {
   ///
   TrackPathException(this.message);
 
+  @override
   String toString() => message;
 }
 

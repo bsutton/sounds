@@ -34,32 +34,32 @@ class Format {
   ///
   static String duration(Duration duration, {bool showSuffix = true}) {
     if (duration == null) {
-      return "";
+      return '';
     }
 
     if (duration.inHours >= 1) {
       // h:mm
       return '${duration.inHours}'
-          ":"
-          '${(duration.inMinutes % 60).toString().padLeft(2, "0")}'
-          '${(showSuffix ? " min" : "")}';
+          ':'
+          '${(duration.inMinutes % 60).toString().padLeft(2, '0')}'
+          '${(showSuffix ? ' min' : '')}';
     } else {
       return '${duration.inMinutes.toString()}'
-          ':${(duration.inSeconds % 60).toString().padLeft(2, "0")}'
-          '${(showSuffix ? " secs" : "")}';
+          ':${(duration.inSeconds % 60).toString().padLeft(2, '0')}'
+          '${(showSuffix ? ' secs' : '')}';
     }
   }
 
   ///
-  static String localDate(LocalDate date, [String pattern = "yyyy/MM/dd"]) {
+  static String localDate(LocalDate date, [String pattern = 'yyyy/MM/dd']) {
     return DateFormat(pattern).format(date.toDateTime());
   }
 
   ///
   static String dateTime(DateTime date,
-      [String pattern = "yyyy/MM/dd h:ss a"]) {
+      [String pattern = 'yyyy/MM/dd h:ss a']) {
     if (date == null) {
-      return "";
+      return '';
     }
     return DateFormat(pattern).format(date);
   }
@@ -74,38 +74,38 @@ class Format {
 
     if (whenDate.isEqual(today)) {
       // for today just the time.
-      return dateTime(when, "h:mm a");
+      return dateTime(when, 'h:mm a');
     } else if (whenDate.add(Duration(days: 7)).isAfter(today)) {
       // use the day name for the last 7 days.
-      return dateTime(when, "EEEE h:mm a");
+      return dateTime(when, 'EEEE h:mm a');
     } else {
-      return dateTime(when, "dd MMM h:mm a");
+      return dateTime(when, 'dd MMM h:mm a');
     }
   }
 
   ///
   static String smartFormat(DateTime date,
-      [String pattern = "yyyy/MM/dd h:ss a"]) {
+      [String pattern = 'yyyy/MM/dd h:ss a']) {
     if (date == null) {
-      return "";
+      return '';
     }
     return DateFormat(pattern).format(date);
   }
 
   ///
-  static String time(DateTime date, [String pattern = "h:mm:ss a"]) {
+  static String time(DateTime date, [String pattern = 'h:mm:ss a']) {
     return DateFormat(pattern).format(date);
   }
 
   ///
-  static String localTime(LocalTime time, [String pattern = "h:mm:ss a"]) {
+  static String localTime(LocalTime time, [String pattern = 'h:mm:ss a']) {
     return Format.time(time.toDateTime(), pattern);
     // AMPMParts parts = AMPMParts.fromLocalTime(time);
 
     // return parts.hour.toString() +
-    //     ":" +
-    //     parts.minute.toString().padLeft(2, "0") +
-    //     (parts.am ? " am" : " pm");
+    //     ':' +
+    //     parts.minute.toString().padLeft(2, '0') +
+    //     (parts.am ? ' am' : ' pm');
   }
 
   ///
@@ -115,7 +115,7 @@ class Format {
   /// @return
   ///
   static String toProperCase(String name) {
-    var parts = name.split(" ");
+    var parts = name.split(' ');
 
     var result = StringBuffer();
     for (var i = 0; i < parts.length; i++) {
@@ -127,7 +127,7 @@ class Format {
             word.substring(1).toLowerCase();
       }
 
-      if (result.length > 0) result.write(" ");
+      if (result.length > 0) result.write(' ');
 
       result.write(word);
     }
@@ -149,26 +149,26 @@ class Format {
 
     if (date.isEqual(LocalDate.today())) {
       // not certain this variation makes much sense?
-      message = abbr ? "today" : "later today";
+      message = abbr ? 'today' : 'later today';
     } else if (date.addDays(-1).isEqual(LocalDate.today())) {
-      message = "tomorrow";
+      message = 'tomorrow';
     } else if (date.addDays(-7).isBefore(LocalDate.today())) {
       if (abbr) {
-        message = "${DateFormat('EEE.').format(date.toDateTime())}";
+        message = '${DateFormat('EEE.').format(date.toDateTime())}';
       } else {
-        message = "on ${DateFormat('EEEE').format(date.toDateTime())}";
+        message = 'on ${DateFormat('EEEE').format(date.toDateTime())}';
       }
     } else if (date.addDays(-364).isBefore(LocalDate.today())) {
       var ordinal = getDayOrdinal(date);
       if (abbr) {
         var format = '''d'$ordinal' MMM.''';
-        message = "${DateFormat(format).format(date.toDateTime())}";
+        message = '${DateFormat(format).format(date.toDateTime())}';
       } else {
         var format = '''d'$ordinal' 'of' MMMM''';
-        message = "on the ${DateFormat(format).format(date.toDateTime())}";
+        message = 'on the ${DateFormat(format).format(date.toDateTime())}';
       }
     } else {
-      message = "on the ${Format.localDate(date)}";
+      message = 'on the ${Format.localDate(date)}';
     }
     return message;
   }
@@ -190,20 +190,20 @@ class Format {
 
   /*
 
-	static final DateFormat dateFormat = DateFormat("dd-MM-yyyy");
+	static final DateFormat dateFormat = DateFormat('dd-MM-yyyy');
 
-	static final DateFormat saasuDateFormat = DateFormat("yyyy-MM-dd");
+	static final DateFormat saasuDateFormat = DateFormat('yyyy-MM-dd');
 
-	static final DateFormat dateWithMonthFormat = DateFormat("dd MMM yyyy");
+	static final DateFormat dateWithMonthFormat = DateFormat('dd MMM yyyy');
 
-	static const DateFormat dateFormatTime = DateFormat("dd-MM-yyyy hh:mma");
+	static const DateFormat dateFormatTime = DateFormat('dd-MM-yyyy hh:mma');
 
-	static final DateFormat timeFormat = DateFormat("hh:mma");
+	static final DateFormat timeFormat = DateFormat('hh:mma');
 
 
 
 	{
-    return (date == null ? "" : formatter.format(date));
+    return (date == null ? '' : formatter.format(date));
 
 	}
 
@@ -232,12 +232,12 @@ class Format {
 
 	 static String format(DateTime date, DateFormat formater)
 	{
-		return (date == null ? "" : date.format(formater));
+		return (date == null ? '' : date.format(formater));
 	}
 
 	 static String format(LocalTime time, DateFormat formater)
 	{
-		return (time == null ? "" : time.format(formater));
+		return (time == null ? '' : time.format(formater));
 	}
 
 	/*
@@ -252,18 +252,18 @@ class Format {
 		if (when.toDateTime().equals(today))
 		{
 			// for today just the time.
-			return Format.format(when, DateFormat("h:mm a"));
+			return Format.format(when, DateFormat('h:mm a'));
 		}
 		else
 
 		if (when.plusDays(7).toDateTime().isAfter(today))
 		{
 			// use the day name for the last 7 days.
-			return Format.format(when, DateFormat("EEEE h:mm a"));
+			return Format.format(when, DateFormat('EEEE h:mm a'));
 
 		}
 		else
-			return Format.format(when, DateFormat("dd MMM h:mm a"));
+			return Format.format(when, DateFormat('dd MMM h:mm a'));
 
 	}
 
@@ -284,12 +284,12 @@ class Format {
 
 	 static String format(LocalTime time)
 	{
-		return (time == null ? "" : time.format(timeFormat));
+		return (time == null ? '' : time.format(timeFormat));
 	}
 
 	 static String saasuFormat(DateTime date)
 	{
-		return (date == null ? "" : date.format(saasuDateFormat));
+		return (date == null ? '' : date.format(saasuDateFormat));
 	}
 
 
@@ -297,8 +297,8 @@ class Format {
 	 static String formatHHmm(Duration duration)
 	{
 		if (duration == null)
-			return "";
-		return DurationFormatUtils.formatDuration(duration.toMillis(), "H:mm");
+			return '';
+		return DurationFormatUtils.formatDuration(duration.toMillis(), 'H:mm');
 	}
 
 	/**
@@ -314,7 +314,7 @@ class Format {
 	 static String format(Duration duration, String format)
 	{
 
-		return (duration == null ? ""
+		return (duration == null ? ''
       : DurationFormatUtils.formatDuration(duration.toMillis(), format));
 	}
 

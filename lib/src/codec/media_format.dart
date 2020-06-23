@@ -1,7 +1,5 @@
 import 'codec.dart';
-import 'media_format_manager.dart';
 import 'media_container.dart';
-import 'media_format_not_supported_exception.dart';
 
 abstract class MediaFormat {
   Codec codec;
