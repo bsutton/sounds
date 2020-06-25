@@ -1,10 +1,11 @@
 import 'package:sounds/sounds.dart';
+import 'package:sounds_common/sounds_common.dart';
 
 /// Factory used to track what codec is currently selected.
-class ActiveCodec {
-  static final ActiveCodec _self = ActiveCodec._internal();
+class ActiveMediaFormat {
+  static final ActiveMediaFormat _self = ActiveMediaFormat._internal();
 
-  Codec _codec = Codec.aacADTS;
+  MediaFormat mediaFormat = AACADTSMediaFormat();
   bool _encoderSupported = false;
   bool _decoderSupported = false;
 
@@ -12,24 +13,17 @@ class ActiveCodec {
   SoundRecorder recorderModule;
 
   /// Factory to access the active codec.
-  factory ActiveCodec() {
+  factory ActiveMediaFormat() {
     return _self;
   }
-  ActiveCodec._internal();
+  ActiveMediaFormat._internal();
 
   /// Set the active code for the the recording and player modules.
-  void setCodec({bool withUI, Codec codec}) async {
-    _encoderSupported = await recorderModule.isSupported(codec);
-    SoundPlayer player;
-    if (withUI) {
-      player = SoundPlayer.withUI();
-    } else {
-      player = SoundPlayer.noUI();
-    }
+  void setMediaFormat({bool withUI, MediaFormat mediaFormat}) async {
+    _encoderSupported = await mediaFormat.isNativeEncoder;
+    _decoderSupported = await mediaFormat.isNativeDecoder;
 
-    _decoderSupported = await player.isNative(codec);
-
-    _codec = codec;
+    mediaFormat = mediaFormat;
   }
 
   /// [true] if the active coded is supported by the recorder
@@ -37,7 +31,4 @@ class ActiveCodec {
 
   /// [true] if the active coded is supported by the player
   bool get decoderSupported => _decoderSupported;
-
-  /// returns the active codec.
-  Codec get codec => _codec;
 }

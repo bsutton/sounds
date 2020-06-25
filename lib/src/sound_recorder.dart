@@ -287,9 +287,10 @@ class SoundRecorder implements SlotEntry {
       _recordingTrack.validatePath();
 
       /// the codec must be supported.
-      if (!await isSupported(_recordingTrack.nativeCodec)) {
+      if (!await NativeMediaFormats()
+          .isNativeEncoder(_recordingTrack.track.mediaFormat)) {
         var exception =
-            MediaFormatNotSupportedException('Codec not supported.');
+            MediaFormatNotSupportedException('MediaFormat not supported.');
         started.completeError(exception);
         throw exception;
       }
@@ -343,14 +344,6 @@ class SoundRecorder implements SlotEntry {
   Stream<RecordingDisposition> dispositionStream(
       {Duration interval = const Duration(milliseconds: 10)}) {
     return _dispositionManager.stream(interval: interval);
-  }
-
-  /// Returns true if the specified encoder is supported by
-  /// sounds on this platform
-  Future<bool> isSupported(Codec codec) async {
-    return _initializeAndRun<bool>(() async {
-      return await _plugin.isSupported(this, codec);
-    });
   }
 
   /// Stops the current recording.

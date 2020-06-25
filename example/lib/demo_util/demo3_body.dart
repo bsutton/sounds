@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:sounds/sounds.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:sounds_common/sounds_common.dart';
 
 import 'demo_active_codec.dart';
 import 'demo_asset_player.dart';
@@ -33,7 +34,7 @@ class _MainBodyState extends State<MainBody> {
   @override
   void initState() {
     super.initState();
-    recordingFile = Track.tempFile(Codec.aacADTS);
+    recordingFile = Track.tempFile(WellKnownMediaFormats.aacAdts);
 
     track = Track.fromFile(recordingFile);
     track.artist = 'Brett';
@@ -43,8 +44,9 @@ class _MainBodyState extends State<MainBody> {
     if (!initialized) {
       await initializeDateFormatting();
       await RecorderState().init();
-      ActiveCodec().recorderModule = RecorderState().recorderModule;
-      await ActiveCodec().setCodec(withUI: false, codec: Codec.aacADTS);
+      ActiveMediaFormat().recorderModule = RecorderState().recorderModule;
+      await ActiveMediaFormat().setMediaFormat(
+          withUI: false, mediaFormat: WellKnownMediaFormats.aacAdts);
 
       initialized = true;
     }
@@ -71,8 +73,9 @@ class _MainBodyState extends State<MainBody> {
               color: Colors.white,
             );
           } else {
-            final dropdowns = Dropdowns(onCodecChanged: (codec) async {
-              await ActiveCodec().setCodec(withUI: false, codec: codec);
+            final dropdowns = Dropdowns(onMediaFormatChanged: (codec) async {
+              await ActiveMediaFormat()
+                  .setMediaFormat(withUI: false, mediaFormat: codec);
 
               /// If we have changed codec the recording is no longer valid.
               FileUtil().truncate(recordingFile);

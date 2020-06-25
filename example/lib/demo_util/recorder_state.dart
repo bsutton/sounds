@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:sounds/sounds.dart';
+import 'package:sounds_common/sounds_common.dart';
 
-import '../util/log.dart';
 import '../util/temp_file.dart';
 import 'demo_active_codec.dart';
 import 'demo_media_path.dart';
@@ -36,7 +36,7 @@ class RecorderState {
 
   /// required to initialize the recording subsystem.
   void init() async {
-    ActiveCodec().recorderModule = recorderModule;
+    ActiveMediaFormat().recorderModule = recorderModule;
   }
 
   /// Call this method if you have changed any of the recording
@@ -71,12 +71,14 @@ class RecorderState {
       /// TODO put this back iin
       /// await PlayerState().stopPlayer();
 
-      var track = Track.fromFile(await tempFile(), codec: ActiveCodec().codec);
+      var track = Track.fromFile(await tempFile(),
+          mediaFormat: ActiveMediaFormat().mediaFormat);
       await recorderModule.record(track);
 
       Log.d('startRecorder: $track');
 
-      MediaPath().setCodecPath(ActiveCodec().codec, track.url);
+      MediaPath()
+          .setMediaFormatPath(ActiveMediaFormat().mediaFormat, track.url);
     } on RecorderException catch (err) {
       Log.d('startRecorder error: $err');
 

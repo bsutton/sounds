@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sounds/sounds.dart';
+import 'package:sounds_common/sounds_common.dart';
 
-import '../util/log.dart';
 import 'demo_active_codec.dart';
 import 'demo_common.dart';
 import 'demo_media_path.dart';
@@ -68,27 +68,31 @@ class RecordingPlayer extends StatelessWidget {
   Future<Track> _createBufferTrack() async {
     Track track;
     // Do we want to play from buffer or from file ?
-    if (fileExists(MediaPath().pathForCodec(ActiveCodec().codec))) {
-      var dataBuffer =
-          await makeBuffer(MediaPath().pathForCodec(ActiveCodec().codec));
+    if (fileExists(
+        MediaPath().pathForMediaFormat(ActiveMediaFormat().mediaFormat))) {
+      var dataBuffer = await makeBuffer(
+          MediaPath().pathForMediaFormat(ActiveMediaFormat().mediaFormat));
       if (dataBuffer == null) {
         throw Exception('Unable to create the buffer');
       }
-      track = Track.fromBuffer(dataBuffer, codec: ActiveCodec().codec);
+      track = Track.fromBuffer(dataBuffer,
+          mediaFormat: ActiveMediaFormat().mediaFormat);
     }
     return track;
   }
 
   Future<Track> _createPathTrack() async {
     Track track;
-    var audioFilePath = MediaPath().pathForCodec(ActiveCodec().codec);
-    track = Track.fromFile(audioFilePath, codec: ActiveCodec().codec);
+    var audioFilePath =
+        MediaPath().pathForMediaFormat(ActiveMediaFormat().mediaFormat);
+    track = Track.fromFile(audioFilePath,
+        mediaFormat: ActiveMediaFormat().mediaFormat);
     return track;
   }
 
   bool _recordingExist(BuildContext context) {
     // Do we want to play from buffer or from file ?
-    var path = MediaPath().pathForCodec(ActiveCodec().codec);
+    var path = MediaPath().pathForMediaFormat(ActiveMediaFormat().mediaFormat);
     return (path != null && fileExists(path));
   }
 }

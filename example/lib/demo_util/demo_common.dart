@@ -1,10 +1,9 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:sounds/sounds.dart';
 import 'package:intl/intl.dart';
+import 'package:sounds_common/sounds_common.dart';
 
-import '../util/log.dart';
 import 'demo_media_path.dart';
 
 /// Describes how the media is stored.
@@ -26,12 +25,13 @@ enum MediaStorage {
 }
 
 /// get the duration for the media with the given codec.
-Future<Duration> getDuration(Codec codec) async {
+Future<Duration> getDuration(MediaFormat mediaFormat) async {
   Future<Duration> duration;
   switch (MediaPath().media) {
     case MediaStorage.file:
     case MediaStorage.buffer:
-      duration = FFMpegUtil().duration(MediaPath().pathForCodec(codec));
+      duration =
+          mediaFormat.getDuration(MediaPath().pathForMediaFormat(mediaFormat));
       break;
     case MediaStorage.asset:
       duration = null;
@@ -55,15 +55,15 @@ String formatDuration(Duration duration) {
 }
 
 /// the set of samples availble as assets.
-List<String> assetSample = [
-  'assets/samples/sample.aac',
-  'assets/samples/sample.aac',
-  'assets/samples/sample.opus',
-  'assets/samples/sample.caf',
-  'assets/samples/sample.mp3',
-  'assets/samples/sample.ogg',
-  'assets/samples/sample.wav',
-];
+var assetSample = <MediaFormat, String>{
+  AACADTSMediaFormat(): 'assets/samples/sample.aac',
+  AACADTSMediaFormat(): 'assets/samples/sample.aac',
+  OGGOpusMediaFormat(): 'assets/samples/sample.opus',
+  OpusCafMediaFormat(): 'assets/samples/sample.caf',
+  MP3MediaFormat(): 'assets/samples/sample.mp3',
+  OGGVorbisMediaFormat(): 'assets/samples/sample.ogg',
+  PCMMediaFormat(): 'assets/samples/sample.wav',
+};
 
 /// Checks if the past file exists
 bool fileExists(String path) {

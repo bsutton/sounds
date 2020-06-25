@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sounds/sounds.dart';
+import 'package:sounds_common/sounds_common.dart';
 
 import 'demo_active_codec.dart';
 import 'demo_common.dart';
@@ -9,13 +9,13 @@ import 'demo_media_path.dart';
 /// Media
 /// Codec
 class Dropdowns extends StatefulWidget {
-  final void Function(Codec) _onCodecChanged;
+  final void Function(MediaFormat) _onMediaFormatChanged;
 
   /// ctor
   const Dropdowns({
     Key key,
-    @required void Function(Codec) onCodecChanged,
-  })  : _onCodecChanged = onCodecChanged,
+    @required void Function(MediaFormat) onMediaFormatChanged,
+  })  : _onMediaFormatChanged = onMediaFormatChanged,
         super(key: key);
 
   @override
@@ -63,42 +63,43 @@ class _DropdownsState extends State<Dropdowns> {
     );
   }
 
-  DropdownButton<Codec> buildCodecDropdown() {
-    return DropdownButton<Codec>(
-      value: ActiveCodec().codec,
-      onChanged: (newCodec) async {
-        widget._onCodecChanged(newCodec);
+  DropdownButton<MediaFormat> buildCodecDropdown() {
+    return DropdownButton<MediaFormat>(
+      value: ActiveMediaFormat().mediaFormat,
+      onChanged: (newMediaFormat) async {
+        widget._onMediaFormatChanged(newMediaFormat);
 
         /// this is hacky as we should be passing the actual
         /// useOSUI flag.
-        await ActiveCodec().setCodec(withUI: false, codec: newCodec);
+        await ActiveMediaFormat()
+            .setMediaFormat(withUI: false, mediaFormat: newMediaFormat);
 
-        await getDuration(ActiveCodec().codec);
+        await getDuration(ActiveMediaFormat().mediaFormat);
         setState(() {});
       },
-      items: <DropdownMenuItem<Codec>>[
-        DropdownMenuItem<Codec>(
-          value: Codec.aacADTS,
-          child: Text('AAC'),
+      items: <DropdownMenuItem<MediaFormat>>[
+        DropdownMenuItem<MediaFormat>(
+          value: WellKnownMediaFormats.aacAdts,
+          child: Text(WellKnownMediaFormats.aacAdts.name),
         ),
-        DropdownMenuItem<Codec>(
-          value: Codec.opusOGG,
+        DropdownMenuItem<MediaFormat>(
+          value: WellKnownMediaFormats.oggOpus,
           child: Text('OGG/Opus'),
         ),
-        DropdownMenuItem<Codec>(
-          value: Codec.cafOpus,
+        DropdownMenuItem<MediaFormat>(
+          value: WellKnownMediaFormats.opusCaf,
           child: Text('CAF/Opus'),
         ),
-        DropdownMenuItem<Codec>(
-          value: Codec.mp3,
+        DropdownMenuItem<MediaFormat>(
+          value: WellKnownMediaFormats.mp3,
           child: Text('MP3'),
         ),
-        DropdownMenuItem<Codec>(
-          value: Codec.vorbisOGG,
+        DropdownMenuItem<MediaFormat>(
+          value: WellKnownMediaFormats.oggVorbis,
           child: Text('OGG/Vorbis'),
         ),
-        DropdownMenuItem<Codec>(
-          value: Codec.pcm,
+        DropdownMenuItem<MediaFormat>(
+          value: WellKnownMediaFormats.pcm,
           child: Text('PCM'),
         ),
       ],

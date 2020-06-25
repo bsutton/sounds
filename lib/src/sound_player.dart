@@ -17,9 +17,9 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:sounds_common/sounds_common.dart' as common;
 import 'package:sounds_common/sounds_common.dart';
 
+import '../sounds.dart';
 import 'android/android_audio_focus_gain.dart';
 
 import 'audio_focus.dart';
@@ -87,7 +87,7 @@ class SoundPlayer implements SlotEntry {
   Duration _seekTo;
 
   /// The track that we are currently playing.
-  common.Track _track;
+  Track _track;
 
   ///
   PlayerState playerState = PlayerState.isStopped;
@@ -97,8 +97,8 @@ class SoundPlayer implements SlotEntry {
   ///
 
   /// The stream source
-  StreamController<common.PlaybackDisposition> _playerController =
-      StreamController<common.PlaybackDisposition>.broadcast();
+  StreamController<PlaybackDisposition> _playerController =
+      StreamController<PlaybackDisposition>.broadcast();
 
   /// last time we sent an update via the stream.
   DateTime _lastPositionDispositionUpdate = DateTime.now();
@@ -309,7 +309,7 @@ class SoundPlayer implements SlotEntry {
 
   /// Starts playback.
   /// The [track] to play.
-  Future<void> play(common.Track track) async {
+  Future<void> play(Track track) async {
     assert(track != null);
 
     if (!isStopped) {
@@ -324,7 +324,7 @@ class SoundPlayer implements SlotEntry {
       _track = track;
 
       // Check the current codec is supported on this platform
-      if (!await isNative(track.codec)) {
+      if (!await NativeMediaFormats().isNativeDecoder(track.mediaFormat)) {
         var exception = PlayerInvalidStateException(
             'The selected codec ${track.codec} is not supported on '
             'this platform.');
@@ -713,16 +713,6 @@ class SoundPlayer implements SlotEntry {
   // ignore: avoid_setters_without_getters
   set onStopped(PlayerEventWithCause onStopped) {
     _onStopped = onStopped;
-  }
-
-  /// Returns true if the specified decoder is natively
-  /// supported by Sounds on this platform
-  ///
-  /// TODO: how does this interacte with CodecManager
-  Future<bool> isNative(common.Codec codec) async {
-    return _initializeAndRun<bool>(() async {
-      return await _plugin.isSupported(this, codec);
-    });
   }
 
   /// For iOS only.

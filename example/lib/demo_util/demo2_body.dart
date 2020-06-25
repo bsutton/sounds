@@ -1,9 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:sounds/sounds.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:sounds_common/sounds_common.dart';
 
-import '../util/log.dart';
 import 'demo_active_codec.dart';
 import 'demo_asset_player.dart';
 import 'demo_drop_downs.dart';
@@ -33,8 +32,9 @@ class _MainBodyState extends State<MainBody> {
     if (!initialized) {
       await initializeDateFormatting();
       await RecorderState().init();
-      ActiveCodec().recorderModule = RecorderState().recorderModule;
-      await ActiveCodec().setCodec(withUI: _useOSUI, codec: Codec.aacADTS);
+      ActiveMediaFormat().recorderModule = RecorderState().recorderModule;
+      await ActiveMediaFormat().setMediaFormat(
+          withUI: _useOSUI, mediaFormat: WellKnownMediaFormats.aacAdts);
 
       initialized = true;
     }
@@ -55,8 +55,8 @@ class _MainBodyState extends State<MainBody> {
             );
           } else {
             final dropdowns = Dropdowns(
-                onCodecChanged: (codec) =>
-                    ActiveCodec().setCodec(withUI: _useOSUI, codec: codec));
+                onMediaFormatChanged: (codec) => ActiveMediaFormat()
+                    .setMediaFormat(withUI: _useOSUI, mediaFormat: codec));
             final trackSwitch = TrackSwitch(
               isAudioPlayer: _useOSUI,
               switchPlayer: (allow) => switchPlayer(useOSUI: allow),

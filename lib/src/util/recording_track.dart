@@ -39,11 +39,6 @@ class RecordingTrack {
       ArgumentError("Only Tracks created via [Track.fromFile] are supported");
     }
 
-    if (!track.mediaFormat.isNative) {
-      ArgumentError('You can only record to a Track which use a natively '
-          'supported Codec and Container');
-    }
-
     nativeCodec = track.codec;
     recordingPath = track.path;
 

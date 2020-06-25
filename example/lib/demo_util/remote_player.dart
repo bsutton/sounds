@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sounds/sounds.dart';
+import 'package:sounds_common/sounds_common.dart';
 
 import 'demo_active_codec.dart';
 import 'demo_player_state.dart';
@@ -31,7 +32,7 @@ class RemotePlayer extends StatelessWidget {
   Future<Track> _createRemoteTrack(BuildContext context) async {
     Track track;
     // validate codec for example file
-    if (ActiveCodec().codec != Codec.mp3) {
+    if (ActiveMediaFormat().mediaFormat != WellKnownMediaFormats.mp3) {
       var error = SnackBar(
           backgroundColor: Colors.red,
           content: Text('You must set the Codec to MP3 to '
@@ -39,7 +40,8 @@ class RemotePlayer extends StatelessWidget {
       Scaffold.of(context).showSnackBar(error);
     } else {
       // We have to play an example audio file loaded via a URL
-      track = Track.fromURL(exampleAudioFilePath, codec: ActiveCodec().codec);
+      track = Track.fromURL(exampleAudioFilePath,
+          mediaFormat: ActiveMediaFormat().mediaFormat);
 
       track.title = "Remote mpeg playback.";
       track.artist = "By sounds";

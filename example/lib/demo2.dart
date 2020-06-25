@@ -24,6 +24,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:sounds/sounds.dart';
+import 'package:sounds_common/sounds_common.dart';
 
 import 'demo_util/demo_audio_state.dart';
 import 'demo_util/demo_common.dart';
@@ -42,7 +43,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   bool _isRecording = false;
-  final List<String> _path = [null, null, null, null, null, null, null];
+  final _path = <MediaFormat, String>{};
 
   /// we keep our own local stream as the players come and go.
   /// This lets our StreamBuilder work with it worrying about
@@ -55,7 +56,7 @@ class _MyAppState extends State<MyApp> {
   double sliderCurrentPosition = 0.0;
   double maxDuration = 1.0;
   MediaStorage _media = MediaStorage.file;
-  Codec _codec = Codec.aacADTS;
+  MediaFormat mediaFormat = WellKnownMediaFormats.aacAdts;
 
   bool _encoderSupported = true; // Optimist
   bool _decoderSupported = true; // Optimist
@@ -66,12 +67,12 @@ class _MyAppState extends State<MyApp> {
 
   double _duration;
 
-  void setCodec(Codec codec) async {
-    _encoderSupported = await recorder.isSupported(codec);
-    _decoderSupported = await playerModule.isNative(codec);
+  void setMediaFormat(MediaFormat codec) async {
+    _encoderSupported = await mediaFormat.isNativeEncoder;
+    _decoderSupported = await mediaFormat.isNativeDecoder;
 
     setState(() {
-      _codec = codec;
+      mediaFormat = codec;
     });
   }
 
@@ -95,7 +96,7 @@ class _MyAppState extends State<MyApp> {
     playerModule.dispositionStream().listen(_localController.add);
 
     initializeDateFormatting();
-    setCodec(_codec);
+    setMediaFormat(mediaFormat);
     setDuck();
   }
 
@@ -206,15 +207,15 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  static const List<String> paths = [
-    'sounds_example.aac', // DEFAULT
-    'sounds_example.aac', // CODEC_AAC
-    'sounds_example.opus', // CODEC_OPUS
-    'sounds_example.caf', // CODEC_CAF_OPUS
-    'sounds_example.mp3', // CODEC_MP3
-    'sounds_example.ogg', // CODEC_VORBIS
-    'sounds_example.pcm', // CODEC_PCM
-  ];
+  static var paths = <MediaFormat, String>{
+    WellKnownMediaFormats.aacAdts: 'sounds_example.aac', // DEFAULT
+    WellKnownMediaFormats.aacAdts: 'sounds_example.aac', // CODEC_AAC
+    WellKnownMediaFormats.oggOpus: 'sounds_example.opus', // CODEC_OPUS
+    WellKnownMediaFormats.opusCaf: 'sounds_example.caf', // CODEC_CAF_OPUS
+    WellKnownMediaFormats.mp3: 'sounds_example.mp3', // CODEC_MP3
+    WellKnownMediaFormats.oggVorbis: 'sounds_example.ogg', // CODEC_VORBIS
+    WellKnownMediaFormats.pcm: 'sounds_example.pcm', // CODEC_PCM
+  };
 
   Future<void> getDuration() async {
     switch (_media) {
@@ -256,12 +257,12 @@ class _MyAppState extends State<MyApp> {
     try {
       var tempDir = await getTemporaryDirectory();
       var slotNo = 0; // TODO
-      var path = '${tempDir.path}/$slotNo-${paths[_codec.index]}';
-      await recorder.record(Track.fromFile(path, codec: _codec));
+      var path = '${tempDir.path}/$slotNo-${paths[mediaFormat]}';
+      await recorder.record(Track.fromFile(path, mediaFormat: mediaFormat));
 
       setState(() {
         _isRecording = true;
-        _path[_codec.index] = path;
+        _path[mediaFormat] = path;
       });
     }
     // ignore: avoid_catches_without_on_clauses
@@ -307,15 +308,15 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  List<String> assetSample = [
-    'assets/samples/sample.aac',
-    'assets/samples/sample.aac',
-    'assets/samples/sample.opus',
-    'assets/samples/sample.caf',
-    'assets/samples/sample.mp3',
-    'assets/samples/sample.ogg',
-    'assets/samples/sample.pcm',
-  ];
+  var assetSample = <MediaFormat, String>{
+    WellKnownMediaFormats.aacAdts: 'assets/samples/sample.aac',
+    WellKnownMediaFormats.aacAdts: 'assets/samples/sample.aac',
+    WellKnownMediaFormats.oggOpus: 'assets/samples/sample.opus',
+    WellKnownMediaFormats.opusCaf: 'assets/samples/sample.caf',
+    WellKnownMediaFormats.mp3: 'assets/samples/sample.mp3',
+    WellKnownMediaFormats.oggVorbis: 'assets/samples/sample.ogg',
+    WellKnownMediaFormats.pcm: 'assets/samples/sample.pcm',
+  };
 
   void _addListeners() {
     /* TODO
@@ -348,18 +349,18 @@ class _MyAppState extends State<MyApp> {
       Uint8List dataBuffer;
       String audioFilePath;
       if (_media == MediaStorage.asset) {
-        dataBuffer = (await rootBundle.load(assetSample[_codec.index]))
+        dataBuffer = (await rootBundle.load(assetSample[mediaFormat]))
             .buffer
             .asUint8List();
       } else if (_media == MediaStorage.file) {
         // Do we want to play from buffer or from file ?
-        if (await fileExists(_path[_codec.index])) {
-          audioFilePath = _path[_codec.index];
+        if (await fileExists(_path[mediaFormat])) {
+          audioFilePath = _path[mediaFormat];
         }
       } else if (_media == MediaStorage.buffer) {
         // Do we want to play from buffer or from file ?
-        if (await fileExists(_path[_codec.index])) {
-          dataBuffer = await makeBuffer(_path[_codec.index]);
+        if (await fileExists(_path[mediaFormat])) {
+          dataBuffer = await makeBuffer(_path[mediaFormat]);
           if (dataBuffer == null) {
             throw Exception('Unable to create the buffer');
           }
@@ -393,7 +394,7 @@ class _MyAppState extends State<MyApp> {
       if (dataBuffer != null) {
         track = Track.fromBuffer(
           dataBuffer,
-          codec: _codec,
+          mediaFormat: mediaFormat,
         );
       } else {
         track = Track.fromFile(
@@ -609,7 +610,7 @@ class _MyAppState extends State<MyApp> {
           value: _media,
           onChanged: (newMedia) {
             if (newMedia == MediaStorage.remoteExampleFile) {
-              _codec = Codec.mp3;
+              mediaFormat = WellKnownMediaFormats.mp3;
             } // Actually this is the only example we use in this example
             _media = newMedia;
             getDuration();
@@ -643,39 +644,39 @@ class _MyAppState extends State<MyApp> {
       children: <Widget>[
         Padding(
           padding: const EdgeInsets.only(right: 16.0),
-          child: Text('Codec:'),
+          child: Text('MediaFormat:'),
         ),
-        DropdownButton<Codec>(
-          value: _codec,
+        DropdownButton<MediaFormat>(
+          value: mediaFormat,
           onChanged: (newCodec) {
-            setCodec(newCodec);
-            _codec = newCodec;
+            setMediaFormat(newCodec);
+            mediaFormat = newCodec;
             getDuration();
             setState(() {});
           },
-          items: <DropdownMenuItem<Codec>>[
-            DropdownMenuItem<Codec>(
-              value: Codec.aacADTS,
+          items: <DropdownMenuItem<MediaFormat>>[
+            DropdownMenuItem<MediaFormat>(
+              value: WellKnownMediaFormats.aacAdts,
               child: Text('AAC'),
             ),
-            DropdownMenuItem<Codec>(
-              value: Codec.opusOGG,
+            DropdownMenuItem<MediaFormat>(
+              value: WellKnownMediaFormats.oggVorbis,
               child: Text('OGG/Opus'),
             ),
-            DropdownMenuItem<Codec>(
-              value: Codec.cafOpus,
+            DropdownMenuItem<MediaFormat>(
+              value: WellKnownMediaFormats.opusCaf,
               child: Text('CAF/Opus'),
             ),
-            DropdownMenuItem<Codec>(
-              value: Codec.mp3,
+            DropdownMenuItem<MediaFormat>(
+              value: WellKnownMediaFormats.mp3,
               child: Text('MP3'),
             ),
-            DropdownMenuItem<Codec>(
-              value: Codec.vorbisOGG,
+            DropdownMenuItem<MediaFormat>(
+              value: WellKnownMediaFormats.oggVorbis,
               child: Text('OGG/Vorbis'),
             ),
-            DropdownMenuItem<Codec>(
-              value: Codec.pcm,
+            DropdownMenuItem<MediaFormat>(
+              value: WellKnownMediaFormats.pcm,
               child: Text('PCM'),
             ),
           ],
@@ -753,9 +754,10 @@ class _MyAppState extends State<MyApp> {
         _media ==
             MediaStorage.buffer) // A file must be already recorded to play it
     {
-      if (_path[_codec.index] == null) return null;
+      if (_path[mediaFormat] == null) return null;
     }
-    if (_media == MediaStorage.remoteExampleFile && _codec != Codec.mp3) {
+    if (_media == MediaStorage.remoteExampleFile &&
+        mediaFormat != WellKnownMediaFormats.mp3) {
       return null;
     }
 

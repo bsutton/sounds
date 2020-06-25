@@ -4,10 +4,10 @@ import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:sounds/sounds.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:sounds/sounds.dart';
+import 'package:sounds_common/sounds_common.dart';
 
 void main() {
-  var recordingPath = Track.tempFile(Codec.aacADTS);
+  var recordingPath = Track.tempFile(AACADTSMediaFormat());
   runApp(SoundExampleApp._internal(recordingPath));
 }
 
@@ -16,7 +16,8 @@ class SoundExampleApp extends StatelessWidget {
 
   //
   SoundExampleApp._internal(String recordingPath)
-      : _track = Track.fromFile(recordingPath, codec: Codec.aacADTS);
+      : _track =
+            Track.fromFile(recordingPath, mediaFormat: AACADTSMediaFormat());
 
   @override
   Widget build(BuildContext context) {

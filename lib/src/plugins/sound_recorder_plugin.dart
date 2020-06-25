@@ -57,14 +57,6 @@ class SoundRecorderPlugin extends BasePlugin {
     await invokeMethod(recorder, 'releaseSoundRecorder', <String, dynamic>{});
   }
 
-  /// Returns true if the specified encoder is supported by
-  /// sounds on this platform
-  Future<bool> isSupported(
-      sound_recorder.SoundRecorder recorder, Codec codec) async {
-    return await invokeMethod(recorder, 'isEncoderSupported',
-        <String, dynamic>{'codec': codec.name}) as bool;
-  }
-
   ///
   Future<void> start(
     sound_recorder.SoundRecorder recorder,
