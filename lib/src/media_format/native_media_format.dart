@@ -66,7 +66,7 @@ abstract class NativeMediaFormat extends MediaFormat {
   /// Sounds only records/playbacks using natively supported codecs.
   /// Use the sounds_codec package for utilities to convert to/from
   /// other codecs.
-  static MediaFormat common = AACADTSMediaFormat();
+  static NativeMediaFormat common = AACADTSMediaFormat();
 }
 
 // class AMRNBMediaContainer extends MediaContainer {
