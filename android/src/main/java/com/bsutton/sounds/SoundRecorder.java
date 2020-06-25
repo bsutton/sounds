@@ -131,11 +131,6 @@ class SoundRecorderPlugin
 			}
 			break;
 
-			case "isEncoderSupported":
-			{
-				aRecorder.isEncoderSupported ( call, result );
-			}
-			break;
 			case "startRecorder":
 			{
 				aRecorder.startRecorder ( call, result );
@@ -164,9 +159,9 @@ class SoundRecorderPlugin
 			}
 			break;
 
-			case "setSubscriptionDuration":
+			case "setSubscriptionInterval":
 			{
-				aRecorder.setSubscriptionDuration ( call, result );
+				aRecorder.setSubscriptionInterval ( call, result );
 			}
 			break;
 
@@ -235,50 +230,6 @@ class RecorderAudioModel
 
 public class SoundRecorder
 {
-	static boolean _isAndroidEncoderSupported[] = {
-		true, // DEFAULT
-		true, // AAC
-		false, // OGG/OPUS
-		false, // CAF/OPUS
-		false, // MP3
-		false, // OGG/VORBIS
-		false, //PCM
-	};
-
-	final static int CODEC_OPUS   = 2;
-	final static int CODEC_VORBIS = 5;
-
-
-	static int codecArray[] = {
-		0 // DEFAULT
-		, MediaRecorder.AudioEncoder.AAC,
-		sdkCompat.AUDIO_ENCODER_OPUS,
-		0, // CODEC_CAF_OPUS (specific Apple)
-		0,// CODEC_MP3 (not implemented)
-		sdkCompat.AUDIO_ENCODER_VORBIS,
-		7 // MediaRecorder.AudioEncoder.DEFAULT // CODEC_PCM (not implemented)
-	};
-
-
-	static int formatsArray[] = {
-		MediaRecorder.OutputFormat.AAC_ADTS // DEFAULT
-		, MediaRecorder.OutputFormat.AAC_ADTS // CODEC_AAC
-		, sdkCompat.OUTPUT_FORMAT_OGG // CODEC_OPUS
-		, 0 // CODEC_CAF_OPUS (this is apple specific)
-		, 0 // CODEC_MP3
-		, sdkCompat.OUTPUT_FORMAT_OGG // CODEC_VORBIS
-		, sdkCompat.ENCODING_PCM_16BIT// CODEC_PCM
-	};
-
-	static       String pathArray[]               = {
-		"sound.aac" // DEFAULT
-		, "sound.aac" // CODEC_AAC
-		, "sound.opus" // CODEC_OPUS
-		, "sound.caf" // CODEC_CAF_OPUS (this is apple specific)
-		, "sound.mp3" // CODEC_MP3
-		, "sound.ogg" // CODEC_VORBIS
-		, "sound.pcm" // CODEC_PCM
-	};
 	static final String ERR_RECORDER_IS_NULL      = "ERR_RECORDER_IS_NULL";
 	static final String ERR_RECORDER_IS_RECORDING = "ERR_RECORDER_IS_RECORDING";
 
@@ -314,28 +265,6 @@ public class SoundRecorder
 		result.success ( "Sounds Recorder Released" );
 	}
 
-	void isEncoderSupported ( final MethodCall call, final Result result )
-	{
-		int     _codec = call.argument ( "codec" );
-		boolean b      = _isAndroidEncoderSupported[ _codec ];
-		if ( Build.VERSION.SDK_INT < 29 )
-		{
-			if ( ( _codec == CODEC_OPUS ) || ( _codec == CODEC_VORBIS ) )
-			{
-				b = false;
-			}
-		}
-		result.success ( b );
-	}
-
-/*
-	MethodChannel getChannel ()
-	{
-		return SoundRecorderPlugin.channel;
-	}
-
- */
-
 	void invokeMethodWithString ( String methodName, String arg )
 	{
 		Map<String, Object> dic = new HashMap<String, Object> ();
@@ -355,23 +284,19 @@ public class SoundRecorder
 	public void startRecorder ( final MethodCall call, final Result result )
 	{
 		Log.d(TAG, "startRecorder: " + call.argument("path"));
-		//taskScheduler.submit ( () ->
-		{
-			Integer      sampleRate          = call.argument ( "sampleRate" );
-			Integer      numChannels         = call.argument ( "numChannels" );
-			Integer      bitRate             = call.argument ( "bitRate" );
-			int          _codec              = call.argument ( "codec" );
-			t_CODEC      codec               = t_CODEC.values ()[ _codec ];
-			int          audioSource 		 = call.argument ( "audioSource" );
-			final String path                = call.argument ( "path" );
-			_startRecorder ( numChannels, sampleRate, bitRate, codec, audioSource, path, result );
-		}
-		//);
+		Integer      sampleRate          = call.argument ( "sampleRate" );
+		Integer      numChannels         = call.argument ( "numChannels" );
+		Integer      bitRate             = call.argument ( "bitRate" );
+		int          encoder              = call.argument ( "encoder" );
+		int          container              = call.argument ( "container" );
+		int          audioSource 		 = call.argument ( "audioSource" );
+		final String path                = call.argument ( "path" );
+		_startRecorder ( numChannels, sampleRate, bitRate, encoder, container, audioSource, path, result );
 
 	}
 
 	public void _startRecorder (
-		Integer numChannels, Integer sampleRate, Integer bitRate, t_CODEC codec, int audioSource, String path, final Result result
+		Integer numChannels, Integer sampleRate, Integer bitRate, Integer encoder, int container, int audioSource, String path, final Result result
 	                           )
 	{
 		assert(path != null);
@@ -386,20 +311,6 @@ public class SoundRecorder
 
 		try
 		{
-			/// for version older than 10 the AAC option isn't supported
-			/// but if we use DEFAULT we get AAC.
-			if (codec == t_CODEC.AAC 
-			&& android.os.Build.VERSION.SDK_INT < 10)
-			{
-				codec = t_CODEC.DEFAULT;
-			}
-
-			if ( codecArray[ codec.ordinal () ] == 0 )
-			{
-				result.error ( TAG, "Unsupported", "Unsupported encoder" );
-				return;
-			}
-
 			if (path == null) {
 				result.error(TAG, "InvalidArgument", "path must NOT be null.");
 				return;
@@ -415,10 +326,7 @@ public class SoundRecorder
 				result.error(TAG, "Permissions", "Error setting the AudioSource. Check that you have permission to use the microphone.");
 				return;
 			}
-			int encoder      = codecArray[ codec.ordinal () ];
-			int outputFormat = formatsArray[ codec.ordinal () ];
-			mediaRecorder.setOutputFormat ( outputFormat );
-
+			mediaRecorder.setOutputFormat ( container );
 			mediaRecorder.setOutputFile ( path );
 			mediaRecorder.setAudioEncoder ( encoder );
 
@@ -637,8 +545,8 @@ public class SoundRecorder
 
 	public void setDbPeakLevelUpdate ( final MethodCall call, final Result result )
 	{
-		double intervalInSecs = call.argument ( "sec" );
-		this.model.peakLevelUpdateMillis = ( long ) ( intervalInSecs * 1000 );
+		long interval = call.argument ( "milli" );
+		this.model.peakLevelUpdateMillis = interval;
 		result.success ( "setDbPeakLevelUpdate: " + this.model.peakLevelUpdateMillis );
 	}
 
@@ -649,17 +557,17 @@ public class SoundRecorder
 		result.success ( "setDbLevelEnabled: " + this.model.shouldProcessDbLevel );
 	}
 
-	public void setSubscriptionDuration ( final MethodCall call, final Result result )
+	public void setSubscriptionInterval ( final MethodCall call, final Result result )
 	{
-		Log.d(TAG, "setSubscriptionDuration: " + call.argument("sec"));
-		if ( call.argument ( "sec" ) == null )
+		Log.d(TAG, "setSubscriptionInterval: " + call.argument("milli"));
+		if ( call.argument ( "milli" ) == null )
 		{
 			return;
 		}
-		double duration = call.argument ( "sec" );
+		int duration = call.argument ( "milli" );
 
-		this.model.subsDurationMillis = ( int ) ( duration * 1000 );
-		result.success ( "setSubscriptionDuration: " + this.model.subsDurationMillis );
+		this.model.subsDurationMillis =  duration;
+		result.success ( "setSubscriptionInterval: " + this.model.subsDurationMillis );
 	}
 
 

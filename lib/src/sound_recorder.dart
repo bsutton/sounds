@@ -416,7 +416,7 @@ class SoundRecorder implements SlotEntry {
   /// The default is every 10 milliseconds.
   Future<void> _setSubscriptionInterval(Duration interval) async {
     await _initializeAndRun(() async {
-      await _plugin.setSubscriptionDuration(this, interval);
+      await _plugin.setSubscriptionInterval(this, interval);
     });
   }
 

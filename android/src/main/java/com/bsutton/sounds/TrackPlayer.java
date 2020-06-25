@@ -176,12 +176,12 @@ class TrackPlayerPlugin
 			case "setVolume":
 				aPlayer.setVolume( call, result );
 				break;
-			case "setSubscriptionDuration":
-				if ( call.argument( "sec" ) == null )
+			case "setSubscriptionInterval":
+				if ( call.argument( "milli" ) == null )
 				{
 					return;
 				}
-				aPlayer.setSubscriptionDuration( call, result );
+				aPlayer.setSubscriptionInterval( call, result );
 				break;
 
 			default:
@@ -474,7 +474,7 @@ public class TrackPlayer extends SoundPlayer
 	@Override
 	public void seekToPlayer(final MethodCall call, Result result )
 	{
-		int millis = call.argument ( "sec" ) ;
+		int millis = call.argument ( "milli" ) ;
 
 		// Exit the method if a media browser helper was not initialized
 		if ( !wasMediaPlayerInitialized( result ) )
@@ -512,14 +512,14 @@ public class TrackPlayer extends SoundPlayer
 	}
 
 
-	public void setSubscriptionDuration( final MethodCall call, Result result )
+	public void setSubscriptionInterval( final MethodCall call, Result result )
 	{
-		if (call.argument("sec") == null)
+		if (call.argument("milli") == null)
 			return;
-		double duration = call.argument("sec");
+		int duration = call.argument("milli");
 
-		this.model.subsDurationMillis = ( int ) ( duration * 1000 );
-		result.success( "setSubscriptionDuration: " + this.model.subsDurationMillis );
+		this.model.subsDurationMillis = duration;
+		result.success( "setSubscriptionInterval: " + this.model.subsDurationMillis );
 	}
 
 	private boolean wasMediaPlayerInitialized(  final Result result )

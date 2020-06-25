@@ -518,7 +518,7 @@ class SoundPlayer implements SlotEntry {
   Future<void> _setSubscriptionInterval(Duration interval) async {
     return _initializeAndRun(() async {
       assert(interval.inMilliseconds > 0);
-      await _plugin.setSubscriptionDuration(this, interval);
+      await _plugin.setSubscriptionInterval(this, interval);
     });
   }
 

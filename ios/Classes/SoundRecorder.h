@@ -49,15 +49,13 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar);
 
 - (SoundRecorderManager*) getPlugin;
 - (SoundRecorder*)init: (int)aSlotNo;
-
-- (void)isEncoderSupported:(t_CODEC)codec result: (FlutterResult)result;
 - (void)startRecorder :(FlutterMethodCall*)call result:(FlutterResult)result;
 - (void)stopRecorder:(FlutterResult)result;
-- (void)setDbPeakLevelUpdate:(double)intervalInSecs result: (FlutterResult)result;
+- (void)setDbPeakLevelUpdate:(long)intervalInMills result: (FlutterResult)result;
 - (void)setDbLevelEnabled:(BOOL)enabled result: (FlutterResult)result;
 - (void)initializeSoundRecorder : (FlutterMethodCall*)call result:(FlutterResult)result;
 - (void)releaseSoundRecorder : (FlutterMethodCall*)call result:(FlutterResult)result;
-- (void)setSubscriptionDuration:(double)duration result: (FlutterResult)result;
+- (void)setSubscriptionInterval:(long)intervalInMillis result: (FlutterResult)result;
 - (void)pauseRecorder : (FlutterMethodCall*)call result:(FlutterResult)result;
 - (void)resumeRecorder : (FlutterMethodCall*)call result:(FlutterResult)result;
 

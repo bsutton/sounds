@@ -30,40 +30,6 @@
 static FlutterMethodChannel* _channel;
 
 
-static bool _isIosEncoderSupported [] =
-{
-    true, // DEFAULT
-    true, // AAC
-    false, // OGG/OPUS
-    true, // CAF/OPUS
-    false, // MP3
-    false, // OGG/VORBIS
-    true, // PCM
-};
-
-static NSString* defaultExtensions [] =
-{
-          @"sound.aac"         // CODEC_DEFAULT
-          @"sound.aac"         // CODEC_AAC
-        , @"sound.opus"        // CODEC_OPUS
-        , @"sound.caf"        // CODEC_CAF_OPUS
-        , @"sound.mp3"        // CODEC_MP3
-        , @"sound.ogg"        // CODEC_VORBIS
-        , @"sound.pcm"        // CODE_PCM
-};
-
-static AudioFormatID formats [] =
-{
-          kAudioFormatMPEG4AAC        // CODEC_DEFAULT
-        , kAudioFormatMPEG4AAC        // CODEC_AAC
-        , 0                        // CODEC_OPUS
-        , kAudioFormatOpus        // CODEC_CAF_OPUS
-        , 0                        // CODEC_MP3
-        , 0                        // CODEC_OGG
-        , kAudioFormatLinearPCM    // CODEC_PCM
-};
-
-
 
 FlutterMethodChannel* _flautoRecorderChannel;
 
@@ -138,11 +104,6 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
                 [aSoundRecorder releaseSoundRecorder:call result:result];
         } else
          
-        if ([@"isEncoderSupported" isEqualToString:call.method])
-        {
-                NSNumber* codec = (NSNumber*)call.arguments[@"codec"];
-                [aSoundRecorder isEncoderSupported:[codec intValue] result:result];
-        } else
         
         if ([@"startRecorder" isEqualToString:call.method])
         {
@@ -156,8 +117,8 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
         
         if ([@"setDbPeakLevelUpdate" isEqualToString:call.method])
         {
-                NSNumber* intervalInSecs = (NSNumber*)call.arguments[@"sec"];
-                [aSoundRecorder setDbPeakLevelUpdate:[intervalInSecs doubleValue] result:result];
+                NSNumber* interval = (NSNumber*)call.arguments[@"milli"];
+                [aSoundRecorder setDbPeakLevelUpdate:[interval longValue] result:result];
         } else
         
         if ([@"setDbLevelEnabled" isEqualToString:call.method])
@@ -166,10 +127,10 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
                 [aSoundRecorder setDbLevelEnabled:enabled result:result];
         } else
         
-        if ([@"setSubscriptionDuration" isEqualToString:call.method])
+        if ([@"setSubscriptionInterval" isEqualToString:call.method])
         {
-                NSNumber* sec = (NSNumber*)call.arguments[@"sec"];
-                [aSoundRecorder setSubscriptionDuration:[sec doubleValue] result:result];
+                NSNumber* interval = (NSNumber*)call.arguments[@"milli"];
+                [aSoundRecorder setSubscriptionInterval:[interval longValue] result:result];
         } else
         
         if ([@"pauseRecorder" isEqualToString:call.method])
@@ -202,7 +163,7 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
         t_SET_CATEGORY_DONE setActiveDone;
         double dbPeakInterval;
         bool shouldProcessDbLevel;
-        double subscriptionDuration;
+        double subscriptionInterval;
         int slotNo;
 
 }
@@ -255,13 +216,6 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
         return _channel;
 }
 
-- (void)isEncoderSupported:(t_CODEC)codec result: (FlutterResult)result
-{
-        NSNumber* b = [NSNumber numberWithBool: _isIosEncoderSupported[codec] ];
-        result(b);
-}
-
-
 
 - (void)startRecorder :(FlutterMethodCall*)call result:(FlutterResult)result
 {
@@ -270,13 +224,7 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
            NSNumber* numChannelsArgs = (NSNumber*)call.arguments[@"numChannels"];
            NSNumber* iosQuality = (NSNumber*)call.arguments[@"iosQuality"];
            NSNumber* bitRate = (NSNumber*)call.arguments[@"bitRate"];
-           NSNumber* codec = (NSNumber*)call.arguments[@"codec"];
-
-           t_CODEC coder = CODEC_AAC;
-           if (![codec isKindOfClass:[NSNull class]])
-           {
-                   coder = [codec intValue];
-           }
+           NSNumber* encoder = (NSNumber*)call.arguments[@"encoder"];
 
            float sampleRate = 44100;
            if (![sampleRateArgs isKindOfClass:[NSNull class]])
@@ -301,7 +249,7 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
           }
           NSMutableDictionary *audioSettings = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                          [NSNumber numberWithFloat: sampleRate],AVSampleRateKey,
-                                         [NSNumber numberWithInt: formats[coder] ],AVFormatIDKey,
+                                         [NSNumber numberWithInt: encoder ],AVFormatIDKey,
                                          [NSNumber numberWithInt: numChannels ],AVNumberOfChannelsKey,
                                          [NSNumber numberWithInt: [iosQuality intValue]],AVEncoderAudioQualityKey,
                                          nil];
@@ -376,7 +324,7 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
 {
         [self stopRecorderTimer];
         //dispatch_async(dispatch_get_main_queue(), ^{
-        recorderTimer = [NSTimer scheduledTimerWithTimeInterval: subscriptionDuration
+        recorderTimer = [NSTimer scheduledTimerWithTimeInterval: subscriptionInterval
                                            target:self
                                            selector:@selector(updateRecorderProgress:)
                                            userInfo:nil
@@ -386,9 +334,11 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
 
 
 
-- (void)setDbPeakLevelUpdate:(double)intervalInSecs result: (FlutterResult)result
+- (void)setDbPeakLevelUpdate:(long)intervalInMilli result: (FlutterResult)result
 {
-        dbPeakInterval = intervalInSecs;
+        /// convert milliseconds to seconds required by a Timer.
+        dbPeakInterval = [NSNumber numberWithDouble:intervalInMilli/1000];
+
         result(@"setDbPeakLevelUpdate");
 }
 
@@ -430,10 +380,11 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
 }
 
 
-- (void)setSubscriptionDuration:(double)duration result: (FlutterResult)result
+- (void)setSubscriptionInterval:(long)intervalInMilli result: (FlutterResult)result
 {
-        subscriptionDuration = duration;
-        result(@"setSubscriptionDuration");
+        /// convert milliseconds to seconds required by a Timer.
+        subscriptionInterval = [NSNumber numberWithDouble:intervalInMilli/1000.0];
+        result(@"setSubscriptionInterval");
 }
 
 - (void)pauseRecorder : (FlutterMethodCall*)call result:(FlutterResult)result

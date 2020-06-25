@@ -56,7 +56,6 @@ extern NSMutableArray* flautoPlayerSlots;
 - (SoundPlayer*)init: (int)aSlotNo;
 
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag;
-- (void)isDecoderSupported:(t_CODEC)codec result: (FlutterResult)result;
 - (void)updateProgress:(NSTimer *)timer;
 - (void)startTimer;
 - (void)stopPlayer;
@@ -67,8 +66,8 @@ extern NSMutableArray* flautoPlayerSlots;
 - (bool)resume;
 - (void)startPlayer:(NSString*)path result: (FlutterResult)result;
 - (void)startPlayerFromBuffer:(FlutterStandardTypedData*)dataBuffer result: (FlutterResult)result;
-- (void)seekToPlayer:(nonnull NSNumber*) time result: (FlutterResult)result;
-- (void)setSubscriptionDuration:(double)duration result: (FlutterResult)result;
+- (void)seekToPlayer:(long) positionInMilli result: (FlutterResult)result;
+- (void)setSubscriptionInterval:(long)intervalInMilli result: (FlutterResult)result;
 - (void)setVolume:(double) volume result: (FlutterResult)result;
 - (void)setCategory: (NSString*)categ mode:(NSString*)mode options:(int)options result:(FlutterResult)result;
 - (void)setActive:(BOOL)enabled result:(FlutterResult)result;

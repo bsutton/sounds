@@ -114,12 +114,6 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
                 flautoPlayerSlots[slotNo] = [NSNull null];
         } else
         
-        if ([@"isDecoderSupported" isEqualToString:call.method])
-        {
-                NSNumber* codec = (NSNumber*)call.arguments[@"codec"];
-                [aSoundPlayer isDecoderSupported:[codec intValue] result:result];
-        } else
-        
         if ([@"startPlayer" isEqualToString:call.method])
         {
                 NSString* path = (NSString*)call.arguments[@"path"];
@@ -150,14 +144,14 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
           
         if ([@"seekToPlayer" isEqualToString:call.method])
         {
-                NSNumber* sec = (NSNumber*)call.arguments[@"sec"];
-                [aSoundPlayer seekToPlayer:sec result:result];
+                NSNumber* positionInMilli = (NSNumber*)call.arguments[@"milli"];
+                [aSoundPlayer seekToPlayer:[positionInMilli longValue] result:result];
         } else
         
-        if ([@"setSubscriptionDuration" isEqualToString:call.method])
+        if ([@"setSubscriptionInterval" isEqualToString:call.method])
         {
-                NSNumber* sec = (NSNumber*)call.arguments[@"sec"];
-                [aSoundPlayer setSubscriptionDuration:[sec doubleValue] result:result];
+                NSNumber* intervalInMilli = (NSNumber*)call.arguments[@"milli"];
+                [aSoundPlayer setSubscriptionInterval:[intervalInMilli longValue] result:result];
         } else
         
         if ([@"setVolume" isEqualToString:call.method])
@@ -201,7 +195,7 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
         NSURL *audioFileURL;
         //AVAudioPlayer* audioPlayer; // In the interface
         NSTimer *timer;
-        double subscriptionDuration;
+        double subscriptionInterval;
         int slotNo;
 }
 
@@ -211,14 +205,6 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
         slotNo = aSlotNo;
         return self;
 }
-
-- (void)isDecoderSupported:(t_CODEC)codec result: (FlutterResult)result
-{
-        NSNumber*  b = [NSNumber numberWithBool: _isIosDecoderSupported[codec] ];
-        result(b);
-}
-
-
 
 -(SoundPlayerManager*) getPlugin
 {
@@ -537,11 +523,11 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
    }
 }
 
-- (void)seekToPlayer:(nonnull NSNumber*) time result: (FlutterResult)result
+- (void)seekToPlayer:(long) positionInMilli result: (FlutterResult)result
 {
         if (audioPlayer)
         {
-                audioPlayer.currentTime = [time doubleValue] / 1000;
+                audioPlayer.currentTime = [NSNumber numberWithDouble:positionInMilli / 1000];
                 [self updateProgress:nil];
                 result([time stringValue]);
         } else
@@ -604,7 +590,7 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 {
         [self stopTimer];
         //dispatch_async(dispatch_get_main_queue(), ^{ // ??? Why Async ?  (no async for recorder)
-        self -> timer = [NSTimer scheduledTimerWithTimeInterval:subscriptionDuration
+        self -> timer = [NSTimer scheduledTimerWithTimeInterval:subscriptionInterval
                                            target:self
                                            selector:@selector(updateProgress:)
                                            userInfo:nil
@@ -613,10 +599,11 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 }
 
 
-- (void)setSubscriptionDuration:(double)duration result: (FlutterResult)result
+- (void)setSubscriptionInterval:(long)intervalInMillis result: (FlutterResult)result
 {
-        subscriptionDuration = duration;
-        result(@"setSubscriptionDuration");
+        NSNumber *interval = [NSNumber numberWithDouble:intervalInMillis * 1000];
+        subscriptionInterval = interval;
+        result(@"setSubscriptionInterval");
 }
 
 

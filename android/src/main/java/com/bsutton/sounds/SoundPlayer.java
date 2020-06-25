@@ -153,21 +153,9 @@ class SoundPlayerPlugin
 				}
 				break;
 
-				case "isDecoderSupported":
-				{
-					aPlayer.isDecoderSupported ( call, result );
-				}
-				break;
-
 				case "startPlayer":
 				{
 					aPlayer.startPlayer ( call, result );
-				}
-				break;
-
-				case "startPlayerFromBuffer":
-				{
-					aPlayer.startPlayerFromBuffer ( call, result );
 				}
 				break;
 
@@ -201,9 +189,9 @@ class SoundPlayerPlugin
 				}
 				break;
 
-				case "setSubscriptionDuration":
+				case "setSubscriptionInterval":
 				{
-					aPlayer.setSubscriptionDuration ( call, result );
+					aPlayer.setSubscriptionInterval ( call, result );
 				}
 				break;
 
@@ -234,20 +222,6 @@ class SoundPlayerPlugin
 
 	}
 
-}
-
-
-// SDK compatibility
-// -----------------
-
-class sdkCompat
-{
-	static final int AUDIO_ENCODER_VORBIS = 6; // MediaRecorder.AudioEncoder.VORBIS added in API level 21
-	static final int AUDIO_ENCODER_OPUS   = 7; // MediaRecorder.AudioEncoder.OPUS added in API level 29
-	static final int OUTPUT_FORMAT_OGG    = 11; // MediaRecorder.OutputFormat.OGG added in API level 29
-	static final int VERSION_CODES_M      = 23; // added in API level 23
-	static final int ENCODING_PCM_16BIT   = 2;
-	static final int ENCODING_OPUS        = 20; // Android R
 }
 
 class PlayerAudioModel
@@ -307,17 +281,6 @@ public class SoundPlayer
 		true, // MP3
 		true, // OGG/VORBIS
 		true, // WAV/PCM
-	};
-
-
-	String extentionArray[] = {
-		".aac" // DEFAULT
-		, ".aac" // CODEC_AAC
-		, ".opus" // CODEC_OPUS
-		, ".caf" // CODEC_CAF_OPUS (this is apple specific)
-		, ".mp3" // CODEC_MP3
-		, ".ogg" // CODEC_VORBIS
-		, ".wav" // CODEC_PCM
 	};
 
 
@@ -536,26 +499,6 @@ public class SoundPlayer
 		}
 	}
 
-
-	/// This method is no longer used as we create the file in the dart code.
-	public void startPlayerFromBuffer ( final MethodCall call, final Result result )
-	{
-		Integer _codec     = call.argument ( "codec" );
-		t_CODEC codec      = t_CODEC.values ()[ ( _codec != null ) ? _codec : 0 ];
-		byte[]  dataBuffer = call.argument ( "dataBuffer" );
-		try
-		{
-			File             f   = File.createTempFile ( "sounds_buffer-" + Integer.toString(slotNo), extentionArray[ codec.ordinal () ] );
-			FileOutputStream fos = new FileOutputStream ( f );
-			fos.write ( dataBuffer );
-			_startPlayer ( f.getAbsolutePath (), result );
-		}
-		catch ( Exception e )
-		{
-			result.error ( ERR_UNKNOWN, ERR_UNKNOWN, e.getMessage () );
-		}
-	}
-
 	public void stopPlayer ( final MethodCall call, final Result result )
 	{
 		MediaPlayer mp = this.model.getMediaPlayer();
@@ -586,21 +529,6 @@ public class SoundPlayer
 			Log.e ( TAG, "stopPlay exception: " + e.getMessage () );
 			result.error ( ERR_UNKNOWN, ERR_UNKNOWN, e.getMessage () );
 		}
-	}
-
-	public void isDecoderSupported ( final MethodCall call, final Result result )
-	{
-		int     _codec = call.argument ( "codec" );
-		boolean b      = _isAndroidDecoderSupported[ _codec ];
-		if ( Build.VERSION.SDK_INT < 23 )
-		{
-			if ( ( _codec == CODEC_OPUS ) || ( _codec == CODEC_VORBIS ) )
-			{
-				b = false;
-			}
-		}
-		result.success ( b );
-
 	}
 
 	public void pausePlayer ( final MethodCall call, final Result result )
@@ -670,7 +598,7 @@ public class SoundPlayer
 	{
 		MediaPlayer mp = this.model.getMediaPlayer ();
 
-		int millis = call.argument ( "sec" ) ;
+		long millis = call.argument ( "milli" ) ;
 
 		if ( mp == null )
 		{
@@ -706,16 +634,16 @@ public class SoundPlayer
 	}
 
 
-	public void setSubscriptionDuration ( final MethodCall call, Result result )
+	public void setSubscriptionInterval ( final MethodCall call, Result result )
 	{
-		if ( call.argument ( "sec" ) == null )
+		if ( call.argument ( "milli" ) == null )
 		{
 			return;
 		}
-		double duration = call.argument ( "sec" );
+		int duration = call.argument ( "milli" );
 
-		this.model.subsDurationMillis = ( int ) ( duration * 1000 );
-		result.success ( "setSubscriptionDuration: " + this.model.subsDurationMillis );
+		this.model.subsDurationMillis = duration ;
+		result.success ( "setSubscriptionInterval: " + this.model.subsDurationMillis );
 	}
 
 	void androidAudioFocusRequest ( final MethodCall call, final Result result )

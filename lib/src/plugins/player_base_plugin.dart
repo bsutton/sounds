@@ -81,7 +81,7 @@ abstract class PlayerBasePlugin extends BasePlugin {
   ///
   Future<void> seekToPlayer(SlotEntry player, Duration position) async {
     await invokeMethod(player, 'seekToPlayer', <String, dynamic>{
-      'sec': position.inMilliseconds,
+      'milli': position.inMilliseconds,
     });
   }
 
@@ -111,13 +111,6 @@ abstract class PlayerBasePlugin extends BasePlugin {
   }
 
   ///
-  Future<bool> isSupported(SlotEntry player, Codec codec) async {
-    var result = await invokeMethod(player, 'isDecoderSupported',
-        <String, dynamic>{'codec': codec.name}) as bool;
-    return result;
-  }
-
-  ///
   Future<bool> iosSetCategory(SlotEntry player, IOSSessionCategory category,
       IOSSessionMode mode, int options) async {
     if (!Platform.isIOS) return false;
@@ -138,12 +131,12 @@ abstract class PlayerBasePlugin extends BasePlugin {
   }
 
   ///
-  Future<void> setSubscriptionDuration(
+  Future<void> setSubscriptionInterval(
       SlotEntry player, Duration interval) async {
-    await invokeMethod(player, 'setSubscriptionDuration', <String, dynamic>{
+    await invokeMethod(player, 'setSubscriptionInterval', <String, dynamic>{
       /// we need to use milliseconds as if we use seconds we end
       /// up rounding down to zero.
-      'sec': (interval.inMilliseconds).toDouble() / 1000,
+      'milli': interval.inMilliseconds,
     });
   }
 
