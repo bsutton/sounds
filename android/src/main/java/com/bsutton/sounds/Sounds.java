@@ -1,7 +1,7 @@
 package com.bsutton.sounds;
 import java.util.concurrent.CountDownLatch;
 
-import com.bsutton.sounds.ffmpeg.FFmpegPlugin;
+
 /*
  * This file is part of Sounds (Sounds).
  *
@@ -75,7 +75,6 @@ public class Sounds
 		SoundPlayerPlugin.attachSoundPlayer ( ctx, binding.getBinaryMessenger () );
 		SoundRecorderPlugin.attachSoundRecorder ( ctx, binding.getBinaryMessenger () );
 		TrackPlayerPlugin.attachTrackPlayer ( ctx, binding.getBinaryMessenger () );
-        if (FULL_FLAVOR) {FFmpegPlugin.attachFFmpegPlugin( ctx, binding.getBinaryMessenger() );}
 	}
 
 
@@ -93,7 +92,6 @@ public class Sounds
 		SoundPlayerPlugin.attachSoundPlayer ( ctx, registrar.messenger () );
 		SoundRecorderPlugin.attachSoundRecorder ( ctx, registrar.messenger ()  );
 		TrackPlayerPlugin.attachTrackPlayer ( ctx, registrar.messenger ()  );
-		if (FULL_FLAVOR) {FFmpegPlugin.attachFFmpegPlugin(ctx,registrar.messenger ()  );}
 		
 		/// We are fully initialised for v1 embedding
 		initialised.countDown();

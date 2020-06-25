@@ -25,7 +25,6 @@ export 'package:sounds_common/sounds_common.dart'
 export 'src/album.dart';
 export 'src/android/android_audio_focus_gain.dart';
 export 'src/audio_focus.dart';
-export 'src/ffmpeg/ffmpeg_util.dart';
 export 'src/ios/ios_session_category.dart';
 export 'src/ios/ios_session_category_option.dart';
 export 'src/ios/ios_session_mode.dart';

@@ -21,7 +21,6 @@
  */
 
 
-#import "FfmpegPlugin.h"
 
 #import "Sounds.h"
 #import "SoundPlayer.h"
@@ -41,9 +40,6 @@
         SoundPlayerReg(registrar);
         SoundRecorderReg(registrar);
         TrackPlayerReg(registrar);
-        #ifdef FULL_FLAVOR
-                FfmpegReg(registrar);
-        #endif
 }
 
 @end

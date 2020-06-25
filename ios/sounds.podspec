@@ -18,5 +18,4 @@ Flutter plugin that provides audio recording and playback services
 
   s.ios.deployment_target = '9.3'
   s.static_framework = true
-  s.dependency 'mobile-ffmpeg-audio', '4.3.1.LTS'
 end
