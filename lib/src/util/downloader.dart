@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:pedantic/pedantic.dart';
+
 import '../playback_disposition.dart';
 import 'log.dart';
 
@@ -16,7 +18,7 @@ class Downloader {
     progress(PlaybackDisposition.preload());
 
     var client = HttpClient();
-    client.getUrl(Uri.parse(url)).then((request) {
+    unawaited(client.getUrl(Uri.parse(url)).then((request) {
       /// we have connected
       /// we can added headers here if we need.
       /// send the request
@@ -58,7 +60,7 @@ class Downloader {
           await raf.close();
           progress(PlaybackDisposition.loaded());
           Log.e('Completed downloading: $url');
-          subscription.cancel();
+          unawaited(subscription.cancel());
           completer.complete();
         },
         // ignore: avoid_types_on_closure_parameters
@@ -71,7 +73,7 @@ class Downloader {
         },
         cancelOnError: true,
       );
-    });
+    }));
 
     return completer.future;
   }

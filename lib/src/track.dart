@@ -3,10 +3,8 @@ import 'dart:typed_data';
 
 import 'package:meta/meta.dart';
 
-import 'codec/audio.dart';
-import 'codec/codec.dart';
-import 'codec/codec_helper.dart';
-import 'codec/media_format.dart';
+import '../sounds_common.dart';
+import 'media_format/audio.dart';
 import 'playback_disposition.dart';
 import 'util/file_util.dart' as fm;
 
@@ -187,15 +185,14 @@ class Track {
   /// into this file. But you're not that stupid are you :)
   ///
   /// ```dart
-  /// var file = Track.tempfile(Codec.mp3)
+  /// var file = Track.tempfile(MediaFormat.MP3)
   ///
   /// print(file);
   /// > 1230811273109.mp3
   /// ```
   ///
-  static String tempFile(Codec codec) {
-    return fm.FileUtil()
-        .tempFile(suffix: CodecHelper.codecToExtensionMap[codec]);
+  static String tempFile(MediaFormat mediaFormat) {
+    return fm.FileUtil().tempFile(suffix: mediaFormat.extension);
   }
 }
 
