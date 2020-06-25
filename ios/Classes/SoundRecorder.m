@@ -224,7 +224,7 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
            NSNumber* numChannelsArgs = (NSNumber*)call.arguments[@"numChannels"];
            NSNumber* iosQuality = (NSNumber*)call.arguments[@"iosQuality"];
            NSNumber* bitRate = (NSNumber*)call.arguments[@"bitRate"];
-           NSNumber* encoder = (NSNumber*)call.arguments[@"encoder"];
+           NSNumber* format = (NSNumber*)call.arguments[@"format"];
 
            float sampleRate = 44100;
            if (![sampleRateArgs isKindOfClass:[NSNull class]])
@@ -249,7 +249,7 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
           }
           NSMutableDictionary *audioSettings = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                          [NSNumber numberWithFloat: sampleRate],AVSampleRateKey,
-                                         [NSNumber numberWithInt: encoder ],AVFormatIDKey,
+                                         [NSNumber numberWithInt: format ],AVFormatIDKey,
                                          [NSNumber numberWithInt: numChannels ],AVNumberOfChannelsKey,
                                          [NSNumber numberWithInt: [iosQuality intValue]],AVEncoderAudioQualityKey,
                                          nil];

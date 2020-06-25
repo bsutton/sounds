@@ -16,6 +16,7 @@
 
 import 'dart:async';
 import 'dart:convert' as convert;
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/services.dart';
@@ -61,23 +62,25 @@ class SoundRecorderPlugin extends BasePlugin {
   Future<void> start(
     sound_recorder.SoundRecorder recorder,
     String path,
-    int sampleRate,
-    int numChannels,
-    int bitRate,
-    Codec codec,
+    NativeMediaFormat mediaFormat,
     AudioSource audioSource,
     Quality iosQuality,
   ) async {
     var param = <String, dynamic>{
       'path': path,
-      'sampleRate': sampleRate,
-      'numChannels': numChannels,
-      'bitRate': bitRate,
-      'codec': codec.name,
+      'sampleRate': mediaFormat.sampleRate,
+      'numChannels': mediaFormat.numChannels,
+      'bitRate': mediaFormat.bitRate,
       'audioSource': audioSource?.value,
-      'iosQuality': iosQuality?.value
     };
 
+    if (Platform.isAndroid) {
+      param['encoder'] = mediaFormat.androidCodec;
+      param['container'] = mediaFormat.androidFormat;
+    } else {
+      param['format'] = mediaFormat.iosFormat;
+      param['iosQuality'] = iosQuality?.value;
+    }
     await invokeMethod(recorder, 'startRecorder', param);
   }
 

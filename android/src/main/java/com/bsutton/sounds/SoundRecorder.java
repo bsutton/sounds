@@ -288,15 +288,15 @@ public class SoundRecorder
 		Integer      numChannels         = call.argument ( "numChannels" );
 		Integer      bitRate             = call.argument ( "bitRate" );
 		int          encoder              = call.argument ( "encoder" );
-		int          container              = call.argument ( "container" );
+		int          format              = call.argument ( "format" );
 		int          audioSource 		 = call.argument ( "audioSource" );
 		final String path                = call.argument ( "path" );
-		_startRecorder ( numChannels, sampleRate, bitRate, encoder, container, audioSource, path, result );
+		_startRecorder ( numChannels, sampleRate, bitRate, encoder, format, audioSource, path, result );
 
 	}
 
 	public void _startRecorder (
-		Integer numChannels, Integer sampleRate, Integer bitRate, Integer encoder, int container, int audioSource, String path, final Result result
+		Integer numChannels, Integer sampleRate, Integer bitRate, Integer encoder, int format, int audioSource, String path, final Result result
 	                           )
 	{
 		assert(path != null);
@@ -326,7 +326,7 @@ public class SoundRecorder
 				result.error(TAG, "Permissions", "Error setting the AudioSource. Check that you have permission to use the microphone.");
 				return;
 			}
-			mediaRecorder.setOutputFormat ( container );
+			mediaRecorder.setOutputFormat ( format );
 			mediaRecorder.setOutputFile ( path );
 			mediaRecorder.setAudioEncoder ( encoder );
 

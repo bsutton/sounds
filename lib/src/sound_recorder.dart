@@ -260,7 +260,7 @@ class SoundRecorder implements SlotEntry {
     Track track, {
     AudioSource audioSource = AudioSource.mic,
     Quality quality = Quality.low,
-    MediaFormat mediaFormat,
+    NativeMediaFormat mediaFormat,
   }) async {
     mediaFormat ??= NativeMediaFormat.common;
 
@@ -305,15 +305,8 @@ class SoundRecorder implements SlotEntry {
       if (hasPermissions) {
         _timePaused = Duration(seconds: 0);
 
-        await _plugin.start(
-            this,
-            _recordingTrack.recordingPath,
-            mediaFormat.sampleRate,
-            mediaFormat.numChannels,
-            mediaFormat.bitRate,
-            _recordingTrack.nativeCodec,
-            audioSource,
-            quality);
+        await _plugin.start(this, _recordingTrack.recordingPath, mediaFormat,
+            audioSource, quality);
 
         _recorderState = _RecorderState.isRecording;
         if (_onStarted != null) _onStarted(wasUser: true);
