@@ -60,11 +60,11 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import io.flutter.embedding.engine.FlutterEngine;
-import io.flutter.embedding.engine.plugins.FlutterPlugin;
-import io.flutter.embedding.engine.plugins.activity.ActivityAware;
-import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
-import io.flutter.plugin.common.BinaryMessenger;
+// import io.flutter.embedding.engine.FlutterEngine;
+// import io.flutter.embedding.engine.plugins.FlutterPlugin;
+//import io.flutter.embedding.engine.plugins.activity.ActivityAware;
+// import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
+// import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
@@ -168,33 +168,7 @@ public class ShadePlayer extends SoundPlayer
 			return;
 		}
 
-		// Check whether the audio file is stored by a string or a buffer
-		String path;
-		if ( track.isUsingPath() )
-		{
-			// The audio file is stored by a String, then get the path to the file audio to
-			// play
-			path = track.getPath();
-		} else
-		{
-			// The audio file is stored by a buffer, then save it as a file and get the path
-			// to that file.
-			//
-			// NOTE: this code is no longer used. The Dart code will ALWAYS pass a file
-			try
-			{
-				File             f   = File.createTempFile( "sounds", extentionArray[ track.getBufferCodecIndex() ] );
-				FileOutputStream fos = new FileOutputStream( f );
-				fos.write( track.getDataBuffer() );
-				path = f.getAbsolutePath();
-			}
-			catch ( Exception e )
-			{
-				Log.e(TAG, e.getMessage(), e);
-				result.error( ERR_UNKNOWN, ERR_UNKNOWN, e.getMessage() );
-				return;
-			}
-		}
+		String path = track.getPath();
 
 		mTimer = new Timer();
 

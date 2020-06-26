@@ -23,15 +23,15 @@ import '../sound_player.dart';
 import 'player_base_plugin.dart';
 
 ///
-class SoundPlayerTrackPlugin extends PlayerBasePlugin {
-  static SoundPlayerTrackPlugin _self;
+class SoundPlayerShadePlugin extends PlayerBasePlugin {
+  static SoundPlayerShadePlugin _self;
 
   /// Factory
-  factory SoundPlayerTrackPlugin() {
-    _self ??= SoundPlayerTrackPlugin._internal();
+  factory SoundPlayerShadePlugin() {
+    _self ??= SoundPlayerShadePlugin._internal();
     return _self;
   }
-  SoundPlayerTrackPlugin._internal()
+  SoundPlayerShadePlugin._internal()
       : super('com.bsutton.sounds.sounds_shade_player');
 
   /// Plays the given [track]. [canSkipForward] and [canSkipBackward] must be
@@ -46,10 +46,9 @@ class SoundPlayerTrackPlugin extends PlayerBasePlugin {
       "artist": track.artist,
       "albumArtUrl": track.albumArtUrl,
       "albumArtAsset": track.albumArtAsset,
-      // TODO is this necessary if we aren't passing a buffer?
-      "bufferCodecIndex": track.codec?.name,
     };
 
+    /// buffer is only supported on iOS.
     if (track.isBuffer) {
       trackMap["dataBuffer"] = trackBuffer(track);
     } else {
