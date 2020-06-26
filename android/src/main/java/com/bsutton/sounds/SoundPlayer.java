@@ -598,7 +598,7 @@ public class SoundPlayer
 	{
 		MediaPlayer mp = this.model.getMediaPlayer ();
 
-		long millis = call.argument ( "milli" ) ;
+		int millis = call.argument ( "milli" ) ;
 
 		if ( mp == null )
 		{
