@@ -29,7 +29,7 @@ import 'ios/ios_session_mode.dart';
 import 'plugins/base_plugin.dart';
 import 'plugins/player_base_plugin.dart';
 import 'plugins/sound_player_plugin.dart';
-import 'plugins/sound_player_track_plugin.dart';
+import 'plugins/sound_player_shade_plugin.dart';
 
 /// An api for playing audio.
 ///
@@ -169,7 +169,7 @@ class SoundPlayer implements SlotEntry {
     bool playInBackground = false,
   })  : _fakePlayerReady = Platform.isIOS,
         _playInBackground = playInBackground,
-        _plugin = SoundPlayerTrackPlugin() {
+        _plugin = SoundPlayerShadePlugin() {
     _commonInit();
   }
 
