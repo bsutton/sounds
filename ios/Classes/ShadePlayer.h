@@ -14,18 +14,18 @@
  *   along with Sounds .  If not, see <https://www.gnu.org/licenses/>.
  */
  
-#ifndef TrackPlayer_h
-#define TrackPlayer_h
+#ifndef ShadePlayer_h
+#define ShadePlayer_h
 
 
 #import <Flutter/Flutter.h>
 #import "SoundPlayer.h"
 
-extern void TrackPlayerReg(NSObject<FlutterPluginRegistrar>* registrar);
+extern void ShadePlayerReg(NSObject<FlutterPluginRegistrar>* registrar);
 
 
 
-@interface TrackPlayerManager : SoundPlayerManager
+@interface ShadePlayerManager : SoundPlayerManager
 {
 }
 
@@ -33,16 +33,16 @@ extern void TrackPlayerReg(NSObject<FlutterPluginRegistrar>* registrar);
 @end
 
 
-@interface TrackPlayer : SoundPlayer
+@interface ShadePlayer : SoundPlayer
 {
 
 }
-- (TrackPlayer*)init: (int)aSlotNo;
+- (ShadePlayer*)init: (int)aSlotNo;
 - (void)startPlayerFromTrack:(FlutterMethodCall*)call result: (FlutterResult)result;
-- (void)initializeTrackPlayer: (FlutterMethodCall*)call result: (FlutterResult)result;
-- (void)releaseTrackPlayer:(FlutterMethodCall *)call result:(FlutterResult)result;
+- (void)initializeShadePlayer: (FlutterMethodCall*)call result: (FlutterResult)result;
+- (void)releaseShadePlayer:(FlutterMethodCall *)call result:(FlutterResult)result;
 - (void)freeSlot: (int)slotNo;
 
 @end
 
-#endif // TrackPlayer_h
+#endif // ShadePlayer_h

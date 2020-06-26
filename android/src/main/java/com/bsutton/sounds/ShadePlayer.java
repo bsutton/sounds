@@ -79,129 +79,14 @@ import com.bsutton.sounds.MediaBrowserHelper;
 import com.bsutton.sounds.Track;
 
 
-class TrackPlayerPlugin
-	extends SoundPlayerPlugin
-	implements MethodCallHandler
-{
-	public static MethodChannel     channel;
-	static        Context           androidContext;
-	static        TrackPlayerPlugin trackPlayerPlugin; // singleton
 
-
-	public static void attachTrackPlayer( Context ctx, BinaryMessenger messenger )
-	{
-		assert ( flautoPlayerPlugin == null );
-		
-		trackPlayerPlugin = new TrackPlayerPlugin();
-		assert ( slots == null );
-		slots   = new ArrayList<SoundPlayer>();
-		channel           = new MethodChannel( messenger, "com.bsutton.sounds.sounds_track_player" );
-		channel.setMethodCallHandler( trackPlayerPlugin );
-		androidContext = ctx;
-
-	}
-
-	void invokeMethod( String methodName, Map dic )
-	{
-		channel.invokeMethod ( methodName, dic );
-	}
-
-	void freeSlot ( int slotNo )
-	{
-		slots.set ( slotNo, null );
-	}
-
-
-	SoundPlayerPlugin getManager ()
-	{
-		return flautoPlayerPlugin;
-	}
-
-
-
-	@Override
-	public void onMethodCall( final MethodCall call, final Result result )
-	{
-		int slotNo = call.argument ( "slotNo" );
-		Log.d(TAG, "onMethodCall called: " + call.method + " for slot: " + slotNo);
-		
-		// The dart code supports lazy initialization of players.
-		// This means that players can be registered (and slots allocated)
-		// on the client side in a different order to which the players
-		// are initialised.
-		// As such we need to grow the slot array upto the
-		// requested slot no. even if we haven't seen initialisation
-		// for the lower numbered slots.
-		while (slotNo >= slots.size()) {
-			slots.add(null);
-		}
-
-		TrackPlayer aPlayer = (TrackPlayer)slots.get ( slotNo );
-		switch ( call.method )
-		{
-			case "initializeMediaPlayer":
-			{
-				assert ( slots.get ( slotNo ) == null );
-				aPlayer = new TrackPlayer ( slotNo );
-				slots.set ( slotNo, aPlayer );
-				aPlayer.initializeSoundPlayer ( call, result );
-				Log.d("TrackPlayer", "************* initialize called");
-			}
-			break;
-
-			case "releaseMediaPlayer":
-			{
-				aPlayer.releaseSoundPlayer( call, result );
-				Log.d("TrackPlayer", "************* release called");
-			}
-			break;
-
-			case "startPlayerFromTrack":
-				aPlayer.startPlayerFromTrack( call, result );
-				break;
-
-
-			case "stopPlayer":
-				aPlayer.stopPlayer(call,  result );
-				break;
-			case "pausePlayer":
-				aPlayer.pausePlayer(call,  result );
-				break;
-			case "resumePlayer":
-				aPlayer.resumePlayer( call, result );
-				break;
-			case "seekToPlayer":
-				aPlayer.seekToPlayer( call, result );
-				break;
-			case "setVolume":
-				aPlayer.setVolume( call, result );
-				break;
-			case "setSubscriptionInterval":
-				if ( call.argument( "milli" ) == null )
-				{
-					return;
-				}
-				aPlayer.setSubscriptionInterval( call, result );
-				break;
-
-			default:
-				super.onMethodCall( call, result );
-				break;
-			}
-	}
-
-}
-
-//-----------------------------------------------------------------------------------------------------------------------------
-
-
-public class TrackPlayer extends SoundPlayer
+public class ShadePlayer extends SoundPlayer
 {
 	private       MediaBrowserHelper mMediaBrowserHelper;
 	private       Timer              mTimer      = new Timer();
 	final private Handler            mainHandler = new Handler();
 
-	TrackPlayer ( int aSlotNo )
+	ShadePlayer ( int aSlotNo )
 	{
 		super(aSlotNo);
 		//slotNo = aSlotNo;
@@ -210,7 +95,7 @@ public class TrackPlayer extends SoundPlayer
 
 	SoundPlayerPlugin getPlugin ()
 	{
-		return TrackPlayerPlugin.trackPlayerPlugin;
+		return ShadePlayerPlugin.ShadePlayerPlugin;
 	}
 
 

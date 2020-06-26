@@ -673,7 +673,7 @@ public class BackgroundAudioService
 
 		// Set the session activity
 		// The five following instructions do not work when Sounds.androidActivity is NULL
-		// This can happen when this module is directly instanciated by the OS, without initializing TrackPlayer first.
+		// This can happen when this module is directly instanciated by the OS, without initializing ShadePlayer first.
 		//assert(Sounds.androidActivity != null);
 		//Context       context       = getApplicationContext();
 		//Intent        intent        = new Intent( context, Sounds.androidActivity.getClass() );

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'demo_player_state.dart';
 
-/// UI widget from the TrackPlayer specific settings
+/// UI widget from the ShadePlayer specific settings
 /// Allow Tracks and Hush Others
 class TrackSwitch extends StatefulWidget {
   final void Function(bool useOSUI) _switchPlayer;

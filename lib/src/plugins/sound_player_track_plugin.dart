@@ -32,7 +32,7 @@ class SoundPlayerTrackPlugin extends PlayerBasePlugin {
     return _self;
   }
   SoundPlayerTrackPlugin._internal()
-      : super('com.bsutton.sounds.sounds_track_player');
+      : super('com.bsutton.sounds.sounds_shade_player');
 
   /// Plays the given [track]. [canSkipForward] and [canSkipBackward] must be
   /// passed to provide information on whether the user can skip to the next

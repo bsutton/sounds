@@ -25,7 +25,7 @@
 #import "Sounds.h"
 #import "SoundPlayer.h"
 #import "SoundRecorder.h"
-#import "TrackPlayer.h"
+#import "ShadePlayer.h"
 #import <AVFoundation/AVFoundation.h>
 #import <Foundation/Foundation.h>
 
@@ -39,7 +39,7 @@
 {
         SoundPlayerReg(registrar);
         SoundRecorderReg(registrar);
-        TrackPlayerReg(registrar);
+        ShadePlayerReg(registrar);
 }
 
 @end

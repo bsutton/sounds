@@ -590,7 +590,7 @@ class SoundPlayer implements SlotEntry {
     /// I have concerns about how these state changes interact with
     /// the SoundPlayer's own state management.
     /// Really we need a consistent source of 'state' and this should come
-    /// up from the OS. The problem is that whilst TrackPlayer.java provides
+    /// up from the OS. The problem is that whilst ShadePlayer.java provides
     /// these state changes the SoundPlayer does not.
     /// I'm also not certain how to get a 'start' event out of android's
     /// MediaPlayer it will emmit an onPrepared event but I don't know

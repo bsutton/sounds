@@ -15,7 +15,7 @@ typedef ConnectedCallback = void Function({bool result});
 
 /// base for all plugins that provide Plaback services.
 abstract class PlayerBasePlugin extends BasePlugin {
-  /// The java TrackPlayer and SoundPlayer share a static
+  /// The java ShadePlayer and SoundPlayer share a static
   /// array of slots. As such so must we.
   /// TODO: get the java/swift code so that each plugin has its own
   /// slots.

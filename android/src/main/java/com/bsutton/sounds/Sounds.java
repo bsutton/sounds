@@ -74,7 +74,7 @@ public class Sounds
 
 		SoundPlayerPlugin.attachSoundPlayer ( ctx, binding.getBinaryMessenger () );
 		SoundRecorderPlugin.attachSoundRecorder ( ctx, binding.getBinaryMessenger () );
-		TrackPlayerPlugin.attachTrackPlayer ( ctx, binding.getBinaryMessenger () );
+		ShadePlayerPlugin.attachShadePlayer ( ctx, binding.getBinaryMessenger () );
 	}
 
 
@@ -91,7 +91,7 @@ public class Sounds
 
 		SoundPlayerPlugin.attachSoundPlayer ( ctx, registrar.messenger () );
 		SoundRecorderPlugin.attachSoundRecorder ( ctx, registrar.messenger ()  );
-		TrackPlayerPlugin.attachTrackPlayer ( ctx, registrar.messenger ()  );
+		ShadePlayerPlugin.attachShadePlayer ( ctx, registrar.messenger ()  );
 		
 		/// We are fully initialised for v1 embedding
 		initialised.countDown();

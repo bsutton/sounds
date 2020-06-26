@@ -21,23 +21,28 @@
  * This module may use sounds module, but sounds module may not depends on this module.
  */
 
-#import "TrackPlayer.h"
+#import "ShadePlayer.h"
 #import "Track.h"
 #import <AVFoundation/AVFoundation.h>
 #import <MediaPlayer/MediaPlayer.h>
 
 
+/**
+ * Plays an audio track using the OSs on UI (sometimes referred to as a Shade) media
+ * player.
+ * Allows playback control even when the phone is locked.
+ */
 
 static FlutterMethodChannel* _channel;
 
 //---------------------------------------------------------------------------------------------
 
 
-@implementation TrackPlayerManager
+@implementation ShadePlayerManager
 {
-        //NSMutableArray* trackPlayerSlots;
+        //NSMutableArray* ShadePlayerSlots;
 }
-static TrackPlayerManager* trackPlayerManager; // Singleton
+static ShadePlayerManager* ShadePlayerManager; // Singleton
 
 
 
@@ -45,20 +50,20 @@ static TrackPlayerManager* trackPlayerManager; // Singleton
 {
         _channel = [FlutterMethodChannel methodChannelWithName:@"com.bsutton.sounds.sound_track_player"
                                         binaryMessenger:[registrar messenger]];
-        trackPlayerManager = [[TrackPlayerManager alloc] init]; // In super class
-        [registrar addMethodCallDelegate:trackPlayerManager channel:_channel];
+        ShadePlayerManager = [[ShadePlayerManager alloc] init]; // In super class
+        [registrar addMethodCallDelegate:ShadePlayerManager channel:_channel];
 }
 
-- (TrackPlayerManager*)init
+- (ShadePlayerManager*)init
 {
         self = [super init];
         flautoPlayerSlots = [[NSMutableArray alloc] init];
         return self;
 }
 
-extern void TrackPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
+extern void ShadePlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 {
-        [TrackPlayerManager registerWithRegistrar: registrar];
+        [ShadePlayerManager registerWithRegistrar: registrar];
 }
 
 - (void)invokeMethod: (NSString*)methodName arguments: (NSDictionary*)call
@@ -74,7 +79,7 @@ extern void TrackPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 
 - (SoundPlayerManager*)getManager
 {
-        return trackPlayerManager;
+        return ShadePlayerManager;
 }
 
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result
@@ -85,22 +90,22 @@ extern void TrackPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
         {
                [flautoPlayerSlots addObject:  [NSNull null] ];
         }
-        //assert ( trackPlayerSlots[slotNo] != nil );
+        //assert ( ShadePlayerSlots[slotNo] != nil );
 
-        TrackPlayer* aTrackPlayer = flautoPlayerSlots[slotNo];
+        ShadePlayer* aShadePlayer = flautoPlayerSlots[slotNo];
         
         if ([@"initializeMediaPlayer" isEqualToString:call.method])
         {
                  assert (flautoPlayerSlots[slotNo] ==  [NSNull null] );
-                 aTrackPlayer = [[TrackPlayer alloc] init: slotNo];
-                 flautoPlayerSlots[slotNo] = aTrackPlayer;
+                 aShadePlayer = [[ShadePlayer alloc] init: slotNo];
+                 flautoPlayerSlots[slotNo] = aShadePlayer;
 
-                 [aTrackPlayer initializeTrackPlayer: call result:result];
+                 [aShadePlayer initializeShadePlayer: call result:result];
         } else
         
         if ([@"releaseMediaPlayer" isEqualToString:call.method])
         {
-                [aTrackPlayer releaseTrackPlayer: call  result: result];
+                [aShadePlayer releaseShadePlayer: call  result: result];
                 flautoPlayerSlots[slotNo] = [NSNull null];
                 slotNo = -1;
                 
@@ -108,7 +113,7 @@ extern void TrackPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
         
         if ([@"startPlayerFromTrack" isEqualToString:call.method])
         {
-                 [aTrackPlayer startPlayerFromTrack: call result:result];
+                 [aShadePlayer startPlayerFromTrack: call result:result];
         } else
 
         {
@@ -124,7 +129,7 @@ extern void TrackPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 
 //---------------------------------------------------------------------------------------------
 
-@implementation TrackPlayer
+@implementation ShadePlayer
 {
        NSURL *audioFileURL;
        Track *track;
@@ -137,19 +142,19 @@ extern void TrackPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 
 }
 
-- (TrackPlayer*)init: (int)aSlotNo
+- (ShadePlayer*)init: (int)aSlotNo
 {
         slotNo = aSlotNo;
         return self;
 }
 
-- (void)initializeTrackPlayer:(FlutterMethodCall *)call result:(FlutterResult)result
+- (void)initializeShadePlayer:(FlutterMethodCall *)call result:(FlutterResult)result
 {
         setCategoryDone = NOT_SET;
         setActiveDone = NOT_SET;
 }
 
-- (void)releaseTrackPlayer:(FlutterMethodCall *)call result:(FlutterResult)result
+- (void)releaseShadePlayer:(FlutterMethodCall *)call result:(FlutterResult)result
 {
         // The code used to release all the media player resources is the same of the one needed
          // to stop the media playback. Then, use that one.
@@ -181,7 +186,7 @@ extern void TrackPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 
 - (SoundPlayerManager*) getPlugin
 {
-        return trackPlayerManager;
+        return ShadePlayerManager;
 }
 
 
