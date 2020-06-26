@@ -156,7 +156,7 @@ class _RecorderControlsState extends State<RecorderControls> {
       Scaffold.of(context).showSnackBar(error);
       passed = false;
     }
-    // Disable the button if the selected codec is not supported
+    // Disable the button if the selected MediaFormat is not supported
     // Removed this test as felt it was better to display an error
     // when the user attempts to record so they know why they can't record.
     // if (!ActiveCodec().encoderSupported) return false;

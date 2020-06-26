@@ -234,7 +234,7 @@ extern void ShadePlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
                 {
                         // No path was given, get the path to a default sound
                         audioFileURL = [NSURL fileURLWithPath:[GetDirectoryOfType_Sounds(NSCachesDirectory) stringByAppendingString:@"sound.aac"]];
-                // This file name is not good. Perhaps the codec is not AAC. !
+                // This file name is not good. Perhaps the MediaFormat is not AAC. !
                 } else
                 {
                         // A path was given, then create a NSURL with it

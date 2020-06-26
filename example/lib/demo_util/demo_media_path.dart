@@ -6,7 +6,7 @@ import 'demo_common.dart';
 class MediaPath {
   static final MediaPath _self = MediaPath._internal();
 
-  /// list of sample paths for each codec
+  /// list of sample paths for each MediaFormat
   static var samplePaths = <MediaFormat, String>{
     WellKnownMediaFormats.aacAdts: 'sounds_example.aac', // DEFAULT
     WellKnownMediaFormats.aacAdts: 'sounds_example.aac', // CODEC_AAC
@@ -40,17 +40,17 @@ class MediaPath {
   /// true if the media is the example file.
   bool get isExampleFile => media == MediaStorage.remoteExampleFile;
 
-  /// Sets the location of the file for the given codec.
+  /// Sets the location of the file for the given MediaFormat.
   void setMediaFormatPath(MediaFormat mediaFormat, String path) {
     _path[mediaFormat] = path;
   }
 
-  /// returns the path to the file for the given codec.
+  /// returns the path to the file for the given MediaFormat.
   String pathForMediaFormat(MediaFormat mediaFormat) {
     return _path[mediaFormat];
   }
 
-  /// [true] if a path for the give codec exists.
+  /// [true] if a path for the give MediaFormat exists.
   bool exists(MediaFormat mediaFormat) {
     return _path[mediaFormat] != null;
   }

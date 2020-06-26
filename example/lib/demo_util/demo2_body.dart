@@ -55,8 +55,9 @@ class _MainBodyState extends State<MainBody> {
             );
           } else {
             final dropdowns = Dropdowns(
-                onMediaFormatChanged: (codec) => ActiveMediaFormat()
-                    .setMediaFormat(withUI: _useOSUI, mediaFormat: codec));
+                onMediaFormatChanged: (mediaFormat) => ActiveMediaFormat()
+                    .setMediaFormat(
+                        withUI: _useOSUI, mediaFormat: mediaFormat));
             final trackSwitch = TrackSwitch(
               isAudioPlayer: _useOSUI,
               switchPlayer: (allow) => switchPlayer(useOSUI: allow),

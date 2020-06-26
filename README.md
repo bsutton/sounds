@@ -55,7 +55,7 @@ The core classes are:
 [SoundPlayer.withUI](https://github.com/bsutton/sounds/wiki/SoundPlayer) | API to playback audio using the OS's Shade (media player)
 [SoundRecorder](https://github.com/bsutton/sounds/wiki/SoundRecorder) | API to record audio with fine grained control.
 [Track](https://github.com/bsutton/sounds/wiki/Track) | Container for audio used by all of the above classes.
-[Codec](https://github.com/bsutton/sounds/wiki/Codec) | Defines what Codec is being used.
+[MediaFormat](https://github.com/bsutton/sounds/wiki/MediaFormat) | Defines what MediaFormat is being used.
 [RecorderPlaybackController](https://github.com/bsutton/sounds/wiki/RecorderPlaybackController) | Flutter InheritedWidget used to co-ordinate Recording and Playback in a single UI.
 [Albums](https://github.com/bsutton/sounds/wiki/Albums) | Play a sequence of Tracks via the OS's Shade (media player)
 
@@ -100,7 +100,7 @@ SoundRecorderUI - displays a recording widget.
 
 RecorderPlaybackController - pairs a SoundPlayerUI and SoundRecorderUI to provide a co-ordinated recording/playback UI.
 
-Note: there are some limitations on the supported codecs. See the [codec] section below.
+Note: there are some limitations on the supported MediaFormat. See the [MediaFormat] section below.
 
 ![Demo](https://raw.githubusercontent.com/bsutton/sounds/master/example.png)
 

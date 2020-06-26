@@ -10,27 +10,10 @@ class RecordingTrack {
   ///
   Track track;
 
-  /// The codec that we will use when asking the OS to
-  /// record.
-  /// The OS doesn't support all codec so we sometimes have
-  /// to record in some native codec and then remux the
-  /// recording to the codec required by the Track.
-  Codec nativeCodec;
-
-  /// The path we will be recording to.
-  /// This is often the same as [track.file] unless
-  /// we need to record to a different codec and then remux
-  /// the file after recording finishes.
-  String recordingPath;
-
   /// Create a [RecordingTrack] fro a [Track].
   ///
-  /// The recording track causes recording to use a native codec
-  /// if the requested codec is not supported.
-  ///
-  /// When [recode] is called the recording is transcoded to the
-  /// originally requested codec. If the requested codec was
-  /// supported by the OS then remix just returns.
+  /// Throws a [MediaFormatNotSupportedException] if the requested [MediaFormat]
+  /// is not supported.
   ///
   RecordingTrack(this.track) {
     ArgumentError.checkNotNull(track, 'track');
@@ -39,11 +22,8 @@ class RecordingTrack {
       ArgumentError("Only Tracks created via [Track.fromFile] are supported");
     }
 
-    nativeCodec = track.codec;
-    recordingPath = track.path;
-
-    if (FileUtil().exists(recordingPath)) {
-      FileUtil().truncate(recordingPath);
+    if (FileUtil().exists(track.path)) {
+      FileUtil().truncate(track.path);
     }
   }
 

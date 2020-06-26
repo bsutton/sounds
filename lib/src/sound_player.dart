@@ -323,11 +323,11 @@ class SoundPlayer implements SlotEntry {
     return _initializeAndRun<void>(() async {
       _track = track;
 
-      // Check the current codec is supported on this platform
+      // Check the current MediaFormat is supported on this platform
       if (!await NativeMediaFormats().isNativeDecoder(track.mediaFormat)) {
         var exception = PlayerInvalidStateException(
-            'The selected codec ${track.codec} is not supported on '
-            'this platform.');
+            'The selected MediaFormat ${track.mediaFormat.name} is not '
+            'supported on this platform.');
         started.completeError(exception);
         throw exception;
       }

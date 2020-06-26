@@ -16,7 +16,7 @@
 
 export 'package:sounds_common/sounds_common.dart'
     show
-        Codec,
+        MediaFormat,
         MediaFormatNotSupportedException,
         PlaybackDisposition,
         Track,

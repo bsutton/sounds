@@ -294,7 +294,6 @@ class _MyAppState extends State<MyApp> {
       // String path = await startRecorder
       // (
       //   paths[_codec.index],
-      //   codec: _codec,
       //   sampleRate: 16000,
       //   bitRate: 16000,
       //   numChannels: 1,
@@ -496,48 +495,7 @@ class _MyAppState extends State<MyApp> {
 
       await playerModule.play(
         track,
-        /*
-          whenFinished: () {
-            print('I hope you enjoyed listening to this song');
-            setState(() {});
-          },
-          onSkipBackward: () {
-            print('Skip backward');
-            stopPlayer();
-            startPlayer();
-          },
-          onSkipForward: () {
-            print('Skip forward');
-            stopPlayer();
-            startPlayer();
-          },
-          onPaused: (bool b) {
-            if (b)
-              playerModule.pausePlayer();
-            else
-              playerModule.resumePlayer();
-          }
-
-           */
       );
-      /*
-      } else {
-        if (audioFilePath != null) {
-          path = await playerModule.startPlayer(audioFilePath, codec: 
-          _codec, whenFinished: () {
-            print('Play finished');
-            setState(() {});
-          });
-        } else if (dataBuffer != null) {
-          path = await playerModule.startPlayerFromBuffer(dataBuffer, codec: 
-          _codec, whenFinished: () {
-            print('Play finished');
-            setState(() {});
-          });
-        }
-   }
-
-          */
       _addListeners();
 
       print('startPlayer: $audioFilePath');
@@ -725,7 +683,7 @@ class _MyAppState extends State<MyApp> {
       children: <Widget>[
         Padding(
           padding: const EdgeInsets.only(right: 16.0),
-          child: Text('Codec:'),
+          child: Text('MediaFormat:'),
         ),
         DropdownButton<MediaFormat>(
           value: _mediaFormat,
@@ -831,7 +789,7 @@ class _MyAppState extends State<MyApp> {
       return null;
     }
 
-    // Disable the button if the selected codec is not supported
+    // Disable the button if the selected MediaFormat is not supported
     if (!_decoderSupported) return null;
     return (isStopped()) ? startPlayer : null;
   }
@@ -848,7 +806,7 @@ class _MyAppState extends State<MyApp> {
     if (_media == Media.asset ||
         _media == Media.buffer ||
         _media == Media.remoteExampleFile) return null;
-    // Disable the button if the selected codec is not supported
+    // Disable the button if the selected MediaFormat is not supported
     if (!_encoderSupported) return null;
     if (audioState != AudioState.isRecording &&
         audioState != AudioState.recorderIsPaused &&

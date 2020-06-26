@@ -26,8 +26,6 @@ public class Track {
     private String albumArtAsset;
     private String albumArtFile;
 
-    private byte[] dataBuffer;
-    private Integer bufferCodecIndex;
 
     Track(HashMap<String, Object> map) {
         this.path = (String) map.get("path");
@@ -36,8 +34,6 @@ public class Track {
         this.albumArtUrl = (String) map.get("albumArtUrl");
         this.albumArtAsset = (String) map.get("albumArtAsset");
         this.albumArtFile = (String) map.get("albumArtFile");
-        this.dataBuffer = (byte[]) map.get("dataBuffer");
-        this.bufferCodecIndex = (int) map.get("bufferCodecIndex");
     }
 
     public String getPath() {
@@ -88,27 +84,4 @@ public class Track {
         this.albumArtFile = albumArtFile;
     }
 
-
-    public byte[] getDataBuffer() {
-        return dataBuffer;
-    }
-
-    public int getBufferCodecIndex() {
-        return bufferCodecIndex;
-    }
-
-    public t_CODEC getBufferCodec() {
-        return t_CODEC.values()[bufferCodecIndex != null ? bufferCodecIndex : 0];
-    }
-
-    /**
-     * Returns whether the audio file of this track is stored by a string or a
-     * buffer.
-     *
-     * @return true if the audio file of this track is stored by a string, false if
-     *         it is stored by a buffer.
-     */
-    public boolean isUsingPath() {
-        return path != null;
-    }
 }

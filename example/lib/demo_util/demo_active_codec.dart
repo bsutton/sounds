@@ -1,7 +1,7 @@
 import 'package:sounds/sounds.dart';
 import 'package:sounds_common/sounds_common.dart';
 
-/// Factory used to track what codec is currently selected.
+/// Factory used to track what MediaFormat is currently selected.
 class ActiveMediaFormat {
   static final ActiveMediaFormat _self = ActiveMediaFormat._internal();
 
@@ -12,7 +12,7 @@ class ActiveMediaFormat {
   ///
   SoundRecorder recorderModule;
 
-  /// Factory to access the active codec.
+  /// Factory to access the active MediaFormat.
   factory ActiveMediaFormat() {
     return _self;
   }

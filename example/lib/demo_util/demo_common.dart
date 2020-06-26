@@ -24,7 +24,7 @@ enum MediaStorage {
   remoteExampleFile,
 }
 
-/// get the duration for the media with the given codec.
+/// get the duration for the media with the given MediaFormat.
 Future<Duration> getDuration(MediaFormat mediaFormat) async {
   Future<Duration> duration;
   switch (MediaPath().media) {
@@ -58,10 +58,10 @@ String formatDuration(Duration duration) {
 var assetSample = <MediaFormat, String>{
   AACADTSMediaFormat(): 'assets/samples/sample.aac',
   AACADTSMediaFormat(): 'assets/samples/sample.aac',
-  OGGOpusMediaFormat(): 'assets/samples/sample.opus',
+  OpusOggMediaFormat(): 'assets/samples/sample.opus',
   OpusCafMediaFormat(): 'assets/samples/sample.caf',
   MP3MediaFormat(): 'assets/samples/sample.mp3',
-  OGGVorbisMediaFormat(): 'assets/samples/sample.ogg',
+  VorbisOggMediaFormat(): 'assets/samples/sample.ogg',
   PCMMediaFormat(): 'assets/samples/sample.wav',
 };
 

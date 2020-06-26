@@ -77,13 +77,8 @@ class QuickPlay {
   /// An [TrackFileMustExistException] exception will be thrown
   /// if the file doesn't exist.
   ///
-  /// The [codec] of the file the [path] points to. The default
-  /// value is [Codec.fromExtension].
-  /// If the default [Codec.fromExtension] is used then
-  /// [QuickPlay] will use the files extension to guess the codec.
-  /// If the file extension doesn't match a known codec then
-  /// [QuickPlay] will throw an [MediaFormatNotSupportedException] in which
-  /// case you need pass one of the known codecs.
+  /// If the file contains a unknown MediaFormat then
+  /// [QuickPlay] will throw an [MediaFormatNotSupportedException].
   ///
   /// By default no UI is displayed.
   ///
@@ -92,8 +87,8 @@ class QuickPlay {
   ///
   /// The [volume] must be in the range 0.0 to 1.0. Defaults to 0.5
   QuickPlay.fromFile(String path,
-      {double volume, MediaFormat mediaFormat, bool withUI = false}) {
-    _track = Track.fromFile(path, mediaFormat: mediaFormat);
+      {double volume, bool withUI = false}) {
+    _track = Track.fromFile(path);
     QuickPlay._internal(volume, withUI);
   }
 
@@ -101,13 +96,9 @@ class QuickPlay {
   ///  Both HTTP and HTTPS are supported.
   /// The [url] of the file to download and playback
   ///
-  /// The [codec] of the file the [url] points to. The default
-  /// value is null.
-  /// If null is passed then
-  /// [QuickPlay] will use the filename's extension to guess the codec.
-  /// If the file extension doesn't match a known codec then
-  /// [QuickPlay] will throw an [MediaFormatNotSupportedException] in which
-  /// case you need pass one of the known codecs.
+  /// [QuickPlay] will throw an [MediaFormatNotSupportedException] if the
+  /// passed files MediaFormat is not supported.
+  /// 
   /// By default no UI is displayed.
   ///
   /// If you pass [withUI]=true then the OSs' media player is displayed
@@ -115,15 +106,17 @@ class QuickPlay {
   ///
   /// The [volume] must be in the range 0.0 to 1.0. Defaults to 0.5
   QuickPlay.fromURL(String url,
-      {double volume, MediaFormat mediaFormat, bool withUI = false}) {
-    _track = Track.fromURL(url, mediaFormat: mediaFormat);
+      {double volume, bool withUI = false}) {
+    _track = Track.fromURL(url);
     QuickPlay._internal(volume, withUI);
   }
 
   /// Create a audio play from an in memory buffer.
   /// The [dataBuffer] contains the media to be played.
-  /// The [codec] of the file the [dataBuffer] points to.
-  /// You MUST pass a codec.
+  /// 
+  /// [QuickPlay] will throw an [MediaFormatNotSupportedException] if the
+  /// passed audio's MediaFormat is not supported.
+  /// 
   /// By default no UI is displayed.
   /// If you pass [withUI]=true then the OSs' media player is displayed
   /// but all of the UI controls are disabled.

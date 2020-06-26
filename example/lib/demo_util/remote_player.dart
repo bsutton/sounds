@@ -31,11 +31,11 @@ class RemotePlayer extends StatelessWidget {
 
   Future<Track> _createRemoteTrack(BuildContext context) async {
     Track track;
-    // validate codec for example file
+    // validate MediaFormat for example file
     if (ActiveMediaFormat().mediaFormat != WellKnownMediaFormats.mp3) {
       var error = SnackBar(
           backgroundColor: Colors.red,
-          content: Text('You must set the Codec to MP3 to '
+          content: Text('You must set the MediaFormat to MP3 to '
               'play the "Remote Example File"'));
       Scaffold.of(context).showSnackBar(error);
     } else {

@@ -73,16 +73,17 @@ class _MainBodyState extends State<MainBody> {
               color: Colors.white,
             );
           } else {
-            final dropdowns = Dropdowns(onMediaFormatChanged: (codec) async {
+            final dropdowns =
+                Dropdowns(onMediaFormatChanged: (mediaFormat) async {
               await ActiveMediaFormat()
-                  .setMediaFormat(withUI: false, mediaFormat: codec);
+                  .setMediaFormat(withUI: false, mediaFormat: mediaFormat);
 
-              /// If we have changed codec the recording is no longer valid.
+              /// If we have changed MediaFormat the recording is no longer valid.
               FileUtil().truncate(recordingFile);
               track = Track.fromFile(recordingFile);
 
               /// we need the SoundRecorderUI to rebuild so it gets
-              /// the track with the changed codec.
+              /// the track with the changed MediaFormat.
               setState(() {});
             });
 

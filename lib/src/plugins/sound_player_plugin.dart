@@ -37,9 +37,6 @@ class SoundPlayerPlugin extends PlayerBasePlugin {
   Future<void> play(player.SoundPlayer player, Track track) async {
     var args = <String, dynamic>{};
     args['path'] = trackStoragePath(track);
-    // Flutter cannot transfer an enum to a native plugin.
-    // We use an integer instead
-    args['codec'] = track.codec.name;
     Log.d('calling invoke startPlayer');
     return invokeMethod(player, 'startPlayer', args);
   }

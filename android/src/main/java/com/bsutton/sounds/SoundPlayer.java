@@ -757,7 +757,7 @@ public class SoundPlayer
 		}
 		else if (what == MediaPlayer.MEDIA_ERROR_MALFORMED)
 		{
-			error = "Malformed audio. Does not match the expected codec";
+			error = "Malformed audio. Does not match the expected MediaFormat";
 		}
 		else if (what == MediaPlayer.MEDIA_ERROR_SERVER_DIED)
 		{
@@ -771,7 +771,7 @@ public class SoundPlayer
 			error = "An unknown error occured";
 		}
 		else if (what == MediaPlayer.MEDIA_ERROR_UNSUPPORTED) {
-			error = "Unsupported codec";
+			error = "Unsupported MediaFormat";
 		}
 		else 
 		{

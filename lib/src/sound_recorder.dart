@@ -286,7 +286,7 @@ class SoundRecorder implements SlotEntry {
       /// Throws an exception if the path isn't valid.
       _recordingTrack.validatePath();
 
-      /// the codec must be supported.
+      /// the MediaFormat must be supported.
       if (!await NativeMediaFormats()
           .isNativeEncoder(_recordingTrack.track.mediaFormat)) {
         var exception =
@@ -305,7 +305,7 @@ class SoundRecorder implements SlotEntry {
       if (hasPermissions) {
         _timePaused = Duration(seconds: 0);
 
-        await _plugin.start(this, _recordingTrack.recordingPath, mediaFormat,
+        await _plugin.start(this, _recordingTrack.track.path, mediaFormat,
             audioSource, quality);
 
         _recorderState = _RecorderState.isRecording;

@@ -7,7 +7,7 @@ import 'demo_media_path.dart';
 
 /// Widget containing the set of drop downs used in the UI
 /// Media
-/// Codec
+/// MediaFormat
 class Dropdowns extends StatefulWidget {
   final void Function(MediaFormat) _onMediaFormatChanged;
 
@@ -45,7 +45,7 @@ class _DropdownsState extends State<Dropdowns> {
       children: <Widget>[
         Padding(
           padding: const EdgeInsets.only(right: 16.0),
-          child: Text('Codec:'),
+          child: Text('MediaFormat:'),
         ),
         buildCodecDropdown(),
       ],
