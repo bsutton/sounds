@@ -31,7 +31,7 @@
 extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar);
 
 
-@interface SoundRecorderManager : NSObject
+@interface SoundRecorderManager : NSObjectt<FlutterPlugin>
 {
 }
 
@@ -43,7 +43,7 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar);
 
 
 
-@interface SoundRecorder : NSObject <AVAudioPlayerDelegate>
+@interface SoundRecorder : NSObject <AVAudioRecorderDelegate>
 {
 }
 
