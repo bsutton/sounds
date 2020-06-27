@@ -1,6 +1,6 @@
 import 'native_media_format.dart';
 
-/// The native Opus/Ogg media format.
+/// The native Ogg/Opus media format.
 class OpusOggMediaFormat extends NativeMediaFormat {
   /// ctor
   const OpusOggMediaFormat({
@@ -8,7 +8,7 @@ class OpusOggMediaFormat extends NativeMediaFormat {
     int numChannels = 1,
     int bitRate = 16000,
   }) : super.detail(
-          name: 'opus/ogg',
+          name: 'ogg/opus',
           sampleRate: 16000,
           numChannels: 1,
           bitRate: 16000,

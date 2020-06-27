@@ -4,7 +4,7 @@ import 'duration_providers.dart';
 
 abstract class MediaFormat {
   /// The [name] of the [MediaFormat].
-  /// The [name] MUST be of the form codec/format (not all lower case)
+  /// The [name] MUST be of the form container/codec (not all lower case)
   /// e.g.
   /// ogg/vorbis
   ///

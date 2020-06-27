@@ -4,12 +4,12 @@ import 'package:device_info/device_info.dart';
 
 import 'package:sounds_common/sounds_common.dart';
 
-import 'aac_adts_media_format.dart';
+import 'adts_aac_media_format.dart';
 import 'mp3_media_format.dart';
-import 'opus_caf_media_format.dart';
-import 'opus_ogg_media_format.dart';
+import 'cap_opus_media_format.dart';
+import 'ogg_opus_media_format.dart';
 import 'pcm_media_format.dart';
-import 'vorbis_ogg_media_format.dart';
+import 'ogg_vorbis_media_format.dart';
 
 /// Provides a means to determine the list of natively supported MediaFormats
 /// on the current OS and sdk verison.
@@ -28,7 +28,7 @@ class NativeMediaFormats implements MediaProvider {
     var supported = <MediaFormat>[];
 
     /// common formats
-    supported.add(AACADTSMediaFormat());
+    supported.add(AdtsAacMediaFormat());
     supported.add(MP3MediaFormat());
     supported.add(PCMMediaFormat());
 
@@ -54,7 +54,7 @@ class NativeMediaFormats implements MediaProvider {
     var supported = <MediaFormat>[];
 
     /// common formats
-    supported.add(AACADTSMediaFormat());
+    supported.add(AdtsAacMediaFormat());
 
     if (Platform.isIOS) {
       // ios specific formats
@@ -75,7 +75,7 @@ class NativeMediaFormats implements MediaProvider {
   /// list of known [MediaFormats]. Thes formats may not be natively supported on every platform.
   /// Use [encoders] and [decoders] to get a list of natively supported [MediaFormats].
   List<MediaFormat> get mediaFormats => [
-        AACADTSMediaFormat(),
+        AdtsAacMediaFormat(),
         OpusCafMediaFormat(),
         PCMMediaFormat(),
         OpusOggMediaFormat(),

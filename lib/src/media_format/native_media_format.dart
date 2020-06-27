@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
 import 'package:sounds_common/sounds_common.dart';
 
-import 'aac_adts_media_format.dart';
+import 'adts_aac_media_format.dart';
 import 'native_media_formats.dart';
 
 /// Base class for all Native MediaFormat.
@@ -64,7 +64,7 @@ abstract class NativeMediaFormat extends MediaFormat {
   /// Sounds only records/playbacks using natively supported codecs.
   /// Use the sounds_codec package for utilities to convert to/from
   /// other codecs.
-  static NativeMediaFormat common = AACADTSMediaFormat();
+  static NativeMediaFormat common = AdtsAacMediaFormat();
 }
 
 // class AMRNBMediaContainer extends MediaContainer {
