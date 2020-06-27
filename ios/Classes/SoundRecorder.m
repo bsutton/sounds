@@ -263,23 +263,19 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
           if ((setCategoryDone == NOT_SET) || (setCategoryDone == FOR_PLAYING) )
           {
                 AVAudioSession *audioSession = [AVAudioSession sharedInstance];
-                [audioSession setCategory:AVAudioSessionCategoryPlayAndRecord error:nil];
+                [audioSession setCategory:AVAudioSessionCategoryPlayAndRecord
+                              withOptions: AVAudioSessionCategoryOptionAllowBluetooth
+                                    error:nil];
                 setCategoryDone = FOR_RECORDING;
-          
-
+              NSError *error;
+              
                 // set volume default to speaker
                 BOOL success = [audioSession overrideOutputAudioPort:AVAudioSessionPortOverrideSpeaker error:&error];
                 if(!success)
                 {
                         NSLog(@"error doing outputaudioportoverride - %@", [error localizedDescription]);
                 }
-
-                // set up for bluetooth microphone input
-                BOOL success = [audioSession overrideOutputAudioPort:AVAudioSessionCategoryOptionAllowBluetooth error:&error];
-                if(!success)
-                {
-                        NSLog(@"error doing outputaudioportoverride - %@", [error localizedDescription]);
-                }
+             
           }
 
 
