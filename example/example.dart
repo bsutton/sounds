@@ -7,7 +7,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:sounds_common/sounds_common.dart';
 
 void main() {
-  var recordingPath = Track.tempFile(AACADTSMediaFormat());
+  var recordingPath = Track.tempFile(AdtsAacMediaFormat());
   runApp(SoundExampleApp._internal(recordingPath));
 }
 
@@ -17,7 +17,7 @@ class SoundExampleApp extends StatelessWidget {
   //
   SoundExampleApp._internal(String recordingPath)
       : _track =
-            Track.fromFile(recordingPath, mediaFormat: AACADTSMediaFormat());
+            Track.fromFile(recordingPath, mediaFormat: AdtsAacMediaFormat());
 
   @override
   Widget build(BuildContext context) {

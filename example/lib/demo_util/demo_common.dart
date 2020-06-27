@@ -56,8 +56,8 @@ String formatDuration(Duration duration) {
 
 /// the set of samples availble as assets.
 var assetSample = <MediaFormat, String>{
-  AACADTSMediaFormat(): 'assets/samples/sample.aac',
-  AACADTSMediaFormat(): 'assets/samples/sample.aac',
+  AdtsAacMediaFormat(): 'assets/samples/sample.aac',
+  AdtsAacMediaFormat(): 'assets/samples/sample.aac',
   OpusOggMediaFormat(): 'assets/samples/sample.opus',
   OpusCafMediaFormat(): 'assets/samples/sample.caf',
   MP3MediaFormat(): 'assets/samples/sample.mp3',

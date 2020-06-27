@@ -5,7 +5,7 @@ import 'package:sounds_common/sounds_common.dart';
 class ActiveMediaFormat {
   static final ActiveMediaFormat _self = ActiveMediaFormat._internal();
 
-  MediaFormat mediaFormat = AACADTSMediaFormat();
+  MediaFormat mediaFormat = AdtsAacMediaFormat();
   bool _encoderSupported = false;
   bool _decoderSupported = false;
 
