@@ -1,6 +1,23 @@
-group 'com.bsutton.sounds'
-version '1.0-SNAPSHOT'
+group 'com.example.sounds'
+version '1.0'
 
+// begin hack from flutter.jar
+// See https://github.com/flutter/flutter/issues/19830
+
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader ->
+        localProperties.load(reader)
+    }
+}
+
+def flutterRoot = localProperties.getProperty('flutter.sdk')
+if (flutterRoot == null) {
+    throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
+}
+
+// end hack for flutter.jar
 
 buildscript {
     repositories {
@@ -9,7 +26,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.0.0'
+        classpath 'com.android.tools.build:gradle:3.5.0'
     }
 }
 
@@ -22,22 +39,30 @@ rootProject.allprojects {
 
 apply plugin: 'com.android.library'
 
+// begin hack from flutter.jar
+apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
+flutter {
+    source '..'
+}
+// end hack from flutter.jar
+
+
 android {
-   
     compileSdkVersion 28
 
     defaultConfig {
-        minSdkVersion 16 //24
+        minSdkVersion 16
     }
     lintOptions {
         disable 'InvalidPackage'
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    // buildToolsVersion '28.0.3'
 }
+
 
 
 dependencies {
@@ -46,4 +71,3 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0'
 
 }
-
