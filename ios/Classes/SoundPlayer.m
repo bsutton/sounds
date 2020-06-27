@@ -34,16 +34,16 @@ NSMutableArray* playerSlots;
 {
  }
 
-static SoundPlayerManager* flautoPlayerManager; // Singleton
+static SoundPlayerManager* soundPlayerManager; // Singleton
 
 
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar
 {
         _channel = [FlutterMethodChannel methodChannelWithName:@"com.bsutton.sounds.sound_player"
                                         binaryMessenger:[registrar messenger]];
-        assert (flautoPlayerManager == nil);
-        flautoPlayerManager = [[SoundPlayerManager alloc] init];
-        [registrar addMethodCallDelegate:flautoPlayerManager channel:_channel];
+        assert (soundPlayerManager == nil);
+        soundPlayerManager = [[SoundPlayerManager alloc] init];
+        [registrar addMethodCallDelegate:soundPlayerManager channel:_channel];
 }
 
 
@@ -72,7 +72,7 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 
 - (SoundPlayerManager*)getManager
 {
-        return flautoPlayerManager;
+        return soundPlayerManager;
 }
 
 
@@ -197,7 +197,7 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 
 -(SoundPlayerManager*) getPlugin
 {
-        return flautoPlayerManager;
+        return soundPlayerManager;
 }
 
 
