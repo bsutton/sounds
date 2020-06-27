@@ -257,21 +257,31 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
                             forKey:AVEncoderBitRateKey];
             }
 
-          // Setup audio session
+           
+          
+          // Setup audio session the first time the user starts recording with this SoundRecorder instance.
           if ((setCategoryDone == NOT_SET) || (setCategoryDone == FOR_PLAYING) )
           {
-                AVAudioSession *session = [AVAudioSession sharedInstance];
-                [session setCategory:AVAudioSessionCategoryPlayAndRecord error:nil];
+                AVAudioSession *audioSession = [AVAudioSession sharedInstance];
+                [audioSession setCategory:AVAudioSessionCategoryPlayAndRecord error:nil];
                 setCategoryDone = FOR_RECORDING;
+          
+
+                // set volume default to speaker
+                BOOL success = [audioSession overrideOutputAudioPort:AVAudioSessionPortOverrideSpeaker error:&error];
+                if(!success)
+                {
+                        NSLog(@"error doing outputaudioportoverride - %@", [error localizedDescription]);
+                }
+
+                // set up for bluetooth microphone input
+                BOOL success = [audioSession overrideOutputAudioPort:AVAudioSessionCategoryOptionAllowBluetooth error:&error];
+                if(!success)
+                {
+                        NSLog(@"error doing outputaudioportoverride - %@", [error localizedDescription]);
+                }
           }
 
-          // set volume default to speaker
-          UInt32 doChangeDefaultRoute = 1;
-          AudioSessionSetProperty(kAudioSessionProperty_OverrideCategoryDefaultToSpeaker, sizeof(doChangeDefaultRoute), &doChangeDefaultRoute);
-
-          // set up for bluetooth microphone input
-          UInt32 allowBluetoothInput = 1;
-          AudioSessionSetProperty (kAudioSessionProperty_OverrideCategoryEnableBluetoothInput,sizeof (allowBluetoothInput),&allowBluetoothInput);
 
           audioRecorder = [[AVAudioRecorder alloc]
                                 initWithURL:audioFileURL
