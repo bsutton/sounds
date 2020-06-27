@@ -76,7 +76,7 @@ class SoundRecorderPlugin extends BasePlugin {
 
     if (Platform.isAndroid) {
       param['encoder'] = mediaFormat.androidCodec;
-      param['container'] = mediaFormat.androidFormat;
+      param['format'] = mediaFormat.androidFormat;
     } else {
       param['format'] = mediaFormat.iosFormat;
       param['iosQuality'] = iosQuality?.value;
