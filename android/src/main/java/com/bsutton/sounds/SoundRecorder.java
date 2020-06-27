@@ -545,7 +545,7 @@ public class SoundRecorder
 
 	public void setDbPeakLevelUpdate ( final MethodCall call, final Result result )
 	{
-		long interval = call.argument ( "milli" );
+		int interval = call.argument ( "milli" );
 		this.model.peakLevelUpdateMillis = interval;
 		result.success ( "setDbPeakLevelUpdate: " + this.model.peakLevelUpdateMillis );
 	}
