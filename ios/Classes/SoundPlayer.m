@@ -25,17 +25,6 @@ static FlutterMethodChannel* _channel;
 NSMutableArray* flautoPlayerSlots;
 
 
-static bool _isIosDecoderSupported [] =
-{
-    true, // DEFAULT
-    true, // AAC
-    false, // OGG/OPUS
-    true, // CAF/OPUS
-    true, // MP3
-    false, // OGG/VORBIS
-    true, // WAV/PCM
-};
-
 
 //--------------------------------------------------------------------------------------------
 
@@ -316,8 +305,8 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
                 {
 
                         // We must create a new Audio Player instance to be able to play a different Url
-                        audioPlayer = [[AVAudioPlayer alloc] initWithData:data error:nil];
-                        audioPlayer.delegate = self;
+                    self->audioPlayer = [[AVAudioPlayer alloc] initWithData:data error:nil];
+                    self->audioPlayer.delegate = self;
 
                         [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
 
@@ -527,9 +516,9 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 {
         if (audioPlayer)
         {
-                audioPlayer.currentTime = [NSNumber numberWithDouble:positionInMilli / 1000];
+                audioPlayer.currentTime = positionInMilli / 1000;
                 [self updateProgress:nil];
-                result([time stringValue]);
+            	result([[NSNumber numberWithLong:positionInMilli] stringValue]);
         } else
         {
                 result([FlutterError
@@ -600,9 +589,8 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 
 
 - (void)setSubscriptionInterval:(long)intervalInMillis result: (FlutterResult)result
-{
-        NSNumber *interval = [NSNumber numberWithDouble:intervalInMillis * 1000];
-        subscriptionInterval = interval;
+{   
+        subscriptionInterval = intervalInMillis * 1000;
         result(@"setSubscriptionInterval");
 }
 
