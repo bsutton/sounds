@@ -19,19 +19,12 @@
 #import "Sounds.h"
 
 
-/*
-
-typedef enum
-{
-        IS_STOPPED,
-        IS_PLAYING,
-        IS_PAUSED,
-        IS_RECORDING,
-} t_AUDIO_STATE;
-*/
-
 extern void SoundPlayerReg( NSObject<FlutterPluginRegistrar>* _Nonnull   registrar);
-extern NSMutableArray* _Nullable flautoPlayerSlots;
+
+
+// Slots to track method calls from the dart into ios code.
+// These slots are shared by the SoundPlayer and the ShadePlayer.
+extern NSMutableArray* _Nullable playerSlots;
 
 
 @interface SoundPlayerManager : NSObject<FlutterPlugin>

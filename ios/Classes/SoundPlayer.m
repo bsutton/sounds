@@ -22,7 +22,7 @@
 
 
 static FlutterMethodChannel* _channel;
-NSMutableArray* flautoPlayerSlots;
+NSMutableArray* playerSlots;
 
 
 
@@ -50,7 +50,7 @@ static SoundPlayerManager* flautoPlayerManager; // Singleton
 - (SoundPlayerManager*)init
 {
         self = [super init];
-        flautoPlayerSlots = [[NSMutableArray alloc] init];
+        playerSlots = [[NSMutableArray alloc] init];
         return self;
 }
 
@@ -66,7 +66,7 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 
 - (void)freeSlot: (int)slotNo
 {
-        flautoPlayerSlots[slotNo] = [NSNull null];
+        playerSlots[slotNo] = [NSNull null];
 }
 
 
@@ -79,28 +79,28 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result
 {
         int slotNo = [call.arguments[@"slotNo"] intValue];
-        assert ( (slotNo >= 0) && (slotNo <= [flautoPlayerSlots count]));
+        assert ( (slotNo >= 0) && (slotNo <= [playerSlots count]));
         
-        if (slotNo == [flautoPlayerSlots count])
+        if (slotNo == [playerSlots count])
         {
-               [flautoPlayerSlots addObject: [NSNull null]];
+               [playerSlots addObject: [NSNull null]];
         }
 
-        SoundPlayer* aSoundPlayer = flautoPlayerSlots[slotNo];
+        SoundPlayer* aSoundPlayer = playerSlots[slotNo];
         
         if ([@"initializeMediaPlayer" isEqualToString:call.method])
         {
-                assert (flautoPlayerSlots[slotNo] ==  [NSNull null] );
+                assert (playerSlots[slotNo] ==  [NSNull null] );
                 aSoundPlayer = [[SoundPlayer alloc] init: slotNo];
-                flautoPlayerSlots[slotNo] = aSoundPlayer;
+                playerSlots[slotNo] = aSoundPlayer;
                 [aSoundPlayer initializeSoundPlayer: call result:result];
         } else
         
         if ([@"releaseMediaPlayer" isEqualToString:call.method])
         {
                 [aSoundPlayer releaseSoundPlayer: call result:result];
-                [flautoPlayerSlots replaceObjectAtIndex:slotNo withObject:[NSNull null]];
-                flautoPlayerSlots[slotNo] = [NSNull null];
+                [playerSlots replaceObjectAtIndex:slotNo withObject:[NSNull null]];
+                playerSlots[slotNo] = [NSNull null];
         } else
         
         if ([@"startPlayer" isEqualToString:call.method])

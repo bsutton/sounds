@@ -57,7 +57,7 @@ static ShadePlayerManager* shadePlayerManager; // Singleton
 - (ShadePlayerManager*)init
 {
         self = [super init];
-        flautoPlayerSlots = [[NSMutableArray alloc] init];
+        playerSlots = [[NSMutableArray alloc] init];
         return self;
 }
 
@@ -74,7 +74,7 @@ extern void ShadePlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 
 - (void)freeSlot: (int)slotNo
 {
-        flautoPlayerSlots[slotNo] = [NSNull null];
+        playerSlots[slotNo] = [NSNull null];
 }
 
 - (SoundPlayerManager*)getManager
@@ -85,20 +85,20 @@ extern void ShadePlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result
 {
         int slotNo = [call.arguments[@"slotNo"] intValue];
-        assert ( (slotNo >= 0) && (slotNo <= [flautoPlayerSlots count]));
-        if (slotNo == [flautoPlayerSlots count])
+        assert ( (slotNo >= 0) && (slotNo <= [playerSlots count]));
+        if (slotNo == [playerSlots count])
         {
-               [flautoPlayerSlots addObject:  [NSNull null] ];
+               [playerSlots addObject:  [NSNull null] ];
         }
         //assert ( ShadePlayerSlots[slotNo] != nil );
 
-        ShadePlayer* aShadePlayer = flautoPlayerSlots[slotNo];
+        ShadePlayer* aShadePlayer = playerSlots[slotNo];
         
         if ([@"initializeMediaPlayer" isEqualToString:call.method])
         {
-                 assert (flautoPlayerSlots[slotNo] ==  [NSNull null] );
+                 assert (playerSlots[slotNo] ==  [NSNull null] );
                  aShadePlayer = [[ShadePlayer alloc] init: slotNo];
-                 flautoPlayerSlots[slotNo] = aShadePlayer;
+                 playerSlots[slotNo] = aShadePlayer;
 
                  [aShadePlayer initializeShadePlayer: call result:result];
         } else
@@ -106,7 +106,7 @@ extern void ShadePlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
         if ([@"releaseMediaPlayer" isEqualToString:call.method])
         {
                 [aShadePlayer releaseShadePlayer: call  result: result];
-                flautoPlayerSlots[slotNo] = [NSNull null];
+                playerSlots[slotNo] = [NSNull null];
                 slotNo = -1;
                 
         } else
