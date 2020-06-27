@@ -235,18 +235,14 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
            int numChannels = 2;
            if (![numChannelsArgs isKindOfClass:[NSNull class]])
            {
-                numChannels = [numChannelsArgs integerValue];
+                numChannels = (int)[numChannelsArgs integerValue];
            }
 
 
 
-          if ([path class] == [NSNull class])
-          {
-                audioFileURL = [NSURL fileURLWithPath:[ [self GetDirectoryOfType_Sounds: NSCachesDirectory] stringByAppendingString:defaultExtensions[coder] ]];
-          } else
-          {
-                audioFileURL = [NSURL fileURLWithPath: path];
-          }
+        
+        audioFileURL = [NSURL fileURLWithPath: path];
+          
           NSMutableDictionary *audioSettings = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                          [NSNumber numberWithFloat: sampleRate],AVSampleRateKey,
                                          [NSNumber numberWithInt: format ],AVFormatIDKey,
@@ -304,8 +300,6 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
           [self stopDbPeakTimer];
           [self stopRecorderTimer];
 
-          AVAudioSession *audioSession = [AVAudioSession sharedInstance];
-
           NSString *filePath = audioFileURL.absoluteString;
           result(filePath);
 }
@@ -337,7 +331,7 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
 - (void)setDbPeakLevelUpdate:(long)intervalInMilli result: (FlutterResult)result
 {
         /// convert milliseconds to seconds required by a Timer.
-        dbPeakInterval = [NSNumber numberWithDouble:intervalInMilli/1000];
+        dbPeakInterval =intervalInMilli/1000;
 
         result(@"setDbPeakLevelUpdate");
 }
@@ -383,7 +377,7 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
 - (void)setSubscriptionInterval:(long)intervalInMilli result: (FlutterResult)result
 {
         /// convert milliseconds to seconds required by a Timer.
-        subscriptionInterval = [NSNumber numberWithDouble:intervalInMilli/1000.0];
+        subscriptionInterval = intervalInMilli/1000.0;
         result(@"setSubscriptionInterval");
 }
 
