@@ -30,17 +30,17 @@ typedef enum
 } t_AUDIO_STATE;
 */
 
-extern void SoundPlayerReg(_Nullable NSObject<FlutterPluginRegistrar>* registrar);
-extern NSMutableArray* flautoPlayerSlots;
+extern void SoundPlayerReg( NSObject<FlutterPluginRegistrar>* _Nonnull   registrar);
+extern NSMutableArray* _Nullable flautoPlayerSlots;
 
 
 @interface SoundPlayerManager : NSObject<FlutterPlugin>
 {
 }
 
-+ (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar;
-- (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result;
-- (void)invokeMethod: (NSString*)methodName arguments: (NSDictionary*)call;
++ (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*_Nonnull)registrar;
+- (void)handleMethodCall:(FlutterMethodCall*_Nonnull)call result:(FlutterResult _Nonnull )result;
+- (void)invokeMethod: (NSString*_Nonnull)methodName arguments: (NSDictionary *_Nullable)call;
 - (void)freeSlot: (int)slotNo;
 @end
 
@@ -52,27 +52,27 @@ extern NSMutableArray* flautoPlayerSlots;
         t_SET_CATEGORY_DONE setActiveDone;
 }
 
-- (SoundPlayerManager*) getPlugin;
-- (SoundPlayer*)init: (int)aSlotNo;
+- (SoundPlayerManager*_Nonnull) getPlugin;
+- (SoundPlayer*_Nonnull)init: (int)aSlotNo;
 
-- (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag;
-- (void)updateProgress:(NSTimer *)timer;
+- (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *_Nonnull)player successfully:(BOOL)flag;
+- (void)updateProgress:(NSTimer *_Nonnull)timer;
 - (void)startTimer;
 - (void)stopPlayer;
-- (void)pausePlayer:(FlutterResult)result;
-- (void)resumePlayer:(FlutterResult)result;
+- (void)pausePlayer:(FlutterResult _Nonnull )result;
+- (void)resumePlayer:(FlutterResult _Nonnull )result;
 - (void)stopTimer;
 - (void)pause;
 - (bool)resume;
-- (void)startPlayer:(NSString*)path result: (FlutterResult)result;
-- (void)startPlayerFromBuffer:(FlutterStandardTypedData*)dataBuffer result: (FlutterResult)result;
-- (void)seekToPlayer:(long) positionInMilli result: (FlutterResult)result;
-- (void)setSubscriptionInterval:(long)intervalInMilli result: (FlutterResult)result;
-- (void)setVolume:(double) volume result: (FlutterResult)result;
-- (void)setCategory: (NSString*)categ mode:(NSString*)mode options:(int)options result:(FlutterResult)result;
-- (void)setActive:(BOOL)enabled result:(FlutterResult)result;
-- (void)initializeSoundPlayer: (FlutterMethodCall*)call result: (FlutterResult)result;
-- (void)releaseSoundPlayer: (FlutterMethodCall*)call result: (FlutterResult)result;
+- (void)startPlayer:(NSString*_Nonnull)path result: (FlutterResult _Nonnull )result;
+- (void)startPlayerFromBuffer:(FlutterStandardTypedData*_Nonnull)dataBuffer result: (FlutterResult _Nonnull )result;
+- (void)seekToPlayer:(long) positionInMilli result: (FlutterResult _Nonnull )result;
+- (void)setSubscriptionInterval:(long)intervalInMilli result: (FlutterResult _Nonnull )result;
+- (void)setVolume:(double) volume result: (FlutterResult _Nonnull )result;
+- (void)setCategory: (NSString*_Nonnull)categ mode:(NSString* _Nullable)mode options:(int)options result:(FlutterResult _Nonnull )result;
+- (void)setActive:(BOOL)enabled result:(FlutterResult _Nonnull )result;
+- (void)initializeSoundPlayer: (FlutterMethodCall*_Nonnull)call result: (FlutterResult _Nonnull )result;
+- (void)releaseSoundPlayer: (FlutterMethodCall*_Nonnull)call result: (FlutterResult _Nonnull )result;
 @end
 
 
