@@ -18,6 +18,6 @@ Flutter plugin that provides audio recording and playback services
   s.dependency 'Flutter'
   s.platform = :ios, '8.0'
 
-  s.ios.deployment_target = '9.3'
+  s.ios.deployment_target = '10.0'
   s.static_framework = true
 end
