@@ -245,7 +245,7 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
           
           NSMutableDictionary *audioSettings = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                          [NSNumber numberWithFloat: sampleRate],AVSampleRateKey,
-                                         [NSNumber numberWithInt: format ],AVFormatIDKey,
+                                         [format intValue],AVFormatIDKey,
                                          [NSNumber numberWithInt: numChannels ],AVNumberOfChannelsKey,
                                          [NSNumber numberWithInt: [iosQuality intValue]],AVEncoderAudioQualityKey,
                                          nil];
