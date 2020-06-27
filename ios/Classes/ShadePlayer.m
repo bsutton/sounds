@@ -278,14 +278,14 @@ extern void ShadePlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
                                                       // and start playing.
 
                                                       // We must create a new Audio Player instance to be able to play a different Url
-                                                      audioPlayer = [[AVAudioPlayer alloc] initWithData:data error:nil];
-                                                      audioPlayer.delegate = self;
+                            self->audioPlayer = [[AVAudioPlayer alloc] initWithData:data error:nil];
+                            self->audioPlayer.delegate = self;
 
-                                                      dispatch_async(dispatch_get_main_queue(), ^{
+                                dispatch_async(dispatch_get_main_queue(), ^{
                                                           [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
                                                       });
 
-                                                      [audioPlayer play];
+                            [self->audioPlayer play];
                                                    }];
 
                         [downloadTask resume];
@@ -441,8 +441,8 @@ extern void ShadePlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
           {
                 pauseTarget = [commandCenter.togglePlayPauseCommand addTargetWithHandler: ^MPRemoteCommandHandlerStatus(MPRemoteCommandEvent * _Nonnull event)
                 {
-                        FlutterResult result;
-                        bool b = [audioPlayer isPlaying];
+                    
+                    bool b = [self->audioPlayer isPlaying];
                         // If the caller wants to control the pause button, just call him
                         if (b)
                         {
