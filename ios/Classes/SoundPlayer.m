@@ -213,7 +213,6 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
         isPaused = false;
         result([NSNumber numberWithBool: YES]);
 }
-
 - (void)releaseSoundPlayer: (FlutterMethodCall*)call result: (FlutterResult)result
 {
         [[self getPlugin]freeSlot: slotNo];
