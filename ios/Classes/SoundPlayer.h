@@ -56,7 +56,7 @@ extern NSMutableArray* _Nullable flautoPlayerSlots;
 - (SoundPlayer*_Nonnull)init: (int)aSlotNo;
 
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *_Nonnull)player successfully:(BOOL)flag;
-- (void)updateProgress:(NSTimer *_Nonnull)timer;
+- (void)updateProgress:(NSTimer *_Nullable)timer;
 - (void)startTimer;
 - (void)stopPlayer;
 - (void)pausePlayer:(FlutterResult _Nonnull )result;
