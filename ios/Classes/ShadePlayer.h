@@ -30,6 +30,7 @@ extern void ShadePlayerReg(NSObject<FlutterPluginRegistrar>* registrar);
 }
 
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar;
+- (void)freeSlot: (int)slotNo;
 @end
 
 
@@ -41,8 +42,6 @@ extern void ShadePlayerReg(NSObject<FlutterPluginRegistrar>* registrar);
 - (void)startPlayerFromTrack:(FlutterMethodCall*)call result: (FlutterResult)result;
 - (void)initializeShadePlayer: (FlutterMethodCall*)call result: (FlutterResult)result;
 - (void)releaseShadePlayer:(FlutterMethodCall *)call result:(FlutterResult)result;
-- (void)freeSlot: (int)slotNo;
-
 @end
 
 #endif // ShadePlayer_h

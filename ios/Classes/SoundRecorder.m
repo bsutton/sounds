@@ -43,16 +43,16 @@ FlutterMethodChannel* _flautoRecorderChannel;
         NSMutableArray* flautoRecorderSlots;
 }
 
-static SoundRecorderManager* flautoRecorderManager; // Singleton
+static SoundRecorderManager* soundRecorderManager; // Singleton
 
 
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar
 {
         _channel = [FlutterMethodChannel methodChannelWithName:@"com.bsutton.sounds.sound_recorder"
                                         binaryMessenger:[registrar messenger]];
-        assert (flautoRecorderManager == nil);
-        flautoRecorderManager = [[SoundRecorderManager alloc] init];
-        [registrar addMethodCallDelegate:flautoRecorderManager channel:_channel];
+        assert (soundRecorderManager == nil);
+        soundRecorderManager = [[SoundRecorderManager alloc] init];
+        [registrar addMethodCallDelegate:soundRecorderManager channel:_channel];
 }
 
 
@@ -179,7 +179,7 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
 
 -(SoundRecorderManager*) getPlugin
 {
-        return flautoRecorderManager;
+        return soundRecorderManager;
 }
 
 
