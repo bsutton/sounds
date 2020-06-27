@@ -42,7 +42,7 @@ static FlutterMethodChannel* _channel;
 {
         //NSMutableArray* ShadePlayerSlots;
 }
-static ShadePlayerManager* ShadePlayerManager; // Singleton
+static ShadePlayerManager* shadePlayerManager; // Singleton
 
 
 
@@ -50,8 +50,8 @@ static ShadePlayerManager* ShadePlayerManager; // Singleton
 {
         _channel = [FlutterMethodChannel methodChannelWithName:@"com.bsutton.sounds.sound_track_player"
                                         binaryMessenger:[registrar messenger]];
-        ShadePlayerManager = [[ShadePlayerManager alloc] init]; // In super class
-        [registrar addMethodCallDelegate:ShadePlayerManager channel:_channel];
+        shadePlayerManager = [[ShadePlayerManager alloc] init]; // In super class
+        [registrar addMethodCallDelegate:shadePlayerManager channel:_channel];
 }
 
 - (ShadePlayerManager*)init
@@ -79,7 +79,7 @@ extern void ShadePlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 
 - (SoundPlayerManager*)getManager
 {
-        return ShadePlayerManager;
+        return shadePlayerManager;
 }
 
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result
@@ -186,7 +186,7 @@ extern void ShadePlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 
 - (SoundPlayerManager*) getPlugin
 {
-        return ShadePlayerManager;
+        return shadePlayerManager;
 }
 
 
