@@ -52,9 +52,9 @@ class Track {
   /// Creates a Track from a path to a file
   ///
   /// Other classes that use fromFile should also be reviewed.
-  /// Throws [CodecNotSupportedException] if the passed [Codec] is not supported
-  /// or if you don't pass the [Codec] and we are unable
-  /// to determine the [Codec] from the [path]s extension.
+  /// Throws [MediaFormatNotSupportedException] if the passed [MediaFormat] is not supported
+  /// or if you don't pass the [MediaFormat] and we are unable
+  /// to determine the [MediaFormat] from the [path]s extension.
   Track.fromFile(String path, {MediaFormat mediaFormat}) {
     if (path == null) {
       throw TrackPathException('The path MUST not be null.');
@@ -102,9 +102,6 @@ class Track {
     _storageType = TrackStorageType.buffer;
     _audio = Audio.fromBuffer(buffer, mediaFormat);
   }
-
-  ///
-  Codec get codec => _audio.mediaFormat.codec;
 
   /// true if the track is a url to the audio data.
   bool get isURL => _storageType == TrackStorageType.url;
@@ -177,9 +174,9 @@ class Track {
   ///
   /// You are responsible for deleting the file once done.
   ///
-  /// The temp file name will be <uuid>.<codec>.
+  /// The temp file name will be <uuid>.<mediaformat>.
   ///
-  /// The [codec] has no affect on this file except to set the file's extension.
+  /// The [MediaFormat] has no affect on this file except to set the file's extension.
   ///
   /// You could still be really stupid and save data in some other format
   /// into this file. But you're not that stupid are you :)

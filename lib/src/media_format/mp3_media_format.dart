@@ -1,4 +1,3 @@
-import 'codec.dart';
 import 'native_media_format.dart';
 
 /// The native mp3 media format.
@@ -8,10 +7,8 @@ class MP3MediaFormat extends NativeMediaFormat {
     int sampleRate = 16000,
     int numChannels = 1,
     int bitRate = 16000,
-  })
-      : super.detail(
+  }) : super.detail(
           name: 'mp3',
-          codec: Codec.MP3,
           sampleRate: 16000,
           numChannels: 1,
           bitRate: 16000,

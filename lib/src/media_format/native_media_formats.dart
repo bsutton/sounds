@@ -6,10 +6,10 @@ import 'package:sounds_common/sounds_common.dart';
 
 import 'aac_adts_media_format.dart';
 import 'mp3_media_format.dart';
-import 'ogg_opus_media_format.dart';
-import 'ogg_vorbis_media_format.dart';
 import 'opus_caf_media_format.dart';
+import 'opus_ogg_media_format.dart';
 import 'pcm_media_format.dart';
+import 'vorbis_ogg_media_format.dart';
 
 /// Provides a means to determine the list of natively supported MediaFormats
 /// on the current OS and sdk verison.
@@ -40,8 +40,8 @@ class NativeMediaFormats implements MediaProvider {
       var deviceInfo = DeviceInfoPlugin();
       var androidInfo = await deviceInfo.androidInfo;
       if (androidInfo.version.sdkInt >= 23) {
-        supported.add(OGGOpusMediaFormat());
-        supported.add(OGGVorbisMediaFormat());
+        supported.add(OpusOggMediaFormat());
+        supported.add(VorbisOggMediaFormat());
       }
     }
     return supported;
@@ -65,8 +65,8 @@ class NativeMediaFormats implements MediaProvider {
       var deviceInfo = DeviceInfoPlugin();
       var androidInfo = await deviceInfo.androidInfo;
       if (androidInfo.version.sdkInt >= 23) {
-        supported.add(OGGOpusMediaFormat());
-        supported.add(OGGVorbisMediaFormat());
+        supported.add(OpusOggMediaFormat());
+        supported.add(VorbisOggMediaFormat());
       }
     }
     return supported;
@@ -78,8 +78,8 @@ class NativeMediaFormats implements MediaProvider {
         AACADTSMediaFormat(),
         OpusCafMediaFormat(),
         PCMMediaFormat(),
-        OGGOpusMediaFormat(),
-        OGGVorbisMediaFormat(),
+        OpusOggMediaFormat(),
+        VorbisOggMediaFormat(),
         MP3MediaFormat(),
         PCMMediaFormat()
       ];
@@ -105,5 +105,4 @@ class NativeMediaFormats implements MediaProvider {
     }
     return false;
   }
-
 }

@@ -1,10 +1,9 @@
-
 import 'package:sounds_common/sounds_common.dart';
 
 import 'aac_adts_media_format.dart';
 import 'mp3_media_format.dart';
-import 'ogg_opus_media_format.dart';
-import 'ogg_vorbis_media_format.dart';
+import 'opus_ogg_media_format.dart';
+import 'vorbis_ogg_media_format.dart';
 import 'opus_caf_media_format.dart';
 import 'pcm_media_format.dart';
 
@@ -17,7 +16,7 @@ class WellKnownMediaFormats {
   static var aacAdts = AACADTSMediaFormat();
   static var opusCaf = OpusCafMediaFormat();
   static var pcm = PCMMediaFormat();
-  static var oggOpus = OGGOpusMediaFormat();
-  static var oggVorbis = OGGVorbisMediaFormat();
+  static var oggOpus = OpusOggMediaFormat();
+  static var oggVorbis = VorbisOggMediaFormat();
   static var mp3 = MP3MediaFormat();
 }

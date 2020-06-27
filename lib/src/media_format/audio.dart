@@ -160,7 +160,8 @@ class Audio {
     _storageType = TrackStorageType.url;
   }
 
-  /// Throws [CodecNotSupportedException] if the codec is null
+  /// Throws [MediaFormatNotSupportedException] if the databuffer is
+  /// encoded in a unsupported media format.
   Audio.fromBuffer(this._dataBuffer, this.mediaFormat) {
     ArgumentError.checkNotNull(mediaFormat, 'mediaFormat');
     ArgumentError.checkNotNull(_dataBuffer, '_dataBuffer');
@@ -305,7 +306,7 @@ class Audio {
 
   @override
   String toString() {
-    var desc = 'Codec: ${mediaFormat.codec}';
+    var desc = 'MediaFormat: ${mediaFormat.name}';
     if (_onDisk) {
       desc += 'storage: $_storagePath';
     }

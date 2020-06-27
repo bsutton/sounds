@@ -1,17 +1,14 @@
-import 'codec.dart';
 import 'native_media_format.dart';
 
 /// The native ogg/vorbis media format.
-class OGGVorbisMediaFormat extends NativeMediaFormat {
+class VorbisOggMediaFormat extends NativeMediaFormat {
   /// ctor
-  OGGVorbisMediaFormat({
+  VorbisOggMediaFormat({
     int sampleRate = 16000,
     int numChannels = 1,
     int bitRate = 16000,
-  })
-      : super.detail(
-          name: 'ogg/vorbis',
-          codec: Codec.OGG,
+  }) : super.detail(
+          name: 'vorbis/ogg',
           sampleRate: 16000,
           numChannels: 1,
           bitRate: 16000,

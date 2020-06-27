@@ -9,7 +9,7 @@ import 'media_format_not_supported_exception.dart';
 class MediaFormatManager {
   static final MediaFormatManager _self = MediaFormatManager._internal();
 
-  // A map of codes with the codec name as the key.
+  // A map of codes with the MediaFormat name as the key.
   final _mediaFormats = <String, MediaFormat>{};
 
   factory MediaFormatManager() {

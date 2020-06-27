@@ -1,8 +1,7 @@
-import 'codec.dart';
 import 'native_media_format.dart';
 
 /// A native media format
-/// Codec: AAC
+/// MediaFormat: aac/adts
 /// Format/Container: ADTS in an MPEG container.
 ///
 /// Support by both ios and android
@@ -14,7 +13,6 @@ class AACADTSMediaFormat extends NativeMediaFormat {
     int bitRate = 16000,
   }) : super.detail(
           name: 'aac/adts',
-          codec: Codec.AAC,
           sampleRate: 16000,
           numChannels: 1,
           bitRate: 16000,

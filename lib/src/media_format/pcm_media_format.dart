@@ -1,4 +1,3 @@
-import 'codec.dart';
 import 'native_media_format.dart';
 
 /// The native wav media format.
@@ -8,10 +7,8 @@ class PCMMediaFormat extends NativeMediaFormat {
     int sampleRate = 16000,
     int numChannels = 1,
     int bitRate = 16000,
-  })
-      : super.detail(
+  }) : super.detail(
           name: 'pcm',
-          codec: Codec.PCM,
           sampleRate: 16000,
           numChannels: 1,
           bitRate: 16000,

@@ -1,6 +1,5 @@
 import 'package:meta/meta.dart';
 
-import 'codec.dart';
 import 'duration_providers.dart';
 
 abstract class MediaFormat {
@@ -16,14 +15,12 @@ abstract class MediaFormat {
   /// e.g.
   /// pcm
   final String name;
-  final Codec codec;
   final int sampleRate;
   final int numChannels;
   final int bitRate;
 
   const MediaFormat.detail({
     @required this.name,
-    @required this.codec,
     this.sampleRate = 16000,
     this.numChannels = 1,
     this.bitRate = 16000,

@@ -4,10 +4,10 @@ import 'package:sounds_common/sounds_common.dart';
 import 'aac_adts_media_format.dart';
 import 'native_media_formats.dart';
 
-/// Base class for all Native Codecs.
-/// Native Codecs are those Codecs which are supported by the underlying OS.
+/// Base class for all Native MediaFormat.
+/// Native MediaFormat are those MediaFormat which are supported by the underlying OS.
 ///
-/// The available set Native Codec varies depending on the OS and the OS
+/// The available set Native MediaFormat varies depending on the OS and the OS
 /// version.
 ///
 /// The [NativeMediaFormat.common] MediaFormat is supported by all OS
@@ -16,13 +16,11 @@ abstract class NativeMediaFormat extends MediaFormat {
   ///
   const NativeMediaFormat.detail({
     @required String name,
-    @required Codec codec,
     int sampleRate = 16000,
     int numChannels = 1,
     int bitRate = 16000,
   }) : super.detail(
           name: name,
-          codec: codec,
           sampleRate: sampleRate,
           numChannels: numChannels,
           bitRate: bitRate,

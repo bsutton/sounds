@@ -1,9 +1,8 @@
-import 'codec.dart';
 import 'native_media_format.dart';
 
 /// The native opus/caff media format.
 ///
-/// Codec: Opus
+/// MediaFormat: opus
 /// Format/Container: Caf
 /// iOS Only
 class OpusCafMediaFormat extends NativeMediaFormat {
@@ -12,10 +11,8 @@ class OpusCafMediaFormat extends NativeMediaFormat {
     int sampleRate = 16000,
     int numChannels = 1,
     int bitRate = 16000,
-  })
-      : super.detail(
+  }) : super.detail(
           name: 'opus/caf',
-          codec: Codec.OPUS,
           sampleRate: 16000,
           numChannels: 1,
           bitRate: 16000,

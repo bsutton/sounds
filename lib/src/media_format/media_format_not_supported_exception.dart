@@ -1,4 +1,4 @@
-/// Throw if an unsupported codec is passed.
+/// Throw if an unsupported MediaFormat is passed.
 /// Different OS's support a different set of codecs.
 ///
 class MediaFormatNotSupportedException implements Exception {
