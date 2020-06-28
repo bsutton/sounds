@@ -6,6 +6,7 @@ import 'package:flutter/services.dart' show rootBundle;
 
 import 'package:sounds_common/src/util/downloader.dart';
 import 'package:sounds_common/src/util/file_util.dart';
+import 'package:sounds_common/src/util/log.dart';
 
 import '../playback_disposition.dart';
 import '../track.dart';
@@ -220,7 +221,7 @@ class Audio {
     // to a file.
     // iOS doesn't support opus so we must convert to a file so we
     /// remux it.
-    if (Platform.isAndroid && (isBuffer || isAsset)) {
+    if ((Platform.isAndroid && isBuffer) || isAsset) {
       _writeBufferToDisk((disposition) {
         _forwardStagedProgress(loadingProgress, disposition, stage, stages);
       });
@@ -239,6 +240,7 @@ class Audio {
   }
 
   Future<void> _loadAsset() async {
+    Log.d('loadingAsset');
     _dataBuffer = (await rootBundle.load(path)).buffer.asUint8List();
   }
 
