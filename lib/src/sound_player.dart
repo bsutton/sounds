@@ -326,7 +326,9 @@ class SoundPlayer implements SlotEntry {
       _track = track;
 
       // Check the current MediaFormat is supported on this platform
-      if (!await NativeMediaFormats().isNativeDecoder(track.mediaFormat)) {
+      // if we were supplied the format.
+      if (track.mediaFormat != null &&
+          !await NativeMediaFormats().isNativeDecoder(track.mediaFormat)) {
         var exception = PlayerInvalidStateException(
             'The selected MediaFormat ${track.mediaFormat.name} is not '
             'supported on this platform.');
