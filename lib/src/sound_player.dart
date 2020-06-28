@@ -57,19 +57,19 @@ class SoundPlayer implements SlotEntry {
   PlayerEventWithCause _onStarted;
   PlayerEventWithCause _onStopped;
 
-  /// When the [withUI] ctor is called this field
+  /// When the [withShadeUI] ctor is called this field
   /// controls whether the OSs' UI displays the pause button.
   /// If you change this value it won't take affect until the
   /// next call to [play].
   bool canPause;
 
-  /// When the [withUI] ctor is called this field
+  /// When the [withShadeUI] ctor is called this field
   /// controls whether the OSs' UI displays the skip Forward button.
   /// If you change this value it won't take affect until the
   /// next call to [play].
   bool canSkipForward;
 
-  /// When the [withUI] ctor is called this field
+  /// When the [withShadeUI] ctor is called this field
   /// controls whether the OSs' UI displays the skip back button.
   /// If you change this value it won't take affect until the
   /// next call to [play].
@@ -130,7 +130,8 @@ class SoundPlayer implements SlotEntry {
   /// We should only resume playing if we wer playing when paused.
   bool _inSystemPause = false;
 
-  /// Create a [SoundPlayer] that displays the OS' audio UI.
+  /// Create a [SoundPlayer] that displays the OS' audio UI (often
+  /// referred to as a shade).
   ///
   /// if [canPause] is true than the user will be able to pause the track
   /// via the OSs' UI. Defaults to true.
@@ -163,7 +164,7 @@ class SoundPlayer implements SlotEntry {
   /// ```
   /// The above example guarentees that the player will be released.
   /// {@end-tool}
-  SoundPlayer.withUI({
+  SoundPlayer.withShadeUI({
     this.canPause = true,
     this.canSkipBackward = false,
     this.canSkipForward = false,
@@ -623,7 +624,7 @@ class SoundPlayer implements SlotEntry {
   /// when the user attempts to skip forward to the
   /// next track.
   /// This is only meaningful if you have used
-  /// [SoundPlayer.withUI] which has a 'skip' button.
+  /// [SoundPlayer..withShadeUI] which has a 'skip' button.
   ///
   /// It is up to you to create a new SoundPlayer with the
   /// next track and start it playing.
@@ -660,7 +661,7 @@ class SoundPlayer implements SlotEntry {
   /// The [wasUser] argument in the callback will
   /// be true if the user clicked the pause button
   /// on the OS UI.  To show the OS UI you must have called
-  /// [SoundPlayer.withUI].
+  /// [SoundPlayer..withShadeUI].
   ///
   /// [wasUser] will be false if you paused the audio
   /// via a call to [pause].
@@ -675,7 +676,7 @@ class SoundPlayer implements SlotEntry {
   /// The [wasUser] argument in the callback will
   /// be true if the user clicked the resume button
   /// on the OS UI.  To show the OS UI you must have called
-  /// [SoundPlayer.withUI].
+  /// [SoundPlayer..withShadeUI].
   ///
   /// [wasUser] will be false if you resumed the audio
   /// via a call to [resume].
@@ -694,7 +695,7 @@ class SoundPlayer implements SlotEntry {
   /// This can occur if you called [play]
   /// or the user click the start button on the
   /// OS UI. To show the OS UI you must have called
-  /// [SoundPlayer.withUI].
+  /// [SoundPlayer..withShadeUI].
   // ignore: avoid_setters_without_getters
   set onStarted(PlayerEventWithCause onStarted) {
     _onStarted = onStarted;
@@ -710,7 +711,7 @@ class SoundPlayer implements SlotEntry {
   /// or the user click the stop button (widget or OS)
   /// or the audio naturally completes.
   ///
-  /// [SoundPlayer.withUI].
+  /// [SoundPlayer..withShadeUI].
   // ignore: avoid_setters_without_getters
   set onStopped(PlayerEventWithCause onStopped) {
     _onStopped = onStopped;

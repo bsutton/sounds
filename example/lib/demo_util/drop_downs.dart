@@ -73,7 +73,7 @@ class _DropdownsState extends State<Dropdowns> {
         /// this is hacky as we should be passing the actually
         /// useOSUI flag.
         ActiveMediaFormat()
-            .setMediaFormat(withUI: false, mediaFormat: newCodec);
+            .setMediaFormat(withShadeUI: false, mediaFormat: newCodec);
 
         setState(() {
           getDuration(ActiveMediaFormat().mediaFormat);

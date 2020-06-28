@@ -52,7 +52,7 @@ The core classes are:
 [SoundRecorderUI](https://github.com/bsutton/sounds/wiki/SoundRecorderUI) | A Flutter Widget for recording
 [QuickPlay](https://github.com/bsutton/sounds/wiki/QuickPlay) | Plays an audio file without a UI.
 [SoudPlayer.noUI](https://github.com/bsutton/sounds/wiki/SoundPlayer) |  API to playback audio with fine grained control
-[SoundPlayer.withUI](https://github.com/bsutton/sounds/wiki/SoundPlayer) | API to playback audio using the OS's Shade (media player)
+[SoundPlayer.withShadeUI](https://github.com/bsutton/sounds/wiki/SoundPlayer) | API to playback audio using the OS's Shade (media player)
 [SoundRecorder](https://github.com/bsutton/sounds/wiki/SoundRecorder) | API to record audio with fine grained control.
 [Track](https://github.com/bsutton/sounds/wiki/Track) | Container for audio used by all of the above classes.
 [MediaFormat](https://github.com/bsutton/sounds/wiki/MediaFormat) | Defines what MediaFormat is being used.
