@@ -231,7 +231,7 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 - (void)getDuration: (NSString*)path callbackUuid:(NSString*)callbackUuid  result:(FlutterResult)result
 {
         /// let the dart code resume whilst we calculate the duratin.
-        result("queued");
+        result(@"queued");
 
         NSURL *afUrl = [NSURL fileURLWithPath:path];
         AudioFileID fileID;
@@ -241,7 +241,7 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
         status = AudioFileGetProperty(fileID, kAudioFilePropertyEstimatedDuration, &thePropSize, &outDataSize);
         AudioFileClose(fileID);
 
-        NSLog([NSString stringWithFormat:@"getDuration status%@", status);
+        NSLog([NSString stringWithFormat:@"getDuration status%@"], status);
 
         if (status == kAudioServicesNoError)
         {
