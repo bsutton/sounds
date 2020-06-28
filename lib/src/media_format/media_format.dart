@@ -1,3 +1,4 @@
+import 'package:flutter/rendering.dart';
 import 'package:meta/meta.dart';
 
 import 'duration_providers.dart';
@@ -44,4 +45,12 @@ abstract class MediaFormat {
   /// Only [MediaFormats] that natively supported encoding (recording) by the current platform should return
   /// true.
   Future<bool> get isNativeEncoder;
+
+  @override
+  bool operator ==(covariant MediaFormat other) {
+    return (name == other.name &&
+        sampleRate == other.sampleRate &&
+        numChannels == other.numChannels &&
+        bitRate == other.bitRate);
+  }
 }
