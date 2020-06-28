@@ -235,29 +235,29 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 
         NSURL *afUrl = [NSURL fileURLWithPath:path];
         AudioFileID fileID;
-        OSStatus status = AudioFileOpenURL((CFURLRef)afUrl, kAudioFileReadPermission, 0, &fileID);
+    OSStatus status = AudioFileOpenURL((__bridge CFURLRef)afUrl, kAudioFileReadPermission, 0, &fileID);
         Float64 outDataSize = 0;
         UInt32 thePropSize = sizeof(Float64);
         status = AudioFileGetProperty(fileID, kAudioFilePropertyEstimatedDuration, &thePropSize, &outDataSize);
         AudioFileClose(fileID);
 
-        NSLog([NSString stringWithFormat:@"getDuration status%@"], status);
+    NSLog(@"%@", [NSString stringWithFormat:@"getDuration status%d", (int)status]);
 
         if (status == kAudioServicesNoError)
         {
                 int milliseconds = outDataSize * 1000;
 
-                NSString* args = [NSString stringWithFormat:@"{\"callbackUuid\": \"%@\", \"milliseconds\": %@}"
-                                , [callbackUuid stringValue]
-                                , [milliseconds stringValue]];
+                NSString* args = [NSString stringWithFormat:@"{\"callbackUuid\": \"%@\", \"milliseconds\": %d}"
+                                ,callbackUuid
+                                , milliseconds ];
                 [self invokeCallback:@"durationResults" stringArg:args];
         }
         else
         {
                 /// danger will robison, danger
-                NSString* args = [NSString stringWithFormat:@"{\"callbackUuid\": \"%@\", \"description\": \"%@\"}"
-                , [callbackUuid stringValue]
-                , [status stringValue]];
+            NSString* args = [NSString stringWithFormat:@"{\"callbackUuid\": \"%@\", \"description\": \"%d\"}"
+                              , callbackUuid
+                              , (int)status ];
                 [self invokeCallback:@"onError" stringArg:args];
 
         }
