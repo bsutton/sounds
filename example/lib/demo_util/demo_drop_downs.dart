@@ -64,47 +64,38 @@ class _DropdownsState extends State<Dropdowns> {
     );
   }
 
-  DropdownButton<MediaFormat> buildCodecDropdown() {
-    return DropdownButton<MediaFormat>(
-      value: ActiveMediaFormat().mediaFormat,
-      onChanged: (newMediaFormat) async {
-        widget._onMediaFormatChanged(newMediaFormat);
+  Widget buildCodecDropdown() {
+    return FutureBuilder<List<NativeMediaFormat>>(
+        future: NativeMediaFormats().encoders,
+        builder: (context, asynData) {
+          if (!asynData.hasData)
+            return Text('Loading MediaFormats');
+          else {
+            var menuItems = <DropdownMenuItem<MediaFormat>>[];
 
-        /// this is hacky as we should be passing the actual
-        /// useOSUI flag.
-        await ActiveMediaFormat()
-            .setMediaFormat(withUI: false, mediaFormat: newMediaFormat);
+            for (var mediaFormat in asynData.data) {
+              menuItems.add(DropdownMenuItem<MediaFormat>(
+                value: mediaFormat,
+                child: Text(mediaFormat.name),
+              ));
+            }
 
-        await getDuration(ActiveMediaFormat().mediaFormat);
-        setState(() {});
-      },
-      items: <DropdownMenuItem<MediaFormat>>[
-        DropdownMenuItem<MediaFormat>(
-          value: WellKnownMediaFormats.adtsAac,
-          child: Text(WellKnownMediaFormats.adtsAac.name),
-        ),
-        DropdownMenuItem<MediaFormat>(
-          value: WellKnownMediaFormats.oggOpus,
-          child: Text('OGG/Opus'),
-        ),
-        DropdownMenuItem<MediaFormat>(
-          value: WellKnownMediaFormats.opusCaf,
-          child: Text('CAF/Opus'),
-        ),
-        DropdownMenuItem<MediaFormat>(
-          value: WellKnownMediaFormats.mp3,
-          child: Text('MP3'),
-        ),
-        DropdownMenuItem<MediaFormat>(
-          value: WellKnownMediaFormats.oggVorbis,
-          child: Text('OGG/Vorbis'),
-        ),
-        DropdownMenuItem<MediaFormat>(
-          value: WellKnownMediaFormats.pcm,
-          child: Text('PCM'),
-        ),
-      ],
-    );
+            return DropdownButton<MediaFormat>(
+                value: ActiveMediaFormat().mediaFormat,
+                onChanged: (newMediaFormat) async {
+                  widget._onMediaFormatChanged(newMediaFormat);
+
+                  /// this is hacky as we should be passing the actual
+                  /// useOSUI flag.
+                  await ActiveMediaFormat().setMediaFormat(
+                      withShadeUI: false, mediaFormat: newMediaFormat);
+
+                  //await getDuration(ActiveMediaFormat().mediaFormat);
+                  setState(() {});
+                },
+                items: menuItems);
+          }
+        });
   }
 
   DropdownButton<MediaStorage> buildMediaDropdown() {
