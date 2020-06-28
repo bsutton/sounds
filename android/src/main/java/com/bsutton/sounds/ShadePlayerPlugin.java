@@ -146,8 +146,8 @@ class ShadePlayerPlugin
 			}
 			break;
 
-			case "startPlayerFromTrack":
-				aPlayer.startPlayerFromTrack( call, result );
+			case "startShadePlayer":
+				aPlayer.startShadePlayer( call, result );
 				break;
 
 
@@ -182,4 +182,3 @@ class ShadePlayerPlugin
 
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------

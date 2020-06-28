@@ -153,7 +153,7 @@ public class ShadePlayer extends SoundPlayer
 
 
 
-	public void startPlayerFromTrack( final MethodCall call, final Result result )
+	public void startShadePlayer( final MethodCall call, final Result result )
 	{
 		final HashMap<String, Object> trackMap = call.argument( "track" );
 		final Track track = new Track( trackMap );
@@ -219,16 +219,8 @@ public class ShadePlayer extends SoundPlayer
 		mMediaBrowserHelper.setMediaPlayerOnPreparedListener( new MediaPlayerOnPreparedListener( result, path ) );
 		mMediaBrowserHelper.setMediaPlayerOnCompletionListener( new MediaPlayerOnCompletionListener() );
 
-		// Check whether a path to an audio file was given
-		if ( path == null )
-		{
-			// No paths were given, then use the default file
-			mMediaBrowserHelper.mediaControllerCompat.getTransportControls().playFromMediaId( PlayerAudioModel.DEFAULT_FILE_LOCATION, null );
-		} else
-		{
-			// A path was given, then send it to the media player
-			mMediaBrowserHelper.mediaControllerCompat.getTransportControls().playFromMediaId( path, null );
-		}
+		// Send the audio file to the media player
+		mMediaBrowserHelper.mediaControllerCompat.getTransportControls().playFromMediaId( path, null );
 
 		// The media player is started in the on prepared callback
 	}
@@ -585,8 +577,7 @@ public class ShadePlayer extends SoundPlayer
 			};
 
 			mTimer.schedule( mTask, 0, model.subsDurationMillis );
-			String resolvedPath = mPath == null ? PlayerAudioModel.DEFAULT_FILE_LOCATION : mPath;
-			mResult.success( ( resolvedPath ) );
+			mResult.success( ( mPath ) );
 
 			return null;
 		}

@@ -111,9 +111,9 @@ extern void ShadePlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
                 
         } else
         
-        if ([@"startPlayerFromTrack" isEqualToString:call.method])
+        if ([@"startShadePlayer" isEqualToString:call.method])
         {
-                 [aShadePlayer startPlayerFromTrack: call result:result];
+                 [aShadePlayer startShadePlayer: call result:result];
         } else
 
         {
@@ -204,7 +204,7 @@ extern void ShadePlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 }
 
 
-- (void)startPlayerFromTrack:(FlutterMethodCall*)call result: (FlutterResult)result
+- (void)startShadePlayer:(FlutterMethodCall*)call result: (FlutterResult)result
 {
          NSDictionary* trackDict = (NSDictionary*) call.arguments[@"track"];
          track = [[Track alloc] initFromDictionary:trackDict];
