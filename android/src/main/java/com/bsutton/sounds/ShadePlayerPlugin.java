@@ -108,7 +108,6 @@ class ShadePlayerPlugin
 	}
 
 
-
 	@Override
 	public void onMethodCall( final MethodCall call, final Result result )
 	{

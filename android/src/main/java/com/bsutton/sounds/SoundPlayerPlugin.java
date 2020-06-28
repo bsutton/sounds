@@ -1,4 +1,4 @@
-
+package com.bsutton.sounds;
 
 import android.Manifest;
 import android.app.Activity;
