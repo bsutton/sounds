@@ -7,6 +7,7 @@ import 'adts_aac_media_format.dart';
 import 'cap_opus_media_format.dart';
 import 'mp3_media_format.dart';
 import 'native_duration_provider.dart';
+import 'native_media_format.dart';
 import 'ogg_opus_media_format.dart';
 import 'ogg_vorbis_media_format.dart';
 import 'pcm_media_format.dart';
@@ -26,8 +27,8 @@ class NativeMediaFormats implements MediaProvider {
   /// The set of decoders we support on this OS/SDK version
   /// for playback.
   @override
-  Future<List<MediaFormat>> get decoders async {
-    var supported = <MediaFormat>[];
+  Future<List<NativeMediaFormat>> get decoders async {
+    var supported = <NativeMediaFormat>[];
 
     /// common formats
     supported.add(AdtsAacMediaFormat());
@@ -52,8 +53,8 @@ class NativeMediaFormats implements MediaProvider {
   /// The set of encoders we support on this OS/SDK version
   /// for recording.
   @override
-  Future<List<MediaFormat>> get encoders async {
-    var supported = <MediaFormat>[];
+  Future<List<NativeMediaFormat>> get encoders async {
+    var supported = <NativeMediaFormat>[];
 
     /// common formats
     supported.add(AdtsAacMediaFormat());
