@@ -36,7 +36,8 @@ class _MainBodyState extends State<MainBody> {
     super.initState();
     recordingFile = Track.tempFile(WellKnownMediaFormats.adtsAac);
 
-    track = Track.fromFile(recordingFile);
+    track = Track.fromFile(recordingFile,
+        mediaFormat: WellKnownMediaFormats.adtsAac);
     track.artist = 'Brett';
   }
 
@@ -46,7 +47,7 @@ class _MainBodyState extends State<MainBody> {
       await RecorderState().init();
       ActiveMediaFormat().recorderModule = RecorderState().recorderModule;
       await ActiveMediaFormat().setMediaFormat(
-          withUI: false, mediaFormat: WellKnownMediaFormats.adtsAac);
+          withShadeUI: false, mediaFormat: WellKnownMediaFormats.adtsAac);
 
       initialized = true;
     }
@@ -76,11 +77,11 @@ class _MainBodyState extends State<MainBody> {
             final dropdowns =
                 Dropdowns(onMediaFormatChanged: (mediaFormat) async {
               await ActiveMediaFormat()
-                  .setMediaFormat(withUI: false, mediaFormat: mediaFormat);
+                  .setMediaFormat(withShadeUI: false, mediaFormat: mediaFormat);
 
               /// If we have changed MediaFormat the recording is no longer valid.
               FileUtil().truncate(recordingFile);
-              track = Track.fromFile(recordingFile);
+              track = Track.fromFile(recordingFile, mediaFormat: mediaFormat);
 
               /// we need the SoundRecorderUI to rebuild so it gets
               /// the track with the changed MediaFormat.

@@ -258,13 +258,23 @@ class SoundRecorder implements SlotEntry {
   /// The [audioSource] is currently only supported on android.
   /// For iOS the source is always the microphone.
   /// The [quality] is currently only supported on iOS.
+  ///
+  /// Throws [MediaFormatException] if you pass in a [Track]
+  /// that doesn't have a [NativeMediaFormat].
   Future<void> record(
     Track track, {
     AudioSource audioSource = AudioSource.mic,
     Quality quality = Quality.low,
-    NativeMediaFormat mediaFormat,
   }) async {
-    mediaFormat ??= NativeMediaFormat.common;
+    if (track.mediaFormat == null) {
+      throw MediaFormatException("The [Track] must have a [NativeMediaFormat] "
+          "specified for it's [mediaFormat]");
+    }
+
+    if (!(track.mediaFormat is NativeMediaFormat)) {
+      throw MediaFormatException(
+          'Only [NativeMediaFormat]s can be used when recording');
+    }
 
     var started = Completer<void>();
 
@@ -283,7 +293,8 @@ class SoundRecorder implements SlotEntry {
     }
 
     _initializeAndRun(() async {
-      _recordingTrack = RecordingTrack(track);
+      _recordingTrack =
+          RecordingTrack(track, track.mediaFormat as NativeMediaFormat);
 
       /// Throws an exception if the path isn't valid.
       _recordingTrack.validatePath();
@@ -306,8 +317,8 @@ class SoundRecorder implements SlotEntry {
       if (hasPermissions) {
         _timePaused = Duration(seconds: 0);
 
-        await _plugin.start(this, _recordingTrack.track.path, mediaFormat,
-            audioSource, quality);
+        await _plugin.start(this, _recordingTrack.track.path,
+            _recordingTrack.mediaFormat, audioSource, quality);
 
         _recorderState = _RecorderState.isRecording;
         if (_onStarted != null) _onStarted(wasUser: true);
