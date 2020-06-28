@@ -96,8 +96,10 @@ abstract class PlayerBasePlugin extends BasePlugin {
 
     /// The results are completed via a callback to [_onDurationResults] or
     /// in the event of an error a call to [onError].
-    await invokeMethod(player, 'getDuration',
-        <String, dynamic>{'path': path, 'callbackUuid': callbackUuid});
+    await invokeMethod(player, 'getDuration', <String, dynamic>{
+      'path': path,
+      'callbackUuid': callbackUuid.toString()
+    });
 
     return completer.future;
   }
