@@ -59,7 +59,7 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
         [SoundPlayerManager registerWithRegistrar: registrar];
 }
 
-- (void)invokeMethod: (NSString*)methodName arguments: (NSDictionary*)call
+- (void)invokeCallback: (NSString*)methodName arguments: (NSDictionary*)call
 {
         [_channel invokeMethod: methodName arguments: call ];
 }
@@ -201,10 +201,10 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 }
 
 
-- (void)invokeMethod: (NSString*)methodName stringArg: (NSString*)stringArg
+- (void)invokeCallback: (NSString*)methodName stringArg: (NSString*)stringArg
 {
         NSDictionary* dic = @{ @"slotNo": [NSNumber numberWithInt: slotNo], @"arg": stringArg};
-        [[self getPlugin] invokeMethod: methodName arguments: dic ];
+        [[self getPlugin] invokeCallback: methodName arguments: dic ];
 }
 
 
@@ -565,7 +565,7 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
         // }
 
         NSString* status = [NSString stringWithFormat:@"{\"duration\": \"%@\", \"current_position\": \"%@\"}", [duration stringValue],                         [currentTime stringValue]];
-        [self invokeMethod:@"updateProgress" stringArg:status];
+        [self invokeCallback:@"updateProgress" stringArg:status];
 //        if (![audioPlayer isPlaying] )
 //        {
 //                  [self stopPlayer];
@@ -617,7 +617,7 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 
         NSString* status = [NSString stringWithFormat:@"{\"duration\": \"%@\", \"current_position\": \"%@\"}", [duration stringValue], [currentTime stringValue]];
 
-        [self invokeMethod:@"audioPlayerFinishedPlaying" stringArg: status];
+        [self invokeCallback:@"audioPlayerFinishedPlaying" stringArg: status];
         isPaused = false;
         [self stopTimer];
 }

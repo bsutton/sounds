@@ -79,9 +79,9 @@ class SoundPlayerPlugin
 	}
 
 
-	void invokeMethod ( String methodName, Map dic )
+	void invokeCallback ( String methodName, Map dic )
 	{
-		Log.d(TAG, "SoundPlayer: invokeMethod " + methodName);
+		Log.d(TAG, "SoundPlayer: invokeCallback " + methodName);
 		channel.invokeMethod ( methodName, dic );
 	}
 

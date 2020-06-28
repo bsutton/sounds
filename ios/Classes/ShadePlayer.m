@@ -66,7 +66,7 @@ extern void ShadePlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
         [ShadePlayerManager registerWithRegistrar: registrar];
 }
 
-- (void)invokeMethod: (NSString*)methodName arguments: (NSDictionary*)call
+- (void)invokeCallback: (NSString*)methodName arguments: (NSDictionary*)call
 {
         [_channel invokeMethod: methodName arguments: call ];
 }
@@ -190,17 +190,17 @@ extern void ShadePlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 }
 
 
-- (void)invokeMethod: (NSString*)methodName stringArg: (NSString*)stringArg
+- (void)invokeCallback: (NSString*)methodName stringArg: (NSString*)stringArg
 {
         NSDictionary* dic = @{ @"slotNo": [NSNumber numberWithInt: slotNo], @"arg": stringArg};
-        [[self getPlugin] invokeMethod: methodName arguments: dic ];
+        [[self getPlugin] invokeCallback: methodName arguments: dic ];
 }
 
 
-- (void)invokeMethod: (NSString*)methodName boolArg: (Boolean)boolArg
+- (void)invokeCallback: (NSString*)methodName boolArg: (Boolean)boolArg
 {
         NSDictionary* dic = @{ @"slotNo": [NSNumber numberWithInt: slotNo], @"arg": [NSNumber numberWithBool: boolArg]};
-        [[self getPlugin] invokeMethod: methodName arguments: dic ];
+        [[self getPlugin] invokeCallback: methodName arguments: dic ];
 }
 
 
@@ -329,7 +329,7 @@ extern void ShadePlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
                 [self startTimer];
                 result(@"Playing from buffer");
         }
-        //[ self invokeMethod:@"updatePlaybackState" arguments:playingState];
+        //[ self invokeCallback:@"updatePlaybackState" arguments:playingState];
 
         // Display the notification with the media controls
         [self setupRemoteCommandCenter:canPause canSkipForward:canSkipForward   canSkipBackward:canSkipBackward result:result];
@@ -447,13 +447,13 @@ extern void ShadePlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
                         if (b)
                         {
                                 if (canPause)
-                                        [self invokeMethod:@"pause" boolArg:true];
+                                        [self invokeCallback:@"pause" boolArg:true];
                                 else
                                         [self pause];
                         } else
                         {
                                 if (canPause)
-                                        [self invokeMethod:@"resume" boolArg:true];
+                                        [self invokeCallback:@"resume" boolArg:true];
                                 else
                                         [self resume];
                         }
@@ -465,7 +465,7 @@ extern void ShadePlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
         {
                 forwardTarget = [commandCenter.nextTrackCommand addTargetWithHandler: ^MPRemoteCommandHandlerStatus(MPRemoteCommandEvent * _Nonnull event)
                 {
-                        [self invokeMethod:@"skipForward" stringArg:@""];
+                        [self invokeCallback:@"skipForward" stringArg:@""];
                         // [[MediaController sharedInstance] fastForward];    // forward to next track.
                         return MPRemoteCommandHandlerStatusSuccess;
                 }];
@@ -475,7 +475,7 @@ extern void ShadePlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
         {
                 backwardTarget = [commandCenter.previousTrackCommand addTargetWithHandler: ^MPRemoteCommandHandlerStatus(MPRemoteCommandEvent * _Nonnull event)
                 {
-                        [self invokeMethod:@"skipBackward" stringArg:@""];
+                        [self invokeCallback:@"skipBackward" stringArg:@""];
                         // [[MediaController sharedInstance] rewind];    // back to previous track.
                         return MPRemoteCommandHandlerStatusSuccess;
                 }];

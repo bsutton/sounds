@@ -85,20 +85,20 @@ public class SoundRecorder
 		result.success ( "Sounds Recorder Released" );
 	}
 
-	void invokeMethodWithString ( String methodName, String arg )
+	void invokeCallbackWithString ( String methodName, String arg )
 	{
 		Map<String, Object> dic = new HashMap<String, Object> ();
 		dic.put ( "slotNo", slotNo );
 		dic.put ( "arg", arg );
-		getPlugin ().invokeMethod ( methodName, dic );
+		getPlugin ().invokeCallback ( methodName, dic );
 	}
 
-	void invokeMethodWithDouble ( String methodName, double arg )
+	void invokeCallbackWithDouble ( String methodName, double arg )
 	{
 		Map<String, Object> dic = new HashMap<String, Object> ();
 		dic.put ( "slotNo", slotNo );
 		dic.put ( "arg", arg );
-		getPlugin ().invokeMethod ( methodName, dic );
+		getPlugin ().invokeCallback ( methodName, dic );
 	}
 
 	public void startRecorder ( final MethodCall call, final Result result )
@@ -235,7 +235,7 @@ public class SoundRecorder
 			}
 
 			// Log.d ( TAG, "rawAmplitude: " + maxAmplitude + " Base DB: " + db );
-			invokeMethodWithDouble (  "updateDbPeakProgress", db );
+			invokeCallbackWithDouble (  "updateDbPeakProgress", db );
 
 			// schedule the next update.
 			dbPeakLevelTickHandler.postDelayed ( () ->  sendDBLevelUpdate(), ( model.peakLevelUpdateMillis ) );
@@ -252,7 +252,7 @@ public class SoundRecorder
 		{
 			JSONObject json = new JSONObject ();
 			json.put ( "current_position", String.valueOf ( time ) );
-			invokeMethodWithString ( "updateRecorderProgress", json.toString () );
+			invokeCallbackWithString ( "updateRecorderProgress", json.toString () );
 			// Log.d(TAG,  "updateRecorderProgress: " +  json.toString());
 
 			// re-queue ourselves based on the desired subscription interval.

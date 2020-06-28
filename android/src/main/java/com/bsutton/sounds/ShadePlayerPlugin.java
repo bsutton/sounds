@@ -91,7 +91,7 @@ class ShadePlayerPlugin
 
 	}
 
-	void invokeMethod( String methodName, Map dic )
+	void invokeCallback( String methodName, Map dic )
 	{
 		channel.invokeMethod ( methodName, dic );
 	}
@@ -144,6 +144,10 @@ class ShadePlayerPlugin
 				aPlayer.releaseSoundPlayer( call, result );
 				Log.d("ShadePlayer", "************* release called");
 			}
+			break;
+
+			case "getDuration";
+				aPlayer.getDuration( call, result );
 			break;
 
 			case "startShadePlayer":

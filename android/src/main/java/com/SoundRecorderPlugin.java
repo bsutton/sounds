@@ -62,11 +62,11 @@ class SoundRecorderPlugin
 	}
 
 
-	void invokeMethod ( String methodName, Map dic )
+	void invokeCallback ( String methodName, Map dic )
 	{
 		// Log.d(TAG, "calling dart " + methodName + dic.toString());
 		channel.invokeMethod ( methodName, dic );
-		// Log.d(TAG, "invokeMethod succeeded");
+		// Log.d(TAG, "invokeCallback succeeded");
 	}
 
 	void freeSlot ( int slotNo )

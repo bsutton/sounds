@@ -123,20 +123,21 @@ public class SoundPlayer
 
 
 
-	void invokeMethodWithString ( String methodName, String arg )
+
+	void invokeCallbackWithString ( String methodName, String arg )
 	{
 		Map<String, Object> dic = new HashMap<String, Object> ();
 		dic.put ( "slotNo", slotNo );
 		dic.put ( "arg", arg );
-		getPlugin ().invokeMethod ( methodName, dic );
+		getPlugin ().invokeCallback ( methodName, dic );
 	}
 
-	void invokeMethodWithDouble ( String methodName, double arg )
+	void invokeCallbackWithDouble ( String methodName, double arg )
 	{
 		Map<String, Object> dic = new HashMap<String, Object> ();
 		dic.put ( "slotNo", slotNo );
 		dic.put ( "arg", arg );
-		getPlugin ().invokeMethod ( methodName, dic );
+		getPlugin ().invokeCallback ( methodName, dic );
 	}
 
 	public void startPlayer ( final MethodCall call, final Result result )
@@ -220,7 +221,7 @@ public class SoundPlayer
 			json.put("description", description);
 			json.put("android_what",  what);
 			json.put("android_extra",  extra);
-			invokeMethodWithString("onError", json.toString());
+			invokeCallbackWithString("onError", json.toString());
 		} catch (JSONException e) {
 			Log.e(TAG, "Error encoding json message for onError: what=" + what + " extra=" + extra);
 		}
@@ -242,7 +243,7 @@ public class SoundPlayer
 			JSONObject json = new JSONObject ();
 			json.put ( "duration", String.valueOf ( mp.getDuration () ) );
 			json.put ( "current_position", String.valueOf ( mp.getCurrentPosition () ) );
-			invokeMethodWithString ( "audioPlayerFinishedPlaying", json.toString () );
+			invokeCallbackWithString ( "audioPlayerFinishedPlaying", json.toString () );
 		}
 		catch ( Exception e )
 		{
@@ -289,7 +290,7 @@ public class SoundPlayer
 			JSONObject json = new JSONObject();
 			json.put("duration", String.valueOf(mp.getDuration()));
 			json.put("current_position", String.valueOf(mp.getCurrentPosition()));
-			invokeMethodWithString("updateProgress", json.toString());
+			invokeCallbackWithString("updateProgress", json.toString());
 
 			// reschedule ourselves.
 			tickHandler.postDelayed(() -> sendUpdateProgress(mp), (model.subsDurationMillis));
@@ -583,4 +584,3 @@ public class SoundPlayer
 
 }
 
-//-------------------------------------------------------------------------------------------------------------

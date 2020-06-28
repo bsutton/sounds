@@ -135,20 +135,20 @@ public class ShadePlayer extends SoundPlayer
 		result.success( "The player has been successfully released" );
 	}
 
-	void invokeMethodWithInteger ( String methodName, double arg )
+	void invokeCallbackWithInteger ( String methodName, double arg )
 	{
 		Map<String, Object> dic = new HashMap<String, Object> ();
 		dic.put ( "slotNo", slotNo );
 		dic.put ( "arg", arg );
-		getPlugin ().invokeMethod ( methodName, dic );
+		getPlugin ().invokeCallback ( methodName, dic );
 	}
 
-	void invokeMethodWithBoolean ( String methodName, Boolean arg )
+	void invokeCallbackWithBoolean ( String methodName, Boolean arg )
 	{
 		Map<String, Object> dic = new HashMap<String, Object> ();
 		dic.put ( "slotNo", slotNo );
 		dic.put ( "arg", arg );
-		getPlugin ().invokeMethod ( methodName, dic );
+		getPlugin ().invokeCallback ( methodName, dic );
 	}
 
 
@@ -412,10 +412,10 @@ public class ShadePlayer extends SoundPlayer
 			if ( mIsSuccessfulCallback )
 			{
 				//mResult.success( "The media player has been successfully initialized" );
-				invokeMethodWithBoolean("onPlayerReady", true);
+				invokeCallbackWithBoolean("onPlayerReady", true);
 			} else
 			{
-				invokeMethodWithBoolean("onPlayerReady", false);
+				invokeCallbackWithBoolean("onPlayerReady", false);
 				//mResult.error( TAG, "An error occurred while initializing the media player", null );
 			}
 			return null;
@@ -442,9 +442,9 @@ public class ShadePlayer extends SoundPlayer
 		{
 			PlaybackStateCompat playbackState = mMediaBrowserHelper.mediaControllerCompat.getPlaybackState();
 			if (playbackState.getState() == PlaybackStateCompat.STATE_PLAYING)
-				invokeMethodWithBoolean("pause", true);
+				invokeCallbackWithBoolean("pause", true);
 			else
-				invokeMethodWithBoolean("resume", true);
+				invokeCallbackWithBoolean("resume", true);
 
 			return null;
 		}
@@ -474,10 +474,10 @@ public class ShadePlayer extends SoundPlayer
 		{
 			if ( mIsSkippingForward )
 			{
-				invokeMethodWithString( "skipForward", null );
+				invokeCallbackWithString( "skipForward", null );
 			} else
 			{
-				invokeMethodWithString( "skipBackward", null );
+				invokeCallbackWithString( "skipBackward", null );
 			}
 
 			return null;
@@ -494,7 +494,7 @@ public class ShadePlayer extends SoundPlayer
 	private class PlaybackStateUpdater implements Function<BackgroundAudioService.SystemPlaybackState, Void> {
 		@Override
 		public Void apply(BackgroundAudioService.SystemPlaybackState newState) {
-			invokeMethodWithInteger("updatePlaybackState", newState.stateNo);
+			invokeCallbackWithInteger("updatePlaybackState", newState.stateNo);
 			return null;
 		}
 	}
@@ -564,7 +564,7 @@ public class ShadePlayer extends SoundPlayer
 							@Override
 							public void run()
 							{
-								invokeMethodWithString( "updateProgress", json.toString() );
+								invokeCallbackWithString( "updateProgress", json.toString() );
 							}
 						} );
 
@@ -612,7 +612,7 @@ public class ShadePlayer extends SoundPlayer
 
 				json.put( "duration", String.valueOf( trackDuration ) );
 				json.put( "current_position", String.valueOf( currentPosition ) );
-				invokeMethodWithString( "audioPlayerFinishedPlaying", json.toString() );
+				invokeCallbackWithString( "audioPlayerFinishedPlaying", json.toString() );
 				if ( ( setActiveDone != t_SET_CATEGORY_DONE.BY_USER ) && ( setActiveDone != t_SET_CATEGORY_DONE.NOT_SET ) )
 				{
 					abandonFocus();

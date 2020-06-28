@@ -70,7 +70,7 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
 
 
 
-- (void)invokeMethod: (NSString*)methodName arguments: (NSDictionary*)call
+- (void)invokeCallback: (NSString*)methodName arguments: (NSDictionary*)call
 {
         [_channel invokeMethod: methodName arguments: call ];
 }
@@ -183,17 +183,17 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
 }
 
 
-- (void)invokeMethod: (NSString*)methodName stringArg: (NSString*)stringArg
+- (void)invokeCallback: (NSString*)methodName stringArg: (NSString*)stringArg
 {
         NSDictionary* dic = @{ @"slotNo": [NSNumber numberWithInt: slotNo], @"arg": stringArg};
-        [[self getPlugin] invokeMethod: methodName arguments: dic ];
+        [[self getPlugin] invokeCallback: methodName arguments: dic ];
 }
 
 
-- (void)invokeMethod: (NSString*)methodName numberArg: (NSNumber*)arg
+- (void)invokeCallback: (NSString*)methodName numberArg: (NSNumber*)arg
 {
         NSDictionary* dic = @{ @"slotNo": [NSNumber numberWithInt: slotNo], @"arg": arg};
-        [[self getPlugin] invokeMethod: methodName arguments: dic ];
+        [[self getPlugin] invokeCallback: methodName arguments: dic ];
 }
 
 
@@ -413,7 +413,7 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
         [audioRecorder updateMeters];
 
         NSString* status = [NSString stringWithFormat:@"{\"current_position\": \"%@\"}", [currentTime stringValue]];
-        [self invokeMethod:@"updateRecorderProgress" stringArg: status];
+        [self invokeCallback:@"updateRecorderProgress" stringArg: status];
 }
 
 
@@ -421,7 +421,7 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
 {
         assert (dbPeakTimer == atimer);
         NSNumber *normalizedPeakLevel = [NSNumber numberWithDouble:MIN(pow(10.0, [audioRecorder peakPowerForChannel:0] / 20.0) * 160.0, 160.0)];
-        [self invokeMethod:@"updateDbPeakProgress" numberArg: normalizedPeakLevel];
+        [self invokeCallback:@"updateDbPeakProgress" numberArg: normalizedPeakLevel];
 }
 
 
