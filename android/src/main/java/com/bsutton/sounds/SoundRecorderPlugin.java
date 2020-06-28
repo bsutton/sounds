@@ -37,7 +37,7 @@ import io.flutter.plugin.common.PluginRegistry.Registrar;
 class SoundRecorderPlugin
 	implements MethodCallHandler
 {
-	public static final String CHANNEL_NAME = "com.bsutton.sounds.sounds_recorder";
+	public static final String CHANNEL_NAME = "com.bsutton.sounds.sound_recorder";
 	private static MethodChannel        channel;
 	public static List<SoundRecorder> slots;
 
