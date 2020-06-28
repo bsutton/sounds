@@ -85,10 +85,20 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
 {
         int slotNo = [call.arguments[@"slotNo"] intValue];
         assert ( (slotNo >= 0) && (slotNo <= [soundRecorderSlots count]));
-        if (slotNo == [soundRecorderSlots count])
+
+
+        // The dart code supports lazy initialization of recorders.
+        // This means that recorders can be registered (and slots allocated)
+        // on the client side in a different order to which the recorders
+        // are initialised.
+        // As such we need to grow the slot array upto the 
+        // requested slot no. even if we haven't seen initialisation
+        // for the lower numbered slots.
+        while ( slotNo >= [soundRecorderSlots count] )
         {
-                 [soundRecorderSlots addObject: [NSNull null] ];
+               [soundRecorderSlots addObject: [NSNull null]];
         }
+
         SoundRecorder* aSoundRecorder = soundRecorderSlots[slotNo];
         
         if ([@"initializeSoundRecorder" isEqualToString:call.method])
