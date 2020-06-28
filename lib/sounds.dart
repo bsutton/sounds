@@ -31,6 +31,8 @@ export 'src/ios/ios_session_mode.dart';
 export 'src/media_format/adts_aac_media_format.dart';
 export 'src/media_format/cap_opus_media_format.dart';
 export 'src/media_format/mp3_media_format.dart';
+export 'src/media_format/native_media_format.dart';
+export 'src/media_format/native_media_formats.dart';
 export 'src/media_format/ogg_opus_media_format.dart';
 export 'src/media_format/ogg_vorbis_media_format.dart';
 export 'src/media_format/pcm_media_format.dart';
