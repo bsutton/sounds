@@ -248,7 +248,7 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
         {
                 int milliseconds = outDataSize * 1000;
 
-                NSString* args = [NSString stringWithFormat:@"{\"callbackUuid\": \"%@\", \"milliseconds\": \"%@\"}"
+                NSString* args = [NSString stringWithFormat:@"{\"callbackUuid\": \"%@\", \"milliseconds\": %@}"
                                 , [callbackUuid stringValue]
                                 , [milliseconds stringValue]];
                 [self invokeCallback:@"durationResults" stringArg:args];
