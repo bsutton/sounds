@@ -56,14 +56,14 @@ String formatDuration(Duration duration) {
 }
 
 /// the set of samples availble as assets.
-var assetSample = <MediaFormat, String>{
-  WellKnownMediaFormats.adtsAac: 'assets/samples/sample.aac',
-  WellKnownMediaFormats.adtsAac: 'assets/samples/sample.aac',
-  WellKnownMediaFormats.oggOpus: 'assets/samples/sample.opus',
-  WellKnownMediaFormats.cafOpus: 'assets/samples/sample.caf',
-  WellKnownMediaFormats.mp3: 'assets/samples/sample.mp3',
-  WellKnownMediaFormats.oggVorbis: 'assets/samples/sample.ogg',
-  WellKnownMediaFormats.pcm: 'assets/samples/sample.wav',
+var assetSample = <String, String>{
+  WellKnownMediaFormats.adtsAac.name: 'assets/samples/sample.aac',
+  WellKnownMediaFormats.adtsAac.name: 'assets/samples/sample.aac',
+  WellKnownMediaFormats.oggOpus.name: 'assets/samples/sample.opus',
+  WellKnownMediaFormats.cafOpus.name: 'assets/samples/sample.caf',
+  WellKnownMediaFormats.mp3.name: 'assets/samples/sample.mp3',
+  WellKnownMediaFormats.oggVorbis.name: 'assets/samples/sample.ogg',
+  WellKnownMediaFormats.pcm.name: 'assets/samples/sample.wav',
 };
 
 /// Checks if the past file exists

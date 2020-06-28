@@ -24,7 +24,7 @@ class AssetPlayer extends StatelessWidget {
   Future<Track> createAssetTrack() async {
     Track track;
     track = Track.fromAsset(
-      assetSample[ActiveMediaFormat().mediaFormat],
+      assetSample[ActiveMediaFormat().mediaFormat.name],
       mediaFormat: ActiveMediaFormat().mediaFormat,
     );
 
