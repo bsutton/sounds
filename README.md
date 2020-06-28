@@ -1,22 +1,12 @@
-A library for Dart developers.
+# Overview
+sounds_common is a helper library to share code between the [sounds](https://github.com/bsutton/sounds) and [sounds_codec](https://github.com/bsutton/sounds_codec) projects.
 
-Created from templates made available by Stagehand under a BSD-style
-[license](https://github.com/dart-lang/stagehand/blob/master/LICENSE).
+The `sounds` project provids audio recording and playback for Flutter applications.
 
-## Usage
+The `sounds_codec` project provides a codec conversion library using the ffmpeg library.
 
-A simple usage example:
-
-```dart
-import 'package:sounds_common/sounds_common.dart';
-
-main() {
-  var awesome = new Awesome();
-}
-```
 
 ## Features and bugs
 
-Please file feature requests and bugs at the [issue tracker][tracker].
+Please file feature requests and bugs at the [issue tracker](https://github.com/bsutton/sounds_common/issues).
 
-[tracker]: http://example.com/issues/replaceme
