@@ -66,6 +66,7 @@ extern NSMutableArray* _Nullable playerSlots;
 - (void)setActive:(BOOL)enabled result:(FlutterResult _Nonnull )result;
 - (void)initializeSoundPlayer: (FlutterMethodCall*_Nonnull)call result: (FlutterResult _Nonnull )result;
 - (void)releaseSoundPlayer: (FlutterMethodCall*_Nonnull)call result: (FlutterResult _Nonnull )result;
+- (void)getDuration: (NSString*)path callbackUuid:(NSString*)callbackUuid  result:(FlutterResult)result;
 @end
 
 
