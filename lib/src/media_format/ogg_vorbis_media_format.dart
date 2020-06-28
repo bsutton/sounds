@@ -2,9 +2,9 @@ import '../../sounds.dart';
 import 'native_media_format.dart';
 
 /// The native ogg/vorbis media format.
-class VorbisOggMediaFormat extends NativeMediaFormat {
+class OggVorbisMediaFormat extends NativeMediaFormat {
   /// ctor
-  VorbisOggMediaFormat({
+  OggVorbisMediaFormat({
     int sampleRate = 16000,
     int numChannels = 1,
     int bitRate = 16000,

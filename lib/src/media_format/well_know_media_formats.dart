@@ -18,16 +18,16 @@ class WellKnownMediaFormats {
   static AdtsAacMediaFormat adtsAac = AdtsAacMediaFormat();
 
   /// MediaFormat for caf/opus
-  static CafOpusMediaFormat opusCaf = CafOpusMediaFormat();
+  static CafOpusMediaFormat cafOpus = CafOpusMediaFormat();
 
   /// MediaFormat pcm
   static PCMMediaFormat pcm = PCMMediaFormat();
 
   /// MediaFormat ogg/opus
-  static OpusOggMediaFormat oggOpus = OpusOggMediaFormat();
+  static OggOpusMediaFormat oggOpus = OggOpusMediaFormat();
 
   /// Native MediaFormat ogg/vorbis
-  static VorbisOggMediaFormat oggVorbis = VorbisOggMediaFormat();
+  static OggVorbisMediaFormat oggVorbis = OggVorbisMediaFormat();
 
   /// Native MediaFormat mp3
   static MP3MediaFormat mp3 = MP3MediaFormat();

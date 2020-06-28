@@ -89,7 +89,7 @@ class _DropdownsState extends State<Dropdowns> {
           child: Text('OGG/Opus'),
         ),
         DropdownMenuItem<MediaFormat>(
-          value: WellKnownMediaFormats.opusCaf,
+          value: WellKnownMediaFormats.cafOpus,
           child: Text('CAF/Opus'),
         ),
         DropdownMenuItem<MediaFormat>(

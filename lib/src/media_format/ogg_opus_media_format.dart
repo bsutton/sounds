@@ -3,9 +3,9 @@ import 'package:sounds_common/sounds_common.dart';
 import 'native_media_format.dart';
 
 /// The native Ogg/Opus media format.
-class OpusOggMediaFormat extends NativeMediaFormat {
+class OggOpusMediaFormat extends NativeMediaFormat {
   /// ctor
-  const OpusOggMediaFormat({
+  const OggOpusMediaFormat({
     int sampleRate = 16000,
     int numChannels = 1,
     int bitRate = 16000,

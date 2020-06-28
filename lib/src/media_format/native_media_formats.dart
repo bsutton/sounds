@@ -14,6 +14,11 @@ import 'pcm_media_format.dart';
 
 /// Provides a means to determine the list of natively supported MediaFormats
 /// on the current OS and sdk verison.
+///
+/// Android:
+/// For the list of supported encoders/decoders:
+/// https://developer.android.com/guide/topics/media/media-formats
+///
 class NativeMediaFormats implements MediaProvider {
   static final _self = NativeMediaFormats._internal();
 
@@ -40,11 +45,12 @@ class NativeMediaFormats implements MediaProvider {
       supported.add(CafOpusMediaFormat());
     } else {
       // android
+      supported.add(OggVorbisMediaFormat());
+
       var deviceInfo = DeviceInfoPlugin();
       var androidInfo = await deviceInfo.androidInfo;
-      if (androidInfo.version.sdkInt >= 23) {
-        supported.add(OpusOggMediaFormat());
-        supported.add(VorbisOggMediaFormat());
+      if (androidInfo.version.sdkInt >= 21) {
+        supported.add(OggOpusMediaFormat());
       }
     }
     return supported;
@@ -67,9 +73,9 @@ class NativeMediaFormats implements MediaProvider {
       // android
       var deviceInfo = DeviceInfoPlugin();
       var androidInfo = await deviceInfo.androidInfo;
-      if (androidInfo.version.sdkInt >= 23) {
-        supported.add(OpusOggMediaFormat());
-        supported.add(VorbisOggMediaFormat());
+      if (androidInfo.version.sdkInt >= 29) {
+        supported.add(OggOpusMediaFormat());
+        supported.add(OggVorbisMediaFormat());
       }
     }
     return supported;
@@ -90,8 +96,8 @@ class NativeMediaFormats implements MediaProvider {
         AdtsAacMediaFormat(),
         CafOpusMediaFormat(),
         PCMMediaFormat(),
-        OpusOggMediaFormat(),
-        VorbisOggMediaFormat(),
+        OggOpusMediaFormat(),
+        OggVorbisMediaFormat(),
         MP3MediaFormat(),
         PCMMediaFormat()
       ];
