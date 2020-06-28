@@ -53,9 +53,46 @@ class SoundPlayerUI extends StatefulWidget {
 
   final bool _enabled;
 
+  ///
+  /// [SoundPlayerUI.fromTrack] Constructs a Playbar with a Track.
+  /// [track] is the Track that contains the audio to play.
+  ///
+  /// The [track] must have been created with a [MediaFormat] otherwise
+  /// a [MediaFormatException] will be thrown.
+  ///
+  /// When the user clicks the play the audio held by the Track will
+  /// be played.
+  /// If [showTitle] is true (default is false) then the play bar will also
+  /// display the track name and album (if set).
+  /// If [enabled] is true (the default) then the Player will be enabled.
+  /// If [enabled] is false then the player will be disabled and the user
+  /// will not be able to click the play button.
+  /// The [audioFocus] allows you to control what happens to other
+  /// media that is playing when our player starts.
+  /// By default we use [AudioFocus.focusAndHushOthers] which will
+  /// reduce the volume of any other players.
+  SoundPlayerUI.fromTrack(Track track,
+      {Key key,
+      bool showTitle = false,
+      bool enabled = true,
+      AudioFocus audioFocus = AudioFocus.focusAndHushOthers})
+      : _track = track,
+        _showTitle = showTitle,
+        _onLoad = null,
+        _enabled = enabled,
+        super(key: key) {
+    if (track.mediaFormat == null) {
+      // we need the format so we can get the duration.
+      throw MediaFormatException('You must provide a mediaFormat to the track');
+    }
+  }
+
   /// [SoundPlayerUI.fromLoader] allows you to dynamically provide
-  /// a [Track] when the user clicks the play
-  /// button.
+  /// a [Track] when the user clicks the play button.
+  ///
+  /// The [track] must have been created with a [mediaFormat] otherwise
+  /// a [MediaFormatException] will be thrown.
+  ///
   /// You can cancel the play action by returning
   /// null when _onLoad is called.
   /// [onLoad] is the function that is called when the user clicks the
@@ -78,32 +115,6 @@ class SoundPlayerUI extends StatefulWidget {
       : _onLoad = onLoad,
         _showTitle = showTitle,
         _track = null,
-        _enabled = enabled,
-        super(key: key);
-
-  ///
-  /// [SoundPlayerUI.fromTrack] Constructs a Playbar with a Track.
-  /// [track] is the Track that contains the audio to play.
-  ///
-  /// When the user clicks the play the audio held by the Track will
-  /// be played.
-  /// If [showTitle] is true (default is false) then the play bar will also
-  /// display the track name and album (if set).
-  /// If [enabled] is true (the default) then the Player will be enabled.
-  /// If [enabled] is false then the player will be disabled and the user
-  /// will not be able to click the play button.
-  /// The [audioFocus] allows you to control what happens to other
-  /// media that is playing when our player starts.
-  /// By default we use [AudioFocus.focusAndHushOthers] which will
-  /// reduce the volume of any other players.
-  SoundPlayerUI.fromTrack(Track track,
-      {Key key,
-      bool showTitle = false,
-      bool enabled = true,
-      AudioFocus audioFocus = AudioFocus.focusAndHushOthers})
-      : _track = track,
-        _showTitle = showTitle,
-        _onLoad = null,
         _enabled = enabled,
         super(key: key);
 
@@ -405,6 +416,11 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
       trackLoader.then((newTrack) {
         _loadedTrack = newTrack;
         if (track != null) {
+          if (track.mediaFormat == null) {
+            // we need the format so we can get the duration.
+            throw MediaFormatException(
+                'You must provide a mediaFormat to the track');
+          }
           _start();
         } else {
           _loading = false;
