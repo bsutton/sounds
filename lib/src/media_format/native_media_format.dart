@@ -1,4 +1,5 @@
 import 'package:meta/meta.dart';
+import 'package:sounds/src/media_format/native_duration_provider.dart';
 import 'package:sounds_common/sounds_common.dart';
 
 import 'adts_aac_media_format.dart';
@@ -28,14 +29,16 @@ abstract class NativeMediaFormat extends MediaFormat {
         );
 
   @override
-  Future<bool> get isNativeDecoder async {
-    return await NativeMediaFormats().isNativeDecoder(this);
-  }
+  Future<bool> get isNativeDecoder async =>
+      await NativeMediaFormats().isNativeDecoder(this);
 
   @override
-  Future<bool> get isNativeEncoder async {
-    return await NativeMediaFormats().isNativeEncoder(this);
-  }
+  Future<bool> get isNativeEncoder async =>
+      await NativeMediaFormats().isNativeEncoder(this);
+
+  @override
+  Future<Duration> getDuration(String path) =>
+      NativeDurationProvider().getDuration(path);
 
   /// On Android the Codec encoder and the container (file) format a specified
   /// separately.

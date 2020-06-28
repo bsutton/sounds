@@ -83,7 +83,9 @@ class NativeMediaFormats implements MediaProvider {
   ///
   /// Use [encoders] and [decoders] to get a list of natively
   /// supported [MediaFormats].
-  List<MediaFormat> get mediaFormats => [
+  List<MediaFormat> get mediaFormats => _mediaFormats;
+
+  static List<MediaFormat> get _mediaFormats => [
         AdtsAacMediaFormat(),
         CafOpusMediaFormat(),
         PCMMediaFormat(),
@@ -121,11 +123,8 @@ class NativeMediaFormats implements MediaProvider {
   /// This method also registered the [NativeDurationProvider].
   void _register() {
     /// add the set of native codecs.
-    for (var mediaFormat in NativeMediaFormats().mediaFormats) {
+    for (var mediaFormat in _mediaFormats) {
       MediaFormatManager().register(mediaFormat);
     }
-
-    /// registeres the native duration providers.
-    NativeDurationProvider();
   }
 }
