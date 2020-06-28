@@ -26,6 +26,6 @@ class OggVorbisMediaFormat extends NativeMediaFormat {
   int get androidFormat => 11;
 
   @override
-  int get iosFormat =>
-      throw MediaFormatException('Ogg/Vorbise recording is not supported on iOS');
+  int get iosFormat => throw MediaFormatException(
+      'Ogg/Vorbise recording is not supported on iOS');
 }
