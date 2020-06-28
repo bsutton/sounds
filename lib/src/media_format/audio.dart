@@ -149,7 +149,7 @@ class Audio {
   /// Create an [Audio] based on a flutter asset.
   /// [path] to the asset. This is normally of the form
   /// asset/xxx.wav
-  Audio.fromAsset(this.path, MediaFormat mediaFormat) {
+  Audio.fromAsset(this.path, this.mediaFormat) {
     _storageType = TrackStorageType.asset;
     _dataBuffer = null;
     _onDisk = false;
