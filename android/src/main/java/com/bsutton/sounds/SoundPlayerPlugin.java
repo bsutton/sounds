@@ -74,7 +74,7 @@ class SoundPlayerPlugin
 		soundPlayerPlugin = new SoundPlayerPlugin ();
 		assert ( slots == null );
 		slots   = new ArrayList<SoundPlayer> ();
-		channel = new MethodChannel ( messenger, "com.bsutton.sounds.sounds_player" );
+		channel = new MethodChannel ( messenger, "com.bsutton.sounds.sound_player" );
 		channel.setMethodCallHandler ( soundPlayerPlugin );
 		androidContext = ctx;
 

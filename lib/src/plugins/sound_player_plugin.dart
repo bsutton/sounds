@@ -32,7 +32,7 @@ class SoundPlayerPlugin extends PlayerBasePlugin {
     _self ??= SoundPlayerPlugin._internal();
     return _self;
   }
-  SoundPlayerPlugin._internal() : super('com.bsutton.sounds.sounds_player');
+  SoundPlayerPlugin._internal() : super('com.bsutton.sounds.sound_player');
 
   Future<void> play(player.SoundPlayer player, Track track) async {
     var args = <String, dynamic>{};
