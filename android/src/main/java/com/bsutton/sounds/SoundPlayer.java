@@ -104,7 +104,7 @@ public class SoundPlayer
 
 			Uri uri = Uri.parse(path);
 			MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-			mmr.setDataSource(Context.getAppContext(),uri);
+			mmr.setDataSource(SoundPlayerPlugin.androidContext,uri);
 			String durationStr = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
 			int milliSeconds = Integer.parseInt(durationStr);
 
