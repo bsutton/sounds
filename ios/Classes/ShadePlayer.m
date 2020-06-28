@@ -356,7 +356,11 @@ extern void ShadePlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
                 UIImage *artworkImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:url]];
                 if(artworkImage)
                 {
-                        MPMediaItemArtwork *albumArt = [[MPMediaItemArtwork alloc] initWithImage: artworkImage];
+			MPMediaItemArtwork * albumArt = [[MPMediaItemArtwork alloc] initWithBoundsSize:artworkImage.size 
+				requestHandler:^UIImage * _Nonnull(CGSize size) {
+				return artworkImage;
+			}];
+
                         [songInfo setObject:albumArt forKey:MPMediaItemPropertyArtwork];
                 }
         } else
@@ -365,7 +369,11 @@ extern void ShadePlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
                 UIImage* artworkImage = [UIImage imageNamed: track.albumArtAsset];
                 if (artworkImage != nil)
                 {
-                        MPMediaItemArtwork* albumArt = [[MPMediaItemArtwork alloc] initWithImage: artworkImage];
+			MPMediaItemArtwork * albumArt = [[MPMediaItemArtwork alloc] initWithBoundsSize:artworkImage.size 
+				requestHandler:^UIImage * _Nonnull(CGSize size) {
+				return artworkImage;
+			}];
+                    
                         [songInfo setObject:albumArt forKey: MPMediaItemPropertyArtwork];
                 }
         } else
@@ -374,7 +382,10 @@ extern void ShadePlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
                 UIImage* artworkImage = [UIImage imageWithContentsOfFile: track.albumArtFile];
                 if (artworkImage != nil)
                 {
-                        MPMediaItemArtwork* albumArt = [[MPMediaItemArtwork alloc] initWithImage: artworkImage];
+			MPMediaItemArtwork * albumArt = [[MPMediaItemArtwork alloc] initWithBoundsSize:artworkImage.size 
+				requestHandler:^UIImage * _Nonnull(CGSize size) {
+				return artworkImage;
+			}];
                         [songInfo setObject:albumArt forKey: MPMediaItemPropertyArtwork];
                 }
         } else // Nothing specified. We try to use the App Icon
@@ -382,7 +393,10 @@ extern void ShadePlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
                 UIImage* artworkImage = [UIImage imageNamed: @"AppIcon"];
                 if (artworkImage != nil)
                 {
-                        MPMediaItemArtwork* albumArt = [[MPMediaItemArtwork alloc] initWithImage: artworkImage];
+			MPMediaItemArtwork * albumArt = [[MPMediaItemArtwork alloc] initWithBoundsSize:artworkImage.size 
+				requestHandler:^UIImage * _Nonnull(CGSize size) {
+				return artworkImage;
+			}];
                         [songInfo setObject:albumArt forKey: MPMediaItemPropertyArtwork];
                 }
         }
