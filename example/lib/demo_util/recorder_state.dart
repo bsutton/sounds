@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:sounds/sounds.dart';
 import 'package:sounds_common/sounds_common.dart';
 
-import '../util/temp_file.dart';
 import 'demo_active_codec.dart';
 import 'demo_media_path.dart';
 
@@ -68,7 +67,7 @@ class RecorderState {
   /// starts the recorder.
   void startRecorder(BuildContext context) async {
     try {
-      var track = Track.fromFile(await tempFile(),
+      var track = Track.fromFile(await FileUtil().tempFile(),
           mediaFormat: ActiveMediaFormat().mediaFormat);
       await recorderModule.record(track);
 
