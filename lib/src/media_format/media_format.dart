@@ -1,7 +1,5 @@
 import 'package:meta/meta.dart';
 
-import 'duration_providers.dart';
-
 abstract class MediaFormat {
   /// The [name] of the [MediaFormat].
   /// The [name] MUST be of the form container/codec (not all lower case)
@@ -33,9 +31,7 @@ abstract class MediaFormat {
   /// Returns the duration of the audio file at the given [path].
   /// The audio file at the given path MUST be the of the same
   /// [MediaFormat] otherwise the result is undefined.
-  Future<Duration> getDuration(String path) {
-    return DurationProviders().getProvider(this).getDuration(path);
-  }
+  Future<Duration> getDuration(String path);
 
   /// Only [MediaFormat]s that natively supported decoding (playback) by the current platform should return
   /// true.
