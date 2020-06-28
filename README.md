@@ -66,7 +66,7 @@ The core classes are:
 
 [Install](https://github.com/bsutton/sounds/wiki/Install) 
 
-[Wiki](https://github.com/bsutton/sounds/wiki/Home) 
+[Wiki](https://github.com/bsutton/sounds/wiki/Home) High level guide to using Sounds.
 
 [API Reference](https://pub.dev/documentation/sounds/latest/)
 
