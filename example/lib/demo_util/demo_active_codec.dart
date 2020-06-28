@@ -23,7 +23,7 @@ class ActiveMediaFormat {
     _encoderSupported = await mediaFormat.isNativeEncoder;
     _decoderSupported = await mediaFormat.isNativeDecoder;
 
-    mediaFormat = mediaFormat;
+    this.mediaFormat = mediaFormat;
   }
 
   /// [true] if the active coded is supported by the recorder
