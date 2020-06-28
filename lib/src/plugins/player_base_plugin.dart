@@ -93,10 +93,26 @@ abstract class PlayerBasePlugin extends BasePlugin {
 
     var completer = Completer<Duration>();
     _callbackMap[callbackUuid.toString()] = completer;
+
+    /// The results are completed via a callback to [_onDurationResults] or
+    /// in the event of an error a call to [onError].
     await invokeMethod(player, 'getDuration',
-        <String, dynamic>{'path': path, 'uuid': callbackUuid});
+        <String, dynamic>{'path': path, 'callbackUuid': callbackUuid});
 
     return completer.future;
+  }
+
+  /// callback when the the platform call to 'getDuration' completes.
+  void _onDurationResults(MethodCall call) {
+    var arguments = call.arguments['arg'] as String;
+
+    var json = convert.jsonDecode(arguments) as Map<String, dynamic>;
+    var duration =
+        Duration(milliseconds: int.parse(json['milliseconds'] as String));
+    var uuid = json['callbackUuid'] as String;
+
+    // complete the future waiting for this call to return.
+    _callbackMap[uuid].complete(duration);
   }
 
   ///
@@ -217,19 +233,10 @@ abstract class PlayerBasePlugin extends BasePlugin {
         }
         break;
 
-      case "getDuration":
-        {
-          var arguments = call.arguments['arg'] as String;
-
-          var json = convert.jsonDecode(arguments) as Map<String, dynamic>;
-          var duration = Duration(
-              milliseconds:
-                  double.parse(json['milliseconds'] as String).toInt());
-          var uuid = json['uuid'] as String;
-
-          // complete the future waiting for this call to return.
-          _callbackMap[uuid].complete(duration);
-        }
+      /// Callback in response to call to getDuration.
+      /// The OS has calculated the duration and we now have the results.
+      case "durationResults":
+        _onDurationResults(call);
         break;
 
       /// the OS media player encounted an error
@@ -239,6 +246,8 @@ abstract class PlayerBasePlugin extends BasePlugin {
               as Map<String, dynamic>;
 
           var description = json['description'] as String;
+
+          var callbackUuid = json['callbackUuid'] as String;
           if (Platform.isAndroid) {
             var androidWhat = json['android_what'] as int;
             var androidExtra = json['android_extra'] as int;
@@ -247,6 +256,13 @@ abstract class PlayerBasePlugin extends BasePlugin {
           } else {
             Log.e('onError: $description');
           }
+
+          /// If there is an outstanding callback then complete it
+          /// so the UI doesn't hang.
+          if (callbackUuid != null) {
+            _callbackMap[callbackUuid].completeError(description);
+          }
+
           audio_player.onSystemError(player, description);
         }
         break;

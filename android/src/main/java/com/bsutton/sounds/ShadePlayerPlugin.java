@@ -146,10 +146,6 @@ class ShadePlayerPlugin
 			}
 			break;
 
-			case "getDuration";
-				aPlayer.getDuration( call, result );
-			break;
-
 			case "startShadePlayer":
 				aPlayer.startShadePlayer( call, result );
 				break;

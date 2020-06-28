@@ -138,6 +138,10 @@ class SoundPlayerPlugin
 				}
 				break;
 
+				case "getDuration";
+					aPlayer.getDuration( call, result );
+				break;
+
 				case "startPlayer":
 				{
 					aPlayer.startPlayer ( call, result );
