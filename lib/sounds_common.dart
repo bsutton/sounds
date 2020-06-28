@@ -10,6 +10,7 @@ export 'src/util/ansi_color.dart';
 export 'src/playback_disposition.dart';
 export 'src/util/format.dart';
 export 'src/media_format/duration_provider.dart';
+export 'src/media_format/duration_providers.dart';
 export 'src/media_format/media_format.dart';
 export 'src/media_format/native_media_format.dart';
 export 'src/media_format/native_media_formats.dart';
