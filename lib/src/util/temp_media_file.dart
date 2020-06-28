@@ -80,7 +80,7 @@ class TempMediaFile {
           mode: FileMode.append); // Write
       bytesWritten += packetSize;
       var progress = i * increment;
-      Log.e('Progress: $progress');
+      Log.d('Progress: $progress');
       loadingProgress(PlaybackDisposition.loading(progress: progress));
     }
     // write final packet if there is a partial packet left
