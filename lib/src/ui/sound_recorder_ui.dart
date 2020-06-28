@@ -110,7 +110,7 @@ class SoundRecorderUI extends StatefulWidget {
     this.onStopped,
     this.requestPermissions,
     Key key,
-  })  : audio = RecordedAudio.toTrack(track),
+  })  : audio = RecordedAudio.recordTo(track),
         super(key: key);
 
   @override
