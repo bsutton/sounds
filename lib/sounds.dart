@@ -17,7 +17,7 @@
 export 'package:sounds_common/sounds_common.dart'
     show
         MediaFormat,
-        MediaFormatNotSupportedException,
+        MediaFormatException,
         PlaybackDisposition,
         Track,
         FileUtil;
@@ -28,6 +28,13 @@ export 'src/audio_focus.dart';
 export 'src/ios/ios_session_category.dart';
 export 'src/ios/ios_session_category_option.dart';
 export 'src/ios/ios_session_mode.dart';
+export 'src/media_format/adts_aac_media_format.dart';
+export 'src/media_format/cap_opus_media_format.dart';
+export 'src/media_format/mp3_media_format.dart';
+export 'src/media_format/ogg_opus_media_format.dart';
+export 'src/media_format/ogg_vorbis_media_format.dart';
+export 'src/media_format/pcm_media_format.dart';
+export 'src/media_format/well_know_media_formats.dart';
 export 'src/quick_play.dart' show QuickPlay;
 export 'src/recording_disposition.dart' show RecordingDisposition;
 export 'src/sound_player.dart'

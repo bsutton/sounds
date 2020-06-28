@@ -34,7 +34,7 @@ class _MainBodyState extends State<MainBody> {
   @override
   void initState() {
     super.initState();
-    recordingFile = Track.tempFile(WellKnownMediaFormats.aacAdts);
+    recordingFile = Track.tempFile(WellKnownMediaFormats.adtsAac);
 
     track = Track.fromFile(recordingFile);
     track.artist = 'Brett';
@@ -46,7 +46,7 @@ class _MainBodyState extends State<MainBody> {
       await RecorderState().init();
       ActiveMediaFormat().recorderModule = RecorderState().recorderModule;
       await ActiveMediaFormat().setMediaFormat(
-          withUI: false, mediaFormat: WellKnownMediaFormats.aacAdts);
+          withUI: false, mediaFormat: WellKnownMediaFormats.adtsAac);
 
       initialized = true;
     }

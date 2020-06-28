@@ -26,6 +26,7 @@ import 'audio_focus.dart';
 import 'ios/ios_session_category.dart';
 import 'ios/ios_session_category_option.dart';
 import 'ios/ios_session_mode.dart';
+import 'media_format/native_media_formats.dart';
 import 'plugins/base_plugin.dart';
 import 'plugins/player_base_plugin.dart';
 import 'plugins/sound_player_plugin.dart';

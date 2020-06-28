@@ -24,6 +24,8 @@ import 'package:sounds_common/sounds_common.dart';
 import '../sounds.dart';
 import 'audio_source.dart';
 
+import 'media_format/native_media_format.dart';
+import 'media_format/native_media_formats.dart';
 import 'plugins/base_plugin.dart';
 import 'plugins/sound_recorder_plugin.dart';
 import 'quality.dart';
@@ -289,8 +291,7 @@ class SoundRecorder implements SlotEntry {
       /// the MediaFormat must be supported.
       if (!await NativeMediaFormats()
           .isNativeEncoder(_recordingTrack.track.mediaFormat)) {
-        var exception =
-            MediaFormatNotSupportedException('MediaFormat not supported.');
+        var exception = MediaFormatException('MediaFormat not supported.');
         started.completeError(exception);
         throw exception;
       }

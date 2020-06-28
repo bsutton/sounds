@@ -12,7 +12,7 @@ class RecordingTrack {
 
   /// Create a [RecordingTrack] fro a [Track].
   ///
-  /// Throws a [MediaFormatNotSupportedException] if the requested [MediaFormat]
+  /// Throws a [MediaFormatException] if the requested [MediaFormat]
   /// is not supported.
   ///
   RecordingTrack(this.track) {

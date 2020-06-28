@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sounds/sounds.dart';
 import 'package:sounds_common/sounds_common.dart';
 
 import 'demo_active_codec.dart';
@@ -80,7 +81,7 @@ class _DropdownsState extends State<Dropdowns> {
       },
       items: <DropdownMenuItem<MediaFormat>>[
         DropdownMenuItem<MediaFormat>(
-          value: WellKnownMediaFormats.aacAdts,
+          value: WellKnownMediaFormats.adtsAac,
           child: Text('AAC'),
         ),
         DropdownMenuItem<MediaFormat>(

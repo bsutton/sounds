@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:intl/intl.dart';
+import 'package:sounds/sounds.dart';
 import 'package:sounds_common/sounds_common.dart';
 
 import 'demo_media_path.dart';
@@ -59,7 +60,7 @@ var assetSample = <MediaFormat, String>{
   AdtsAacMediaFormat(): 'assets/samples/sample.aac',
   AdtsAacMediaFormat(): 'assets/samples/sample.aac',
   OpusOggMediaFormat(): 'assets/samples/sample.opus',
-  OpusCafMediaFormat(): 'assets/samples/sample.caf',
+  CafOpusMediaFormat(): 'assets/samples/sample.caf',
   MP3MediaFormat(): 'assets/samples/sample.mp3',
   VorbisOggMediaFormat(): 'assets/samples/sample.ogg',
   PCMMediaFormat(): 'assets/samples/sample.wav',

@@ -78,7 +78,7 @@ class QuickPlay {
   /// if the file doesn't exist.
   ///
   /// If the file contains a unknown MediaFormat then
-  /// [QuickPlay] will throw an [MediaFormatNotSupportedException].
+  /// [QuickPlay] will throw an [MediaFormatException].
   ///
   /// By default no UI is displayed.
   ///
@@ -96,7 +96,7 @@ class QuickPlay {
   ///  Both HTTP and HTTPS are supported.
   /// The [url] of the file to download and playback
   ///
-  /// [QuickPlay] will throw an [MediaFormatNotSupportedException] if the
+  /// [QuickPlay] will throw an [MediaFormatException] if the
   /// passed files MediaFormat is not supported.
   /// 
   /// By default no UI is displayed.
@@ -114,7 +114,7 @@ class QuickPlay {
   /// Create a audio play from an in memory buffer.
   /// The [dataBuffer] contains the media to be played.
   /// 
-  /// [QuickPlay] will throw an [MediaFormatNotSupportedException] if the
+  /// [QuickPlay] will throw an [MediaFormatException] if the
   /// passed audio's MediaFormat is not supported.
   /// 
   /// By default no UI is displayed.
