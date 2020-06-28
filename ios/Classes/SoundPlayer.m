@@ -241,13 +241,13 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 
         NSURL *afUrl = [NSURL fileURLWithPath:path];
         AudioFileID fileID;
-    OSStatus status = AudioFileOpenURL((__bridge CFURLRef)afUrl, kAudioFileReadPermission, 0, &fileID);
+        OSStatus status = AudioFileOpenURL((__bridge CFURLRef)afUrl, kAudioFileReadPermission, 0, &fileID);
         Float64 outDataSize = 0;
         UInt32 thePropSize = sizeof(Float64);
         status = AudioFileGetProperty(fileID, kAudioFilePropertyEstimatedDuration, &thePropSize, &outDataSize);
         AudioFileClose(fileID);
 
-    NSLog(@"%@", [NSString stringWithFormat:@"getDuration status%d", (int)status]);
+        NSLog(@"%@", [NSString stringWithFormat:@"getDuration status%d", (int)status]);
 
         if (status == kAudioServicesNoError)
         {
