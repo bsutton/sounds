@@ -1,9 +1,5 @@
-# 0.9.0
-# 0.9.0
-# 0.9.0
-# 0.9.0
-# 0.9.0
-# 0.9.0
+# 0.9.1
+Fixed a compile error due to a bad import.
 # 0.9.0
 
 This release includes some major changes to the api and the removal of FFMPEG resulting in a significantly small build size.
