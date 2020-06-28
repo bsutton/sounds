@@ -74,6 +74,9 @@ class Track {
 
   /// Loads a track from an asset
   Track.fromAsset(String assetPath, {@required MediaFormat mediaFormat}) {
+    if (assetPath == null) {
+      throw TrackPathException('The assetPath MUST not be null.');
+    }
     _storageType = TrackStorageType.asset;
     _audio = Audio.fromAsset(assetPath, mediaFormat);
   }
