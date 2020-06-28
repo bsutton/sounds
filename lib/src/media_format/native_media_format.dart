@@ -1,8 +1,8 @@
 import 'package:meta/meta.dart';
-import 'package:sounds/src/media_format/native_duration_provider.dart';
 import 'package:sounds_common/sounds_common.dart';
 
 import 'adts_aac_media_format.dart';
+import 'native_duration_provider.dart';
 import 'native_media_formats.dart';
 
 /// Base class for all Native MediaFormat.
