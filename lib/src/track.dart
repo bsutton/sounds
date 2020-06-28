@@ -52,7 +52,7 @@ class Track {
   /// Creates a Track from a path to a file
   ///
   /// Other classes that use fromFile should also be reviewed.
-  /// Throws [MediaFormatNotSupportedException] if the passed [MediaFormat] is not supported
+  /// Throws [MediaFormatException] if the passed [MediaFormat] is not supported
   /// or if you don't pass the [MediaFormat] and we are unable
   /// to determine the [MediaFormat] from the [path]s extension.
   Track.fromFile(String path, {MediaFormat mediaFormat}) {

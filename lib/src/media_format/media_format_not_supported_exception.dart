@@ -1,9 +1,9 @@
 /// Throw if an unsupported MediaFormat is passed.
 /// Different OS's support a different set of codecs.
 ///
-class MediaFormatNotSupportedException implements Exception {
+class MediaFormatException implements Exception {
   String message;
-  MediaFormatNotSupportedException(this.message);
+  MediaFormatException(this.message);
 
   @override
   String toString() => message;
