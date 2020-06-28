@@ -16,272 +16,41 @@ package com.bsutton.sounds;
  */
 
 
-import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.media.MediaPlayer;
-import android.media.MediaRecorder;
+import android.media.AudioFocusRequest;
 import android.media.AudioManager;
+import android.media.MediaMetadataRetriever;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
-import android.os.Environment;
 import android.os.Handler;
-import android.os.SystemClock;
-import android.support.v4.media.MediaMetadataCompat;
-import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.UiThread;
-import androidx.arch.core.util.Function;
-import androidx.core.app.ActivityCompat;
-
-import android.media.AudioFocusRequest;
-
-import java.io.*;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-import io.flutter.embedding.engine.plugins.FlutterPlugin;
-import io.flutter.embedding.engine.plugins.activity.ActivityAware;
-import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
-import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
-import io.flutter.plugin.common.MethodChannel;
-import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 
-import java.util.concurrent.Callable;
-
-import io.flutter.plugin.common.PluginRegistry;
-import io.flutter.plugin.common.PluginRegistry.Registrar;
-
-class SoundPlayerPlugin
-	implements MethodCallHandler
-{
-	final static String TAG = "SoundPlayerPlugin";
-	public static MethodChannel      channel;
-	public static List<SoundPlayer> slots;
-	static        Context            androidContext;
-	static        SoundPlayerPlugin flautoPlayerPlugin; // singleton
-
-
-	public static void attachSoundPlayer (
-		Context ctx, BinaryMessenger messenger
-	                                      )
-	{
-		assert ( flautoPlayerPlugin == null );
-		flautoPlayerPlugin = new SoundPlayerPlugin ();
-		assert ( slots == null );
-		slots   = new ArrayList<SoundPlayer> ();
-		channel = new MethodChannel ( messenger, "com.bsutton.sounds.sounds_player" );
-		channel.setMethodCallHandler ( flautoPlayerPlugin );
-		androidContext = ctx;
-
-	}
-
-
-	void invokeMethod ( String methodName, Map dic )
-	{
-		Log.d(TAG, "SoundPlayer: invokeMethod " + methodName);
-		channel.invokeMethod ( methodName, dic );
-	}
-
-	void freeSlot ( int slotNo )
-	{
-		slots.set ( slotNo, null );
-	}
-
-
-	SoundPlayerPlugin getManager ()
-	{
-		return flautoPlayerPlugin;
-	}
-
-	@Override
-	public void onMethodCall (
-		final MethodCall call, final Result result
-	                         )
-	{
-		try
-		{
-			int slotNo = call.argument ( "slotNo" );
-
-			// The dart code supports lazy initialization of players.
-			// This means that players can be registered (and slots allocated)
-			// on the client side in a different order to which the players
-			// are initialised.
-			// As such we need to grow the slot array upto the 
-			// requested slot no. even if we haven't seen initialisation
-			// for the lower numbered slots.
-			while ( slotNo >= slots.size () )
-			{
-				slots.add ( null );
-			}
-
-			SoundPlayer aPlayer = slots.get ( slotNo );
-			switch ( call.method )
-			{
-				case "initializeMediaPlayer":
-				{
-					assert ( slots.get ( slotNo ) == null );
-					aPlayer = new SoundPlayer ( slotNo );
-					slots.set ( slotNo, aPlayer );
-					aPlayer.initializeSoundPlayer ( call, result );
-
-				}
-				break;
-
-				case "releaseMediaPlayer":
-				{
-					aPlayer.releaseSoundPlayer ( call, result );
-					Log.d("SoundPlayer", "************* release called");
-					slots.set ( slotNo, null );
-				}
-				break;
-
-				case "startPlayer":
-				{
-					aPlayer.startPlayer ( call, result );
-				}
-				break;
-
-				case "stopPlayer":
-				{
-					aPlayer.stopPlayer ( call, result );
-				}
-				break;
-
-				case "pausePlayer":
-				{
-					aPlayer.pausePlayer ( call, result );
-				}
-				break;
-
-				case "resumePlayer":
-				{
-					aPlayer.resumePlayer ( call, result );
-				}
-				break;
-
-				case "seekToPlayer":
-				{
-					aPlayer.seekToPlayer ( call, result );
-				}
-				break;
-
-				case "setVolume":
-				{
-					aPlayer.setVolume ( call, result );
-				}
-				break;
-
-				case "setSubscriptionInterval":
-				{
-					aPlayer.setSubscriptionInterval ( call, result );
-				}
-				break;
-
-				case "androidAudioFocusRequest":
-				{
-					aPlayer.androidAudioFocusRequest ( call, result );
-				}
-				break;
-
-				case "setActive":
-				{
-					aPlayer.setActive ( call, result );
-				}
-				break;
-
-				default:
-				{
-					result.notImplemented ();
-				}
-				break;
-			}
-		}
-		catch (Throwable e)
-		{
-			Log.e(TAG, "Error in onMethodCall " + call.method, e);
-			throw e;
-		}
-
-	}
-
-}
-
-class PlayerAudioModel
-{
-	final public static String DEFAULT_FILE_LOCATION = Environment.getDataDirectory ().getPath () + "/default.aac"; // SDK
-	public              int    subsDurationMillis    = 10;
-
-	private MediaPlayer mediaPlayer;
-	private long        playTime = 0;
-
-
-	public MediaPlayer getMediaPlayer ()
-	{
-		return mediaPlayer;
-	}
-
-	public void setMediaPlayer ( MediaPlayer mediaPlayer )
-	{
-		this.mediaPlayer = mediaPlayer;
-	}
-
-	public long getPlayTime ()
-	{
-		return playTime;
-	}
-
-	public void setPlayTime ( long playTime )
-	{
-		this.playTime = playTime;
-	}
-}
 
 //-------------------------------------------------------------------------------------------------------------
 
 
 public class SoundPlayer
 {
-
-
 	enum t_SET_CATEGORY_DONE
 	{
 		NOT_SET,
 		FOR_PLAYING, // sounds did it during startPlayer()
 		BY_USER // The caller did it himself : Sounds must not change that)
 	}
-
 	;
 
-	final static int CODEC_OPUS   = 2;
-	final static int CODEC_VORBIS = 5;
-
-	static boolean _isAndroidDecoderSupported[] = {
-		true, // DEFAULT
-		true, // AAC
-		true, // OGG/OPUS
-		false, // CAF/OPUS
-		true, // MP3
-		true, // OGG/VORBIS
-		true, // WAV/PCM
-	};
 
 
 	final static  String           TAG         = "SoundPlayer";
@@ -305,7 +74,7 @@ public class SoundPlayer
 
 	SoundPlayerPlugin getPlugin ()
 	{
-		return SoundPlayerPlugin.flautoPlayerPlugin;
+		return SoundPlayerPlugin.soundPlayerPlugin;
 	}
 
 
@@ -321,22 +90,6 @@ public class SoundPlayer
 	}
 
 
-
-	void invokeMethodWithString ( String methodName, String arg )
-	{
-		Map<String, Object> dic = new HashMap<String, Object> ();
-		dic.put ( "slotNo", slotNo );
-		dic.put ( "arg", arg );
-		getPlugin ().invokeMethod ( methodName, dic );
-	}
-
-	void invokeMethodWithDouble ( String methodName, double arg )
-	{
-		Map<String, Object> dic = new HashMap<String, Object> ();
-		dic.put ( "slotNo", slotNo );
-		dic.put ( "arg", arg );
-		getPlugin ().invokeMethod ( methodName, dic );
-	}
 
 	public void startPlayer ( final MethodCall call, final Result result )
 	{
@@ -414,17 +167,11 @@ public class SoundPlayer
 		mp.release ();
 		this.model.setMediaPlayer(null);
 
-		try {
-			JSONObject json = new JSONObject();
-			json.put("description", description);
-			json.put("android_what",  what);
-			json.put("android_extra",  extra);
-			invokeMethodWithString("onError", json.toString());
-		} catch (JSONException e) {
-			Log.e(TAG, "Error encoding json message for onError: what=" + what + " extra=" + extra);
-		}
+		getPlugin().sendError( slotNo, description, what, extra, null);
+
 		return true;
 	}
+
 
 	// Called when the audio stops, this can be due
 	// the natural completion of the audio track or because
@@ -441,7 +188,7 @@ public class SoundPlayer
 			JSONObject json = new JSONObject ();
 			json.put ( "duration", String.valueOf ( mp.getDuration () ) );
 			json.put ( "current_position", String.valueOf ( mp.getCurrentPosition () ) );
-			invokeMethodWithString ( "audioPlayerFinishedPlaying", json.toString () );
+			getPlugin().invokeCallbackWithString ( slotNo, "audioPlayerFinishedPlaying", json.toString () );
 		}
 		catch ( Exception e )
 		{
@@ -488,7 +235,7 @@ public class SoundPlayer
 			JSONObject json = new JSONObject();
 			json.put("duration", String.valueOf(mp.getDuration()));
 			json.put("current_position", String.valueOf(mp.getCurrentPosition()));
-			invokeMethodWithString("updateProgress", json.toString());
+			getPlugin().invokeCallbackWithString( slotNo, "updateProgress", json.toString());
 
 			// reschedule ourselves.
 			tickHandler.postDelayed(() -> sendUpdateProgress(mp), (model.subsDurationMillis));
@@ -782,4 +529,3 @@ public class SoundPlayer
 
 }
 
-//-------------------------------------------------------------------------------------------------------------

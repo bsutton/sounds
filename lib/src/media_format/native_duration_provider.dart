@@ -1,25 +1,18 @@
-import 'package:sounds_common/sounds_common.dart';
-
 import '../sound_player.dart';
 
 /// Provides a method to determine the duration of a natively supported
 /// audio file.
-class NativeDurationProvider implements DurationProvider {
-  @override
-  MediaFormat mediaFormat;
+class NativeDurationProvider {
+  static final NativeDurationProvider _self =
+      NativeDurationProvider._internal();
 
-  @override
-  String package;
+  ///
+  factory NativeDurationProvider() => _self;
 
-  @override
-  int priority;
+  NativeDurationProvider._internal();
 
-  @override
-  Future<Duration> getDuration(String path) async {
-    if (!await mediaFormat.isNativeDecoder) {
-      throw MediaFormatNotSupportedException(
-          'This format is not native on this OS/SDK version');
-    }
-    return SoundPlayer.noUI().duration(path);
-  }
+  /// Returns the duration of the audio file at the given [path]
+  /// for natively supported [MediaFormats].
+  Future<Duration> getDuration(String path) async =>
+      SoundPlayer.noUI().duration(path);
 }

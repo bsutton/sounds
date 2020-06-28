@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sounds/sounds.dart';
 import 'package:sounds_common/sounds_common.dart';
 
 import 'demo_active_codec.dart';
@@ -72,7 +73,7 @@ class _DropdownsState extends State<Dropdowns> {
         /// this is hacky as we should be passing the actually
         /// useOSUI flag.
         ActiveMediaFormat()
-            .setMediaFormat(withUI: false, mediaFormat: newCodec);
+            .setMediaFormat(withShadeUI: false, mediaFormat: newCodec);
 
         setState(() {
           getDuration(ActiveMediaFormat().mediaFormat);
@@ -80,7 +81,7 @@ class _DropdownsState extends State<Dropdowns> {
       },
       items: <DropdownMenuItem<MediaFormat>>[
         DropdownMenuItem<MediaFormat>(
-          value: WellKnownMediaFormats.aacAdts,
+          value: WellKnownMediaFormats.adtsAac,
           child: Text('AAC'),
         ),
         DropdownMenuItem<MediaFormat>(
@@ -88,7 +89,7 @@ class _DropdownsState extends State<Dropdowns> {
           child: Text('OGG/Opus'),
         ),
         DropdownMenuItem<MediaFormat>(
-          value: WellKnownMediaFormats.opusCaf,
+          value: WellKnownMediaFormats.cafOpus,
           child: Text('CAF/Opus'),
         ),
         DropdownMenuItem<MediaFormat>(

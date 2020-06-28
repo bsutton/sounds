@@ -37,7 +37,7 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar);
 
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar;
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result;
-- (void)invokeMethod: (NSString*)methodName arguments: (NSDictionary*)call;
+- (void)invokeCallback: (NSString*)methodName arguments: (NSDictionary*)call;
 - (void)freeSlot: (int)slotNo;
 @end
 

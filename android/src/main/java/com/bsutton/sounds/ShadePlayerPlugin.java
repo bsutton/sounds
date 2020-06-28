@@ -80,7 +80,7 @@ class ShadePlayerPlugin
 
 	public static void attachShadePlayer( Context ctx, BinaryMessenger messenger )
 	{
-		assert ( flautoPlayerPlugin == null );
+		assert ( soundPlayerPlugin == null );
 		
 		ShadePlayerPlugin = new ShadePlayerPlugin();
 		assert ( slots == null );
@@ -91,7 +91,7 @@ class ShadePlayerPlugin
 
 	}
 
-	void invokeMethod( String methodName, Map dic )
+	void invokeCallback( String methodName, Map dic )
 	{
 		channel.invokeMethod ( methodName, dic );
 	}
@@ -104,9 +104,8 @@ class ShadePlayerPlugin
 
 	SoundPlayerPlugin getManager ()
 	{
-		return flautoPlayerPlugin;
+		return soundPlayerPlugin;
 	}
-
 
 
 	@Override
@@ -146,8 +145,8 @@ class ShadePlayerPlugin
 			}
 			break;
 
-			case "startPlayerFromTrack":
-				aPlayer.startPlayerFromTrack( call, result );
+			case "startShadePlayer":
+				aPlayer.startShadePlayer( call, result );
 				break;
 
 
@@ -182,4 +181,3 @@ class ShadePlayerPlugin
 
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------

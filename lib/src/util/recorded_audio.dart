@@ -12,5 +12,5 @@ class RecordedAudio {
 
   /// Creates a [RecordedAudio] that will store
   /// the recording to the given track.
-  RecordedAudio.toTrack(this.track);
+  RecordedAudio.recordTo(this.track);
 }

@@ -48,186 +48,6 @@ import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 
-class SoundRecorderPlugin
-	implements MethodCallHandler
-{
-	public static final String CHANNEL_NAME = "com.bsutton.sounds.sounds_recorder";
-	private static MethodChannel        channel;
-	public static List<SoundRecorder> slots;
-
-	static Context              androidContext;
-	static SoundRecorderPlugin flautoRecorderPlugin; // singleton
-
-	static final String TAG 					  = "SoundRecorder";
-	static final String ERR_UNKNOWN               = "ERR_UNKNOWN";
-	static final String ERR_RECORDER_IS_NULL      = "ERR_RECORDER_IS_NULL";
-	static final String ERR_RECORDER_IS_RECORDING = "ERR_RECORDER_IS_RECORDING";
-
-
-	public static void attachSoundRecorder ( Context ctx, BinaryMessenger messenger )
-	{
-		assert ( flautoRecorderPlugin == null );
-		flautoRecorderPlugin = new SoundRecorderPlugin ();
-		assert ( slots == null );
-		slots   = new ArrayList<SoundRecorder> ();
-		channel = new MethodChannel ( messenger, CHANNEL_NAME);
-		channel.setMethodCallHandler ( flautoRecorderPlugin );
-		Log.d(TAG,"Registering channel: " + CHANNEL_NAME);
-		androidContext = ctx;
-	}
-
-
-	void invokeMethod ( String methodName, Map dic )
-	{
-		// Log.d(TAG, "calling dart " + methodName + dic.toString());
-		channel.invokeMethod ( methodName, dic );
-		// Log.d(TAG, "invokeMethod succeeded");
-	}
-
-	void freeSlot ( int slotNo )
-	{
-		slots.set ( slotNo, null );
-	}
-
-
-	SoundRecorderPlugin getManager ()
-	{
-		return flautoRecorderPlugin;
-	}
-
-
-	@Override
-	public void onMethodCall ( final MethodCall call, final Result result )
-	{
-		int slotNo = call.argument ( "slotNo" );
-
-		// The dart code supports lazy initialization of the recorder.
-		// This means that recorders can be registered (and slots allocated)
-		// on the client side in a different order to which the recorders
-		// are initialised.
-		// As such we need to grow the slot array upto the
-		// requested slot no. even if we haven't seen initialisation
-		// for the lower numbered slots.
-		while (slotNo >= slots.size()) {
-			slots.add(null);
-		}
-
-		SoundRecorder aRecorder = slots.get ( slotNo );
-		switch ( call.method )
-		{
-			case "initializeSoundRecorder":
-			{
-				assert ( slots.get ( slotNo ) == null );
-				aRecorder = new SoundRecorder ( slotNo );
-				slots.set ( slotNo, aRecorder );
-				aRecorder.initializeSoundRecorder ( call, result );
-			}
-			break;
-
-			case "releaseSoundRecorder":
-			{
-				aRecorder.releaseSoundRecorder ( call, result );
-				slots.set ( slotNo, null );
-			}
-			break;
-
-			case "startRecorder":
-			{
-				aRecorder.startRecorder ( call, result );
-				
-			}
-			break;
-
-			case "stopRecorder":
-			{
-				aRecorder.stopRecorder ( call, result );
-			}
-			break;
-
-
-			case "setDbPeakLevelUpdate":
-			{
-
-				aRecorder.setDbPeakLevelUpdate ( call, result );
-			}
-			break;
-
-			case "setDbLevelEnabled":
-			{
-
-				aRecorder.setDbLevelEnabled ( call, result );
-			}
-			break;
-
-			case "setSubscriptionInterval":
-			{
-				aRecorder.setSubscriptionInterval ( call, result );
-			}
-			break;
-
-			case "pauseRecorder":
-			{
-				aRecorder.pauseRecorder ( call, result );
-			}
-			break;
-
-
-			case "resumeRecorder":
-			{
-				aRecorder.resumeRecorder ( call, result );
-			}
-			break;
-
-
-			default:
-			{
-				result.notImplemented ();
-			}
-			break;
-		}
-	}
-
-}
-
-
-class RecorderAudioModel
-{
-	final public static String  DEFAULT_FILE_LOCATION = Environment.getDataDirectory ().getPath () + "/default.aac"; // SDK
-	public              int     subsDurationMillis    = 10;
-	public              long    peakLevelUpdateMillis = 800;
-	public              boolean shouldProcessDbLevel  = true;
-
-	private      MediaRecorder mediaRecorder;
-
-	// The time at which  the current recording was started.
-	public       long          startTime;
-	private      long          recordTime   = 0;
-	public final double        micLevelBase = 2700;
-
-
-	public MediaRecorder getMediaRecorder ()
-	{
-		return mediaRecorder;
-	}
-
-	public void setMediaRecorder ( MediaRecorder mediaRecorder )
-	{
-		this.mediaRecorder = mediaRecorder;
-	}
-
-	public long getRecordTime ()
-	{
-		return recordTime;
-	}
-
-	public void setRecordTime ( long recordTime )
-	{
-		this.recordTime = recordTime;
-	}
-
-}
-//-----------------------------------------------------------------------------------------------------------------------------------------------
-
 public class SoundRecorder
 {
 	static final String ERR_RECORDER_IS_NULL      = "ERR_RECORDER_IS_NULL";
@@ -265,20 +85,20 @@ public class SoundRecorder
 		result.success ( "Sounds Recorder Released" );
 	}
 
-	void invokeMethodWithString ( String methodName, String arg )
+	void invokeCallbackWithString ( String methodName, String arg )
 	{
 		Map<String, Object> dic = new HashMap<String, Object> ();
 		dic.put ( "slotNo", slotNo );
 		dic.put ( "arg", arg );
-		getPlugin ().invokeMethod ( methodName, dic );
+		getPlugin ().invokeCallback ( methodName, dic );
 	}
 
-	void invokeMethodWithDouble ( String methodName, double arg )
+	void invokeCallbackWithDouble ( String methodName, double arg )
 	{
 		Map<String, Object> dic = new HashMap<String, Object> ();
 		dic.put ( "slotNo", slotNo );
 		dic.put ( "arg", arg );
-		getPlugin ().invokeMethod ( methodName, dic );
+		getPlugin ().invokeCallback ( methodName, dic );
 	}
 
 	public void startRecorder ( final MethodCall call, final Result result )
@@ -415,7 +235,7 @@ public class SoundRecorder
 			}
 
 			// Log.d ( TAG, "rawAmplitude: " + maxAmplitude + " Base DB: " + db );
-			invokeMethodWithDouble (  "updateDbPeakProgress", db );
+			invokeCallbackWithDouble (  "updateDbPeakProgress", db );
 
 			// schedule the next update.
 			dbPeakLevelTickHandler.postDelayed ( () ->  sendDBLevelUpdate(), ( model.peakLevelUpdateMillis ) );
@@ -432,7 +252,7 @@ public class SoundRecorder
 		{
 			JSONObject json = new JSONObject ();
 			json.put ( "current_position", String.valueOf ( time ) );
-			invokeMethodWithString ( "updateRecorderProgress", json.toString () );
+			invokeCallbackWithString ( "updateRecorderProgress", json.toString () );
 			// Log.d(TAG,  "updateRecorderProgress: " +  json.toString());
 
 			// re-queue ourselves based on the desired subscription interval.
@@ -545,7 +365,7 @@ public class SoundRecorder
 
 	public void setDbPeakLevelUpdate ( final MethodCall call, final Result result )
 	{
-		long interval = call.argument ( "milli" );
+		int interval = call.argument ( "milli" );
 		this.model.peakLevelUpdateMillis = interval;
 		result.success ( "setDbPeakLevelUpdate: " + this.model.peakLevelUpdateMillis );
 	}

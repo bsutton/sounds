@@ -16,7 +16,7 @@
 
 import 'package:flutter/material.dart';
 
-import 'demo_util/demo3_body.dart';
+import 'demo_util/demo_body.dart';
 
 /// demonstrates the recording widget linked to a playback widget.
 void main() {

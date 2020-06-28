@@ -19,11 +19,11 @@ class ActiveMediaFormat {
   ActiveMediaFormat._internal();
 
   /// Set the active code for the the recording and player modules.
-  void setMediaFormat({bool withUI, MediaFormat mediaFormat}) async {
+  void setMediaFormat({bool withShadeUI, MediaFormat mediaFormat}) async {
     _encoderSupported = await mediaFormat.isNativeEncoder;
     _decoderSupported = await mediaFormat.isNativeDecoder;
 
-    mediaFormat = mediaFormat;
+    this.mediaFormat = mediaFormat;
   }
 
   /// [true] if the active coded is supported by the recorder

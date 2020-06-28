@@ -33,7 +33,7 @@ extern NSMutableArray* _Nullable playerSlots;
 
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*_Nonnull)registrar;
 - (void)handleMethodCall:(FlutterMethodCall*_Nonnull)call result:(FlutterResult _Nonnull )result;
-- (void)invokeMethod: (NSString*_Nonnull)methodName arguments: (NSDictionary *_Nullable)call;
+- (void)invokeCallback: (NSString*_Nonnull)methodName arguments: (NSDictionary *_Nullable)call;
 - (void)freeSlot: (int)slotNo;
 @end
 

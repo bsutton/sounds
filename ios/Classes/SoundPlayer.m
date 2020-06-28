@@ -59,7 +59,7 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
         [SoundPlayerManager registerWithRegistrar: registrar];
 }
 
-- (void)invokeMethod: (NSString*)methodName arguments: (NSDictionary*)call
+- (void)invokeCallback: (NSString*)methodName arguments: (NSDictionary*)call
 {
         [_channel invokeMethod: methodName arguments: call ];
 }
@@ -103,6 +103,13 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
                 playerSlots[slotNo] = [NSNull null];
         } else
         
+        if ([@"getDuration" isEqualToString:call.method])
+        {
+                NSString* path = (NSString*)call.arguments[@"path"];
+                NSString* callbackUuid = (NSString*)call.arguments[@"callbackUuid"];
+                [aSoundPlayer getDuration:path callbackUuid: callbackUuid result:result];
+        } else
+
         if ([@"startPlayer" isEqualToString:call.method])
         {
                 NSString* path = (NSString*)call.arguments[@"path"];
@@ -201,10 +208,10 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 }
 
 
-- (void)invokeMethod: (NSString*)methodName stringArg: (NSString*)stringArg
+- (void)invokeCallback: (NSString*)methodName stringArg: (NSString*)stringArg
 {
         NSDictionary* dic = @{ @"slotNo": [NSNumber numberWithInt: slotNo], @"arg": stringArg};
-        [[self getPlugin] invokeMethod: methodName arguments: dic ];
+        [[self getPlugin] invokeCallback: methodName arguments: dic ];
 }
 
 
@@ -220,6 +227,42 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 
 }
 
+
+- (void)getDuration: (NSString*)path callbackUuid:(NSString*)callbackUuid  result:(FlutterResult)result
+{
+        /// let the dart code resume whilst we calculate the duratin.
+        result("queued");
+
+        NSURL *afUrl = [NSURL fileURLWithPath:path];
+        AudioFileID fileID;
+        OSStatus status = AudioFileOpenURL((CFURLRef)afUrl, kAudioFileReadPermission, 0, &fileID);
+        Float64 outDataSize = 0;
+        UInt32 thePropSize = sizeof(Float64);
+        status = AudioFileGetProperty(fileID, kAudioFilePropertyEstimatedDuration, &thePropSize, &outDataSize);
+        AudioFileClose(fileID);
+
+        NSLog([NSString stringWithFormat:@"getDuration status%@", status);
+
+        if (status == kAudioServicesNoError)
+        {
+                int milliseconds = outDataSize * 1000;
+
+                NSString* args = [NSString stringWithFormat:@"{\"callbackUuid\": \"%@\", \"milliseconds\": %@}"
+                                , [callbackUuid stringValue]
+                                , [milliseconds stringValue]];
+                [self invokeCallback:@"durationResults" stringArg:args];
+        }
+        else
+        {
+                /// danger will robison, danger
+                NSString* args = [NSString stringWithFormat:@"{\"callbackUuid\": \"%@\", \"description\": \"%@\"}"
+                , [callbackUuid stringValue]
+                , [status stringValue]];
+                [self invokeCallback:@"onError" stringArg:args];
+
+        }
+        
+}
 - (void)setCategory: (NSString*)categ mode:(NSString*)mode options:(int)options result:(FlutterResult)result
 {
         // Able to play in silent mode
@@ -564,7 +607,7 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
         // }
 
         NSString* status = [NSString stringWithFormat:@"{\"duration\": \"%@\", \"current_position\": \"%@\"}", [duration stringValue],                         [currentTime stringValue]];
-        [self invokeMethod:@"updateProgress" stringArg:status];
+        [self invokeCallback:@"updateProgress" stringArg:status];
 //        if (![audioPlayer isPlaying] )
 //        {
 //                  [self stopPlayer];
@@ -616,7 +659,7 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 
         NSString* status = [NSString stringWithFormat:@"{\"duration\": \"%@\", \"current_position\": \"%@\"}", [duration stringValue], [currentTime stringValue]];
 
-        [self invokeMethod:@"audioPlayerFinishedPlaying" stringArg: status];
+        [self invokeCallback:@"audioPlayerFinishedPlaying" stringArg: status];
         isPaused = false;
         [self stopTimer];
 }

@@ -40,7 +40,7 @@ import 'sound_player.dart';
 /// ```dart
 /// QuickPlay.fromFile('path to file);
 ///
-/// QuickPlay.fromTrack(track, volume: 1.0, withUI: true);
+/// QuickPlay.fromTrack(track, volume: 1.0, withShadeUI: true);
 
 class QuickPlay {
   SoundPlayer _player;
@@ -49,17 +49,17 @@ class QuickPlay {
 
   /// Creates a QuickPlay from a Track and immediately plays it.
   /// By default no UI is displayed.
-  /// If you pass [withUI]=true then the OSs' media player is displayed
+  /// If you pass [withShadeUI]=true then the OSs' media player is displayed
   /// but all of the UI controls are disabled.
   /// You can control the playback [volume]. The valid range is 0.0 to 1.0
   /// and the default is 0.5.
-  QuickPlay.fromTrack(this._track, {double volume, bool withUI = false}) {
-    QuickPlay._internal(volume, withUI);
+  QuickPlay.fromTrack(this._track, {double volume, bool withShadeUI = false}) {
+    QuickPlay._internal(volume, withShadeUI);
   }
 
-  QuickPlay._internal(double volume, bool withUI) {
-    if (withUI) {
-      _player = SoundPlayer.withUI(
+  QuickPlay._internal(double volume, bool withShadeUI) {
+    if (withShadeUI) {
+      _player = SoundPlayer.withShadeUI(
           canPause: false, canSkipBackward: false, canSkipForward: false);
     } else {
       _player = SoundPlayer.noUI();
@@ -78,53 +78,53 @@ class QuickPlay {
   /// if the file doesn't exist.
   ///
   /// If the file contains a unknown MediaFormat then
-  /// [QuickPlay] will throw an [MediaFormatNotSupportedException].
+  /// [QuickPlay] will throw an [MediaFormatException].
   ///
   /// By default no UI is displayed.
   ///
-  /// If you pass [withUI]=true then the OSs' media player is displayed
+  /// If you pass [withShadeUI]=true then the OSs' media player is displayed
   /// but all of the UI controls are disabled.
   ///
   /// The [volume] must be in the range 0.0 to 1.0. Defaults to 0.5
-  QuickPlay.fromFile(String path,
-      {double volume, bool withUI = false}) {
+  QuickPlay.fromFile(String path, {double volume, bool withShadeUI = false}) {
     _track = Track.fromFile(path);
-    QuickPlay._internal(volume, withUI);
+    QuickPlay._internal(volume, withShadeUI);
   }
 
   /// Allows you to play an audio file stored at a givenURL.
   ///  Both HTTP and HTTPS are supported.
   /// The [url] of the file to download and playback
   ///
-  /// [QuickPlay] will throw an [MediaFormatNotSupportedException] if the
+  /// [QuickPlay] will throw an [MediaFormatException] if the
   /// passed files MediaFormat is not supported.
-  /// 
+  ///
   /// By default no UI is displayed.
   ///
-  /// If you pass [withUI]=true then the OSs' media player is displayed
+  /// If you pass [withShadeUI]=true then the OSs' media player is displayed
   /// but all of the UI controls are disabled.
   ///
   /// The [volume] must be in the range 0.0 to 1.0. Defaults to 0.5
-  QuickPlay.fromURL(String url,
-      {double volume, bool withUI = false}) {
+  QuickPlay.fromURL(String url, {double volume, bool withShadeUI = false}) {
     _track = Track.fromURL(url);
-    QuickPlay._internal(volume, withUI);
+    QuickPlay._internal(volume, withShadeUI);
   }
 
   /// Create a audio play from an in memory buffer.
   /// The [dataBuffer] contains the media to be played.
-  /// 
-  /// [QuickPlay] will throw an [MediaFormatNotSupportedException] if the
+  ///
+  /// [QuickPlay] will throw an [MediaFormatException] if the
   /// passed audio's MediaFormat is not supported.
-  /// 
+  ///
   /// By default no UI is displayed.
-  /// If you pass [withUI]=true then the OSs' media player is displayed
+  /// If you pass [withShadeUI]=true then the OSs' media player is displayed
   /// but all of the UI controls are disabled.
   /// The [volume] must be in the range 0.0 to 1.0. Defaults to 0.5
   QuickPlay.fromBuffer(Uint8List dataBuffer,
-      {double volume, @required MediaFormat mediaFormat, bool withUI = false}) {
+      {double volume,
+      @required MediaFormat mediaFormat,
+      bool withShadeUI = false}) {
     _track = Track.fromBuffer(dataBuffer, mediaFormat: mediaFormat);
-    QuickPlay._internal(volume, withUI);
+    QuickPlay._internal(volume, withShadeUI);
   }
 
   /// Starts playback.

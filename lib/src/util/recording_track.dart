@@ -1,6 +1,7 @@
 // Provides additional functionality required when recording
 
 import 'package:path/path.dart';
+import 'package:sounds/src/media_format/native_media_format.dart';
 import 'package:sounds_common/sounds_common.dart';
 
 import '../sound_recorder.dart';
@@ -10,13 +11,17 @@ class RecordingTrack {
   ///
   Track track;
 
+  /// The [MediaFormat] to record to.
+  NativeMediaFormat mediaFormat;
+
   /// Create a [RecordingTrack] fro a [Track].
   ///
-  /// Throws a [MediaFormatNotSupportedException] if the requested [MediaFormat]
+  /// Throws a [MediaFormatException] if the requested [MediaFormat]
   /// is not supported.
   ///
-  RecordingTrack(this.track) {
+  RecordingTrack(this.track, this.mediaFormat) {
     ArgumentError.checkNotNull(track, 'track');
+    ArgumentError.checkNotNull(mediaFormat, 'mediaFormat');
 
     if (!track.isFile) {
       ArgumentError("Only Tracks created via [Track.fromFile] are supported");

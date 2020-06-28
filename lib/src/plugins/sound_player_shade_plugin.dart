@@ -55,7 +55,7 @@ class SoundPlayerShadePlugin extends PlayerBasePlugin {
       trackMap["path"] = trackStoragePath(track);
     }
 
-    await invokeMethod(player, 'startPlayerFromTrack', <String, dynamic>{
+    await invokeMethod(player, 'startShadePlayer', <String, dynamic>{
       'track': trackMap,
       'canPause': player.canPause,
       'canSkipForward': player.canSkipForward,

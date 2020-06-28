@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:intl/intl.dart';
+import 'package:sounds/sounds.dart';
 import 'package:sounds_common/sounds_common.dart';
 
 import 'demo_media_path.dart';
@@ -55,14 +56,14 @@ String formatDuration(Duration duration) {
 }
 
 /// the set of samples availble as assets.
-var assetSample = <MediaFormat, String>{
-  AdtsAacMediaFormat(): 'assets/samples/sample.aac',
-  AdtsAacMediaFormat(): 'assets/samples/sample.aac',
-  OpusOggMediaFormat(): 'assets/samples/sample.opus',
-  OpusCafMediaFormat(): 'assets/samples/sample.caf',
-  MP3MediaFormat(): 'assets/samples/sample.mp3',
-  VorbisOggMediaFormat(): 'assets/samples/sample.ogg',
-  PCMMediaFormat(): 'assets/samples/sample.wav',
+var assetSample = <String, String>{
+  WellKnownMediaFormats.adtsAac.name: 'assets/samples/sample.aac',
+  WellKnownMediaFormats.adtsAac.name: 'assets/samples/sample.aac',
+  WellKnownMediaFormats.oggOpus.name: 'assets/samples/sample.opus',
+  WellKnownMediaFormats.cafOpus.name: 'assets/samples/sample.caf',
+  WellKnownMediaFormats.mp3.name: 'assets/samples/sample.mp3',
+  WellKnownMediaFormats.oggVorbis.name: 'assets/samples/sample.ogg',
+  WellKnownMediaFormats.pcm.name: 'assets/samples/sample.wav',
 };
 
 /// Checks if the past file exists

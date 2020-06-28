@@ -20,11 +20,10 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/services.dart';
-import 'package:sounds_common/sounds_common.dart';
 
 import '../audio_source.dart';
+import '../media_format/native_media_format.dart';
 import '../quality.dart';
-
 import '../sound_recorder.dart' as sound_recorder;
 import 'base_plugin.dart';
 
@@ -75,8 +74,8 @@ class SoundRecorderPlugin extends BasePlugin {
     };
 
     if (Platform.isAndroid) {
-      param['encoder'] = mediaFormat.androidCodec;
-      param['container'] = mediaFormat.androidFormat;
+      param['encoder'] = mediaFormat.androidEncoder;
+      param['format'] = mediaFormat.androidFormat;
     } else {
       param['format'] = mediaFormat.iosFormat;
       param['iosQuality'] = iosQuality?.value;

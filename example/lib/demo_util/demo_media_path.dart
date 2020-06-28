@@ -1,3 +1,4 @@
+import 'package:sounds/sounds.dart';
 import 'package:sounds_common/sounds_common.dart';
 
 import 'demo_common.dart';
@@ -5,17 +6,6 @@ import 'demo_common.dart';
 /// Paths for example media files.
 class MediaPath {
   static final MediaPath _self = MediaPath._internal();
-
-  /// list of sample paths for each MediaFormat
-  static var samplePaths = <MediaFormat, String>{
-    WellKnownMediaFormats.aacAdts: 'sounds_example.aac', // DEFAULT
-    WellKnownMediaFormats.aacAdts: 'sounds_example.aac', // CODEC_AAC
-    WellKnownMediaFormats.oggOpus: 'sounds_example.opus', // CODEC_OPUS
-    WellKnownMediaFormats.opusCaf: 'sounds_example.caf', // CODEC_CAF_OPUS
-    WellKnownMediaFormats.mp3: 'sounds_example.mp3', // CODEC_MP3
-    WellKnownMediaFormats.oggVorbis: 'sounds_example.ogg', // CODEC_VORBIS
-    WellKnownMediaFormats.pcm: 'sounds_example.wav', // CODEC_PCM
-  };
 
   final _path = <MediaFormat, String>{};
 
