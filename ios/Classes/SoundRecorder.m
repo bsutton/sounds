@@ -84,7 +84,6 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result
 {
         int slotNo = [call.arguments[@"slotNo"] intValue];
-        assert ( (slotNo >= 0) && (slotNo <= [soundRecorderSlots count]));
 
 
         // The dart code supports lazy initialization of recorders.
@@ -234,7 +233,7 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
            NSNumber* numChannelsArgs = (NSNumber*)call.arguments[@"numChannels"];
            NSNumber* iosQuality = (NSNumber*)call.arguments[@"iosQuality"];
            NSNumber* bitRate = (NSNumber*)call.arguments[@"bitRate"];
-           NSNumber* format = (NSNumber*)call.arguments[@"format"];
+           NSNumber* formatArg = (NSNumber*)call.arguments[@"format"];
 
            float sampleRate = 44100;
            if (![sampleRateArgs isKindOfClass:[NSNull class]])
@@ -247,6 +246,8 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
            {
                 numChannels = (int)[numChannelsArgs integerValue];
            }
+    
+            int format = (int)[formatArg integerValue];
 
 
 
@@ -255,7 +256,7 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
           
           NSMutableDictionary *audioSettings = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                          [NSNumber numberWithFloat: sampleRate],AVSampleRateKey,
-                                         [format intValue],AVFormatIDKey,
+                                        [NSNumber numberWithInt: format],AVFormatIDKey,
                                          [NSNumber numberWithInt: numChannels ],AVNumberOfChannelsKey,
                                          [NSNumber numberWithInt: [iosQuality intValue]],AVEncoderAudioQualityKey,
                                          nil];
