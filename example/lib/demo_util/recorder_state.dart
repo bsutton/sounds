@@ -68,9 +68,6 @@ class RecorderState {
   /// starts the recorder.
   void startRecorder(BuildContext context) async {
     try {
-      /// TODO put this back iin
-      /// await PlayerState().stopPlayer();
-
       var track = Track.fromFile(await tempFile(),
           mediaFormat: ActiveMediaFormat().mediaFormat);
       await recorderModule.record(track);
