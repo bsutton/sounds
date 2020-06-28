@@ -22,10 +22,8 @@ class AdtsAacMediaFormat extends NativeMediaFormat {
   String get extension => 'aac';
 
   // Whilst the actual index is MediaRecorder.AudioEncoder.AAC (3)
-  // by using 0 (the default) we get around a bug in some older
-  // versions of android. The default (0) equates to AAC.
   @override
-  int get androidCodec => 0;
+  int get androidCodec => 3;
 
   /// MediaRecorder.OutputFormat.AAC_ADTS
   @override
