@@ -474,10 +474,10 @@ public class ShadePlayer extends SoundPlayer
 		{
 			if ( mIsSkippingForward )
 			{
-				invokeCallbackWithString( "skipForward", null );
+				getPlugin().invokeCallbackWithString( slotNo,"skipForward", null );
 			} else
 			{
-				invokeCallbackWithString( "skipBackward", null );
+				getPlugin().invokeCallbackWithString( slotNo,"skipBackward", null );
 			}
 
 			return null;
@@ -564,7 +564,7 @@ public class ShadePlayer extends SoundPlayer
 							@Override
 							public void run()
 							{
-								invokeCallbackWithString( "updateProgress", json.toString() );
+								getPlugin().invokeCallbackWithString( slotNo,"updateProgress", json.toString() );
 							}
 						} );
 
@@ -612,7 +612,7 @@ public class ShadePlayer extends SoundPlayer
 
 				json.put( "duration", String.valueOf( trackDuration ) );
 				json.put( "current_position", String.valueOf( currentPosition ) );
-				invokeCallbackWithString( "audioPlayerFinishedPlaying", json.toString() );
+				getPlugin().invokeCallbackWithString( slotNo, "audioPlayerFinishedPlaying", json.toString() );
 				if ( ( setActiveDone != t_SET_CATEGORY_DONE.BY_USER ) && ( setActiveDone != t_SET_CATEGORY_DONE.NOT_SET ) )
 				{
 					abandonFocus();

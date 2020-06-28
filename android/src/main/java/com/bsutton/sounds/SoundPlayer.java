@@ -90,56 +90,6 @@ public class SoundPlayer
 	}
 
 
-	void getDuration(final MethodCall call, final Result result )
-	{
-		/// let the dart code resume whilst we get the results.
-		result.success("queued");
-
-		String callbackUuid = "Not supplied";
-		try
-		{
-			final String path = call.argument ( "path" );
-			/// used so we can handle multiple calls in parallel.
-			callbackUuid = call.argument ( "callbackUuid" );
-
-			Uri uri = Uri.parse(path);
-			MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-			mmr.setDataSource(SoundPlayerPlugin.androidContext,uri);
-			String durationStr = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-			int milliSeconds = Integer.parseInt(durationStr);
-
-			Map<String, Object> args = new HashMap<String, Object> (); 
-			args.put("callbackUuid", callbackUuid);
-			args.put("milliseconds", milliSeconds);
-
-			Map<String, Object> dic = new HashMap<String, Object> ();
-			dic.put ( "slotNo", slotNo );
-			dic.put ( "arg", args );
-			getPlugin ().invokeCallback ( "durationResults", dic );
-		}
-		catch (Throwable e)
-		{
-			sendError(e.getMessage(), 0, 0, callbackUuid);
-		}
-
-	}
-
-
-	void invokeCallbackWithString ( String methodName, String arg )
-	{
-		Map<String, Object> dic = new HashMap<String, Object> ();
-		dic.put ( "slotNo", slotNo );
-		dic.put ( "arg", arg );
-		getPlugin ().invokeCallback ( methodName, dic );
-	}
-
-	void invokeCallbackWithDouble ( String methodName, double arg )
-	{
-		Map<String, Object> dic = new HashMap<String, Object> ();
-		dic.put ( "slotNo", slotNo );
-		dic.put ( "arg", arg );
-		getPlugin ().invokeCallback ( methodName, dic );
-	}
 
 	public void startPlayer ( final MethodCall call, final Result result )
 	{
@@ -217,27 +167,11 @@ public class SoundPlayer
 		mp.release ();
 		this.model.setMediaPlayer(null);
 
-		sendError(description, what, extra, null);
+		getPlugin().sendError( slotNo, description, what, extra, null);
 
 		return true;
 	}
 
-	void sendError(String description, int what, int extra, String callbackUuid)
-	{
-		try {
-			JSONObject json = new JSONObject();
-			json.put("description", description);
-			json.put("android_what",  what);
-			json.put("android_extra",  extra);
-			if (callbackUuid != null)
-			{
-				json.put("callbackUuid",  callbackUuid);
-			}
-			invokeCallbackWithString("onError", json.toString());
-		} catch (JSONException e) {
-			Log.e(TAG, "Error encoding json message for onError: what=" + what + " extra=" + extra);
-		}
-	}
 
 	// Called when the audio stops, this can be due
 	// the natural completion of the audio track or because
@@ -254,7 +188,7 @@ public class SoundPlayer
 			JSONObject json = new JSONObject ();
 			json.put ( "duration", String.valueOf ( mp.getDuration () ) );
 			json.put ( "current_position", String.valueOf ( mp.getCurrentPosition () ) );
-			invokeCallbackWithString ( "audioPlayerFinishedPlaying", json.toString () );
+			getPlugin().invokeCallbackWithString ( slotNo, "audioPlayerFinishedPlaying", json.toString () );
 		}
 		catch ( Exception e )
 		{
@@ -301,7 +235,7 @@ public class SoundPlayer
 			JSONObject json = new JSONObject();
 			json.put("duration", String.valueOf(mp.getDuration()));
 			json.put("current_position", String.valueOf(mp.getCurrentPosition()));
-			invokeCallbackWithString("updateProgress", json.toString());
+			getPlugin().invokeCallbackWithString( slotNo, "updateProgress", json.toString());
 
 			// reschedule ourselves.
 			tickHandler.postDelayed(() -> sendUpdateProgress(mp), (model.subsDurationMillis));

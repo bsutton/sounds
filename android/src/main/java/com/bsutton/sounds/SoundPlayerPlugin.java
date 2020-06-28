@@ -4,9 +4,11 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.media.AudioManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
@@ -139,7 +141,7 @@ class SoundPlayerPlugin
 				break;
 
 				case "getDuration":
-					aPlayer.getDuration( call, result );
+					getDuration( slotNo, call, result );
 				break;
 
 				case "startPlayer":
@@ -207,6 +209,74 @@ class SoundPlayerPlugin
 		{
 			Log.e(TAG, "Error in onMethodCall " + call.method, e);
 			throw e;
+		}
+
+	}
+
+	void invokeCallbackWithString ( int slotNo, String methodName, String arg )
+	{
+		Map<String, Object> dic = new HashMap<String, Object> ();
+		dic.put ( "slotNo", slotNo );
+		dic.put ( "arg", arg );
+		invokeCallback ( methodName, dic );
+	}
+
+	void invokeCallbackWithDouble ( int slotNo,  String methodName, double arg )
+	{
+		Map<String, Object> dic = new HashMap<String, Object> ();
+		dic.put ( "slotNo", slotNo );
+		dic.put ( "arg", arg );
+		invokeCallback ( methodName, dic );
+	}
+
+	void sendError( int slotNo, String description, int what, int extra, String callbackUuid)
+	{
+		try {
+			JSONObject json = new JSONObject();
+			json.put("description", description);
+			json.put("android_what",  what);
+			json.put("android_extra",  extra);
+			if (callbackUuid != null)
+			{
+				json.put("callbackUuid",  callbackUuid);
+			}
+			invokeCallbackWithString( slotNo,"onError", json.toString());
+		} catch (JSONException e) {
+			Log.e(TAG, "Error encoding json message for onError: what=" + what + " extra=" + extra);
+		}
+	}
+
+
+	void getDuration(int slotNo, final MethodCall call, final Result result )
+	{
+		/// let the dart code resume whilst we get the results.
+		result.success("queued");
+
+		String callbackUuid = "Not supplied";
+		try
+		{
+			final String path = call.argument ( "path" );
+			/// used so we can handle multiple calls in parallel.
+			callbackUuid = call.argument ( "callbackUuid" );
+
+			Uri uri = Uri.parse(path);
+			MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+			mmr.setDataSource(androidContext,uri);
+			String durationStr = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+			int milliSeconds = Integer.parseInt(durationStr);
+
+			Map<String, Object> args = new HashMap<String, Object> (); 
+			args.put("callbackUuid", callbackUuid);
+			args.put("milliseconds", milliSeconds);
+
+			Map<String, Object> dic = new HashMap<String, Object> ();
+			dic.put ( "slotNo", slotNo );
+			dic.put ( "arg", args );
+			invokeCallback ( "durationResults", dic );
+		}
+		catch (Throwable e)
+		{
+			sendError(slotNo, e.getMessage(), 0, 0, callbackUuid);
 		}
 
 	}
