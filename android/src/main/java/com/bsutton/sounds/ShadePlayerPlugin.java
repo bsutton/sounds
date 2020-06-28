@@ -80,7 +80,7 @@ class ShadePlayerPlugin
 
 	public static void attachShadePlayer( Context ctx, BinaryMessenger messenger )
 	{
-		assert ( flautoPlayerPlugin == null );
+		assert ( soundPlayerPlugin == null );
 		
 		ShadePlayerPlugin = new ShadePlayerPlugin();
 		assert ( slots == null );
@@ -104,7 +104,7 @@ class ShadePlayerPlugin
 
 	SoundPlayerPlugin getManager ()
 	{
-		return flautoPlayerPlugin;
+		return soundPlayerPlugin;
 	}
 
 

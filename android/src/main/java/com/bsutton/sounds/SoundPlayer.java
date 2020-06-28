@@ -16,58 +16,26 @@ package com.bsutton.sounds;
  */
 
 
-import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.media.MediaPlayer;
-import android.media.MediaRecorder;
+import android.media.AudioFocusRequest;
 import android.media.AudioManager;
+import android.media.MediaMetadataRetriever;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
-import android.os.Environment;
 import android.os.Handler;
-import android.os.SystemClock;
-import android.support.v4.media.MediaMetadataCompat;
-import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.UiThread;
-import androidx.arch.core.util.Function;
-import androidx.core.app.ActivityCompat;
-
-import android.media.AudioFocusRequest;
-
-import java.io.*;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-import io.flutter.embedding.engine.plugins.FlutterPlugin;
-import io.flutter.embedding.engine.plugins.activity.ActivityAware;
-import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
-import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
-import io.flutter.plugin.common.MethodChannel;
-import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
-
-import java.util.concurrent.Callable;
-
-import io.flutter.plugin.common.PluginRegistry;
-import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 
 //-------------------------------------------------------------------------------------------------------------
@@ -106,7 +74,7 @@ public class SoundPlayer
 
 	SoundPlayerPlugin getPlugin ()
 	{
-		return SoundPlayerPlugin.flautoPlayerPlugin;
+		return SoundPlayerPlugin.soundPlayerPlugin;
 	}
 
 
@@ -122,26 +90,27 @@ public class SoundPlayer
 	}
 
 
-	void getDuration( final MethodName call, final Result result )
+	void getDuration(final MethodCall call, final Result result )
 	{
 		/// let the dart code resume whilst we get the results.
-		result.success('queued');
+		result.success("queued");
 
+		String callbackUuid = "Not supplied";
 		try
 		{
 			final String path = call.argument ( "path" );
 			/// used so we can handle multiple calls in parallel.
-			final String callbackUuid = call.argument ( "callbackUuid" );
+			callbackUuid = call.argument ( "callbackUuid" );
 
-			Uri uri = Uri.parse(pathStr);
+			Uri uri = Uri.parse(path);
 			MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-			mmr.setDataSource(AppContext.getAppContext(),uri);
+			mmr.setDataSource(Context.getAppContext(),uri);
 			String durationStr = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
 			int milliSeconds = Integer.parseInt(durationStr);
 
 			Map<String, Object> args = new HashMap<String, Object> (); 
-			args.put('callbackUuid', callbackUuid);
-			args.put('milliseconds', milliSeconds);
+			args.put("callbackUuid", callbackUuid);
+			args.put("milliseconds", milliSeconds);
 
 			Map<String, Object> dic = new HashMap<String, Object> ();
 			dic.put ( "slotNo", slotNo );

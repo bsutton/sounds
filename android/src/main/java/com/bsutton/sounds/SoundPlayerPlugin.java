@@ -61,19 +61,19 @@ class SoundPlayerPlugin
 	public static MethodChannel      channel;
 	public static List<SoundPlayer> slots;
 	static        Context            androidContext;
-	static        SoundPlayerPlugin flautoPlayerPlugin; // singleton
+	static        SoundPlayerPlugin soundPlayerPlugin; // singleton
 
 
 	public static void attachSoundPlayer (
 		Context ctx, BinaryMessenger messenger
 	                                      )
 	{
-		assert ( flautoPlayerPlugin == null );
-		flautoPlayerPlugin = new SoundPlayerPlugin ();
+		assert ( soundPlayerPlugin == null );
+		soundPlayerPlugin = new SoundPlayerPlugin ();
 		assert ( slots == null );
 		slots   = new ArrayList<SoundPlayer> ();
 		channel = new MethodChannel ( messenger, "com.bsutton.sounds.sounds_player" );
-		channel.setMethodCallHandler ( flautoPlayerPlugin );
+		channel.setMethodCallHandler ( soundPlayerPlugin );
 		androidContext = ctx;
 
 	}
@@ -93,7 +93,7 @@ class SoundPlayerPlugin
 
 	SoundPlayerPlugin getManager ()
 	{
-		return flautoPlayerPlugin;
+		return soundPlayerPlugin;
 	}
 
 	@Override
@@ -138,7 +138,7 @@ class SoundPlayerPlugin
 				}
 				break;
 
-				case "getDuration";
+				case "getDuration":
 					aPlayer.getDuration( call, result );
 				break;
 
