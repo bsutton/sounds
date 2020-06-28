@@ -89,28 +89,25 @@ abstract class PlayerBasePlugin extends BasePlugin {
   Future<Duration> duration(SlotEntry player, String path) async {
     ArgumentError.checkNotNull(player, 'player');
     ArgumentError.checkNotNull(path, 'path');
-    var callbackUuid = Uuid();
+    var callbackUuid = Uuid().v4();
 
     var completer = Completer<Duration>();
-    _callbackMap[callbackUuid.toString()] = completer;
+    _callbackMap[callbackUuid] = completer;
 
     /// The results are completed via a callback to [_onDurationResults] or
     /// in the event of an error a call to [onError].
-    await invokeMethod(player, 'getDuration', <String, dynamic>{
-      'path': path,
-      'callbackUuid': callbackUuid.toString()
-    });
+    await invokeMethod(player, 'getDuration',
+        <String, dynamic>{'path': path, 'callbackUuid': callbackUuid});
 
     return completer.future;
   }
 
   /// callback when the the platform call to 'getDuration' completes.
   void _onDurationResults(MethodCall call) {
-    var arguments = call.arguments['arg'] as String;
+    var json = call.arguments['arg'] as Map<dynamic, dynamic>;
 
-    var json = convert.jsonDecode(arguments) as Map<String, dynamic>;
-    var duration =
-        Duration(milliseconds: int.parse(json['milliseconds'] as String));
+    // var json = convert.jsonDecode(arguments) as Map<String, dynamic>;
+    var duration = Duration(milliseconds: json['milliseconds'] as int);
     var uuid = json['callbackUuid'] as String;
 
     // complete the future waiting for this call to return.
