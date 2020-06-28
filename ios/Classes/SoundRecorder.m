@@ -31,7 +31,7 @@ static FlutterMethodChannel* _channel;
 
 
 
-FlutterMethodChannel* _flautoRecorderChannel;
+FlutterMethodChannel* _soundRecorderChannel;
 
 
 //---------------------------------------------------------------------------------------------
@@ -40,7 +40,7 @@ FlutterMethodChannel* _flautoRecorderChannel;
 
 @implementation SoundRecorderManager
 {
-        NSMutableArray* flautoRecorderSlots;
+        NSMutableArray* soundRecorderSlots;
 }
 
 static SoundRecorderManager* soundRecorderManager; // Singleton
@@ -59,7 +59,7 @@ static SoundRecorderManager* soundRecorderManager; // Singleton
 - (SoundRecorderManager*)init
 {
         self = [super init];
-        flautoRecorderSlots = [[NSMutableArray alloc] init];
+        soundRecorderSlots = [[NSMutableArray alloc] init];
         return self;
 }
 
@@ -78,24 +78,24 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
 
 - (void)freeSlot: (int)slotNo
 {
-        flautoRecorderSlots[slotNo] = [NSNull null];
+        soundRecorderSlots[slotNo] = [NSNull null];
 }
 
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result
 {
         int slotNo = [call.arguments[@"slotNo"] intValue];
-        assert ( (slotNo >= 0) && (slotNo <= [flautoRecorderSlots count]));
-        if (slotNo == [flautoRecorderSlots count])
+        assert ( (slotNo >= 0) && (slotNo <= [soundRecorderSlots count]));
+        if (slotNo == [soundRecorderSlots count])
         {
-                 [flautoRecorderSlots addObject: [NSNull null] ];
+                 [soundRecorderSlots addObject: [NSNull null] ];
         }
-        SoundRecorder* aSoundRecorder = flautoRecorderSlots[slotNo];
+        SoundRecorder* aSoundRecorder = soundRecorderSlots[slotNo];
         
         if ([@"initializeSoundRecorder" isEqualToString:call.method])
         {
-                assert (flautoRecorderSlots[slotNo] ==  [NSNull null] );
+                assert (soundRecorderSlots[slotNo] ==  [NSNull null] );
                 aSoundRecorder = [[SoundRecorder alloc] init: slotNo];
-                flautoRecorderSlots[slotNo] =aSoundRecorder;
+                soundRecorderSlots[slotNo] =aSoundRecorder;
                 [aSoundRecorder initializeSoundRecorder: call result:result];
         } else
          

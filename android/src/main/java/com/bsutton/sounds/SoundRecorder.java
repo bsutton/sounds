@@ -71,7 +71,7 @@ public class SoundRecorder
 
 	SoundRecorderPlugin getPlugin ()
 	{
-		return SoundRecorderPlugin.flautoRecorderPlugin;
+		return SoundRecorderPlugin.soundRecorderPlugin;
 	}
 
 

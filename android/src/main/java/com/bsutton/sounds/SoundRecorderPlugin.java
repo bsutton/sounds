@@ -42,7 +42,7 @@ class SoundRecorderPlugin
 	public static List<SoundRecorder> slots;
 
 	static Context              androidContext;
-	static SoundRecorderPlugin flautoRecorderPlugin; // singleton
+	static SoundRecorderPlugin soundRecorderPlugin; // singleton
 
 	static final String TAG 					  = "SoundRecorder";
 	static final String ERR_UNKNOWN               = "ERR_UNKNOWN";
@@ -52,12 +52,12 @@ class SoundRecorderPlugin
 
 	public static void attachSoundRecorder ( Context ctx, BinaryMessenger messenger )
 	{
-		assert ( flautoRecorderPlugin == null );
-		flautoRecorderPlugin = new SoundRecorderPlugin ();
+		assert ( soundRecorderPlugin == null );
+		soundRecorderPlugin = new SoundRecorderPlugin ();
 		assert ( slots == null );
 		slots   = new ArrayList<SoundRecorder> ();
 		channel = new MethodChannel ( messenger, CHANNEL_NAME);
-		channel.setMethodCallHandler ( flautoRecorderPlugin );
+		channel.setMethodCallHandler ( soundRecorderPlugin );
 		Log.d(TAG,"Registering channel: " + CHANNEL_NAME);
 		androidContext = ctx;
 	}
@@ -78,7 +78,7 @@ class SoundRecorderPlugin
 
 	SoundRecorderPlugin getManager ()
 	{
-		return flautoRecorderPlugin;
+		return soundRecorderPlugin;
 	}
 
 
