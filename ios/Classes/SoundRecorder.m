@@ -431,8 +431,25 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
 - (void)updateDbPeakProgress:(NSTimer*) atimer
 {
         assert (dbPeakTimer == atimer);
-        NSNumber *normalizedPeakLevel = [NSNumber numberWithDouble:MIN(pow(10.0, [audioRecorder peakPowerForChannel:0] / 20.0) * 160.0, 160.0)];
-        [self invokeCallback:@"updateDbPeakProgress" numberArg: normalizedPeakLevel];
+
+        // NSNumber *normalizedPeakLevel = [NSNumber numberWithDouble:MIN(pow(10.0, [audioRecorder peakPowerForChannel:0] / 20.0) * 160.0, 160.0)];
+        double maxAmplitude = [audioRecorder peakPowerForChannel:0];
+
+        double db = 0;
+
+        if (maxAmplitude != 0)
+        {
+                // Calculate db based on the following article.
+                // https://stackoverflow.com/questions/10655703/what-does-androids-getmaxamplitude-function-for-the-mediarecorder-actually-gi
+                //
+                double ref_pressure = 51805.5336;
+                double p            = maxAmplitude / ref_pressure;
+                double p0           = 0.0002;
+
+                db = 20.0 * log10 ( p / p0 );
+        }
+        
+        [self invokeCallback:@"updateDbPeakProgress" numberArg: [NSNumber numberWithDouble:db]];
 }
 
 
