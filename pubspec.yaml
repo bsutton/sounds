@@ -1,6 +1,9 @@
 name: sounds
 version: 0.9.1
+
+repository: https://github.com/bsutton/sounds
 homepage: https://github.com/bsutton/sounds
+documentation: https://github.com/bsutton/sounds/wiki
 description: Sounds provide a complete api and Widgets for audio playback and recording. Both iOS and Android are supported.
 environment: 
   sdk: '>=2.1.0 <3.0.0'
