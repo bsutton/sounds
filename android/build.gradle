@@ -4,18 +4,18 @@ version '1.0'
 // begin hack from flutter.jar
 // See https://github.com/flutter/flutter/issues/19830
 
-def localProperties = new Properties()
-def localPropertiesFile = rootProject.file('local.properties')
-if (localPropertiesFile.exists()) {
-    localPropertiesFile.withReader('UTF-8') { reader ->
-        localProperties.load(reader)
-    }
-}
+ def localProperties = new Properties()
+ def localPropertiesFile = rootProject.file('local.properties')
+ if (localPropertiesFile.exists()) {
+     localPropertiesFile.withReader('UTF-8') { reader ->
+         localProperties.load(reader)
+     }
+ }
 
-def flutterRoot = localProperties.getProperty('flutter.sdk')
-if (flutterRoot == null) {
-    throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
-}
+ def flutterRoot = localProperties.getProperty('flutter.sdk')
+ if (flutterRoot == null) {
+     throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
+ }
 
 // end hack for flutter.jar
 
@@ -42,8 +42,8 @@ apply plugin: 'com.android.library'
 // begin hack from flutter.jar
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 flutter {
-    source '..'
-}
+     source '..'
+ }
 // end hack from flutter.jar
 
 
