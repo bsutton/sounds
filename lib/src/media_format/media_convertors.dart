@@ -20,7 +20,7 @@ class MediaConvertors {
 
     for (var convertor in _convertors) {
       if (convertor.from == from && convertor.to == to) {
-        result == convertor;
+        result = convertor;
         break;
       }
     }
