@@ -113,7 +113,7 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
         {
                 NSString* path = (NSString*)call.arguments[@"path"];
                 NSString* callbackUuid = (NSString*)call.arguments[@"callbackUuid"];
-                [soundPlayerManager getDuration:path callbackUuid: callbackUuid result:result];
+                [soundPlayerManager getDuration:path callbackUuid: callbackUuid slotNo:slotNo result:result];
         } else
 
         if ([@"startPlayer" isEqualToString:call.method])
@@ -187,7 +187,7 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 }
 
 
-- (void)getDuration: (NSString*)path callbackUuid:(NSString*)callbackUuid  result:(FlutterResult)result
+- (void)getDuration: (NSString*)path callbackUuid:(NSString*)callbackUuid  slotNo:(int)slotNo result:(FlutterResult)result
 {
         /// let the dart code resume whilst we calculate the duratin.
         result(@"queued");
@@ -211,7 +211,7 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
                                 , milliseconds ];
 
                 NSDictionary* dic = @{ @"slotNo": [NSNumber numberWithInt: slotNo], @"arg": stringArg};
-                [self invokeCallback: @"durationResults" stringArg: dic ];
+                [self invokeCallback: @"durationResults" arguments: dic ];
         }
         else
         {
@@ -219,8 +219,8 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
             NSString* args = [NSString stringWithFormat:@"{\"callbackUuid\": \"%@\", \"description\": \"%d\"}"
                               , callbackUuid
                               , (int)status ];
-            NSDictionary* dic = @{ @"slotNo": [NSNumber numberWithInt: slotNo], @"arg": stringArg};
-            [self invokeCallback: @"onError" stringArg: dic ];
+            NSDictionary* dic = @{ @"slotNo": [NSNumber numberWithInt: slotNo], @"arg": args};
+            [self invokeCallback: @"onError" arguments: dic ];
         }
         
 }
