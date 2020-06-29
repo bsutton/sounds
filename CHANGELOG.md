@@ -1,3 +1,5 @@
+# 1.0.2
+updated documenation links.
 # 1.0.1
 
 First working version.
