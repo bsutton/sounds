@@ -1,3 +1,6 @@
+# 0.9.2
+Updated doco links
+committed hacks to work around flutter build bug.
 # 0.9.1
 Fixed a compile error due to a bad import.
 # 0.9.0
