@@ -210,7 +210,7 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
                                 ,callbackUuid
                                 , milliseconds ];
 
-                NSDictionary* dic = @{ @"slotNo": [NSNumber numberWithInt: slotNo], @"arg": stringArg};
+                NSDictionary* dic = @{ @"slotNo": [NSNumber numberWithInt: slotNo], @"arg": args};
                 [self invokeCallback: @"durationResults" arguments: dic ];
         }
         else
