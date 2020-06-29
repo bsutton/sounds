@@ -433,7 +433,9 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
         assert (dbPeakTimer == atimer);
 
         // NSNumber *normalizedPeakLevel = [NSNumber numberWithDouble:MIN(pow(10.0, [audioRecorder peakPowerForChannel:0] / 20.0) * 160.0, 160.0)];
-        double maxAmplitude = [audioRecorder peakPowerForChannel:0];
+        [audioRecorder updateMeters];
+        // silence is -160 max volume is 0 hence +160 as below calc only worksfor +ve no.s
+        double maxAmplitude = [audioRecorder peakPowerForChannel:0] + 160;
 
         double db = 0;
 
