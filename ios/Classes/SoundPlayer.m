@@ -113,7 +113,7 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
         {
                 NSString* path = (NSString*)call.arguments[@"path"];
                 NSString* callbackUuid = (NSString*)call.arguments[@"callbackUuid"];
-                [aSoundPlayer getDuration:path callbackUuid: callbackUuid result:result];
+                [soundPlayerManager getDuration:path callbackUuid: callbackUuid result:result];
         } else
 
         if ([@"startPlayer" isEqualToString:call.method])
@@ -187,6 +187,45 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 }
 
 
+- (void)getDuration: (NSString*)path callbackUuid:(NSString*)callbackUuid  result:(FlutterResult)result
+{
+        /// let the dart code resume whilst we calculate the duratin.
+        result(@"queued");
+
+        NSURL *afUrl = [NSURL fileURLWithPath:path];
+        AudioFileID fileID;
+        OSStatus status = AudioFileOpenURL((__bridge CFURLRef)afUrl, kAudioFileReadPermission, 0, &fileID);
+        Float64 outDataSize = 0;
+        UInt32 thePropSize = sizeof(Float64);
+        status = AudioFileGetProperty(fileID, kAudioFilePropertyEstimatedDuration, &thePropSize, &outDataSize);
+        AudioFileClose(fileID);
+
+        NSLog(@"%@", [NSString stringWithFormat:@"getDuration status%d", (int)status]);
+
+        if (status == kAudioServicesNoError)
+        {
+                int milliseconds = outDataSize * 1000;
+
+                NSString* args = [NSString stringWithFormat:@"{\"callbackUuid\": \"%@\", \"milliseconds\": %d}"
+                                ,callbackUuid
+                                , milliseconds ];
+
+                NSDictionary* dic = @{ @"slotNo": [NSNumber numberWithInt: slotNo], @"arg": stringArg};
+                [self invokeCallback: @"durationResults" stringArg: dic ];
+        }
+        else
+        {
+                /// danger will robison, danger
+            NSString* args = [NSString stringWithFormat:@"{\"callbackUuid\": \"%@\", \"description\": \"%d\"}"
+                              , callbackUuid
+                              , (int)status ];
+            NSDictionary* dic = @{ @"slotNo": [NSNumber numberWithInt: slotNo], @"arg": stringArg};
+            [self invokeCallback: @"onError" stringArg: dic ];
+        }
+        
+}
+
+
 @end
 
 //---------------------------------------------------------------------------------------------
@@ -234,41 +273,6 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 }
 
 
-- (void)getDuration: (NSString*)path callbackUuid:(NSString*)callbackUuid  result:(FlutterResult)result
-{
-        /// let the dart code resume whilst we calculate the duratin.
-        result(@"queued");
-
-        NSURL *afUrl = [NSURL fileURLWithPath:path];
-        AudioFileID fileID;
-        OSStatus status = AudioFileOpenURL((__bridge CFURLRef)afUrl, kAudioFileReadPermission, 0, &fileID);
-        Float64 outDataSize = 0;
-        UInt32 thePropSize = sizeof(Float64);
-        status = AudioFileGetProperty(fileID, kAudioFilePropertyEstimatedDuration, &thePropSize, &outDataSize);
-        AudioFileClose(fileID);
-
-        NSLog(@"%@", [NSString stringWithFormat:@"getDuration status%d", (int)status]);
-
-        if (status == kAudioServicesNoError)
-        {
-                int milliseconds = outDataSize * 1000;
-
-                NSString* args = [NSString stringWithFormat:@"{\"callbackUuid\": \"%@\", \"milliseconds\": %d}"
-                                ,callbackUuid
-                                , milliseconds ];
-                [self invokeCallback:@"durationResults" stringArg:args];
-        }
-        else
-        {
-                /// danger will robison, danger
-            NSString* args = [NSString stringWithFormat:@"{\"callbackUuid\": \"%@\", \"description\": \"%d\"}"
-                              , callbackUuid
-                              , (int)status ];
-                [self invokeCallback:@"onError" stringArg:args];
-
-        }
-        
-}
 - (void)setCategory: (NSString*)categ mode:(NSString*)mode options:(int)options result:(FlutterResult)result
 {
         // Able to play in silent mode

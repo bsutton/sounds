@@ -35,6 +35,7 @@ extern NSMutableArray* _Nullable playerSlots;
 - (void)handleMethodCall:(FlutterMethodCall*_Nonnull)call result:(FlutterResult _Nonnull )result;
 - (void)invokeCallback: (NSString*_Nonnull)methodName arguments: (NSDictionary *_Nullable)call;
 - (void)freeSlot: (int)slotNo;
+- (void)getDuration: (NSString*_Nonnull)path callbackUuid:(NSString*_Nonnull)callbackUuid  result:(FlutterResult _Nonnull )result;
 @end
 
 @interface SoundPlayer : NSObject <AVAudioPlayerDelegate>
@@ -66,7 +67,7 @@ extern NSMutableArray* _Nullable playerSlots;
 - (void)setActive:(BOOL)enabled result:(FlutterResult _Nonnull )result;
 - (void)initializeSoundPlayer: (FlutterMethodCall*_Nonnull)call result: (FlutterResult _Nonnull )result;
 - (void)releaseSoundPlayer: (FlutterMethodCall*_Nonnull)call result: (FlutterResult _Nonnull )result;
-- (void)getDuration: (NSString*_Nonnull)path callbackUuid:(NSString*_Nonnull)callbackUuid  result:(FlutterResult _Nonnull )result;
+
 @end
 
 
