@@ -616,7 +616,9 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
         //   return;
         // }
 
-        NSString* status = [NSString stringWithFormat:@"{\"duration\": \"%@\", \"current_position\": \"%@\"}", [duration stringValue],                         [currentTime stringValue]];
+        NSString* status = [NSString stringWithFormat:@"{\"duration\": \"%@\", \"current_position\": \"%@\"}"
+                , [duration stringValue],  [currentTime stringValue]];
+        NSLog(@"updateProgress: %@",  status);
         [self invokeCallback:@"updateProgress" stringArg:status];
 //        if (![audioPlayer isPlaying] )
 //        {
