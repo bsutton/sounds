@@ -51,13 +51,15 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar);
 - (SoundRecorder*)init: (int)aSlotNo;
 - (void)startRecorder :(FlutterMethodCall*)call result:(FlutterResult)result;
 - (void)stopRecorder:(FlutterResult)result;
-- (void)setDbPeakLevelUpdate:(long)intervalInMills result: (FlutterResult)result;
-- (void)setDbLevelEnabled:(BOOL)enabled result: (FlutterResult)result;
 - (void)initializeSoundRecorder : (FlutterMethodCall*)call result:(FlutterResult)result;
 - (void)releaseSoundRecorder : (FlutterMethodCall*)call result:(FlutterResult)result;
-- (void)setSubscriptionInterval:(long)intervalInMillis result: (FlutterResult)result;
 - (void)pauseRecorder : (FlutterMethodCall*)call result:(FlutterResult)result;
 - (void)resumeRecorder : (FlutterMethodCall*)call result:(FlutterResult)result;
+- (void)startProgressTimer;
+- (void)stopProgressTimer;
+- (void)setProgressInterval:(long)intervalInMillis result: (FlutterResult)result;
+- (void)updateRecorderProgress:(NSTimer*) atimer;
+- (void)getDbLevel;
 
 @end
 

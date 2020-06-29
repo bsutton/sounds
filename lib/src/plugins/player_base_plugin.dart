@@ -146,9 +146,8 @@ abstract class PlayerBasePlugin extends BasePlugin {
   }
 
   ///
-  Future<void> setSubscriptionInterval(
-      SlotEntry player, Duration interval) async {
-    await invokeMethod(player, 'setSubscriptionInterval', <String, dynamic>{
+  Future<void> setProgressInterval(SlotEntry player, Duration interval) async {
+    await invokeMethod(player, 'setProgressInterval', <String, dynamic>{
       /// we need to use milliseconds as if we use seconds we end
       /// up rounding down to zero.
       'milli': interval.inMilliseconds,

@@ -20,35 +20,25 @@ import '../recording_disposition.dart';
 import '../sound_recorder.dart';
 
 /// An internal class which manages the RecordingDisposition stream.
-/// Its main job is aggreate events coming up from the plugin
-/// into a single stream.
+/// Its main job is turn plugin updates into a stream.
 class RecordingDispositionManager {
   final SoundRecorder _recorder;
   StreamController<RecordingDisposition> _dispositionController;
-
-  /// tracks the last time we sent an update
-  /// We do this as we need to 'merge' the two streams
-  /// we recieve from the underlying plugin (duration and db)
-  /// into a single stream.
-  DateTime lastDispositonUpdate = DateTime.now();
-  // The last duration we received from the plugin
-  Duration _lastDispositionDuration = Duration(seconds: 0);
-  // The last db we recieved from the plugin.
-  double _lastDispositionDecibels = 0;
 
   /// The duration between updates to the stream.
   /// Defaults to [10ms].
   Duration interval = Duration(milliseconds: 10);
 
+  /// We cache the last duration (length of recording) we have seen as
+  /// its needed
+  /// during wrap up.
+  Duration lastDuration;
+
   /// ctor
   RecordingDispositionManager(this._recorder);
 
-  /// returns the most recent duration that we have from
-  /// the OS.
-  Duration get lastDuration => _lastDispositionDuration;
-
   /// Returns a stream of RecordingDispositions
-  /// The stream is a broad cast stream and can be called
+  /// The stream is a broadcast stream and can be called
   /// multiple times however the [interval] is shared between
   /// all stream.
   /// The [interval] sets the time between stream updates.
@@ -59,7 +49,6 @@ class RecordingDispositionManager {
     var subscriptionRequired = false;
     if (_dispositionController == null) {
       _dispositionController = StreamController.broadcast();
-      recorderSetDbLevelEnabled(_recorder, enabled: true);
       subscriptionRequired = true;
     }
 
@@ -71,42 +60,19 @@ class RecordingDispositionManager {
 
     // interval has changed or this is the first time througn
     if (subscriptionRequired) {
-      recorderSetSubscriptionInterval(_recorder, interval);
-      recorderSetDbPeakLevelUpdate(_recorder, interval);
+      recorderSetProgressInterval(_recorder, interval);
     }
     return _dispositionController.stream;
-  }
-
-  /// Internal classes calls this method to notify a change
-  /// in the db level.
-  void updateDbPeakDisposition(double decibels, {bool force = false}) {
-    _lastDispositionDecibels = decibels;
-
-    _trySendDisposition(force: force);
-  }
-
-  /// [timePaused] The raw duration from the android/ios subsystem
-  /// ignores pauses so we need to subtract any pause time from the
-  /// duratin.
-  void updateDurationDisposition(Duration duration) {
-    _lastDispositionDuration = duration;
-
-    _trySendDisposition();
   }
 
   /// Sends a disposition if the [interval] has elapsed since
   /// we last sent the data.
   /// Set [force] to force an stream update even if the interval
   /// since the last update hasn't lapsed.
-  void _trySendDisposition({bool force = false}) {
+  void updateDisposition(Duration duration, double decibels) {
+    lastDuration = duration;
     if (_dispositionController != null) {
-      if (force ||
-          DateTime.now().difference(lastDispositonUpdate).inMilliseconds >=
-              interval.inMilliseconds) {
-        lastDispositonUpdate = DateTime.now();
-        _dispositionController.add(RecordingDisposition(
-            _lastDispositionDuration, _lastDispositionDecibels));
-      }
+      _dispositionController.add(RecordingDisposition(duration, decibels));
     }
   }
 

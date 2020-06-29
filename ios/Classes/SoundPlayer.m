@@ -150,10 +150,10 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
                 [aSoundPlayer seekToPlayer:[positionInMilli longValue] result:result];
         } else
         
-        if ([@"setSubscriptionInterval" isEqualToString:call.method])
+        if ([@"setProgressInterval" isEqualToString:call.method])
         {
                 NSNumber* intervalInMilli = (NSNumber*)call.arguments[@"milli"];
-                [aSoundPlayer setSubscriptionInterval:[intervalInMilli longValue] result:result];
+                [aSoundPlayer setProgressInterval:[intervalInMilli longValue] result:result];
         } else
         
         if ([@"setVolume" isEqualToString:call.method])
@@ -234,9 +234,8 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 @implementation SoundPlayer
 {
         NSURL *audioFileURL;
-        //AVAudioPlayer* audioPlayer; // In the interface
-        NSTimer *timer;
-        double subscriptionInterval;
+        NSTimer *progressTimer;
+        double progressIntervalSeconds;
         int slotNo;
 }
 
@@ -374,7 +373,7 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
                         }
                 }];
 
-                [self startTimer];
+                [self startProgressTimer];
                 NSString *filePath = self->audioFileURL.absoluteString;
                 result(filePath);
                 [downloadTask resume];
@@ -394,7 +393,7 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
                                 details:nil]);
                 } else
                 {
-                        [self startTimer];
+                        [self startProgressTimer];
                         NSString *filePath = audioFileURL.absoluteString;
                         result(filePath);
                 }
@@ -431,7 +430,7 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
                         details:nil]);
         } else
         {
-                [self startTimer];
+                [self startProgressTimer];
                 result(@"Playing from buffer");
         }
 }
@@ -440,7 +439,7 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 
 - (void)stopPlayer
 {
-        [self stopTimer];
+        [self stopProgressTimer];
         isPaused = false;
         if (audioPlayer)
         {
@@ -458,11 +457,7 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 {
           [audioPlayer pause];
           isPaused = true;
-          if (timer != nil)
-          {
-              [timer invalidate];
-              timer = nil;
-          }
+          [self stopProgressTimer]
           if ( (setActiveDone != BY_USER) && (setActiveDone != NOT_SET) ) {
               [[AVAudioSession sharedInstance] setActive: NO error: nil];
               setActiveDone = NOT_SET;
@@ -482,7 +477,7 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
                 b = [audioPlayer play];
                 if (b)
                 {
-                        [self startTimer];
+                        [self startProgressTimer];
                         if (setActiveDone == NOT_SET) {
                                 [[AVAudioSession sharedInstance] setActive: YES error: nil];
                                 setActiveDone = FOR_PLAYING;
@@ -596,10 +591,10 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 }
 
 
-- (void) stopTimer{
-    if (timer != nil) {
-        [timer invalidate];
-        timer = nil;
+- (void) stopProgressTimer{
+    if (progressTimer != nil) {
+        [progressTimer invalidate];
+        progressTimer = nil;
     }
 }
 
@@ -611,8 +606,8 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
         NSNumber *currentTime = [NSNumber numberWithDouble:audioPlayer.currentTime * 1000];
 
         // [LARPOUX] I do not understand why ...
-        // if ([duration intValue] == 0 && timer != nil) {
-        //   [self stopTimer];
+        // if ([duration intValue] == 0 && progressTimer != nil) {
+        //   [self stopProgressTimer];
         //   return;
         // }
 
@@ -629,11 +624,11 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 }
 
 
-- (void)startTimer
+- (void)startProgressTimer
 {
-        [self stopTimer];
+        [self stopProgressTimer];
         //dispatch_async(dispatch_get_main_queue(), ^{ // ??? Why Async ?  (no async for recorder)
-        self -> timer = [NSTimer scheduledTimerWithTimeInterval:subscriptionInterval
+        self->progressTimer = [NSTimer scheduledTimerWithTimeInterval:progressIntervalSeconds
                                            target:self
                                            selector:@selector(updateProgress:)
                                            userInfo:nil
@@ -642,10 +637,10 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 }
 
 
-- (void)setSubscriptionInterval:(long)intervalInMillis result: (FlutterResult)result
+- (void)setProgressInterval:(long)intervalInMillis result: (FlutterResult)result
 {   
-        subscriptionInterval = intervalInMillis * 1000;
-        result(@"setSubscriptionInterval");
+        progressIntervalSeconds = intervalInMillis * 1000;
+        result(@"setProgressInterval");
 }
 
 
@@ -673,7 +668,7 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 
         [self invokeCallback:@"audioPlayerFinishedPlaying" stringArg: status];
         isPaused = false;
-        [self stopTimer];
+        [self stopProgressTimer];
 }
 @end
 //---------------------------------------------------------------------------------------------

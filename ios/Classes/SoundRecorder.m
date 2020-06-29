@@ -124,22 +124,11 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
                 [aSoundRecorder stopRecorder: result];
         } else
         
-        if ([@"setDbPeakLevelUpdate" isEqualToString:call.method])
+        
+        if ([@"setProgressInterval" isEqualToString:call.method])
         {
                 NSNumber* interval = (NSNumber*)call.arguments[@"milli"];
-                [aSoundRecorder setDbPeakLevelUpdate:[interval longValue] result:result];
-        } else
-        
-        if ([@"setDbLevelEnabled" isEqualToString:call.method])
-        {
-                BOOL enabled = [call.arguments[@"enabled"] boolValue];
-                [aSoundRecorder setDbLevelEnabled:enabled result:result];
-        } else
-        
-        if ([@"setSubscriptionInterval" isEqualToString:call.method])
-        {
-                NSNumber* interval = (NSNumber*)call.arguments[@"milli"];
-                [aSoundRecorder setSubscriptionInterval:[interval longValue] result:result];
+                [aSoundRecorder setProgressInterval:[interval longValue] result:result];
         } else
         
         if ([@"pauseRecorder" isEqualToString:call.method])
@@ -166,15 +155,14 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
 {
         NSURL *audioFileURL;
         AVAudioRecorder* audioRecorder;
-        NSTimer* dbPeakTimer;
-        NSTimer* recorderTimer;
+
+        double progressIntervalSeconds;
+        NSTimer* progressTimer;
+
         t_SET_CATEGORY_DONE setCategoryDone;
         t_SET_CATEGORY_DONE setActiveDone;
-        double dbPeakInterval;
-        bool shouldProcessDbLevel;
-        double subscriptionInterval;
+        
         int slotNo;
-
 }
 
 
@@ -184,13 +172,10 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
         return self;
 }
 
-
-
 -(SoundRecorderManager*) getPlugin
 {
         return soundRecorderManager;
 }
-
 
 - (void)invokeCallback: (NSString*)methodName stringArg: (NSString*)stringArg
 {
@@ -208,8 +193,7 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
 
 - (void)initializeSoundRecorder : (FlutterMethodCall*)call result:(FlutterResult)result
 {
-        dbPeakInterval = 0.8;
-        shouldProcessDbLevel = false;
+        progressIntervalSeconds = 0.8;
         result([NSNumber numberWithBool: YES]);
 }
 
@@ -297,13 +281,9 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
 
           [audioRecorder setDelegate:self];
           [audioRecorder record];
-          [self startRecorderTimer];
 
-          [audioRecorder setMeteringEnabled:shouldProcessDbLevel];
-          if(shouldProcessDbLevel == true)
-          {
-                [self startDbTimer];
-          }
+          [audioRecorder setMeteringEnabled:true];
+          [self startProgressTimer];
 
           NSString *filePath = self->audioFileURL.path;
           result(filePath);
@@ -314,28 +294,35 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
 {
           [audioRecorder stop];
 
-          [self stopDbPeakTimer];
-          [self stopRecorderTimer];
+          [self stopProgressTimer];
 
           NSString *filePath = audioFileURL.absoluteString;
           result(filePath);
 }
 
-- (void) stopDbPeakTimer
+
+- (void)pauseRecorder : (FlutterMethodCall*)call result:(FlutterResult)result
 {
-        if (self -> dbPeakTimer != nil)
-        {
-               [dbPeakTimer invalidate];
-               self -> dbPeakTimer = nil;
-        }
+        [audioRecorder pause];
+
+        [self stopProgressTimer];
+        result(@"Recorder is Paused");
+}
+
+- (void)resumeRecorder : (FlutterMethodCall*)call result:(FlutterResult)result
+{
+        bool b = [audioRecorder record];
+        [self startProgressTimer];
+        result([NSNumber numberWithBool: b]);
 }
 
 
-- (void)startRecorderTimer
+
+- (void)startProgressTimer
 {
-        [self stopRecorderTimer];
+        [self stopProgressTimer];
         //dispatch_async(dispatch_get_main_queue(), ^{
-        recorderTimer = [NSTimer scheduledTimerWithTimeInterval: subscriptionInterval
+        self->progressTimer = [NSTimer scheduledTimerWithTimeInterval: progressIntervalSeconds
                                            target:self
                                            selector:@selector(updateRecorderProgress:)
                                            userInfo:nil
@@ -344,93 +331,38 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
 }
 
 
-
-- (void)setDbPeakLevelUpdate:(long)intervalInMilli result: (FlutterResult)result
-{
-        /// convert milliseconds to seconds required by a Timer.
-        dbPeakInterval =intervalInMilli/1000;
-
-        result(@"setDbPeakLevelUpdate");
-}
-
-- (void)setDbLevelEnabled:(BOOL)enabled result: (FlutterResult)result
-{
-        shouldProcessDbLevel = (enabled == YES);
-        [audioRecorder setMeteringEnabled: (enabled == YES)];
-        result(@"setDbLevelEnabled");
-}
-
-
-// post fix with _Sounds to avoid conflicts with common libs including path_provider
-- (NSString*) GetDirectoryOfType_Sounds: (NSSearchPathDirectory) dir
-{
-        NSArray* paths = NSSearchPathForDirectoriesInDomains(dir, NSUserDomainMask, YES);
-        return [paths.firstObject stringByAppendingString:@"/"];
-}
-
-
-- (void)startDbTimer
-{
-        // Stop Db Timer
-        [self stopDbPeakTimer];
-        //dispatch_async(dispatch_get_main_queue(), ^{
-        self -> dbPeakTimer = [NSTimer scheduledTimerWithTimeInterval:dbPeakInterval
-                                                        target:self
-                                                        selector:@selector(updateDbPeakProgress:)
-                                                        userInfo:nil
-                                                        repeats:YES];
-        //});
-}
-
-
-- (void) stopRecorderTimer{
-    if (recorderTimer != nil) {
-        [recorderTimer invalidate];
-        recorderTimer = nil;
+- (void) stopProgressTimer{
+    if (progressTimer != nil) {
+        [progressTimer invalidate];
+        progressTimer = nil;
     }
 }
 
 
-- (void)setSubscriptionInterval:(long)intervalInMilli result: (FlutterResult)result
+- (void)setProgressInterval:(long)intervalInMilli result: (FlutterResult)result
 {
         /// convert milliseconds to seconds required by a Timer.
-        subscriptionInterval = intervalInMilli/1000.0;
-        result(@"setSubscriptionInterval");
+        progressIntervalSeconds = intervalInMilli/1000.0;
+        result(@"setProgressInterval");
 }
-
-- (void)pauseRecorder : (FlutterMethodCall*)call result:(FlutterResult)result
-{
-        [audioRecorder pause];
-
-        [self stopDbPeakTimer];
-        [self stopRecorderTimer];
-        result(@"Recorder is Paused");
-}
-
-- (void)resumeRecorder : (FlutterMethodCall*)call result:(FlutterResult)result
-{
-        bool b = [audioRecorder record];
-        [self startDbTimer];
-        [self startRecorderTimer];
-        result([NSNumber numberWithBool: b]);
-}
-
-
 
 - (void)updateRecorderProgress:(NSTimer*) atimer
 {
-        assert (recorderTimer == atimer);
+        assert (progressTimer == atimer);
         NSNumber *currentTime = [NSNumber numberWithDouble:audioRecorder.currentTime * 1000];
         [audioRecorder updateMeters];
 
-        NSString* status = [NSString stringWithFormat:@"{\"current_position\": \"%@\"}", [currentTime stringValue]];
+        NSString* status = [NSString stringWithFormat:@"{\"current_position\": \"%@\", \"decibels\":%@}"
+                , [currentTime stringValue]
+                , [[getDbLevel] stringValue]
+                ];
         [self invokeCallback:@"updateRecorderProgress" stringArg: status];
 }
 
 
-- (void)updateDbPeakProgress:(NSTimer*) atimer
+- (void)getDbLevel
 {
-        assert (dbPeakTimer == atimer);
+        assert (progressTimer == atimer);
 
         // NSNumber *normalizedPeakLevel = [NSNumber numberWithDouble:MIN(pow(10.0, [audioRecorder peakPowerForChannel:0] / 20.0) * 160.0, 160.0)];
         [audioRecorder updateMeters];
@@ -451,7 +383,7 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
                 db = 20.0 * log10 ( p / p0 );
         }
         
-        [self invokeCallback:@"updateDbPeakProgress" numberArg: [NSNumber numberWithDouble:db]];
+        return db;
 }
 
 

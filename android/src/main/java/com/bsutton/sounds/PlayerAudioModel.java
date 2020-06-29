@@ -4,7 +4,7 @@ import android.media.MediaPlayer;
 
 class PlayerAudioModel
 {
-	public              int    subsDurationMillis    = 10;
+	public              int    progressInterval    = 10;
 
 	private MediaPlayer mediaPlayer;
 	private long        playTime = 0;

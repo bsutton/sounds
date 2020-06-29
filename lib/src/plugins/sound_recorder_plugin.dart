@@ -99,26 +99,10 @@ class SoundRecorderPlugin extends BasePlugin {
   }
 
   ///
-  Future<void> setSubscriptionInterval(
+  Future<void> setProgressInterval(
       sound_recorder.SoundRecorder recorder, Duration interval) async {
-    await invokeMethod(recorder, 'setSubscriptionInterval', <String, dynamic>{
+    await invokeMethod(recorder, 'setProgressInterval', <String, dynamic>{
       'milli': interval.inMilliseconds,
-    });
-  }
-
-  ///
-  Future<void> setDbPeakLevelUpdate(
-      sound_recorder.SoundRecorder recorder, Duration interval) async {
-    await invokeMethod(recorder, 'setDbPeakLevelUpdate', <String, dynamic>{
-      'milli': interval.inMilliseconds,
-    });
-  }
-
-  /// Enables or disables processing the Peak level in db's. Default is disabled
-  Future<void> setDbLevelEnabled(sound_recorder.SoundRecorder recorder,
-      {bool enabled}) async {
-    await invokeMethod(recorder, 'setDbLevelEnabled', <String, dynamic>{
-      'enabled': enabled,
     });
   }
 
@@ -127,19 +111,6 @@ class SoundRecorderPlugin extends BasePlugin {
     switch (call.method) {
       case "updateRecorderProgress":
         _updateRecorderProgress(call, recorder);
-        break;
-
-      case "updateDbPeakProgress":
-        var decibels = call.arguments['arg'] as double;
-        // We use max to ensure that we always report a +ve db.
-        // We have seen -ve db come up from the OS which is not
-        // valid (i.e. silence is 0 db).
-        decibels = max(0, decibels);
-
-        /// sanity check. 194 is the theoretical upper limit on undistorted
-        ///  sound in air. (above this its a shock wave)
-        decibels = min(194, decibels);
-        sound_recorder.recorderUpdateDbPeakDispostion(recorder, decibels);
         break;
 
       default:
@@ -153,11 +124,19 @@ class SoundRecorderPlugin extends BasePlugin {
     var result = convert.json.decode(call.arguments['arg'] as String)
         as Map<String, dynamic>;
 
-    var duration = Duration(
-        milliseconds:
-            double.parse(result['current_position'] as String).toInt());
+    var duration = Duration(milliseconds: result['current_position'] as int);
+    var decibels = double.parse(result['decibels'] as String);
 
-    sound_recorder.recorderUpdateDuration(recorder, duration);
+    // We use max to ensure that we always report a +ve db.
+    // We have seen -ve db come up from the OS which is not
+    // valid (i.e. silence is 0 db).
+    decibels = max(0, decibels);
+
+    /// sanity check. 194 is the theoretical upper limit on undistorted
+    ///  sound in air. (above this its a shock wave)
+    decibels = min(194, decibels);
+
+    sound_recorder.recorderUpdateProgress(recorder, duration, decibels);
   }
 
   /// Called when the OS resumes our app.

@@ -165,12 +165,12 @@ class ShadePlayerPlugin
 			case "setVolume":
 				aPlayer.setVolume( call, result );
 				break;
-			case "setSubscriptionInterval":
+			case "setProgressInterval":
 				if ( call.argument( "milli" ) == null )
 				{
 					return;
 				}
-				aPlayer.setSubscriptionInterval( call, result );
+				aPlayer.setProgressInterval( call, result );
 				break;
 
 			default:

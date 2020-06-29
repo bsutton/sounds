@@ -17,8 +17,6 @@
 import 'dart:async';
 import 'dart:core';
 
-import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
 import 'package:sounds_common/sounds_common.dart';
 
 import '../sounds.dart';
@@ -223,9 +221,6 @@ class SoundRecorder implements SlotEntry {
     _recorderReadyCompletion.complete(result);
   }
 
-  /// Returns the duration of the recording
-  Duration get duration => _dispositionManager.lastDuration;
-
   /// Starts the recorder recording to the
   /// passed in [Track].
   ///
@@ -369,7 +364,8 @@ class SoundRecorder implements SlotEntry {
       _recorderState = _RecorderState.isStopped;
 
       /// send final db so any listening UI is reset.
-      _dispositionManager.updateDbPeakDisposition(0, force: true);
+      _dispositionManager.updateDisposition(
+          _dispositionManager.lastDuration, 0);
 
       if (_onStopped != null) _onStopped(wasUser: true);
     });
@@ -419,11 +415,14 @@ class SoundRecorder implements SlotEntry {
   /// Sets the frequency at which duration updates are sent to
   /// duration listeners.
   /// The default is every 10 milliseconds.
-  Future<void> _setSubscriptionInterval(Duration interval) async {
+  Future<void> _setProgressInterval(Duration interval) async {
     await _initializeAndRun(() async {
-      await _plugin.setSubscriptionInterval(this, interval);
+      await _plugin.setProgressInterval(this, interval);
     });
   }
+
+  /// Returns the duration of the recording
+  Duration get duration => _dispositionManager.lastDuration;
 
   /// Call by the plugin to notify us that the duration of the recording
   /// has changed.
@@ -433,34 +432,11 @@ class SoundRecorder implements SlotEntry {
   /// We subtract the time we have spent paused to get the actual
   /// duration of the recording.
   ///
-  void _updateDuration(Duration elapsedDuration) {
+  void _updateProgress(Duration elapsedDuration, double decibels) {
     var duration = elapsedDuration - _timePaused;
     // Log.d('update duration called: $elapsedDuration');
-    _dispositionManager.updateDurationDisposition(duration);
+    _dispositionManager.updateDisposition(duration, decibels);
     _recordingTrack.duration = duration;
-  }
-
-  /// Defines the interval at which the peak level should be updated.
-  /// Default is 0.8 seconds
-  Future<void> _setDbPeakLevelUpdateInterval(Duration interval) async {
-    await _initializeAndRun(() async {
-      await _plugin.setDbPeakLevelUpdate(this, interval);
-    });
-  }
-
-  /// Enables or disables processing the Peak level in db's. Default is disabled
-  Future<void> _setDbLevelEnabled({bool enabled}) async {
-    await _initializeAndRun(() async {
-      await _plugin.setDbLevelEnabled(this, enabled: enabled);
-    });
-  }
-
-  /// Called by the plugin to notify us of the current Db Level of the
-  /// recording.
-  void _updateDbPeakDisposition(double decibels) async {
-    await _initializeAndRun(() async {
-      _dispositionManager.updateDbPeakDisposition(decibels);
-    });
   }
 
   ///
@@ -531,30 +507,13 @@ class SoundRecorder implements SlotEntry {
 
 /// Sets the frequency at which duration updates are sent to
 /// duration listeners.
-void recorderSetSubscriptionInterval(
-        SoundRecorder recorder, Duration interval) =>
-    recorder._setSubscriptionInterval(interval);
+void recorderSetProgressInterval(SoundRecorder recorder, Duration interval) =>
+    recorder._setProgressInterval(interval);
 
 ///
-void recorderUpdateDuration(SoundRecorder recorder, Duration duration) =>
-    recorder._updateDuration(duration);
-
-///
-/// decibel monitoring
-///
-
-///
-void recorderSetDbPeakLevelUpdate(SoundRecorder recorder, Duration interval) =>
-    recorder._setDbPeakLevelUpdateInterval(interval);
-
-/// enable db monitoring.
-void recorderSetDbLevelEnabled(SoundRecorder recorder,
-        {@required bool enabled}) =>
-    recorder._setDbLevelEnabled(enabled: enabled);
-
-/// called by the plugin when the db level changes
-void recorderUpdateDbPeakDispostion(SoundRecorder recorder, double decibels) =>
-    recorder._updateDbPeakDisposition(decibels);
+void recorderUpdateProgress(
+        SoundRecorder recorder, Duration duration, double decibels) =>
+    recorder._updateProgress(duration, decibels);
 
 /// App pause/resume events.
 ///

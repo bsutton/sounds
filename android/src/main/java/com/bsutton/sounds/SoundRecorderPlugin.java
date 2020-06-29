@@ -130,24 +130,9 @@ class SoundRecorderPlugin
 			}
 			break;
 
-
-			case "setDbPeakLevelUpdate":
+			case "setProgressInterval":
 			{
-
-				aRecorder.setDbPeakLevelUpdate ( call, result );
-			}
-			break;
-
-			case "setDbLevelEnabled":
-			{
-
-				aRecorder.setDbLevelEnabled ( call, result );
-			}
-			break;
-
-			case "setSubscriptionInterval":
-			{
-				aRecorder.setSubscriptionInterval ( call, result );
+				aRecorder.setProgressInterval ( call, result );
 			}
 			break;
 

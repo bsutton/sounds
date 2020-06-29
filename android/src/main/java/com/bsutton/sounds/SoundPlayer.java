@@ -151,7 +151,7 @@ public class SoundPlayer
 	{
 		Log.d(TAG, "mediaPlayer prepared and start");
 		mp.start();
-		startTickerUpdates(mp);
+		startProgressTimer(mp);
 		result.success("");
 	}
 						
@@ -161,7 +161,7 @@ public class SoundPlayer
 		String description = translateErrorCodes(extra);
 		Log.e(TAG, "MediaPlayer error: " + description + " what: " + what + " extra: " + extra);
 
-		stopTickerUpdates(mp, false);
+		stopProgressTimer(mp, false);
 		/// reset the player.
 		mp.reset();
 		mp.release ();
@@ -178,7 +178,7 @@ public class SoundPlayer
 	// the playback was stopped.
 	private void completeListener(MediaPlayer mp)
 	{
-		stopTickerUpdates(mp, true);
+		stopProgressTimer(mp, true);
 		/*
 		 * Reset player.
 		 */
@@ -210,42 +210,6 @@ public class SoundPlayer
 		model.setMediaPlayer ( null );
 	}
 
-	private void startTickerUpdates(MediaPlayer mp) {
-		// make certain no tickers are currently running.
-		stopTickerUpdates(mp, false);
-
-		tickHandler.post ( () -> sendUpdateProgress(mp) );
-	}
-
-	private void stopTickerUpdates(MediaPlayer mp, boolean sendFinal) {
-		/// send a final update before we stop the ticker
-		/// so dart sees the last position we reached.
-		if (sendFinal)
-		{
-			sendUpdateProgress(mp);
-		}
-		tickHandler.removeCallbacksAndMessages ( null );
-	}
-
-	@UiThread
-	private void sendUpdateProgress(MediaPlayer mp)
-	{
-		try
-		{
-			JSONObject json = new JSONObject();
-			json.put("duration", String.valueOf(mp.getDuration()));
-			json.put("current_position", String.valueOf(mp.getCurrentPosition()));
-			getPlugin().invokeCallbackWithString( slotNo, "updateProgress", json.toString());
-
-			// reschedule ourselves.
-			tickHandler.postDelayed(() -> sendUpdateProgress(mp), (model.subsDurationMillis));
-		}
-		catch ( Exception e )
-		{
-			Log.d ( TAG, "Exception: " + e.toString () );
-		}
-	}
-
 	public void stopPlayer ( final MethodCall call, final Result result )
 	{
 		MediaPlayer mp = this.model.getMediaPlayer();
@@ -264,7 +228,7 @@ public class SoundPlayer
 
 		try
 		{
-			stopTickerUpdates(mp, true);
+			stopProgressTimer(mp, true);
 			mp.stop ();
 			mp.reset ();
 			mp.release ();
@@ -294,7 +258,7 @@ public class SoundPlayer
 
 		try
 		{
-			stopTickerUpdates(mp, true);
+			stopProgressTimer(mp, true);
 			mp.pause ();
 			result.success ( "paused player." );
 		}
@@ -329,7 +293,7 @@ public class SoundPlayer
 
 		try
 		{
-			startTickerUpdates(mp);
+			startProgressTimer(mp);
 			mp.seekTo( mp.getCurrentPosition () );
 			mp.start();
 			result.success ( "resumed player." );
@@ -381,7 +345,7 @@ public class SoundPlayer
 	}
 
 
-	public void setSubscriptionInterval ( final MethodCall call, Result result )
+	public void setProgressInterval ( final MethodCall call, Result result )
 	{
 		if ( call.argument ( "milli" ) == null )
 		{
@@ -389,8 +353,45 @@ public class SoundPlayer
 		}
 		int duration = call.argument ( "milli" );
 
-		this.model.subsDurationMillis = duration ;
-		result.success ( "setSubscriptionInterval: " + this.model.subsDurationMillis );
+		this.model.progressInterval = duration ;
+		result.success ( "setProgressInterval: " + this.model.progressInterval );
+	}
+
+
+	private void startProgressTimer(MediaPlayer mp) {
+		// make certain no tickers are currently running.
+		stopProgressTimer(mp, false);
+
+		tickHandler.post ( () -> sendUpdateProgress(mp) );
+	}
+
+	private void stopProgressTimer(MediaPlayer mp, boolean sendFinal) {
+		/// send a final update before we stop the ticker
+		/// so dart sees the last position we reached.
+		if (sendFinal)
+		{
+			sendUpdateProgress(mp);
+		}
+		tickHandler.removeCallbacksAndMessages ( null );
+	}
+
+	@UiThread
+	private void sendUpdateProgress(MediaPlayer mp)
+	{
+		try
+		{
+			JSONObject json = new JSONObject();
+			json.put("duration", String.valueOf(mp.getDuration()));
+			json.put("current_position", String.valueOf(mp.getCurrentPosition()));
+			getPlugin().invokeCallbackWithString( slotNo, "updateProgress", json.toString());
+
+			// reschedule ourselves.
+			tickHandler.postDelayed(() -> sendUpdateProgress(mp), (model.progressInterval));
+		}
+		catch ( Exception e )
+		{
+			Log.d ( TAG, "Exception: " + e.toString () );
+		}
 	}
 
 	void androidAudioFocusRequest ( final MethodCall call, final Result result )

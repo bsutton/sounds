@@ -363,14 +363,14 @@ public class ShadePlayer extends SoundPlayer
 	}
 
 
-	public void setSubscriptionInterval( final MethodCall call, Result result )
+	public void setProgressInterval( final MethodCall call, Result result )
 	{
 		if (call.argument("milli") == null)
 			return;
 		int duration = call.argument("milli");
 
-		this.model.subsDurationMillis = duration;
-		result.success( "setSubscriptionInterval: " + this.model.subsDurationMillis );
+		this.model.progressInterval = duration;
+		result.success( "setProgressInterval: " + this.model.progressInterval );
 	}
 
 	private boolean wasMediaPlayerInitialized(  final Result result )
@@ -576,7 +576,7 @@ public class ShadePlayer extends SoundPlayer
 				}
 			};
 
-			mTimer.schedule( mTask, 0, model.subsDurationMillis );
+			mTimer.schedule( mTask, 0, model.progressInterval );
 			mResult.success( ( mPath ) );
 
 			return null;

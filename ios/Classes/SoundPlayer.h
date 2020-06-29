@@ -48,20 +48,19 @@ extern NSMutableArray* _Nullable playerSlots;
 
 - (SoundPlayerManager*_Nonnull) getPlugin;
 - (SoundPlayer*_Nonnull)init: (int)aSlotNo;
-
-- (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *_Nonnull)player successfully:(BOOL)flag;
-- (void)updateProgress:(NSTimer *_Nullable)timer;
-- (void)startTimer;
 - (void)stopPlayer;
 - (void)pausePlayer:(FlutterResult _Nonnull )result;
 - (void)resumePlayer:(FlutterResult _Nonnull )result;
-- (void)stopTimer;
+- (void)startProgressTimer;
+- (void)stopProgressTimer;
+- (void)updateProgress:(NSTimer *_Nullable)timer;
+- (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *_Nonnull)player successfully:(BOOL)flag;
 - (void)pause;
 - (bool)resume;
 - (void)startPlayer:(NSString*_Nonnull)path result: (FlutterResult _Nonnull )result;
 - (void)startPlayerFromBuffer:(FlutterStandardTypedData*_Nonnull)dataBuffer result: (FlutterResult _Nonnull )result;
 - (void)seekToPlayer:(long) positionInMilli result: (FlutterResult _Nonnull )result;
-- (void)setSubscriptionInterval:(long)intervalInMilli result: (FlutterResult _Nonnull )result;
+- (void)setProgressInterval:(long)intervalInMilli result: (FlutterResult _Nonnull )result;
 - (void)setVolume:(double) volume result: (FlutterResult _Nonnull )result;
 - (void)setCategory: (NSString*_Nonnull)categ mode:(NSString* _Nullable)mode options:(int)options result:(FlutterResult _Nonnull )result;
 - (void)setActive:(BOOL)enabled result:(FlutterResult _Nonnull )result;

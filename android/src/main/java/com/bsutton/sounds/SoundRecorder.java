@@ -57,7 +57,6 @@ public class SoundRecorder
 	final static String             TAG                = "SoundRecorder";
 	final        RecorderAudioModel model              = new RecorderAudioModel ();
 	final public Handler            progressTickHandler      = new Handler ();
-	final public Handler            dbPeakLevelTickHandler = new Handler ();
 	
 	int    slotNo;
 	private final ExecutorService taskScheduler = Executors.newSingleThreadExecutor ();
@@ -170,7 +169,7 @@ public class SoundRecorder
 			mediaRecorder.start ();
 
 			this.model.startTime = SystemClock.elapsedRealtime ();
-			startTickerUpdates();
+			startProgressTimer();
 
 			result.success("Success");
 		}
@@ -189,78 +188,6 @@ public class SoundRecorder
 		}
 	}
 
-	// Starts the progress and Db level tickers if required.
-	private void startTickerUpdates()
-	{
-		// make certain no tickers are currently running.
-		stopTickerUpdates();
-		progressTickHandler.post ( () -> sendProgressUpdate() );
-
-		if ( this.model.shouldProcessDbLevel ) {
-			dbPeakLevelTickHandler.post (() -> sendDBLevelUpdate() );
-		}
-	}
-
-	// stops the progress and Db level tickers.
-	private void stopTickerUpdates()
-	{
-		progressTickHandler.removeCallbacksAndMessages ( null );
-		dbPeakLevelTickHandler.removeCallbacksAndMessages(null);
-	}
-
-	// Sends an Db Level update to the dart code and then
-	// reschedule ourselves to do it again.
-	@UiThread
-	private void sendDBLevelUpdate()
-	{
-		MediaRecorder recorder = model.getMediaRecorder ();
-		if ( recorder != null )
-		{
-			double maxAmplitude = recorder.getMaxAmplitude ();
-			double db = 0;
-			if (maxAmplitude != 0.0)
-			{
-				// Calculate db based on the following article.
-				// https://stackoverflow.com/questions/10655703/what-does-androids-getmaxamplitude-function-for-the-mediarecorder-actually-gi
-				//
-				double ref_pressure = 51805.5336;
-				double p            = maxAmplitude / ref_pressure;
-				double p0           = 0.0002;
-
-				db = 20.0 * Math.log10 ( p / p0 );
-			}
-
-			// Log.d ( TAG, "rawAmplitude: " + maxAmplitude + " Base DB: " + db );
-			invokeCallbackWithDouble (  "updateDbPeakProgress", db );
-
-			// schedule the next update.
-			dbPeakLevelTickHandler.postDelayed ( () ->  sendDBLevelUpdate(), ( model.peakLevelUpdateMillis ) );
-		}
-	}
-
-	// Sends a duration progress update to the dart code.
-	// This method then re-queues itself.
-	@UiThread
-	private void sendProgressUpdate()
-	{
-		long time = SystemClock.elapsedRealtime () - model.startTime;
-		try
-		{
-			JSONObject json = new JSONObject ();
-			json.put ( "current_position", String.valueOf ( time ) );
-			invokeCallbackWithString ( "updateRecorderProgress", json.toString () );
-			// Log.d(TAG,  "updateRecorderProgress: " +  json.toString());
-
-			// re-queue ourselves based on the desired subscription interval.
-			boolean queued = progressTickHandler.postDelayed ( () ->sendProgressUpdate(), this.model.subsDurationMillis );
-			// Log.d(TAG, "progress posted=" + queued + " delay:" + this.model.subsDurationMillis);
-		}
-		catch ( Exception je )
-		{
-			Log.d ( TAG, "Exception calling updateRecorderProgress: " + je.toString () );
-		}
-	}
-
 	public void stopRecorder ( final MethodCall call, final Result result )
 	{
 		//taskScheduler.submit ( () -> _stopRecorder ( result ) );
@@ -274,7 +201,7 @@ public class SoundRecorder
 	public boolean _stopRecorder (  )
 	{
 		// This remove all pending runnables
-		stopTickerUpdates();
+		stopProgressTimer();
 
 		if ( this.model.getMediaRecorder () == null )
 		{
@@ -330,7 +257,7 @@ public class SoundRecorder
 			result.error ( TAG, "Bad Android API level", "\"Pause/Resume needs at least Android API 24\"" );
 		} else
 		{
-			stopTickerUpdates();
+			stopProgressTimer();
 			this.model.getMediaRecorder().pause();
 			result.success( "Recorder is paused");
 		}
@@ -351,39 +278,92 @@ public class SoundRecorder
 		} else
 		{
 			// restart tickers.
-			startTickerUpdates();
+			startProgressTimer();
 			this.model.getMediaRecorder().resume();
 			result.success( true);
 		}
 	}
 
 
+	/*********************************************
+	 * 
+	 * Progress and DbPeak level updates
+	 *
+	 *********************************************/
 
-	public void setDbPeakLevelUpdate ( final MethodCall call, final Result result )
+	// Starts the progress ticker if required.
+	private void startProgressTimer()
 	{
-		int interval = call.argument ( "milli" );
-		this.model.peakLevelUpdateMillis = interval;
-		result.success ( "setDbPeakLevelUpdate: " + this.model.peakLevelUpdateMillis );
+		// make certain no tickers are currently running.
+		stopProgressTimer();
+		progressTickHandler.post ( () -> sendProgressUpdate() );
 	}
 
-	public void setDbLevelEnabled ( final MethodCall call, final Result result )
+	// stops the progress and Db level tickers.
+	private void stopProgressTimer()
 	{
-		boolean enabled = call.argument ( "enabled" );
-		this.model.shouldProcessDbLevel = enabled;
-		result.success ( "setDbLevelEnabled: " + this.model.shouldProcessDbLevel );
+		progressTickHandler.removeCallbacksAndMessages ( null );
 	}
 
-	public void setSubscriptionInterval ( final MethodCall call, final Result result )
+	// Gets the current Db peak level.
+	private double getDbLevel()
 	{
-		Log.d(TAG, "setSubscriptionInterval: " + call.argument("milli"));
+		double db = 0;
+
+		MediaRecorder recorder = model.getMediaRecorder ();
+		if ( recorder != null )
+		{
+			double maxAmplitude = recorder.getMaxAmplitude ();
+			if (maxAmplitude != 0.0)
+			{
+				// Calculate db based on the following article.
+				// https://stackoverflow.com/questions/10655703/what-does-androids-getmaxamplitude-function-for-the-mediarecorder-actually-gi
+				//
+				double ref_pressure = 51805.5336;
+				double p            = maxAmplitude / ref_pressure;
+				double p0           = 0.0002;
+
+				db = 20.0 * Math.log10 ( p / p0 );
+			}
+		}
+		return db;
+	}
+
+	// Sends a progress update to the dart code containing the current_position and the Db Level
+	// This method then re-queues itself.
+	@UiThread
+	private void sendProgressUpdate()
+	{
+		long time = SystemClock.elapsedRealtime () - model.startTime;
+		try
+		{
+			JSONObject json = new JSONObject ();
+			json.put ( "current_position",  time );
+			json.put ( "decibels",  String.valueOf(getDbLevel() ));
+			invokeCallbackWithString ( "updateRecorderProgress", json.toString () );
+			// Log.d(TAG,  "updateRecorderProgress: " +  json.toString());
+
+			// re-queue ourselves based on the desired subscription interval.
+			boolean queued = progressTickHandler.postDelayed ( () ->sendProgressUpdate(), this.model.progressIntervalMillis );
+			// Log.d(TAG, "progress posted=" + queued + " delay:" + this.model.subsDurationMillis);
+		}
+		catch ( Exception je )
+		{
+			Log.d ( TAG, "Exception calling updateRecorderProgress: " + je.toString () );
+		}
+	}
+
+	public void setProgressInterval ( final MethodCall call, final Result result )
+	{
+		Log.d(TAG, "setProgressInterval: " + call.argument("milli"));
 		if ( call.argument ( "milli" ) == null )
 		{
 			return;
 		}
 		int duration = call.argument ( "milli" );
 
-		this.model.subsDurationMillis =  duration;
-		result.success ( "setSubscriptionInterval: " + this.model.subsDurationMillis );
+		this.model.progressIntervalMillis =  duration;
+		result.success ( "setProgressInterval: " + this.model.progressIntervalMillis );
 	}
 
 

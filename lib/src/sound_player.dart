@@ -236,7 +236,7 @@ class SoundPlayer implements SlotEntry {
       /// the intialisation.
       await _plugin.initializePlayer(this);
 
-      _setSubscriptionInterval(Duration(milliseconds: 100));
+      _setProgressInterval(Duration(milliseconds: 100));
 
       /// hack until we implement [onPlayerReady] in the all the OS
       /// native plugins.
@@ -519,10 +519,10 @@ class SoundPlayer implements SlotEntry {
 
   /// Sets the time between callbacks from the platform specific code
   /// used to notify use of playback progress.
-  Future<void> _setSubscriptionInterval(Duration interval) async {
+  Future<void> _setProgressInterval(Duration interval) async {
     return _initializeAndRun(() async {
       assert(interval.inMilliseconds > 0);
-      await _plugin.setSubscriptionInterval(this, interval);
+      await _plugin.setProgressInterval(this, interval);
     });
   }
 

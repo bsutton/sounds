@@ -289,7 +289,7 @@ extern void ShadePlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
                                                    }];
 
                         [downloadTask resume];
-                        [self startTimer];
+                        [self startProgressTimer];
                         NSString *filePath = self->audioFileURL.absoluteString;
                         result(filePath);
 
@@ -310,7 +310,7 @@ extern void ShadePlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
                         });
 
                         [audioPlayer play];
-                        [self startTimer];
+                        [self startProgressTimer];
                         NSString *filePath = audioFileURL.absoluteString;
                         result(filePath);
                 }
@@ -326,7 +326,7 @@ extern void ShadePlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
                         [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
                 });
                 [audioPlayer play];
-                [self startTimer];
+                [self startProgressTimer];
                 result(@"Playing from buffer");
         }
         //[ self invokeCallback:@"updatePlaybackState" arguments:playingState];
@@ -499,7 +499,7 @@ extern void ShadePlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 
 - (void)stopPlayer
 {
-          [self stopTimer];
+          [self stopProgressTimer];
           isPaused = false;
           if (audioPlayer)
           {

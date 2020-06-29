@@ -180,9 +180,9 @@ class SoundPlayerPlugin
 				}
 				break;
 
-				case "setSubscriptionInterval":
+				case "setProgressInterval":
 				{
-					aPlayer.setSubscriptionInterval ( call, result );
+					aPlayer.setProgressInterval ( call, result );
 				}
 				break;
 

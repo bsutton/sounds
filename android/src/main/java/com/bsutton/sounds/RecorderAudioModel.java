@@ -6,10 +6,7 @@ import android.media.MediaRecorder;
 
 class RecorderAudioModel
 {
-	public              int     subsDurationMillis    = 10;
-	public              long    peakLevelUpdateMillis = 800;
-	public              boolean shouldProcessDbLevel  = true;
-
+	public              int     progressIntervalMillis    = 800;
 	private      MediaRecorder mediaRecorder;
 
 	// The time at which  the current recording was started.
