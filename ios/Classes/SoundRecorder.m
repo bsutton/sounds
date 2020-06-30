@@ -317,17 +317,21 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
 }
 
 
+- (void)setProgressInterval:(long)intervalInMilli result: (FlutterResult)result
+{
+        /// convert milliseconds to seconds required by a Timer.
+        progressIntervalSeconds = intervalInMilli/1000.0;
+        result(@"setProgressInterval");
+}
 
 - (void)startProgressTimer
 {
         [self stopProgressTimer];
-        //dispatch_async(dispatch_get_main_queue(), ^{
         self->progressTimer = [NSTimer scheduledTimerWithTimeInterval: progressIntervalSeconds
                                            target:self
-                                           selector:@selector(updateRecorderProgress:)
+                                           selector:@selector(updateProgress:)
                                            userInfo:nil
                                            repeats:YES];
-        //});
 }
 
 
@@ -339,14 +343,7 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
 }
 
 
-- (void)setProgressInterval:(long)intervalInMilli result: (FlutterResult)result
-{
-        /// convert milliseconds to seconds required by a Timer.
-        progressIntervalSeconds = intervalInMilli/1000.0;
-        result(@"setProgressInterval");
-}
-
-- (void)updateRecorderProgress:(NSTimer*) atimer
+- (void)updateProgress:(NSTimer*) atimer
 {
         assert (progressTimer == atimer);
         double decibels = [self getDbLevel];
@@ -357,7 +354,8 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
                 , [currentTime stringValue]
                 , decibels
                 ];
-        [self invokeCallback:@"updateRecorderProgress" stringArg: status];
+        NSLog(@"updateProgress: %@",  status);
+        [self invokeCallback:@"updateProgress" stringArg: status];
 }
 
 

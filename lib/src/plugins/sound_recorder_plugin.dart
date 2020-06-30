@@ -109,8 +109,8 @@ class SoundRecorderPlugin extends BasePlugin {
   Future<dynamic> onMethodCallback(
       covariant sound_recorder.SoundRecorder recorder, MethodCall call) {
     switch (call.method) {
-      case "updateRecorderProgress":
-        _updateRecorderProgress(call, recorder);
+      case "updateProgress":
+        _updateProgress(call, recorder);
         break;
 
       default:
@@ -119,8 +119,7 @@ class SoundRecorderPlugin extends BasePlugin {
     return null;
   }
 
-  void _updateRecorderProgress(
-      MethodCall call, sound_recorder.SoundRecorder recorder) {
+  void _updateProgress(MethodCall call, sound_recorder.SoundRecorder recorder) {
     var result = convert.json.decode(call.arguments['arg'] as String)
         as Map<String, dynamic>;
 

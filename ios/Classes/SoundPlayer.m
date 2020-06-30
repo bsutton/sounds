@@ -455,13 +455,13 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 
 - (void)pause
 {
-          [audioPlayer pause];
-          isPaused = true;
-    [self stopProgressTimer];
-          if ( (setActiveDone != BY_USER) && (setActiveDone != NOT_SET) ) {
+        [audioPlayer pause];
+        isPaused = true;
+        [self stopProgressTimer];
+        if ( (setActiveDone != BY_USER) && (setActiveDone != NOT_SET) ) {
               [[AVAudioSession sharedInstance] setActive: NO error: nil];
               setActiveDone = NOT_SET;
-          }
+        }
 }
 
 - (bool)resume
@@ -591,8 +591,28 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 }
 
 
+
+
+- (void)setProgressInterval:(long)intervalInMillis result: (FlutterResult)result
+{   
+        progressIntervalSeconds = intervalInMillis * 1000;
+        result(@"setProgressInterval");
+}
+
+- (void)startProgressTimer
+{
+        [self stopProgressTimer];
+        NSLog(@"starting ProgressTimer");
+        self->progressTimer = [NSTimer scheduledTimerWithTimeInterval:progressIntervalSeconds
+                                           target:self
+                                           selector:@selector(updateProgress:)
+                                           userInfo:nil
+                                           repeats:YES];
+}
+
 - (void) stopProgressTimer{
     if (progressTimer != nil) {
+        NSLog(@"stopping ProgressTimer");
         [progressTimer invalidate];
         progressTimer = nil;
     }
@@ -602,46 +622,18 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 
 - (void)updateProgress:(NSTimer*) atimer
 {
+        NSLog(@"entered updateProgress: %@",  status);
+        assert (progressTimer == atimer);
         NSNumber *duration = [NSNumber numberWithDouble:audioPlayer.duration * 1000];
         NSNumber *currentTime = [NSNumber numberWithDouble:audioPlayer.currentTime * 1000];
 
-        // [LARPOUX] I do not understand why ...
-        // if ([duration intValue] == 0 && progressTimer != nil) {
-        //   [self stopProgressTimer];
-        //   return;
-        // }
-
         NSString* status = [NSString stringWithFormat:@"{\"duration\": \"%@\", \"current_position\": \"%@\"}"
                 , [duration stringValue],  [currentTime stringValue]];
-        NSLog(@"updateProgress: %@",  status);
+        NSLog(@"sending updateProgress: %@",  status);
         [self invokeCallback:@"updateProgress" stringArg:status];
-//        if (![audioPlayer isPlaying] )
-//        {
-//                  [self stopPlayer];
-//                  return;
-//        }
-
 }
 
 
-- (void)startProgressTimer
-{
-        [self stopProgressTimer];
-        //dispatch_async(dispatch_get_main_queue(), ^{ // ??? Why Async ?  (no async for recorder)
-        self->progressTimer = [NSTimer scheduledTimerWithTimeInterval:progressIntervalSeconds
-                                           target:self
-                                           selector:@selector(updateProgress:)
-                                           userInfo:nil
-                                           repeats:YES];
-        //});
-}
-
-
-- (void)setProgressInterval:(long)intervalInMillis result: (FlutterResult)result
-{   
-        progressIntervalSeconds = intervalInMillis * 1000;
-        result(@"setProgressInterval");
-}
 
 
 // post fix with _Sounds to avoid conflicts with common libs including path_provider
