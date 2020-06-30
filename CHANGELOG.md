@@ -1,3 +1,7 @@
+# 1.0.0-beta.1
+First beta release.
+Demo app is working nicely on both android and ios.
+All api changes intended for 1.0.0 are now complete including stripping out ffmpeg and moving from Codec to MediaFormat.
 # 0.9.2
 Updated doco links
 committed hacks to work around flutter build bug.
