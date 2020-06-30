@@ -62,58 +62,45 @@ import com.bsutton.sounds.SoundPlayer;
 import com.bsutton.sounds.MediaBrowserHelper;
 import com.bsutton.sounds.Track;
 
-
 /**
-  * Flutter plugin for the ShadePlayer.
-  * provides communication between dart and java.
- */ 
+ * Flutter plugin for the ShadePlayer. provides communication between dart and
+ * java.
+ */
 
+class ShadePlayerPlugin extends SoundPlayerPlugin implements MethodCallHandler {
+	public static MethodChannel channel;
+	static Context androidContext;
+	static ShadePlayerPlugin ShadePlayerPlugin; // singleton
 
-class ShadePlayerPlugin
-	extends SoundPlayerPlugin
-	implements MethodCallHandler
-{
-	public static MethodChannel     channel;
-	static        Context           androidContext;
-	static        ShadePlayerPlugin ShadePlayerPlugin; // singleton
+	public static void attachShadePlayer(Context ctx, BinaryMessenger messenger) {
+		assert (soundPlayerPlugin == null);
 
-
-	public static void attachShadePlayer( Context ctx, BinaryMessenger messenger )
-	{
-		assert ( soundPlayerPlugin == null );
-		
 		ShadePlayerPlugin = new ShadePlayerPlugin();
-		assert ( slots == null );
-		slots   = new ArrayList<SoundPlayer>();
-		channel           = new MethodChannel( messenger, "com.bsutton.sounds.sounds_shade_player" );
-		channel.setMethodCallHandler( ShadePlayerPlugin );
+		assert (slots == null);
+		slots = new ArrayList<SoundPlayer>();
+		channel = new MethodChannel(messenger, "com.bsutton.sounds.sounds_shade_player");
+		channel.setMethodCallHandler(ShadePlayerPlugin);
 		androidContext = ctx;
 
 	}
 
-	void invokeCallback( String methodName, Map dic )
-	{
-		channel.invokeMethod ( methodName, dic );
+	void invokeCallback(String methodName, Map dic) {
+		channel.invokeMethod(methodName, dic);
 	}
 
-	void freeSlot ( int slotNo )
-	{
-		slots.set ( slotNo, null );
+	void freeSlot(int slotNo) {
+		slots.set(slotNo, null);
 	}
 
-
-	SoundPlayerPlugin getManager ()
-	{
+	SoundPlayerPlugin getManager() {
 		return soundPlayerPlugin;
 	}
 
-
 	@Override
-	public void onMethodCall( final MethodCall call, final Result result )
-	{
-		int slotNo = call.argument ( "slotNo" );
+	public void onMethodCall(final MethodCall call, final Result result) {
+		int slotNo = call.argument("slotNo");
 		Log.d(TAG, "onMethodCall called: " + call.method + " for slot: " + slotNo);
-		
+
 		// The dart code supports lazy initialization of players.
 		// This means that players can be registered (and slots allocated)
 		// on the client side in a different order to which the players
@@ -125,59 +112,53 @@ class ShadePlayerPlugin
 			slots.add(null);
 		}
 
-		ShadePlayer aPlayer = (ShadePlayer)slots.get ( slotNo );
-		switch ( call.method )
-		{
-			case "initializeMediaPlayer":
-			{
-				assert ( slots.get ( slotNo ) == null );
-				aPlayer = new ShadePlayer ( slotNo );
-				slots.set ( slotNo, aPlayer );
-				aPlayer.initializeSoundPlayer ( call, result );
+		ShadePlayer aPlayer = (ShadePlayer) slots.get(slotNo);
+		switch (call.method) {
+			case "initializeMediaPlayer": {
+				assert (slots.get(slotNo) == null);
+				aPlayer = new ShadePlayer(slotNo);
+				slots.set(slotNo, aPlayer);
+				aPlayer.initializeSoundPlayer(call, result);
 				Log.d("ShadePlayer", "************* initialize called");
 			}
-			break;
+				break;
 
-			case "releaseMediaPlayer":
-			{
-				aPlayer.releaseSoundPlayer( call, result );
+			case "releaseMediaPlayer": {
+				aPlayer.releaseSoundPlayer(call, result);
 				Log.d("ShadePlayer", "************* release called");
 			}
-			break;
+				break;
 
 			case "startShadePlayer":
-				aPlayer.startShadePlayer( call, result );
+				aPlayer.startShadePlayer(call, result);
 				break;
-
 
 			case "stopPlayer":
-				aPlayer.stopPlayer(call,  result );
+				aPlayer.stopPlayer(call, result);
 				break;
 			case "pausePlayer":
-				aPlayer.pausePlayer(call,  result );
+				aPlayer.pausePlayer(call, result);
 				break;
 			case "resumePlayer":
-				aPlayer.resumePlayer( call, result );
+				aPlayer.resumePlayer(call, result);
 				break;
 			case "seekToPlayer":
-				aPlayer.seekToPlayer( call, result );
+				aPlayer.seekToPlayer(call, result);
 				break;
 			case "setVolume":
-				aPlayer.setVolume( call, result );
+				aPlayer.setVolume(call, result);
 				break;
 			case "setProgressInterval":
-				if ( call.argument( "milli" ) == null )
-				{
+				if (call.argument("milli") == null) {
 					return;
 				}
-				aPlayer.setProgressInterval( call, result );
+				aPlayer.setProgressInterval(call, result);
 				break;
 
 			default:
-				super.onMethodCall( call, result );
+				super.onMethodCall(call, result);
 				break;
-			}
+		}
 	}
 
 }
-

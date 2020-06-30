@@ -2,31 +2,25 @@ package com.bsutton.sounds;
 
 import android.media.MediaPlayer;
 
-class PlayerAudioModel
-{
-	public              int    progressInterval    = 10;
+class PlayerAudioModel {
+	public int progressInterval = 10;
 
 	private MediaPlayer mediaPlayer;
-	private long        playTime = 0;
+	private long playTime = 0;
 
-
-	public MediaPlayer getMediaPlayer ()
-	{
+	public MediaPlayer getMediaPlayer() {
 		return mediaPlayer;
 	}
 
-	public void setMediaPlayer ( MediaPlayer mediaPlayer )
-	{
+	public void setMediaPlayer(MediaPlayer mediaPlayer) {
 		this.mediaPlayer = mediaPlayer;
 	}
 
-	public long getPlayTime ()
-	{
+	public long getPlayTime() {
 		return playTime;
 	}
 
-	public void setPlayTime ( long playTime )
-	{
+	public void setPlayTime(long playTime) {
 		this.playTime = playTime;
 	}
 }

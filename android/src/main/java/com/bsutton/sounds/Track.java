@@ -15,7 +15,6 @@ package com.bsutton.sounds;
  *   along with Sounds .  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 import java.util.HashMap;
 
 public class Track {
@@ -25,7 +24,6 @@ public class Track {
     private String albumArtUrl;
     private String albumArtAsset;
     private String albumArtFile;
-
 
     Track(HashMap<String, Object> map) {
         this.path = (String) map.get("path");
@@ -49,7 +47,7 @@ public class Track {
     }
 
     public void getArtist(String artist) {
-            this.artist = artist;
+        this.artist = artist;
     }
 
     public String getTitle() {

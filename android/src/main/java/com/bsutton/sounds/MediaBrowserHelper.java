@@ -15,7 +15,6 @@ package com.bsutton.sounds;
  *   along with Sounds .  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 import android.app.Activity;
 import android.app.Activity;
 import android.content.ComponentName;
@@ -31,36 +30,32 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-public class MediaBrowserHelper
-{
+public class MediaBrowserHelper {
 	MediaControllerCompat mediaControllerCompat;
 	private MediaBrowserCompat mMediaBrowserCompat;
 	// The function to call when the media browser successfully connects
 	// to the service.
-	private Callable<Void>     mServiceConnectionSuccessCallback;
+	private Callable<Void> mServiceConnectionSuccessCallback;
 	// The function to call when the media browser is unable to connect
 	// to the service.
-	private Callable<Void>     mServiceConnectionUnsuccessfulCallback;
+	private Callable<Void> mServiceConnectionUnsuccessfulCallback;
 
-	//private BackgroundAudioService backgroundAudioService ;
+	// private BackgroundAudioService backgroundAudioService ;
 
-
-	private MediaBrowserCompat.ConnectionCallback mMediaBrowserCompatConnectionCallback = new MediaBrowserCompat.ConnectionCallback()
-	{
+	private MediaBrowserCompat.ConnectionCallback mMediaBrowserCompatConnectionCallback = new MediaBrowserCompat.ConnectionCallback() {
 		@Override
-		public void onConnected()
-		{
+		public void onConnected() {
 			super.onConnected();
 			Log.d("MediaBrowserHelper", "onConnected");
 			// A new MediaBrowserCompat object is created and connected. Then, initialize a
 			// MediaControllerCompat object and associate it with MediaSessionCompat. Once
 			// completed,
 			// start the audio playback.
-			try
-			{
-				assert(Sounds.androidActivity != null);
-				mediaControllerCompat = new MediaControllerCompat( Sounds.androidActivity, mMediaBrowserCompat.getSessionToken() );
-				MediaControllerCompat.setMediaController( Sounds.androidActivity, mediaControllerCompat );
+			try {
+				assert (Sounds.androidActivity != null);
+				mediaControllerCompat = new MediaControllerCompat(Sounds.androidActivity,
+						mMediaBrowserCompat.getSessionToken());
+				MediaControllerCompat.setMediaController(Sounds.androidActivity, mediaControllerCompat);
 
 				Log.w("MediaBrowserHelper", "onConnect = Success");
 
@@ -68,45 +63,35 @@ public class MediaBrowserHelper
 				// MediaControllerCompat.getMediaController(mActivity).getTransportControls().playFromMediaId("http://path-to-audio-file.com",
 				// null);
 
-			}
-			catch ( RemoteException e )
-			{
-				Log.e( "MediaBrowserHelper", "The following error occurred while" + " initializing the media controller.", e );
+			} catch (RemoteException e) {
+				Log.e("MediaBrowserHelper",
+						"The following error occurred while" + " initializing the media controller.", e);
 			}
 
 			// Call the successful connection callback if it was provided
-			if ( mServiceConnectionSuccessCallback != null )
-			{
-				try
-				{
+			if (mServiceConnectionSuccessCallback != null) {
+				try {
 					mServiceConnectionSuccessCallback.call();
 					// Remove the callback
 					mServiceConnectionSuccessCallback = null;
-				}
-				catch ( Exception e )
-				{
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		}
 
 		@Override
-		public void onConnectionFailed()
-		{
+		public void onConnectionFailed() {
 			super.onConnectionFailed();
 			Log.d("MediaBrowserHelper", "onConnected");
 
 			// Call the unsuccessful connection callback if it was provided
-			if ( mServiceConnectionUnsuccessfulCallback != null )
-			{
-				try
-				{
+			if (mServiceConnectionUnsuccessfulCallback != null) {
+				try {
 					mServiceConnectionUnsuccessfulCallback.call();
 					// Remove the callback
 					mServiceConnectionUnsuccessfulCallback = null;
-				}
-				catch ( Exception e )
-				{
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
@@ -116,36 +101,28 @@ public class MediaBrowserHelper
 	/**
 	 * Initialize the media browser helper.
 	 *
-	 * @param serviceSuccessConnectionCallback   The callback to call when the
-	 *                                        connection is successful.
-	 * @param serviceUnsuccConnectionCallback The callback to call when the
-	 *                                        connection is unsuccessful.
+	 * @param serviceSuccessConnectionCallback The callback to call when the
+	 *                                         connection is successful.
+	 * @param serviceUnsuccConnectionCallback  The callback to call when the
+	 *                                         connection is unsuccessful.
 	 */
-	MediaBrowserHelper(
-		 Callable<Void> serviceSuccessConnectionCallback, Callable<Void> serviceUnsuccConnectionCallback
-	                  )
-	{
-		mServiceConnectionSuccessCallback      = serviceSuccessConnectionCallback;
+	MediaBrowserHelper(Callable<Void> serviceSuccessConnectionCallback,
+			Callable<Void> serviceUnsuccConnectionCallback) {
+		mServiceConnectionSuccessCallback = serviceSuccessConnectionCallback;
 		mServiceConnectionUnsuccessfulCallback = serviceUnsuccConnectionCallback;
-		//////backgroundAudioService = new BackgroundAudioService ();
+		////// backgroundAudioService = new BackgroundAudioService ();
 		initMediaBrowser();
 	}
 
 	/**
 	 * Initialize the media browser in this class
 	 */
-	private void initMediaBrowser()
-	{
-		assert(Sounds.androidActivity != null);
+	private void initMediaBrowser() {
+		assert (Sounds.androidActivity != null);
 		// Create and connect a MediaBrowserCompat
-		mMediaBrowserCompat = new MediaBrowserCompat
-		(
-			Sounds.androidActivity,
-			new ComponentName( Sounds.androidActivity, BackgroundAudioService.class ),
-			mMediaBrowserCompatConnectionCallback,
-			Sounds.androidActivity.getIntent().getExtras()
-		);
-
+		mMediaBrowserCompat = new MediaBrowserCompat(Sounds.androidActivity,
+				new ComponentName(Sounds.androidActivity, BackgroundAudioService.class),
+				mMediaBrowserCompatConnectionCallback, Sounds.androidActivity.getIntent().getExtras());
 
 		mMediaBrowserCompat.connect();
 	}
@@ -155,54 +132,45 @@ public class MediaBrowserHelper
 	 * <p>
 	 * Call this in onDestroy().
 	 */
-	void releaseMediaBrowser()
-	{
+	void releaseMediaBrowser() {
 		mMediaBrowserCompat.disconnect();
 	}
 
-	void playPlayback()
-	{
+	void playPlayback() {
 		BackgroundAudioService.pauseResumeCalledByApp = true;
 		mediaControllerCompat.getTransportControls().play();
 	}
 
-	void pausePlayback()
-	{
+	void pausePlayback() {
 		BackgroundAudioService.pauseResumeCalledByApp = true;
 		mediaControllerCompat.getTransportControls().pause();
 	}
 
-	void resumePlayback()
-	{
+	void resumePlayback() {
 		BackgroundAudioService.pauseResumeCalledByApp = true;
 		mediaControllerCompat.getTransportControls().play();
 	}
 
-	void seekTo( long newPosition )
-	{
-		mediaControllerCompat.getTransportControls().seekTo( newPosition );
+	void seekTo(long newPosition) {
+		mediaControllerCompat.getTransportControls().seekTo(newPosition);
 	}
 
-	void stop()
-	{
+	void stop() {
 		mediaControllerCompat.getTransportControls().stop();
 	}
 
-	void setMediaPlayerOnPreparedListener( Callable<Void> callback )
-	{
+	void setMediaPlayerOnPreparedListener(Callable<Void> callback) {
 		BackgroundAudioService.mediaPlayerOnPreparedListener = callback;
 	}
 
-	void setMediaPlayerOnCompletionListener( Callable<Void> callback )
-	{
+	void setMediaPlayerOnCompletionListener(Callable<Void> callback) {
 		BackgroundAudioService.mediaPlayerOnCompletionListener = callback;
 	}
 
 	/**
 	 * Add a handler for when the user taps the button to skip the track forward.
 	 */
-	void setSkipTrackForwardHandler( Callable<Void> handler )
-	{
+	void setSkipTrackForwardHandler(Callable<Void> handler) {
 		BackgroundAudioService.skipTrackForwardHandler = handler;
 	}
 
@@ -210,29 +178,25 @@ public class MediaBrowserHelper
 	 * Remove the handler for when the user taps the button to skip the track
 	 * forward.
 	 */
-	void removeSkipTrackForwardHandler()
-	{
+	void removeSkipTrackForwardHandler() {
 		BackgroundAudioService.skipTrackForwardHandler = null;
 	}
 
 	/**
 	 * Add a handler for when the user taps the button to skip the track backward.
 	 */
-	void setSkipTrackBackwardHandler( Callable<Void> handler )
-	{
+	void setSkipTrackBackwardHandler(Callable<Void> handler) {
 		BackgroundAudioService.skipTrackBackwardHandler = handler;
 	}
 
 	/**
 	 * Add a handler for when the user taps the button to pause/resume.
 	 */
-	void setPauseHandler( Callable<Void> handler )
-	{
+	void setPauseHandler(Callable<Void> handler) {
 		BackgroundAudioService.pauseHandler = handler;
 	}
 
-	void removePauseHandler(  )
-	{
+	void removePauseHandler() {
 		BackgroundAudioService.pauseHandler = null;
 	}
 
@@ -240,11 +204,9 @@ public class MediaBrowserHelper
 	 * Remove the handler for when the user taps the button to skip the track
 	 * backward.
 	 */
-	void removeSkipTrackBackwardHandler()
-	{
+	void removeSkipTrackBackwardHandler() {
 		BackgroundAudioService.skipTrackBackwardHandler = null;
 	}
-
 
 	/**
 	 * Passes the currently playing track to the media browser, in order to show the
@@ -252,8 +214,7 @@ public class MediaBrowserHelper
 	 *
 	 * @param track The currently playing track.
 	 */
-	void setNotificationMetadata( Track track )
-	{
+	void setNotificationMetadata(Track track) {
 		BackgroundAudioService.currentTrack = track;
 	}
 
@@ -264,8 +225,7 @@ public class MediaBrowserHelper
 	 * @param playbackStateUpdater The function to execute to update the playback
 	 *                             state in the Flutter code.
 	 */
-	void setPlaybackStateUpdater( Function playbackStateUpdater )
-	{
+	void setPlaybackStateUpdater(Function playbackStateUpdater) {
 		BackgroundAudioService.playbackStateUpdater = playbackStateUpdater;
 	}
 }

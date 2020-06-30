@@ -15,7 +15,6 @@ package com.bsutton.sounds;
  *   along with Sounds .  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v4.media.MediaDescriptionCompat;

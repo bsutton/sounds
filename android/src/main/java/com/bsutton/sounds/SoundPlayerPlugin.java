@@ -55,227 +55,186 @@ import java.util.concurrent.Callable;
 import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 
-
-class SoundPlayerPlugin
-	implements MethodCallHandler
-{
+class SoundPlayerPlugin implements MethodCallHandler {
 	final static String TAG = "SoundPlayerPlugin";
-	public static MethodChannel      channel;
+	public static MethodChannel channel;
 	public static List<SoundPlayer> slots;
-	static        Context            androidContext;
-	static        SoundPlayerPlugin soundPlayerPlugin; // singleton
+	static Context androidContext;
+	static SoundPlayerPlugin soundPlayerPlugin; // singleton
 
-
-	public static void attachSoundPlayer (
-		Context ctx, BinaryMessenger messenger
-	                                      )
-	{
-		assert ( soundPlayerPlugin == null );
-		soundPlayerPlugin = new SoundPlayerPlugin ();
-		assert ( slots == null );
-		slots   = new ArrayList<SoundPlayer> ();
-		channel = new MethodChannel ( messenger, "com.bsutton.sounds.sound_player" );
-		channel.setMethodCallHandler ( soundPlayerPlugin );
+	public static void attachSoundPlayer(Context ctx, BinaryMessenger messenger) {
+		assert (soundPlayerPlugin == null);
+		soundPlayerPlugin = new SoundPlayerPlugin();
+		assert (slots == null);
+		slots = new ArrayList<SoundPlayer>();
+		channel = new MethodChannel(messenger, "com.bsutton.sounds.sound_player");
+		channel.setMethodCallHandler(soundPlayerPlugin);
 		androidContext = ctx;
 
 	}
 
-
-	void invokeCallback ( String methodName, Map dic )
-	{
+	void invokeCallback(String methodName, Map dic) {
 		Log.d(TAG, "SoundPlayer: invokeCallback " + methodName);
-		channel.invokeMethod ( methodName, dic );
+		channel.invokeMethod(methodName, dic);
 	}
 
-	void freeSlot ( int slotNo )
-	{
-		slots.set ( slotNo, null );
+	void freeSlot(int slotNo) {
+		slots.set(slotNo, null);
 	}
 
-
-	SoundPlayerPlugin getManager ()
-	{
+	SoundPlayerPlugin getManager() {
 		return soundPlayerPlugin;
 	}
 
 	@Override
-	public void onMethodCall (
-		final MethodCall call, final Result result
-	                         )
-	{
-		try
-		{
-			int slotNo = call.argument ( "slotNo" );
+	public void onMethodCall(final MethodCall call, final Result result) {
+		try {
+			int slotNo = call.argument("slotNo");
 
 			// The dart code supports lazy initialization of players.
 			// This means that players can be registered (and slots allocated)
 			// on the client side in a different order to which the players
 			// are initialised.
-			// As such we need to grow the slot array upto the 
+			// As such we need to grow the slot array upto the
 			// requested slot no. even if we haven't seen initialisation
 			// for the lower numbered slots.
-			while ( slotNo >= slots.size () )
-			{
-				slots.add ( null );
+			while (slotNo >= slots.size()) {
+				slots.add(null);
 			}
 
-			SoundPlayer aPlayer = slots.get ( slotNo );
-			switch ( call.method )
-			{
-				case "initializeMediaPlayer":
-				{
-					assert ( slots.get ( slotNo ) == null );
-					aPlayer = new SoundPlayer ( slotNo );
-					slots.set ( slotNo, aPlayer );
-					aPlayer.initializeSoundPlayer ( call, result );
+			SoundPlayer aPlayer = slots.get(slotNo);
+			switch (call.method) {
+				case "initializeMediaPlayer": {
+					assert (slots.get(slotNo) == null);
+					aPlayer = new SoundPlayer(slotNo);
+					slots.set(slotNo, aPlayer);
+					aPlayer.initializeSoundPlayer(call, result);
 
 				}
-				break;
+					break;
 
-				case "releaseMediaPlayer":
-				{
-					aPlayer.releaseSoundPlayer ( call, result );
+				case "releaseMediaPlayer": {
+					aPlayer.releaseSoundPlayer(call, result);
 					Log.d("SoundPlayer", "************* release called");
-					slots.set ( slotNo, null );
+					slots.set(slotNo, null);
 				}
-				break;
+					break;
 
 				case "getDuration":
-					getDuration( slotNo, call, result );
-				break;
+					getDuration(slotNo, call, result);
+					break;
 
-				case "startPlayer":
-				{
-					aPlayer.startPlayer ( call, result );
+				case "startPlayer": {
+					aPlayer.startPlayer(call, result);
 				}
-				break;
+					break;
 
-				case "stopPlayer":
-				{
-					aPlayer.stopPlayer ( call, result );
+				case "stopPlayer": {
+					aPlayer.stopPlayer(call, result);
 				}
-				break;
+					break;
 
-				case "pausePlayer":
-				{
-					aPlayer.pausePlayer ( call, result );
+				case "pausePlayer": {
+					aPlayer.pausePlayer(call, result);
 				}
-				break;
+					break;
 
-				case "resumePlayer":
-				{
-					aPlayer.resumePlayer ( call, result );
+				case "resumePlayer": {
+					aPlayer.resumePlayer(call, result);
 				}
-				break;
+					break;
 
-				case "seekToPlayer":
-				{
-					aPlayer.seekToPlayer ( call, result );
+				case "seekToPlayer": {
+					aPlayer.seekToPlayer(call, result);
 				}
-				break;
+					break;
 
-				case "setVolume":
-				{
-					aPlayer.setVolume ( call, result );
+				case "setVolume": {
+					aPlayer.setVolume(call, result);
 				}
-				break;
+					break;
 
-				case "setProgressInterval":
-				{
-					aPlayer.setProgressInterval ( call, result );
+				case "setProgressInterval": {
+					aPlayer.setProgressInterval(call, result);
 				}
-				break;
+					break;
 
-				case "androidAudioFocusRequest":
-				{
-					aPlayer.androidAudioFocusRequest ( call, result );
+				case "androidAudioFocusRequest": {
+					aPlayer.androidAudioFocusRequest(call, result);
 				}
-				break;
+					break;
 
-				case "setActive":
-				{
-					aPlayer.setActive ( call, result );
+				case "setActive": {
+					aPlayer.setActive(call, result);
 				}
-				break;
+					break;
 
-				default:
-				{
-					result.notImplemented ();
+				default: {
+					result.notImplemented();
 				}
-				break;
+					break;
 			}
-		}
-		catch (Throwable e)
-		{
+		} catch (Throwable e) {
 			Log.e(TAG, "Error in onMethodCall " + call.method, e);
 			throw e;
 		}
 
 	}
 
-	void invokeCallbackWithString ( int slotNo, String methodName, String arg )
-	{
-		Map<String, Object> dic = new HashMap<String, Object> ();
-		dic.put ( "slotNo", slotNo );
-		dic.put ( "arg", arg );
-		invokeCallback ( methodName, dic );
+	void invokeCallbackWithString(int slotNo, String methodName, String arg) {
+		Map<String, Object> dic = new HashMap<String, Object>();
+		dic.put("slotNo", slotNo);
+		dic.put("arg", arg);
+		invokeCallback(methodName, dic);
 	}
 
-	void invokeCallbackWithDouble ( int slotNo,  String methodName, double arg )
-	{
-		Map<String, Object> dic = new HashMap<String, Object> ();
-		dic.put ( "slotNo", slotNo );
-		dic.put ( "arg", arg );
-		invokeCallback ( methodName, dic );
+	void invokeCallbackWithDouble(int slotNo, String methodName, double arg) {
+		Map<String, Object> dic = new HashMap<String, Object>();
+		dic.put("slotNo", slotNo);
+		dic.put("arg", arg);
+		invokeCallback(methodName, dic);
 	}
 
-	void sendError( int slotNo, String description, int what, int extra, String callbackUuid)
-	{
+	void sendError(int slotNo, String description, int what, int extra, String callbackUuid) {
 		try {
 			JSONObject json = new JSONObject();
 			json.put("description", description);
-			json.put("android_what",  what);
-			json.put("android_extra",  extra);
-			if (callbackUuid != null)
-			{
-				json.put("callbackUuid",  callbackUuid);
+			json.put("android_what", what);
+			json.put("android_extra", extra);
+			if (callbackUuid != null) {
+				json.put("callbackUuid", callbackUuid);
 			}
-			invokeCallbackWithString( slotNo,"onError", json.toString());
+			invokeCallbackWithString(slotNo, "onError", json.toString());
 		} catch (JSONException e) {
 			Log.e(TAG, "Error encoding json message for onError: what=" + what + " extra=" + extra);
 		}
 	}
 
-
-	void getDuration(int slotNo, final MethodCall call, final Result result )
-	{
+	void getDuration(int slotNo, final MethodCall call, final Result result) {
 		/// let the dart code resume whilst we get the results.
 		result.success("queued");
 
 		String callbackUuid = "Not supplied";
-		try
-		{
-			final String path = call.argument ( "path" );
+		try {
+			final String path = call.argument("path");
 			/// used so we can handle multiple calls in parallel.
-			callbackUuid = call.argument ( "callbackUuid" );
+			callbackUuid = call.argument("callbackUuid");
 
 			Uri uri = Uri.parse(path);
 			MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-			mmr.setDataSource(androidContext,uri);
+			mmr.setDataSource(androidContext, uri);
 			String durationStr = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
 			int milliSeconds = Integer.parseInt(durationStr);
 
-			Map<String, Object> args = new HashMap<String, Object> (); 
+			Map<String, Object> args = new HashMap<String, Object>();
 			args.put("callbackUuid", callbackUuid);
 			args.put("milliseconds", milliSeconds);
 
-			Map<String, Object> dic = new HashMap<String, Object> ();
-			dic.put ( "slotNo", slotNo );
-			dic.put ( "arg", args );
-			invokeCallback ( "durationResults", dic );
-		}
-		catch (Throwable e)
-		{
+			Map<String, Object> dic = new HashMap<String, Object>();
+			dic.put("slotNo", slotNo);
+			dic.put("arg", args);
+			invokeCallback("durationResults", dic);
+		} catch (Throwable e) {
 			sendError(slotNo, e.getMessage(), 0, 0, callbackUuid);
 		}
 

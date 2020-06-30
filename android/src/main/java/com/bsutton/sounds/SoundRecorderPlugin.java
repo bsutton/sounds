@@ -31,61 +31,47 @@ import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 
-
-
-
-class SoundRecorderPlugin
-	implements MethodCallHandler
-{
+class SoundRecorderPlugin implements MethodCallHandler {
 	public static final String CHANNEL_NAME = "com.bsutton.sounds.sound_recorder";
-	private static MethodChannel        channel;
+	private static MethodChannel channel;
 	public static List<SoundRecorder> slots;
 
-	static Context              androidContext;
+	static Context androidContext;
 	static SoundRecorderPlugin soundRecorderPlugin; // singleton
 
-	static final String TAG 					  = "SoundRecorder";
-	static final String ERR_UNKNOWN               = "ERR_UNKNOWN";
-	static final String ERR_RECORDER_IS_NULL      = "ERR_RECORDER_IS_NULL";
+	static final String TAG = "SoundRecorder";
+	static final String ERR_UNKNOWN = "ERR_UNKNOWN";
+	static final String ERR_RECORDER_IS_NULL = "ERR_RECORDER_IS_NULL";
 	static final String ERR_RECORDER_IS_RECORDING = "ERR_RECORDER_IS_RECORDING";
 
-
-	public static void attachSoundRecorder ( Context ctx, BinaryMessenger messenger )
-	{
-		assert ( soundRecorderPlugin == null );
-		soundRecorderPlugin = new SoundRecorderPlugin ();
-		assert ( slots == null );
-		slots   = new ArrayList<SoundRecorder> ();
-		channel = new MethodChannel ( messenger, CHANNEL_NAME);
-		channel.setMethodCallHandler ( soundRecorderPlugin );
-		Log.d(TAG,"Registering channel: " + CHANNEL_NAME);
+	public static void attachSoundRecorder(Context ctx, BinaryMessenger messenger) {
+		assert (soundRecorderPlugin == null);
+		soundRecorderPlugin = new SoundRecorderPlugin();
+		assert (slots == null);
+		slots = new ArrayList<SoundRecorder>();
+		channel = new MethodChannel(messenger, CHANNEL_NAME);
+		channel.setMethodCallHandler(soundRecorderPlugin);
+		Log.d(TAG, "Registering channel: " + CHANNEL_NAME);
 		androidContext = ctx;
 	}
 
-
-	void invokeCallback ( String methodName, Map dic )
-	{
+	void invokeCallback(String methodName, Map dic) {
 		// Log.d(TAG, "calling dart " + methodName + dic.toString());
-		channel.invokeMethod ( methodName, dic );
+		channel.invokeMethod(methodName, dic);
 		// Log.d(TAG, "invokeCallback succeeded");
 	}
 
-	void freeSlot ( int slotNo )
-	{
-		slots.set ( slotNo, null );
+	void freeSlot(int slotNo) {
+		slots.set(slotNo, null);
 	}
 
-
-	SoundRecorderPlugin getManager ()
-	{
+	SoundRecorderPlugin getManager() {
 		return soundRecorderPlugin;
 	}
 
-
 	@Override
-	public void onMethodCall ( final MethodCall call, final Result result )
-	{
-		int slotNo = call.argument ( "slotNo" );
+	public void onMethodCall(final MethodCall call, final Result result) {
+		int slotNo = call.argument("slotNo");
 
 		// The dart code supports lazy initialization of the recorder.
 		// This means that recorders can be registered (and slots allocated)
@@ -98,65 +84,53 @@ class SoundRecorderPlugin
 			slots.add(null);
 		}
 
-		SoundRecorder aRecorder = slots.get ( slotNo );
-		switch ( call.method )
-		{
-			case "initializeSoundRecorder":
-			{
-				assert ( slots.get ( slotNo ) == null );
-				aRecorder = new SoundRecorder ( slotNo );
-				slots.set ( slotNo, aRecorder );
-				aRecorder.initializeSoundRecorder ( call, result );
+		SoundRecorder aRecorder = slots.get(slotNo);
+		switch (call.method) {
+			case "initializeSoundRecorder": {
+				assert (slots.get(slotNo) == null);
+				aRecorder = new SoundRecorder(slotNo);
+				slots.set(slotNo, aRecorder);
+				aRecorder.initializeSoundRecorder(call, result);
 			}
-			break;
+				break;
 
-			case "releaseSoundRecorder":
-			{
-				aRecorder.releaseSoundRecorder ( call, result );
-				slots.set ( slotNo, null );
+			case "releaseSoundRecorder": {
+				aRecorder.releaseSoundRecorder(call, result);
+				slots.set(slotNo, null);
 			}
-			break;
+				break;
 
-			case "startRecorder":
-			{
-				aRecorder.startRecorder ( call, result );
-				
+			case "startRecorder": {
+				aRecorder.startRecorder(call, result);
+
 			}
-			break;
+				break;
 
-			case "stopRecorder":
-			{
-				aRecorder.stopRecorder ( call, result );
+			case "stopRecorder": {
+				aRecorder.stopRecorder(call, result);
 			}
-			break;
+				break;
 
-			case "setProgressInterval":
-			{
-				aRecorder.setProgressInterval ( call, result );
+			case "setProgressInterval": {
+				aRecorder.setProgressInterval(call, result);
 			}
-			break;
+				break;
 
-			case "pauseRecorder":
-			{
-				aRecorder.pauseRecorder ( call, result );
+			case "pauseRecorder": {
+				aRecorder.pauseRecorder(call, result);
 			}
-			break;
+				break;
 
-
-			case "resumeRecorder":
-			{
-				aRecorder.resumeRecorder ( call, result );
+			case "resumeRecorder": {
+				aRecorder.resumeRecorder(call, result);
 			}
-			break;
+				break;
 
-
-			default:
-			{
-				result.notImplemented ();
+			default: {
+				result.notImplemented();
 			}
-			break;
+				break;
 		}
 	}
 
 }
-
