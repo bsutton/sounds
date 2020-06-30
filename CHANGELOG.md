@@ -1,3 +1,6 @@
+# 1.0.3
+Minor cleanup of warnings to make pub.dev happy.
+One minor bug detected in currently unused code.
 # 1.0.2
 updated documenation links.
 # 1.0.1
