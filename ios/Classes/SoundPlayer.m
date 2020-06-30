@@ -602,12 +602,13 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 - (void)startProgressTimer
 {
         [self stopProgressTimer];
-        NSLog(@"starting ProgressTimer");
+        NSLog(@"starting ProgressTimer interval:%lf", progressIntervalSeconds);
         self->progressTimer = [NSTimer scheduledTimerWithTimeInterval:progressIntervalSeconds
                                            target:self
                                            selector:@selector(updateProgress:)
                                            userInfo:nil
                                            repeats:YES];
+    NSLog(@"started ProgressTimer");
 }
 
 - (void) stopProgressTimer{
@@ -622,7 +623,7 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 
 - (void)updateProgress:(NSTimer*) atimer
 {
-        NSLog(@"entered updateProgress: %@",  status);
+        NSLog(@"entered updateProgress");
         assert (progressTimer == atimer);
         NSNumber *duration = [NSNumber numberWithDouble:audioPlayer.duration * 1000];
         NSNumber *currentTime = [NSNumber numberWithDouble:audioPlayer.currentTime * 1000];
