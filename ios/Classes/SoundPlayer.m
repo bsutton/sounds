@@ -595,14 +595,15 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 
 - (void)setProgressInterval:(long)intervalInMillis result: (FlutterResult)result
 {   
-        progressIntervalSeconds = intervalInMillis * 1000;
+        progressIntervalSeconds = intervalInMillis * 1000.0;
+        NSLog(@"setProgressInterval called  interval:%lf", progressIntervalSeconds);
         result(@"setProgressInterval");
 }
 
 - (void)startProgressTimer
 {
         [self stopProgressTimer];
-        NSLog(@"starting ProgressTimer");
+        NSLog(@"starting ProgressTimer interval:%lf", progressIntervalSeconds);
         self->progressTimer = [NSTimer scheduledTimerWithTimeInterval:progressIntervalSeconds
                                            target:self
                                            selector:@selector(updateProgress:)
