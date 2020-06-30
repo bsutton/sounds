@@ -124,7 +124,8 @@ class SoundRecorderPlugin extends BasePlugin {
     var result = convert.json.decode(call.arguments['arg'] as String)
         as Map<String, dynamic>;
 
-    var duration = Duration(milliseconds: result['current_position'] as int);
+    var duration =
+        Duration(milliseconds: int.parse(result['current_position'] as String));
     var decibels = double.parse(result['decibels'] as String);
 
     // We use max to ensure that we always report a +ve db.

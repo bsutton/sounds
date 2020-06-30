@@ -338,7 +338,7 @@ public class SoundRecorder
 		try
 		{
 			JSONObject json = new JSONObject ();
-			json.put ( "current_position",  time );
+			json.put ( "current_position",  String.valueOf( time ) );
 			json.put ( "decibels",  String.valueOf(getDbLevel() ));
 			invokeCallbackWithString ( "updateRecorderProgress", json.toString () );
 			// Log.d(TAG,  "updateRecorderProgress: " +  json.toString());
