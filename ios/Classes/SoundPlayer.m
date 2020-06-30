@@ -457,7 +457,7 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 {
           [audioPlayer pause];
           isPaused = true;
-          [self stopProgressTimer]
+    [self stopProgressTimer];
           if ( (setActiveDone != BY_USER) && (setActiveDone != NOT_SET) ) {
               [[AVAudioSession sharedInstance] setActive: NO error: nil];
               setActiveDone = NOT_SET;

@@ -349,21 +349,20 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
 - (void)updateRecorderProgress:(NSTimer*) atimer
 {
         assert (progressTimer == atimer);
+        double decibels = [self getDbLevel];
         NSNumber *currentTime = [NSNumber numberWithDouble:audioRecorder.currentTime * 1000];
         [audioRecorder updateMeters];
 
-        NSString* status = [NSString stringWithFormat:@"{\"current_position\": \"%@\", \"decibels\":%@}"
+        NSString* status = [NSString stringWithFormat:@"{\"current_position\": \"%@\", \"decibels\":\"%lf\"}"
                 , [currentTime stringValue]
-                , [[getDbLevel] stringValue]
+                , decibels
                 ];
         [self invokeCallback:@"updateRecorderProgress" stringArg: status];
 }
 
 
-- (void)getDbLevel
+- (double)getDbLevel
 {
-        assert (progressTimer == atimer);
-
         // NSNumber *normalizedPeakLevel = [NSNumber numberWithDouble:MIN(pow(10.0, [audioRecorder peakPowerForChannel:0] / 20.0) * 160.0, 160.0)];
         [audioRecorder updateMeters];
         // silence is -160 max volume is 0 hence +160 as below calc only worksfor +ve no.s

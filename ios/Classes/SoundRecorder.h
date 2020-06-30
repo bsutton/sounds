@@ -59,7 +59,7 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar);
 - (void)stopProgressTimer;
 - (void)setProgressInterval:(long)intervalInMillis result: (FlutterResult)result;
 - (void)updateRecorderProgress:(NSTimer*) atimer;
-- (void)getDbLevel;
+- (double)getDbLevel;
 
 @end
 
