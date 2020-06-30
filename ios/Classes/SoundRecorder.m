@@ -327,6 +327,7 @@ extern void SoundRecorderReg(NSObject<FlutterPluginRegistrar>* registrar)
 - (void)startProgressTimer
 {
         [self stopProgressTimer];
+        NSLog(@"starting ProgressTimer interval:%lf", progressIntervalSeconds);
         self->progressTimer = [NSTimer scheduledTimerWithTimeInterval: progressIntervalSeconds
                                            target:self
                                            selector:@selector(updateProgress:)

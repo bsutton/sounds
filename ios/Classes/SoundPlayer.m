@@ -262,6 +262,7 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 - (void)initializeSoundPlayer: (FlutterMethodCall*)call result: (FlutterResult)result
 {
         isPaused = false;
+        progressIntervalSeconds = 0.8;
         result([NSNumber numberWithBool: YES]);
 }
 - (void)releaseSoundPlayer: (FlutterMethodCall*)call result: (FlutterResult)result
@@ -595,7 +596,8 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 
 - (void)setProgressInterval:(long)intervalInMillis result: (FlutterResult)result
 {   
-        progressIntervalSeconds = intervalInMillis * 1000;
+        progressIntervalSeconds = intervalInMillis/1000.0;
+        NSLog(@"setProgressInterval called  interval:%lf", progressIntervalSeconds);
         result(@"setProgressInterval");
 }
 
