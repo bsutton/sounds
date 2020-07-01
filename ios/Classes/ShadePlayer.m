@@ -48,7 +48,7 @@ static ShadePlayerManager* shadePlayerManager; // Singleton
 
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar
 {
-        _channel = [FlutterMethodChannel methodChannelWithName:@"com.bsutton.sounds.sound_track_player"
+        _channel = [FlutterMethodChannel methodChannelWithName:@"com.bsutton.sounds.sounds_shade_player"
                                         binaryMessenger:[registrar messenger]];
         shadePlayerManager = [[ShadePlayerManager alloc] init]; // In super class
         [registrar addMethodCallDelegate:shadePlayerManager channel:_channel];
