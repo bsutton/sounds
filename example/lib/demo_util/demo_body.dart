@@ -109,6 +109,8 @@ class _MainBodyState extends State<MainBody> {
             AssetPlayer(),
             Left("Remote Track Playback"),
             RemotePlayer(),
+            Left("Shade Playback"),
+            buildShadePlayer(),
           ],
         ));
   }
@@ -280,6 +282,34 @@ class _MainBodyState extends State<MainBody> {
       },
     );
   }
+
+  Widget buildShadePlayer() {
+    return RaisedButton(
+      child: Text('Play Asset via Shade'),
+      onPressed: () {
+        var player = SoundPlayer.withShadeUI();
+        player.onStopped = ({wasUser}) => player.release();
+        player.play(createAssetTrack());
+        Scaffold.of(context).showSnackBar(new SnackBar(
+            content: new Text("Playing via the OS's Media Player.")));
+      },
+    );
+  }
+}
+
+Track createAssetTrack() {
+  Track track;
+  track = Track.fromAsset('assets/samples/sample.aac');
+
+  track.title = "Asset playback.";
+  track.artist = "By sounds";
+
+  if (Platform.isIOS) {
+    track.albumArtAsset = 'AppIcon';
+  } else if (Platform.isAndroid) {
+    track.albumArtAsset = 'AppIcon.png';
+  }
+  return track;
 }
 
 ///
