@@ -45,13 +45,10 @@ class TempMediaFile {
     _deleted = true;
   }
 
-  /// creates a temporary media file which can be written to.
+  /// creates an empty temporary media file which can be written to.
+  /// Call [delete] to cleanup the temporary file once you have done with it.
   TempMediaFile.empty() {
     path = fm.FileUtil().tempFile();
-
-    if (fm.FileUtil().exists(path)) {
-      fm.FileUtil().delete(path);
-    }
   }
 
   /// Writes [dataBuffer] to a temporary file
