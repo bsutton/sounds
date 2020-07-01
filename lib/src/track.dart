@@ -73,7 +73,7 @@ class Track {
   }
 
   /// Loads a track from an asset
-  Track.fromAsset(String assetPath, {@required MediaFormat mediaFormat}) {
+  Track.fromAsset(String assetPath, {MediaFormat mediaFormat}) {
     if (assetPath == null) {
       throw TrackPathException('The assetPath MUST not be null.');
     }
