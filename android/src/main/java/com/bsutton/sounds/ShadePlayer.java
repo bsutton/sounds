@@ -124,7 +124,7 @@ public class ShadePlayer extends SoundPlayer {
 		result.success("The player has been successfully released");
 	}
 
-	void invokeCallbackWithInteger(String methodName, double arg) {
+	void invokeCallbackWithInteger(String methodName, int arg) {
 		Map<String, Object> dic = new HashMap<String, Object>();
 		dic.put("slotNo", slotNo);
 		dic.put("arg", arg);
