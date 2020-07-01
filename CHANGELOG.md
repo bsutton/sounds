@@ -1,7 +1,32 @@
+# 1.0.0-beta.2
+upgraded to sounds_common 1.0.4
+removed notes on the mimum support interval for progress messages as there is no longer a minimum.
+Exposed the convenience Downloader class.
+
+
 # 1.0.0-beta.1
 First beta release.
 Demo app is working nicely on both android and ios.
 All api changes intended for 1.0.0 are now complete including stripping out ffmpeg and moving from Codec to MediaFormat.
+Fixed the iOS Db calculations to match android.
+Added hacks for flutter issue #19830
+added dart-code recommended settings.
+added repository and documenation keysl
+Update README.md
+renamed flauto to sound
+refactored getDuration as its not really part of the SoundPlayer as it can work without having to initialise a player. I've placed it in the plugin for the moment as nowhere better to place it really.
+sound_player_ui no requires that the Track has a MediaFormat as we need to get the duration.
+removed temp_file as it duplicates functionality in FileUtil.
+only check the mediaformat for support if it is passed other wise let the OS throw the error.
+exported native media formats.
+Forced recording track to use a NativeMediaFormat.
+renamed SoundPlayer ctor withUI to withShadeUI
+renamed startPlayerFromTrack to startShadePlayer. Also seperated out classes into their own files.
+removed old demos and renamed existing ones.
+updated iOS platform to 10.
+added the required _Null declarations in iOS code.
+renamed media formats to be of the form container/codec.
+Fixes for // See https://github.com/flutter/flutter/issues/19830
 # 0.9.2
 Updated doco links
 committed hacks to work around flutter build bug.
