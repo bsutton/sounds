@@ -474,12 +474,6 @@ class SoundPlayer implements SlotEntry {
   /// The [interval] dictates the minimum interval between events
   /// being sent to the stream.
   ///
-  /// The minimum interval supported is 100ms.
-  ///
-  /// Note: the underlying stream has a minimum frequency of 100ms
-  /// so multiples of 100ms will give you the most consistent timing
-  /// source.
-  ///
   /// Note: all calls to [dispositionStream] agains this player will
   /// share a single interval which will controlled by the last
   /// call to this method.
