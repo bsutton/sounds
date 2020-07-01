@@ -1,3 +1,10 @@
+# 1.0.0-beta.3
+Added a test to the demo app to play via the shade.
+Fixed a bug where the shadeStatus was being sent as a double when an int was expected.
+SoundPlayer: removed code left over from when we had a fixed frequency coming up from the OS. Change the dispostionStream method to not take an interval and exposed the setProgressInterval so it can be directly modified.
+Fixed doco for onStopped. missing wasUser arg.
+Fixed a bug with the channel name of the shade player.
+
 # 1.0.0-beta.2
 upgraded to sounds_common 1.0.4
 removed notes on the mimum support interval for progress messages as there is no longer a minimum.

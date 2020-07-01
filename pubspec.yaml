@@ -1,5 +1,5 @@
 name: sounds
-version: 1.0.0-beta.2
+version: 1.0.0-beta.3
 homepage: https://github.com/bsutton/sounds
 documentation: https://github.com/bsutton/sounds/wiki
 description: Sounds provide a complete api and Widgets for audio playback and recording. Both iOS and Android are supported.
@@ -14,7 +14,7 @@ dependencies:
   path: ^1.6.4
   path_provider: ^1.6.7
   provider: ^4.1.0
-  sounds_common: ^1.0.4
+  sounds_common: ^1.0.5
   uuid: ^2.0.4
   flutter: 
     sdk: flutter
