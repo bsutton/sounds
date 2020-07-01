@@ -101,12 +101,6 @@ class SoundPlayer implements SlotEntry {
   StreamController<PlaybackDisposition> _playerController =
       StreamController<PlaybackDisposition>.broadcast();
 
-  /// last time we sent an update via the stream.
-  DateTime _lastPositionDispositionUpdate = DateTime.now();
-
-  /// The user requested interval of stream updates.
-  Duration _positionDispostionInterval;
-
   /// The current playback position as last sent on the stream.
   Duration _currentPosition = Duration.zero;
 
@@ -159,7 +153,7 @@ class SoundPlayer implements SlotEntry {
   ///
   /// ```dart
   /// var player = SoundPlayer.noUI();
-  /// player.onStopped = () => player.release();
+  /// player.onStopped = ({wasUser}) => player.release();
   /// player.play(track);
   /// ```
   /// The above example guarentees that the player will be released.
@@ -189,7 +183,7 @@ class SoundPlayer implements SlotEntry {
   /// call [SoundPlayer.release].
   /// ```dart
   /// var player = SoundPlayer.noUI();
-  /// player.onStopped = () => player.release();
+  /// player.onStopped = ({wasUser}) => player.release();
   /// player.play(track);
   /// ```
   /// The above example guarentees that the player will be released.
@@ -236,7 +230,7 @@ class SoundPlayer implements SlotEntry {
       /// the intialisation.
       await _plugin.initializePlayer(this);
 
-      _setProgressInterval(Duration(milliseconds: 100));
+      setProgressInterval(Duration(milliseconds: 100));
 
       /// hack until we implement [onPlayerReady] in the all the OS
       /// native plugins.
@@ -471,18 +465,13 @@ class SoundPlayer implements SlotEntry {
   /// as the audio is played.
   /// The duration may start out as zero until the
   /// media becomes available.
-  /// The [interval] dictates the minimum interval between events
-  /// being sent to the stream.
   ///
-  /// Note: all calls to [dispositionStream] agains this player will
-  /// share a single interval which will controlled by the last
-  /// call to this method.
+  /// Use [setProgressInterval] to control the frequency
+  /// of events. The default is 100ms.
   ///
   /// If you pause the audio then no updates will be sent to the
   /// stream.
-  Stream<PlaybackDisposition> dispositionStream(
-      {Duration interval = const Duration(milliseconds: 100)}) {
-    _positionDispostionInterval = interval;
+  Stream<PlaybackDisposition> dispositionStream() {
     return _playerController.stream;
   }
 
@@ -497,23 +486,16 @@ class SoundPlayer implements SlotEntry {
   }
 
   /// Stream updates to users of [dispositionStream]
-  /// We have a fixed frequency of 100ms coming up from the
-  /// plugin so we need to modify the frequency based on what
-  /// the user requested in the call to [dispositionStream].
   void _updateProgress(PlaybackDisposition disposition) {
     // we only send dispositions whilst playing.
     if (isPlaying) {
-      if (DateTime.now().difference(_lastPositionDispositionUpdate) >
-          _positionDispostionInterval) {
-        _playerController?.add(disposition);
-        _lastPositionDispositionUpdate = DateTime.now();
-      }
+      _playerController?.add(disposition);
     }
   }
 
   /// Sets the time between callbacks from the platform specific code
-  /// used to notify use of playback progress.
-  Future<void> _setProgressInterval(Duration interval) async {
+  /// used to notify us of playback progress.
+  Future<void> setProgressInterval(Duration interval) async {
     return _initializeAndRun(() async {
       assert(interval.inMilliseconds > 0);
       await _plugin.setProgressInterval(this, interval);
@@ -645,7 +627,7 @@ class SoundPlayer implements SlotEntry {
   }
 
   /// Pass a callback if you want to be notified
-  /// when the OS Media Player changs state.
+  /// when the OS Media Player changes state.
   // ignore: avoid_setters_without_getters
   set onUpdatePlaybackState(OSPlayerStateEvent onUpdatePlaybackState) {
     _onUpdatePlaybackState = onUpdatePlaybackState;
