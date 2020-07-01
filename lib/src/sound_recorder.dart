@@ -243,7 +243,7 @@ class SoundRecorder implements SlotEntry {
   /// var track = Track.fromFile('fred.mpeg');
   ///
   /// var recorder = SoundRecorder();
-  /// recorder.onStopped = () {
+  /// recorder.onStopped = ({wasUser}) {
   ///   recorder.release();
   ///   // playback the recording we just made.
   ///   QuickPlay.fromTrack(track);
