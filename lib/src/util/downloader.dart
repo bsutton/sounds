@@ -10,12 +10,12 @@ import 'log.dart';
 class Downloader {
   /// Downloads the [url] to [saveToPath] emmiting progress
   /// updates as the download progresses.
-  Future<void> download(
-      String url, String saveToPath, LoadingProgress progress) async {
+  static Future<void> download(String url, String saveToPath,
+      {LoadingProgress progress}) async {
     // announce we are starting.
     Log.e('Started downloading: $url');
     var completer = Completer<void>();
-    progress(PlaybackDisposition.preload());
+    _showProgress(progress, PlaybackDisposition.preload());
 
     var client = HttpClient();
     unawaited(client.getUrl(Uri.parse(url)).then((request) {
@@ -25,7 +25,7 @@ class Downloader {
       return request.close();
     }).then((response) async {
       // we have a response.
-      progress(PlaybackDisposition.loading(progress: 0.0));
+      _showProgress(progress, PlaybackDisposition.loading(progress: 0.0));
 
       var lengthReceived = 0;
 
@@ -50,15 +50,17 @@ class Downloader {
           lengthReceived += newBytes.length;
 
           /// notify the world of our progress
-          var percent = lengthReceived / contentLength;
-          progress(PlaybackDisposition.loading(progress: percent));
+          var percent = 0.0;
+          if (contentLength != 0) lengthReceived / contentLength;
+          _showProgress(
+              progress, PlaybackDisposition.loading(progress: percent));
 
           Log.e('Download progress: %${percent * 100} ');
         },
         onDone: () async {
           /// down load is complete
           await raf.close();
-          progress(PlaybackDisposition.loaded());
+          _showProgress(progress, PlaybackDisposition.loaded());
           Log.e('Completed downloading: $url');
           unawaited(subscription.cancel());
           completer.complete();
@@ -66,7 +68,7 @@ class Downloader {
         // ignore: avoid_types_on_closure_parameters
         onError: (Object e, StackTrace st) async {
           // something went wrong.
-          progress(PlaybackDisposition.error());
+          _showProgress(progress, PlaybackDisposition.error());
           Log.e('Error downloading: $url', error: e, stackTrace: st);
           await raf.close();
           completer.completeError(e, st);
@@ -76,5 +78,12 @@ class Downloader {
     }));
 
     return completer.future;
+  }
+
+  static void _showProgress(
+      LoadingProgress progress, PlaybackDisposition disposition) {
+    if (progress != null) {
+      progress(disposition);
+    }
   }
 }

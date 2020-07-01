@@ -87,7 +87,8 @@ class Audio {
       try {
         var tempMediaFile = TempMediaFile.empty();
 
-        await Downloader().download(url, tempMediaFile.path, (disposition) {});
+        await Downloader()
+            .download(url, tempMediaFile.path, progress: (disposition) {});
 
         _dataBuffer = await FileUtil().readIntoBuffer(tempMediaFile.path);
       } finally {
@@ -234,7 +235,7 @@ class Audio {
   Future<void> _downloadURL(LoadingProgress progress) async {
     var saveToFile = TempMediaFile.empty();
     _tempMediaFiles.add(saveToFile);
-    await Downloader().download(url, saveToFile.path, progress);
+    await Downloader().download(url, saveToFile.path, progress: progress);
     _storagePath = saveToFile.path;
     _onDisk = true;
   }
