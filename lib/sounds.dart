@@ -20,7 +20,8 @@ export 'package:sounds_common/sounds_common.dart'
         MediaFormatException,
         PlaybackDisposition,
         Track,
-        FileUtil;
+        FileUtil, 
+        Downloader;
 
 export 'src/album.dart';
 export 'src/android/android_audio_focus_gain.dart';
