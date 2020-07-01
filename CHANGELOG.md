@@ -1,3 +1,6 @@
+# 1.0.5
+removed the required annotation from Track.fromAsset
+
 # 1.0.4
 Exposed the Downloader class as part of the public api.
 # 1.0.3
