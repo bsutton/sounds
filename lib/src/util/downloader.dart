@@ -51,7 +51,7 @@ class Downloader {
 
           /// notify the world of our progress
           var percent = 0.0;
-          if (contentLength != 0) lengthReceived / contentLength;
+          if (contentLength != 0) percent = lengthReceived / contentLength;
           _showProgress(
               progress, PlaybackDisposition.loading(progress: percent));
 
