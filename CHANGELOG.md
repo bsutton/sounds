@@ -1,3 +1,7 @@
+# 1.0.0-beta.4
+Upgraded to sounds_common 1.0.6 to fix a bug in the percentage complete in the SoundPlayerUI. It was always reporting 0percent complete even when progressing.
+released 1.0.0.beta3
+
 # 1.0.0-beta.3
 Added a test to the demo app to play via the shade.
 Fixed a bug where the shadeStatus was being sent as a double when an int was expected.
