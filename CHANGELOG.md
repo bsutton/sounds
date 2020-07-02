@@ -1,3 +1,6 @@
+# 1.0.6
+Fixed a bug in the downloader. The percentage was always 0.
+
 # 1.0.5
 removed the required annotation from Track.fromAsset
 
