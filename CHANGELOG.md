@@ -1,3 +1,18 @@
+# 1.0.0-beta.5
+added button to test playing remote url via shade.
+rebuild without the build.gradle hacks to try and get around the missing .packages error.
+
+# 1.0.0-beta.4
+added button to test playing remote url via shade.
+released 1.0 beta4
+Upgraded to sounds_common 1.0.6 to fix a bug in the percentage complete in the SoundPlayerUI. It was always reporting 0percent complete even when progressing.
+released 1.0.0.beta3
+
+# 1.0.0-beta.4
+released 1.0 beta4
+Upgraded to sounds_common 1.0.6 to fix a bug in the percentage complete in the SoundPlayerUI. It was always reporting 0percent complete even when progressing.
+released 1.0.0.beta3
+
 # 1.0.0-beta.4
 Upgraded to sounds_common 1.0.6 to fix a bug in the percentage complete in the SoundPlayerUI. It was always reporting 0percent complete even when progressing.
 released 1.0.0.beta3
