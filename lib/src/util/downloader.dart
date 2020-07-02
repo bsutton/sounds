@@ -13,7 +13,7 @@ class Downloader {
   static Future<void> download(String url, String saveToPath,
       {LoadingProgress progress}) async {
     // announce we are starting.
-    Log.e('Started downloading: $url');
+    Log.d('Started downloading: $url');
     var completer = Completer<void>();
     _showProgress(progress, PlaybackDisposition.preload());
 
@@ -55,13 +55,13 @@ class Downloader {
           _showProgress(
               progress, PlaybackDisposition.loading(progress: percent));
 
-          Log.e('Download progress: %${percent * 100} ');
+          Log.d('Download progress: %${percent * 100} ');
         },
         onDone: () async {
           /// down load is complete
           await raf.close();
           _showProgress(progress, PlaybackDisposition.loaded());
-          Log.e('Completed downloading: $url');
+          Log.d('Completed downloading: $url');
           unawaited(subscription.cancel());
           completer.complete();
         },
