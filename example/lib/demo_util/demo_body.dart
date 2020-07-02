@@ -111,6 +111,8 @@ class _MainBodyState extends State<MainBody> {
             RemotePlayer(),
             Left("Shade Playback"),
             buildShadePlayer(),
+            Left("Test Playback"),
+            buildRemoteShadeButton(context),
           ],
         ));
   }
@@ -329,4 +331,30 @@ class Left extends StatelessWidget {
           child: Text(label, style: TextStyle(fontWeight: FontWeight.bold))),
     );
   }
+}
+
+Widget buildRemoteShadeButton(BuildContext context) {
+  return RaisedButton(
+    child: Text('Play Remote URL via Shade'),
+    onPressed: () {
+      playRemoteURL();
+      Scaffold.of(context).showSnackBar(
+          new SnackBar(content: new Text("Playing test OS's Media Player.")));
+    },
+  );
+}
+
+void playRemoteURL() async {
+  SoundPlayer soundPlayer =
+      SoundPlayer.withShadeUI(canSkipBackward: false, playInBackground: true);
+
+  //playPost({Post post, DirectPost directPost}) async {
+  soundPlayer.onStopped = ({wasUser}) => soundPlayer.release();
+
+  // print('playing: ${post.audioFileLocation}');
+
+  // Track track = Track.fromURL('${post.audioFileLocation}');
+  Track track = Track.fromURL(
+      'https://file-examples.com/wp-content/uploads/2017/11/file_example_MP3_2MG.mp3');
+  await soundPlayer.play(track);
 }
