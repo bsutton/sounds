@@ -159,6 +159,7 @@ extern void ShadePlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 {
         setCategoryDone = NOT_SET;
         setActiveDone = NOT_SET;
+        result([NSNumber numberWithBool: YES]);
 }
 
 - (void)releaseShadePlayer:(FlutterMethodCall *)call result:(FlutterResult)result
