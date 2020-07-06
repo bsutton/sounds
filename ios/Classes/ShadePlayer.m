@@ -84,13 +84,20 @@ extern void ShadePlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result
 {
-        int slotNo = [call.arguments[@"slotNo"] intValue];
-        assert ( (slotNo >= 0) && (slotNo <= [playerSlots count]));
-        if (slotNo == [playerSlots count])
+         int slotNo = [call.arguments[@"slotNo"] intValue];
+               
+        // The dart code supports lazy initialization of players.
+        // This means that players can be registered (and slots allocated)
+        // on the client side in a different order to which the players
+        // are initialised.
+        // As such we need to grow the slot array upto the 
+        // requested slot no. even if we haven't seen initialisation
+        // for the lower numbered slots.
+        while ( slotNo >= [playerSlots count] )
         {
-               [playerSlots addObject:  [NSNull null] ];
+               [playerSlots addObject: [NSNull null]];
         }
-        //assert ( ShadePlayerSlots[slotNo] != nil );
+
 
         ShadePlayer* aShadePlayer = playerSlots[slotNo];
         
