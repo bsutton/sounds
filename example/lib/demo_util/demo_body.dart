@@ -254,7 +254,7 @@ class _MainBodyState extends State<MainBody> {
     Scaffold.of(context).showSnackBar(snackBar);
   }
 
-  ///
+  ///s
   Future<bool> showAlertDialog(BuildContext context, String prompt) {
     // set up the buttons
     Widget cancelButton = FlatButton(
@@ -301,7 +301,8 @@ class _MainBodyState extends State<MainBody> {
 
 Track createAssetTrack() {
   Track track;
-  track = Track.fromAsset('assets/samples/sample.aac');
+  track = Track.fromAsset('assets/samples/sample.aac',
+      mediaFormat: WellKnownMediaFormats.adtsAac);
 
   track.title = "Asset playback.";
   track.artist = "By sounds";
