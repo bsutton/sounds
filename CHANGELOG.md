@@ -1,4 +1,5 @@
 # 1.0.0-beta.6
+Fixed #22
 Updated to latest version of pubspec package.
 add missing codec
 Added missing 'result' call in the shadeplayer init.
