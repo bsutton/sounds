@@ -139,7 +139,7 @@ class SoundPlayer implements SlotEntry {
   ///
   /// If [canSkipForward] is true then the user will be able to click the skip
   /// forward button on the OSs' UI. Given the [SoundPlayer] only deals with a
-  /// single track at a time you will need to implement [onSkipBackward] for
+  /// single track at a time you will need to implement [onSkipForward] for
   /// this action to have any affect. The [Album] class has the ability to
   /// manage mulitple tracks.
   ///
@@ -518,12 +518,12 @@ class SoundPlayer implements SlotEntry {
 
   /// handles a pause coming up from the player
   void _onSystemPaused() {
-    if (_onPaused != null) _onPaused(wasUser: true);
+    pause();
   }
 
   /// handles a resume coming up from the player
   void _onSystemResumed() {
-    if (_onResumed != null) _onResumed(wasUser: true);
+    resume();
   }
 
   /// System event telling us that the app has been paused.
