@@ -191,6 +191,7 @@ abstract class PlayerBasePlugin extends BasePlugin {
   /// The below methods are shared by all the playback plugins.
   Future<dynamic> onMethodCallback(
       covariant audio_player.SoundPlayer player, MethodCall call) {
+    Log.d('OS callback ${call.method}');
     switch (call.method) {
 
       ///TODO implement in the OS code for each player.
