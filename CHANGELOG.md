@@ -1,3 +1,9 @@
+# 1.0.0-beta.6
+Updated to latest version of pubspec package.
+add missing codec
+Added missing 'result' call in the shadeplayer init.
+added missing lazy initialization of slots for the shade player.
+
 # 1.0.0-beta.5
 added button to test playing remote url via shade.
 rebuild without the build.gradle hacks to try and get around the missing .packages error.
