@@ -45,7 +45,7 @@ import 'sound_player.dart';
 class QuickPlay {
   SoundPlayer _player;
   Track _track;
-  PlayerEventWithCause _onStopped;
+  PlayerEvent _onStopped;
 
   /// Creates a QuickPlay from a Track and immediately plays it.
   /// By default no UI is displayed.
@@ -53,7 +53,12 @@ class QuickPlay {
   /// but all of the UI controls are disabled.
   /// You can control the playback [volume]. The valid range is 0.0 to 1.0
   /// and the default is 0.5.
-  QuickPlay.fromTrack(this._track, {double volume, bool withShadeUI = false}) {
+  ///
+  /// Pass a callback to [onStopped] if you want to be notified
+  /// that audio has stopped playing.
+  QuickPlay.fromTrack(this._track,
+      {double volume, bool withShadeUI = false, PlayerEvent onStopped})
+      : _onStopped = onStopped {
     QuickPlay._internal(volume, withShadeUI);
   }
 
@@ -86,7 +91,12 @@ class QuickPlay {
   /// but all of the UI controls are disabled.
   ///
   /// The [volume] must be in the range 0.0 to 1.0. Defaults to 0.5
-  QuickPlay.fromFile(String path, {double volume, bool withShadeUI = false}) {
+  ///
+  /// Pass a callback to [onStopped] if you want to be notified
+  /// that audio has stopped playing.
+  QuickPlay.fromFile(String path,
+      {double volume, bool withShadeUI = false, PlayerEvent onStopped})
+      : _onStopped = onStopped {
     _track = Track.fromFile(path);
     QuickPlay._internal(volume, withShadeUI);
   }
@@ -104,7 +114,12 @@ class QuickPlay {
   /// but all of the UI controls are disabled.
   ///
   /// The [volume] must be in the range 0.0 to 1.0. Defaults to 0.5
-  QuickPlay.fromURL(String url, {double volume, bool withShadeUI = false}) {
+  ///
+  /// Pass a callback to [onStopped] if you want to be notified
+  /// that audio has stopped playing.
+  QuickPlay.fromURL(String url,
+      {double volume, bool withShadeUI = false, PlayerEvent onStopped})
+      : _onStopped = onStopped {
     _track = Track.fromURL(url);
     QuickPlay._internal(volume, withShadeUI);
   }
@@ -119,10 +134,15 @@ class QuickPlay {
   /// If you pass [withShadeUI]=true then the OSs' media player is displayed
   /// but all of the UI controls are disabled.
   /// The [volume] must be in the range 0.0 to 1.0. Defaults to 0.5
+  ///
+  /// Pass a callback to [onStopped] if you want to be notified
+  /// that audio has stopped playing.
   QuickPlay.fromBuffer(Uint8List dataBuffer,
       {double volume,
       @required MediaFormat mediaFormat,
-      bool withShadeUI = false}) {
+      bool withShadeUI = false,
+      PlayerEvent onStopped})
+      : _onStopped = onStopped {
     _track = Track.fromBuffer(dataBuffer, mediaFormat: mediaFormat);
     QuickPlay._internal(volume, withShadeUI);
   }
@@ -137,12 +157,5 @@ class QuickPlay {
       if (_onStopped != null) _onStopped();
     };
     return _player.play(_track);
-  }
-
-  /// Pass a callback if you want to be notified
-  /// that audio has stopped playing.
-  /// ignore: avoid_setters_without_getters
-  set onStopped(PlayerEventWithCause onStopped) {
-    _onStopped = onStopped;
   }
 }
