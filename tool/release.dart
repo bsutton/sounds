@@ -1,5 +1,4 @@
 #! /usr/bin/env dshell
-
 import 'dart:io';
 
 import 'package:dshell/dshell.dart';
@@ -270,7 +269,7 @@ Version incrementVersion(
   pubspec.version = version;
   print('pubspec version is: ${pubspec.version}');
   print('pubspec path is: $pubspecPath');
-  pubspec.saveToFile(pubspecPath);
+  pubspec.writeToFile(pubspecPath);
   return version;
 }
 
