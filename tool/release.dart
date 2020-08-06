@@ -270,7 +270,7 @@ Version incrementVersion(
   pubspec.version = version;
   print('pubspec version is: ${pubspec.version}');
   print('pubspec path is: $pubspecPath');
-  pubspec.writeToFile(pubspecPath);
+  pubspec.saveToFile(pubspecPath);
   return version;
 }
 
