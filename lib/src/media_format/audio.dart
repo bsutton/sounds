@@ -273,6 +273,7 @@ class Audio {
   /// otherwise you will leak temp files.
   void release() {
     if (_tempMediaFiles.isNotEmpty) {
+      _prepared = false;
       _onDisk = false;
       _deleteTempFiles();
     }
