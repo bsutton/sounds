@@ -1,3 +1,12 @@
+# 1.0.0-beta.7
+This release contains a breaking change.
+QuickPlay has been updated to take onStopped as a ctor argument to ensure that it always gets called.
+
+updated to latest pubspec package api.
+updated to reflect api changes.
+Added additional logging.
+minor cleanup.
+
 # 1.0.0-beta.6
 Fixed #22
 Updated to latest version of pubspec package.
