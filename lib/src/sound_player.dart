@@ -468,6 +468,8 @@ class SoundPlayer implements SlotEntry {
   /// as the audio is played.
   /// The duration may start out as zero until the
   /// media becomes available.
+  /// Keep in mind disposition stream is a type of broadcast stream
+  /// meaning duration and position will only be available as they fire.
   ///
   /// Use [setProgressInterval] to control the frequency
   /// of events. The default is 100ms.
