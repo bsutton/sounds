@@ -71,7 +71,7 @@ Sounds is a large and complex project which requires me to maintain multiple har
 
 I greatly appreciate any contributions to the project which can be as simiple as providing feedback on the api or documentation.
 
-See the [Contributing] section below for details.
+See the [Contributing](#Contributing) section below for details.
 
 ### Sponsorship
 If you can't help out by directly contributing code maybe you could Sponsor me so I can spend more time improving Sounds.
