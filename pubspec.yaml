@@ -1,5 +1,5 @@
 name: sounds_common
-version: 1.0.7
+version: 1.0.8
 homepage: https://github.com/bsutton/sounds_common
 documentation: https://github.com/bsutton/sounds_common/wiki
 description: A shared library for the sounds and sounds_codec packages. Provides MediaFormat, Track and small set of utility functions.
