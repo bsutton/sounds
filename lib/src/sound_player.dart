@@ -518,12 +518,16 @@ class SoundPlayer implements SlotEntry {
 
   /// handles a pause coming up from the player
   void _onSystemPaused() {
-    pause();
+    if(!isPaused){
+      pause();
+    }
   }
 
   /// handles a resume coming up from the player
   void _onSystemResumed() {
-    resume();
+    if(isPaused){
+      resume();
+    }
   }
 
   /// System event telling us that the app has been paused.
