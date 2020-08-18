@@ -69,14 +69,26 @@ I'm looking to make Sounds the go to project for Flutter Audio with support for 
 
 Sounds is a large and complex project which requires me to maintain multiple hardware platforms and test environments.
 
+I greatly appreciate any contributions to the project which can be as simiple as providing feedback on the api or documentation.
+
+See the [Contributing] section below for details.
+
 ### Sponsorship
-If you can't help out by directly contributing code maybe you could Sponsor me to offset some of the costs of maintaining Sounds.
+If you can't help out by directly contributing code maybe you could Sponsor me so I can spend more time improving Sounds.
+
+Sounds is a large commitment and I'm maintaining several other dart related projects so any support would be greatly appreciated.
+
+Key short term goals are:
+* Hire a graphics designer to improve the look of the widgets
+* Provide support for the web
+* Provide support for a wider range of Codecs
+* Provide support for streaming
 
 If I can get enough sponsorship I intend hiring a grad to do a chunk of the dirty work so I can focus on some of the larger features such as Web Support.
 
 You can find the purple heart Sponser button at the top of the page.
 
-
+If you can't afford a coffee then show your support by 'liking' the Sounds project on the [pub.dev](https://pub.dev/packages/sounds) site.
 
 # Documentation
 
