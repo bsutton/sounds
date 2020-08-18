@@ -1,3 +1,10 @@
+# 1.0.0-beta.8
+Fixed a bug in the stop() method. It was not calling the _plugin.stop method.
+no longer used.
+
+# 0.9.3
+identical to beta 7 to stop people being wedged by the deployment bug in 0.9.2
+
 # 1.0.0-beta.7
 This release contains a breaking change.
 QuickPlay has been updated to take onStopped as a ctor argument to ensure that it always gets called.

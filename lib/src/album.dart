@@ -1,3 +1,4 @@
+import 'package:meta/meta.dart';
 import 'package:sounds_common/sounds_common.dart';
 
 import 'sound_player.dart';
@@ -79,9 +80,13 @@ class Album {
   }
 
   void _onStopped({bool wasUser}) {}
+
   void _skipBackward() {
     if (_currentTrackIndex > 1) {
-      stop();
+      /// TODO: we should suppress onStopped events being generated form
+      /// indirect actions like skip that causes a stop as a side effect.
+      /// onStop should only be called if it is the 'end state'.
+      stop(wasUser: true);
 
       _currentTrack = _previousTrack();
 
@@ -95,7 +100,7 @@ class Album {
 
   void _skipForward() {
     if (_tracks == null || _currentTrackIndex < _tracks.length - 1) {
-      stop();
+      stop(wasUser: true);
 
       _currentTrack = _nextTrack();
 
@@ -159,8 +164,8 @@ class Album {
   }
 
   /// stop the album playing.
-  void stop() {
-    _player.stop();
+  void stop({@required bool wasUser}) {
+    _player.stop(wasUser: wasUser);
     trackRelease(_currentTrack);
   }
 

@@ -475,7 +475,9 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
   ///
   Future<void> _stop({bool supressState = false}) async {
     if (!_player.isStopped) {
-      _player.stop().then<void>((_) {
+      /// we always set wasUser to false as this is handled internally
+      /// and we don't care how or why the audio was stopped.
+      _player.stop(wasUser: false).then<void>((_) {
         if (_playerSubscription != null) {
           _playerSubscription.cancel();
           _playerSubscription = null;

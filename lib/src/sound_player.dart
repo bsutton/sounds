@@ -17,6 +17,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:meta/meta.dart';
 import 'package:sounds_common/sounds_common.dart';
 
 import '../sounds.dart';
@@ -268,7 +269,7 @@ class SoundPlayer implements SlotEntry {
   /// background we want to release the plugin and
   /// any other temporary resources.
   /// The exception is if we are configured to continue
-  /// playing in the backgroudn in which case
+  /// playing in the backgroud in which case
   /// this method won't be called.
   Future<void> _softRelease() async {
     // Stop the player playback before releasing
@@ -370,7 +371,9 @@ class SoundPlayer implements SlotEntry {
   }
 
   /// Stops playback.
-  Future<void> stop() async {
+  /// Use the [wasUser] to indicate if the stop was a caused by a user action
+  /// or the application called stop.
+  Future<void> stop({@required bool wasUser}) async {
     if (playerState == PlayerState.isStopped) {
       throw PlayerInvalidStateException('Player is not playing.');
     }
@@ -378,7 +381,7 @@ class SoundPlayer implements SlotEntry {
     return _initializeAndRun(() async {
       try {
         playerState = PlayerState.isStopped;
-        if (_onStopped != null) _onStopped(wasUser: false);
+        await _plugin.stop(this);
       } on Object catch (e) {
         Log.d(e.toString());
         rethrow;
@@ -513,7 +516,7 @@ class SoundPlayer implements SlotEntry {
     _playerController?.add(finalPosition);
 
     playerState = PlayerState.isStopped;
-    if (_onStopped != null) _onStopped();
+    if (_onStopped != null) _onStopped(wasUser: false);
   }
 
   /// handles a pause coming up from the player
@@ -540,7 +543,7 @@ class SoundPlayer implements SlotEntry {
         /// we are only in a system pause if we were playing
         /// when the app was paused.
         _inSystemPause = true;
-        stop();
+        stop(wasUser: false);
       }
       _softRelease();
     }
@@ -593,7 +596,7 @@ class SoundPlayer implements SlotEntry {
         break;
       case SystemPlaybackState.stopped:
         playerState = PlayerState.isStopped;
-        if (_onStopped != null) _onStopped(wasUser: false);
+        if (_onStopped != null) _onStopped(wasUser: true);
         break;
     }
 
@@ -838,7 +841,7 @@ typedef OSPlayerStateEvent = void Function(SystemPlaybackState);
 /// TODO should we be passing an object that contains
 /// information such as the position in the track when
 /// it was paused?
-typedef PlayerEventWithCause = void Function({bool wasUser});
+typedef PlayerEventWithCause = void Function({@required bool wasUser});
 typedef UpdatePlayerProgress = void Function(int current, int max);
 
 /// The player was in an unexpected state when you tried
