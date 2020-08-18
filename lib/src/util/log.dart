@@ -11,7 +11,7 @@ class Log extends Logger {
   static String _localPath;
 
   /// The default log level.
-  static Level loggingLevel = Level.debug;
+  static Level loggingLevel = Level.info;
 
   Log._internal(String currentWorkingDirectory)
       : super(printer: MyLogPrinter(currentWorkingDirectory));
