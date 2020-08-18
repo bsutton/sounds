@@ -61,6 +61,23 @@ The core classes are:
 
 
 
+## Help
+
+Audio is a fundemental building block needed by almost every flutter project.
+
+I'm looking to make Sounds the go to project for Flutter Audio with support for each of the Flutter supported platforms.
+
+Sounds is a large and complex project which requires me to maintain multiple hardware platforms and test environments.
+
+### Sponsorship
+If you can't help out by directly contributing code maybe you could Sponsor me to offset some of the costs of the maintaining Sounds.
+
+If I can get enough sponsorship I intend hiring a grad to do a chunk of the dirty work so I can focus on some of the larger features such as Web Support.
+
+You can find the purple heart Sponser button at the top of the page.
+
+
+
 
 # Documentation
 
@@ -103,21 +120,4 @@ RecorderPlaybackController - pairs a SoundPlayerUI and SoundRecorderUI to provid
 Note: there are some limitations on the supported MediaFormat. See the [MediaFormat] section below.
 
 ![Demo](https://raw.githubusercontent.com/bsutton/sounds/master/example.png)
-
-
-
-## Help Maintenance
-
-Audio is a fundemental building block needed by almost every flutter project.
-
-I'm looking to make Sounds the go to project for Flutter Audio with support for each of the Flutter supported platforms.
-
-Sounds is a large and complex project which requires me to maintain multiple hardware platforms and test environments.
-
-If you can't help out by directly contributing code maybe you could Sponsor me to offset some of the costs of the maintaining Sounds.
-
-If I can get enough sponsorship I intend hiring a grad to do a chunk of the dirty work so I can focus on some of the larger features such as Web Support.
-
-You can find the purple heart Sponser button at the top of the page.
-
 
