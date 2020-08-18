@@ -1,3 +1,7 @@
+# 1.0.8
+Changed default logging level from debug to info
+pubspec updated with new version number
+
 # 1.0.7
 Fixed issue #22 After resume track was not in correct state due to incorrect release method.
 change log statements to debug rather than error.
