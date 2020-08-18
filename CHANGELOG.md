@@ -1,3 +1,6 @@
+# 1.0.0-beta.11
+Updated comments to avoid confusion regarding dispositions streams
+
 # 1.0.0-beta.10
 Added example of setting logging level for application
 
