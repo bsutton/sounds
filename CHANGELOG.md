@@ -1,3 +1,6 @@
+# 1.0.0-beta.10
+Added example of setting logging level for application
+
 # 1.0.0-beta.9
 Merge branch 'master' of https://github.com/bsutton/sounds into master
 Fixed #26 by adding conditional to _onSystemPause and _onSystemResume
