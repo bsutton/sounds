@@ -1,3 +1,13 @@
+# 1.0.0-beta.12
+syncing to new gitignore and updated pubspec.yaml to use latest sounds_common
+updated sounds_common dependency version to ^1.0.8
+Update README.md
+Update README.md
+Update README.md
+Update README.md
+Update README.md
+Update README.md
+
 # 1.0.0-beta.11
 Updated comments to avoid confusion regarding dispositions streams
 
