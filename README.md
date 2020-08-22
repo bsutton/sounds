@@ -61,6 +61,34 @@ The core classes are:
 
 
 
+## Help
+
+Audio is a fundemental building block needed by almost every flutter project.
+
+I'm looking to make Sounds the go to project for Flutter Audio with support for each of the Flutter supported platforms.
+
+Sounds is a large and complex project which requires me to maintain multiple hardware platforms and test environments.
+
+I greatly appreciate any contributions to the project which can be as simiple as providing feedback on the api or documentation.
+
+See the [Contributing](#Contributing) section below for details.
+
+### Sponsorship
+If you can't help out by directly contributing code maybe you could Sponsor me so I can spend more time improving Sounds.
+
+Sounds is a large commitment and I'm maintaining several other dart related projects so any support would be greatly appreciated.
+
+Key short term goals are:
+* Hire a graphics designer to improve the look of the widgets
+* Provide support for the web
+* Provide support for a wider range of Codecs
+* Provide support for streaming
+
+If I can get enough sponsorship I intend hiring a grad to do a chunk of the dirty work so I can focus on some of the larger features such as Web Support.
+
+You can find the purple heart Sponser button at the top of the page.
+
+If you can't afford a coffee then show your support by 'liking' the Sounds project on the [pub.dev](https://pub.dev/packages/sounds) site.
 
 # Documentation
 
@@ -104,11 +132,3 @@ Note: there are some limitations on the supported MediaFormat. See the [MediaFor
 
 ![Demo](https://raw.githubusercontent.com/bsutton/sounds/master/example.png)
 
-
-
-## Help Maintenance
-
-I've been maintaining quite many repos these days and burning out slowly. If you could help me cheer up, buying me a cup of coffee will make my life really happy and get much energy out of it.
-<br/>
-<a href="https://www.buymeacoffee.com/bsutton" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/purple_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
-[![Paypal](https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png)](https://paypal.me/bsutton)
