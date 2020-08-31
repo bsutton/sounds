@@ -420,7 +420,6 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
         throw TrackLoaderException;
       }
     } on MediaFormatException catch (exception, st) {
-      Log.d(green('Transitioning = false'));
       Log.e(
         'Error occured loading the track: ${exception.toString()}',
         error: exception,
@@ -445,7 +444,6 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
     } finally {
       _loading = false;
       _transitioning = false;
-      Log.d(green('Transitioning = false'));
     }
   }
 
