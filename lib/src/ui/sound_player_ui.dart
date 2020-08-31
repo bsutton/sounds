@@ -22,6 +22,7 @@ import 'package:provider/provider.dart';
 import 'package:sounds_common/sounds_common.dart';
 
 import '../../sounds.dart';
+import '../sound_player.dart' show PlayerInvalidStateException;
 import 'grayed_out.dart';
 import 'recorder_playback_controller.dart';
 import 'slider.dart';
@@ -29,6 +30,8 @@ import 'slider_position.dart';
 import 'tick_builder.dart';
 
 typedef OnLoad = Future<Track> Function(BuildContext context);
+
+mixin TrackLoaderException implements Exception {}
 
 /// A HTML 5 style audio play bar.
 /// Allows you to play/pause/resume and seek an audio track.
@@ -178,10 +181,11 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
     _setCallbacks();
   }
 
+  @override
   void didUpdateWidget(covariant SoundPlayerUI oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    print('didUpdateWidget ${track?.artist}');
+    Log.d('didUpdateWidget ${track?.artist}');
     track?.duration?.then((duration) {
       _localController.add(PlaybackDisposition(PlaybackDispositionState.init,
           position: Duration.zero, duration: duration));
@@ -270,17 +274,11 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
   }
 
   @override
-  void dispose() async {
-    print("stopping Player on dispose");
+  Future<void> dispose() async {
+    super.dispose();
+    Log.d('stopping Player on dispose');
     await _stop(supressState: true);
     await _player.release();
-
-    /// _stop should do this but analyzer insists we put it here.
-    if (_playerSubscription != null) {
-      _playerSubscription.cancel();
-      _playerSubscription = null;
-    }
-    super.dispose();
   }
 
   Widget _buildPlayBar() {
@@ -330,68 +328,65 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
   ///
   /// see [play] for the method to programmitcally start
   /// the audio playing.
-  void _onPlay(BuildContext localContext) {
+  Future<void> _onPlay(BuildContext localContext) async {
     switch (_playState) {
       case PlayState.stopped:
-        play();
+        await play();
         break;
 
       case PlayState.playing:
         // pause the player
-        pause();
+        await pause();
         break;
       case PlayState.paused:
         // resume the player
-        resume();
+        await resume();
 
         break;
       case PlayState.disabled:
         // shouldn't be possible as play button is disabled.
-        _stop();
+        await _stop();
         break;
     }
   }
 
   /// Call [resume] to resume playing the audio.
-  void resume() {
-    setState(() {
-      _transitioning = true;
+  Future<void> resume() async {
+    _transitioning = true;
+
+    try {
+      await _player.resume();
       _playState = PlayState.playing;
-    });
-
-    _player
-        .resume()
-        .then((_) => _transitioning = false)
-        .catchError((dynamic e) {
-      Log.w("Error calling resume ${e.toString()}");
-
-      return null;
-    }).whenComplete(() => _transitioning = false);
+    } on PlayerInvalidStateException catch (e) {
+      Log.w('Error calling resume ${e.toString()}', error: e);
+    } finally {
+      _transitioning = false;
+    }
   }
 
   /// Call [pause] to pause playing the audio.
-  void pause() {
+  Future<void> pause() async {
     // pause the player
-    setState(() {
-      _transitioning = true;
-      _playState = PlayState.paused;
-    });
+    _transitioning = true;
 
-    _player.pause().then((_) => _transitioning = false).catchError((dynamic e) {
-      Log.w("Error calling pause ${e.toString()}");
-      _playState = PlayState.playing;
-      return null;
-    }).whenComplete(() => _transitioning = false);
+    try {
+      await _player.pause();
+      _playState = PlayState.paused;
+    } on PlayerInvalidStateException catch (e) {
+      Log.w('Error calling pause ${e.toString()}', error: e);
+    } finally {
+      _transitioning = false;
+    }
   }
 
   /// start playback.
-  void play() async {
+  Future<void> play() async {
     _transitioning = true;
     _loading = true;
-    Log.d("Loading starting");
+    Log.d('Loading starting');
 
     if (track != null && _player.isPlaying) {
-      Log.d("play called whilst player running. Stopping Player first.");
+      Log.d('play called whilst player running. Stopping Player first.');
       await _stop();
     }
 
@@ -412,62 +407,52 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
     /// no track then just silently ignore the start action.
     /// This means that _onLoad returned null and the user
     /// can display appropriate errors.
-    if (trackLoader != null) {
-      trackLoader.then((newTrack) {
-        _loadedTrack = newTrack;
-        if (track != null) {
-          if (track.mediaFormat == null) {
-            // we need the format so we can get the duration.
-            throw MediaFormatException(
-                'You must provide a mediaFormat to the track');
-          }
-          _start();
-        } else {
-          _loading = false;
-          _transitioning = false;
+    try {
+      _loadedTrack = await trackLoader;
+      if (track != null) {
+        if (track.mediaFormat == null) {
+          // we need the format so we can get the duration.
+          throw MediaFormatException(
+              'You must provide a mediaFormat to the track');
         }
-      })
-          // ignore: avoid_types_on_closure_parameters
-          .catchError((Object exception, StackTrace st) {
-        // errors throw by _onLoad are captured here in the .then
-        // handler for newTrack.
-        Log.d(green('Transitioning = false'));
-        _loading = false;
-        _transitioning = false;
-        Log.e(
-          "Error occured loading the track: ${exception.toString()}",
-          error: exception,
-          stackTrace: st,
-        );
-      });
-    } else {
+        await _start();
+      } else {
+        throw TrackLoaderException;
+      }
+    } on MediaFormatException catch (exception, st) {
       Log.d(green('Transitioning = false'));
+      Log.e(
+        'Error occured loading the track: ${exception.toString()}',
+        error: exception,
+        stackTrace: st,
+      );
+    } on TrackLoaderException {
+      Log.w('No Track provided by _onLoad. Call to start has been ignored');
+    } finally {
       _loading = false;
       _transitioning = false;
-      Log.w("No Track provided by _onLoad. Call to start has been ignored");
     }
   }
 
   /// internal start method.
-  void _start() async {
-    _player.play(track).then((_) {
+  Future<void> _start() async {
+    try {
+      await _player.play(track);
       _playState = PlayState.playing;
-    })
-        // ignore: avoid_types_on_closure_parameters
-        .catchError((Object e, StackTrace st) {
-      Log.e("Error calling play() ${e.toString()}", error: e, stackTrace: st);
+    } on PlayerInvalidStateException catch (e, st) {
+      Log.e('Error calling play() ${e.toString()}', error: e, stackTrace: st);
       _playState = PlayState.stopped;
-    }).whenComplete(() {
+    } finally {
       _loading = false;
       _transitioning = false;
       Log.d(green('Transitioning = false'));
-    });
+    }
   }
 
   /// Call [stop] to stop the audio playing.
   ///
   Future<void> stop() async {
-    _stop();
+    await _stop();
   }
 
   ///
@@ -477,12 +462,11 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
     if (!_player.isStopped) {
       /// we always set wasUser to false as this is handled internally
       /// and we don't care how or why the audio was stopped.
-      _player.stop(wasUser: false).then<void>((_) {
-        if (_playerSubscription != null) {
-          _playerSubscription.cancel();
-          _playerSubscription = null;
-        }
-      });
+      await _player.stop(wasUser: false);
+      if (_playerSubscription != null) {
+        await _playerSubscription.cancel();
+        _playerSubscription = null;
+      }
     }
 
     // if called via dispose we can't trigger setState.
