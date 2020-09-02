@@ -131,9 +131,7 @@ class _MainBodyState extends State<MainBody> {
             SoundPlayerUI.fromTrack(
               track,
               showTitle: true,
-              audioFocus: PlayerState().hushOthers
-                  ? AudioFocus.focusAndHushOthers
-                  : AudioFocus.focusAndKeepOthers,
+              autoFocus: PlayerState().hushOthers
             ),
           ],
         )));
@@ -159,7 +157,9 @@ class _MainBodyState extends State<MainBody> {
   }
 
   void hushOthersSwitchChanged({bool hushOthers}) {
-    PlayerState().setHush(hushOthers: hushOthers);
+    setState(() {
+      PlayerState().setHush(hushOthers: hushOthers);
+    });
   }
 
   /// Callback for when the recorder needs permissions to record

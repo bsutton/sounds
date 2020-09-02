@@ -4,7 +4,7 @@ import 'dart:async';
 class PlayerState {
   static final PlayerState _self = PlayerState._internal();
 
-  bool _hushOthers = false;
+  bool _hushOthers = true;
 
   /// factory to retrieve a PlayerState
   factory PlayerState() {

@@ -23,9 +23,7 @@ class RemotePlayer extends StatelessWidget {
     return SoundPlayerUI.fromLoader(
       _createRemoteTrack,
       showTitle: true,
-      audioFocus: PlayerState().hushOthers
-          ? AudioFocus.focusAndHushOthers
-          : AudioFocus.focusAndKeepOthers,
+      autoFocus: PlayerState().hushOthers
     );
   }
 

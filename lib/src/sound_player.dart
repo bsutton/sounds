@@ -57,6 +57,7 @@ class SoundPlayer implements SlotEntry {
   PlayerEventWithCause _onResumed;
   PlayerEventWithCause _onStarted;
   PlayerEventWithCause _onStopped;
+  final bool _autoFocus;
 
   /// When the [withShadeUI] ctor is called this field
   /// controls whether the OSs' UI displays the pause button.
@@ -164,9 +165,11 @@ class SoundPlayer implements SlotEntry {
     this.canSkipBackward = false,
     this.canSkipForward = false,
     bool playInBackground = false,
+    bool autoFocus = true
   })  : _fakePlayerReady = Platform.isIOS,
         _playInBackground = playInBackground,
-        _plugin = SoundPlayerShadePlugin() {
+        _plugin = SoundPlayerShadePlugin(),
+        _autoFocus = autoFocus {
     _commonInit();
   }
 
@@ -189,10 +192,11 @@ class SoundPlayer implements SlotEntry {
   /// ```
   /// The above example guarentees that the player will be released.
   /// {@end-tool}
-  SoundPlayer.noUI({bool playInBackground = false})
+  SoundPlayer.noUI({bool playInBackground = false, bool autoFocus = true})
       : _fakePlayerReady = true,
         _playInBackground = playInBackground,
-        _plugin = SoundPlayerPlugin() {
+        _plugin = SoundPlayerPlugin(),
+        _autoFocus = autoFocus {
     canPause = false;
     canSkipBackward = false;
     canSkipForward = false;
@@ -307,6 +311,9 @@ class SoundPlayer implements SlotEntry {
   /// Starts playback.
   /// The [track] to play.
   Future<void> play(Track track) async {
+    if(_autoFocus){
+      audioFocus(AudioFocus.focusAndHushOthers);
+    }
     assert(track != null);
 
     if (!isStopped) {
@@ -365,7 +372,6 @@ class SoundPlayer implements SlotEntry {
         Log.e('_plugin.play threw an error', error: error, stackTrace: st);
         started.completeError(error, st);
       });
-
       return started.future;
     });
   }
@@ -374,6 +380,9 @@ class SoundPlayer implements SlotEntry {
   /// Use the [wasUser] to indicate if the stop was a caused by a user action
   /// or the application called stop.
   Future<void> stop({@required bool wasUser}) async {
+    if(_autoFocus){
+      audioFocus(AudioFocus.abandonFocus);
+    }
     if (playerState == PlayerState.isStopped) {
       throw PlayerInvalidStateException('Player is not playing.');
     }

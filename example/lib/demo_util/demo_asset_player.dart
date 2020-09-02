@@ -14,9 +14,7 @@ class AssetPlayer extends StatelessWidget {
     return SoundPlayerUI.fromLoader(
       (_) => createAssetTrack(),
       showTitle: true,
-      audioFocus: PlayerState().hushOthers
-          ? AudioFocus.focusAndHushOthers
-          : AudioFocus.focusAndKeepOthers,
+      autoFocus: PlayerState().hushOthers
     );
   }
 

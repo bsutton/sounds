@@ -53,6 +53,8 @@ class SoundPlayerUI extends StatefulWidget {
 
   final bool _enabled;
 
+  final bool _autoFocus;
+
   ///
   /// [SoundPlayerUI.fromTrack] Constructs a Playbar with a Track.
   /// [track] is the Track that contains the audio to play.
@@ -75,8 +77,9 @@ class SoundPlayerUI extends StatefulWidget {
       {Key key,
       bool showTitle = false,
       bool enabled = true,
-      AudioFocus audioFocus = AudioFocus.focusAndHushOthers})
+      bool autoFocus = true})
       : _track = track,
+        _autoFocus = autoFocus,
         _showTitle = showTitle,
         _onLoad = null,
         _enabled = enabled,
@@ -111,8 +114,9 @@ class SoundPlayerUI extends StatefulWidget {
       {Key key,
       bool showTitle = false,
       bool enabled = true,
-      AudioFocus audioFocus = AudioFocus.focusAndHushOthers})
+      bool autoFocus = true})
       : _onLoad = onLoad,
+        _autoFocus = autoFocus,
         _showTitle = showTitle,
         _track = null,
         _enabled = enabled,
@@ -127,7 +131,6 @@ class SoundPlayerUI extends StatefulWidget {
 /// internal state.
 class SoundPlayerUIState extends State<SoundPlayerUI> {
   final SoundPlayer _player;
-
   final _sliderPosition = SliderPosition();
 
   /// we keep our own local stream as the players come and go.
@@ -450,6 +453,9 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
 
   /// internal start method.
   void _start() async {
+    if(widget._autoFocus == true){
+      _player.audioFocus(AudioFocus.focusAndHushOthers);
+    }
     _player.play(track).then((_) {
       _playState = PlayState.playing;
     })
@@ -480,11 +486,12 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
       _player.stop(wasUser: false).then<void>((_) {
         if (_playerSubscription != null) {
           _playerSubscription.cancel();
-          _playerSubscription = null;
         }
       });
     }
-
+    if(widget._autoFocus){
+      _player.audioFocus(AudioFocus.abandonFocus);
+    }
     // if called via dispose we can't trigger setState.
     if (supressState) {
       __playState = PlayState.stopped;
