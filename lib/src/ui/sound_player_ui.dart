@@ -242,6 +242,9 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
   }
 
   void _onStopped() {
+      if(widget._autoFocus){
+      _player.audioFocus(AudioFocus.abandonFocus);
+   }
     setState(() {
       /// we can get a race condition when we stop the playback
       /// We have disabled the play button and called stop.
@@ -488,9 +491,6 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
           _playerSubscription.cancel();
         }
       });
-    }
-    if(widget._autoFocus){
-      _player.audioFocus(AudioFocus.abandonFocus);
     }
     // if called via dispose we can't trigger setState.
     if (supressState) {

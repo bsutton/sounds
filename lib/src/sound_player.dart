@@ -160,13 +160,13 @@ class SoundPlayer implements SlotEntry {
   /// ```
   /// The above example guarentees that the player will be released.
   /// {@end-tool}
-  SoundPlayer.withShadeUI({
-    this.canPause = true,
-    this.canSkipBackward = false,
-    this.canSkipForward = false,
-    bool playInBackground = false,
-    bool autoFocus = true
-  })  : _fakePlayerReady = Platform.isIOS,
+  SoundPlayer.withShadeUI(
+      {this.canPause = true,
+      this.canSkipBackward = false,
+      this.canSkipForward = false,
+      bool playInBackground = false,
+      bool autoFocus = true})
+      : _fakePlayerReady = Platform.isIOS,
         _playInBackground = playInBackground,
         _plugin = SoundPlayerShadePlugin(),
         _autoFocus = autoFocus {
@@ -311,7 +311,7 @@ class SoundPlayer implements SlotEntry {
   /// Starts playback.
   /// The [track] to play.
   Future<void> play(Track track) async {
-    if(_autoFocus){
+    if (_autoFocus) {
       audioFocus(AudioFocus.focusAndHushOthers);
     }
     assert(track != null);
@@ -380,9 +380,6 @@ class SoundPlayer implements SlotEntry {
   /// Use the [wasUser] to indicate if the stop was a caused by a user action
   /// or the application called stop.
   Future<void> stop({@required bool wasUser}) async {
-    if(_autoFocus){
-      audioFocus(AudioFocus.abandonFocus);
-    }
     if (playerState == PlayerState.isStopped) {
       throw PlayerInvalidStateException('Player is not playing.');
     }
@@ -391,12 +388,23 @@ class SoundPlayer implements SlotEntry {
       try {
         playerState = PlayerState.isStopped;
         await _plugin.stop(this);
+
+        // when we get the real system onSystemStopped being
+        // called via the plugin then we can delete this line.
+        _onSystemStopped();
       } on Object catch (e) {
         Log.d(e.toString());
         rethrow;
       }
     });
   }
+
+   void _onSystemStopped()
+   {
+    if (_autoFocus) {
+      audioFocus(AudioFocus.abandonFocus);
+    }
+       }
 
   /// Pauses playback.
   /// If you call this and the audio is not playing
@@ -525,7 +533,9 @@ class SoundPlayer implements SlotEntry {
         position: status.duration, duration: status.duration);
 
     _playerController?.add(finalPosition);
-
+    if (_autoFocus) {
+      audioFocus(AudioFocus.abandonFocus);
+    }
     playerState = PlayerState.isStopped;
     if (_onStopped != null) _onStopped(wasUser: false);
   }
@@ -751,16 +761,16 @@ class SoundPlayer implements SlotEntry {
     return _initializeAndRun(() async {
       switch (mode) {
         case AudioFocus.focusAndKeepOthers:
+          await _setHush(hushOthers: false);
           await _plugin.audioFocus(this, request: true);
-          _setHush(hushOthers: false);
           break;
         case AudioFocus.focusAndStopOthers:
           await _plugin.audioFocus(this, request: true);
           // TODO: how do you stop other players?
           break;
         case AudioFocus.focusAndHushOthers:
+          await _setHush(hushOthers: true);
           await _plugin.audioFocus(this, request: true);
-          _setHush(hushOthers: true);
           break;
         case AudioFocus.abandonFocus:
           await _plugin.audioFocus(this, request: false);
@@ -770,7 +780,7 @@ class SoundPlayer implements SlotEntry {
   }
 
   /// Apply/Remove the hush other setting.
-  void _setHush({bool hushOthers}) async {
+  Future<void> _setHush({bool hushOthers}) async {
     if (hushOthers) {
       if (Platform.isIOS) {
         await iosSetCategory(

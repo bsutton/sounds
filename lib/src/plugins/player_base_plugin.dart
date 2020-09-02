@@ -145,6 +145,14 @@ abstract class PlayerBasePlugin extends BasePlugin {
         <String, dynamic>{'focusGain': focusGain}) as bool;
   }
 
+  /// The caller can manage the audio focus with this function
+  /// If [request] is true then we request the focus
+  /// If [request] is false then we abandon the focus.
+  Future<void> audioFocus(SlotEntry slotEntry, {bool request}) async {
+    await invokeMethod(
+        slotEntry, 'setActive', <String, dynamic>{'enabled': request});
+  }
+
   ///
   Future<void> setProgressInterval(SlotEntry player, Duration interval) async {
     await invokeMethod(player, 'setProgressInterval', <String, dynamic>{
@@ -152,14 +160,6 @@ abstract class PlayerBasePlugin extends BasePlugin {
       /// up rounding down to zero.
       'milli': interval.inMilliseconds,
     });
-  }
-
-  /// The caller can manage the audio focus with this function
-  /// If [request] is true then we request the focus
-  /// If [request] is false then we abandon the focus.
-  Future<void> audioFocus(SlotEntry slotEntry, {bool request}) async {
-    await invokeMethod(
-        slotEntry, 'setActive', <String, dynamic>{'enabled': request});
   }
 
   /// Contrucsts a PlaybackDisposition from a json object.
