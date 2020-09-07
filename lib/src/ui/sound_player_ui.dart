@@ -242,9 +242,9 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
   }
 
   void _onStopped() {
-      if(widget._autoFocus){
+    if (widget._autoFocus) {
       _player.audioFocus(AudioFocus.abandonFocus);
-   }
+    }
     setState(() {
       /// we can get a race condition when we stop the playback
       /// We have disabled the play button and called stop.
@@ -456,7 +456,7 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
 
   /// internal start method.
   void _start() async {
-    if(widget._autoFocus == true){
+    if (widget._autoFocus == true) {
       _player.audioFocus(AudioFocus.hushOthersWithResume);
     }
     _player.play(track).then((_) {

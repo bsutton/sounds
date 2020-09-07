@@ -7,7 +7,7 @@ enum AudioFocus {
   /// do not resume stream after abandon focus is called.
   stopOthersNoResume,
 
-  /// request focus and stop other audio playing 
+  /// request focus and stop other audio playing
   /// resume other audio stream abandon focus is called.
   stopOthersWithResume,
 
