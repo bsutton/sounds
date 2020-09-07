@@ -71,7 +71,7 @@ class SoundPlayerUI extends StatefulWidget {
   /// will not be able to click the play button.
   /// The [audioFocus] allows you to control what happens to other
   /// media that is playing when our player starts.
-  /// By default we use [AudioFocus.focusAndHushOthers] which will
+  /// By default we use [AudioFocus.hushOthersWithResume] which will
   /// reduce the volume of any other players.
   SoundPlayerUI.fromTrack(Track track,
       {Key key,
@@ -108,7 +108,7 @@ class SoundPlayerUI extends StatefulWidget {
   /// will not be able to click the play button.
   /// The [audioFocus] allows you to control what happens to other
   /// media that is playing when our player starts.
-  /// By default we use [AudioFocus.focusAndHushOthers] which will
+  /// By default we use [AudioFocus.hushOthersWithResume] which will
   /// reduce the volume of any other players.
   SoundPlayerUI.fromLoader(OnLoad onLoad,
       {Key key,
@@ -457,7 +457,7 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
   /// internal start method.
   void _start() async {
     if(widget._autoFocus == true){
-      _player.audioFocus(AudioFocus.focusAndHushOthers);
+      _player.audioFocus(AudioFocus.hushOthersWithResume);
     }
     _player.play(track).then((_) {
       _playState = PlayState.playing;

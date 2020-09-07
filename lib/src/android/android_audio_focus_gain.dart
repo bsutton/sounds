@@ -17,8 +17,8 @@
 // Values for AUDIO_FOCUS_GAIN on Android
 ///
 class AndroidAudioFocusGain {
-  ///
-  static const defaultGain = 1;
+  ///belongs to AUDIOFOCUS_GAIN
+  static const stopOthers = 1;
 
   ///
   static const transient = 2;

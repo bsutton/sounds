@@ -312,7 +312,7 @@ class SoundPlayer implements SlotEntry {
   /// The [track] to play.
   Future<void> play(Track track) async {
     if (_autoFocus) {
-      audioFocus(AudioFocus.focusAndHushOthers);
+      audioFocus(AudioFocus.hushOthersWithResume);
     }
     assert(track != null);
 
@@ -399,12 +399,11 @@ class SoundPlayer implements SlotEntry {
     });
   }
 
-   void _onSystemStopped()
-   {
+  void _onSystemStopped() {
     if (_autoFocus) {
       audioFocus(AudioFocus.abandonFocus);
     }
-       }
+  }
 
   /// Pauses playback.
   /// If you call this and the audio is not playing
@@ -760,17 +759,14 @@ class SoundPlayer implements SlotEntry {
   Future<void> audioFocus(AudioFocus mode) async {
     return _initializeAndRun(() async {
       switch (mode) {
-        case AudioFocus.focusAndKeepOthers:
-          await _setHush(hushOthers: false);
-          await _plugin.audioFocus(this, request: true);
+        case AudioFocus.stopOthersNoResume:
+          await _stopOthersNoResume();
           break;
-        case AudioFocus.focusAndStopOthers:
-          await _plugin.audioFocus(this, request: true);
-          // TODO: how do you stop other players?
+        case AudioFocus.stopOthersWithResume:
+          await _stopOthersWithResume();
           break;
-        case AudioFocus.focusAndHushOthers:
-          await _setHush(hushOthers: true);
-          await _plugin.audioFocus(this, request: true);
+        case AudioFocus.hushOthersWithResume:
+          await _hushOthersNoResume();
           break;
         case AudioFocus.abandonFocus:
           await _plugin.audioFocus(this, request: false);
@@ -779,28 +775,35 @@ class SoundPlayer implements SlotEntry {
     });
   }
 
-  /// Apply/Remove the hush other setting.
-  Future<void> _setHush({bool hushOthers}) async {
-    if (hushOthers) {
-      if (Platform.isIOS) {
-        await iosSetCategory(
-            IOSSessionCategory.playAndRecord,
-            IOSSessionMode.defaultMode,
-            IOSSessionCategoryOption.iosDuckOthers |
-                IOSSessionCategoryOption.iosDefaultToSpeaker);
-      } else if (Platform.isAndroid) {
-        await _androidFocusRequest(AndroidAudioFocusGain.transientMayDuck);
-      }
-    } else {
-      if (Platform.isIOS) {
-        await iosSetCategory(
-            IOSSessionCategory.playAndRecord,
-            IOSSessionMode.defaultMode,
-            IOSSessionCategoryOption.iosDefaultToSpeaker);
-      } else if (Platform.isAndroid) {
-        await _androidFocusRequest(AndroidAudioFocusGain.defaultGain);
-      }
+  Future _hushOthersNoResume() async {
+    if (Platform.isIOS) {
+      await iosSetCategory(
+          IOSSessionCategory.playAndRecord,
+          IOSSessionMode.defaultMode,
+          IOSSessionCategoryOption.iosDuckOthers |
+              IOSSessionCategoryOption.iosDefaultToSpeaker);
+    } else if (Platform.isAndroid) {
+      await _androidFocusRequest(AndroidAudioFocusGain.transientMayDuck);
     }
+    await _plugin.audioFocus(this, request: true);
+  }
+
+  Future _stopOthersWithResume() async {
+    await _androidFocusRequest(AndroidAudioFocusGain.transientExclusive);
+    await _plugin.audioFocus(this, request: true);
+    // TODO: how do you stop other players?
+  }
+
+  Future _stopOthersNoResume() async {
+    if (Platform.isIOS) {
+      await iosSetCategory(
+          IOSSessionCategory.playAndRecord,
+          IOSSessionMode.defaultMode,
+          IOSSessionCategoryOption.iosDefaultToSpeaker);
+    } else if (Platform.isAndroid) {
+      await _androidFocusRequest(AndroidAudioFocusGain.stopOthers);
+    }
+    await _plugin.audioFocus(this, request: true);
   }
 
   /// For Android only.
