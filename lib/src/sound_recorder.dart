@@ -353,7 +353,7 @@ class SoundRecorder implements SlotEntry {
   /// for some codecs which aren't natively support. Dependindig on the
   /// size of the file this could take a few moments to a few minutes.
   Future<void> stop() async {
-    if (!isRecording) {
+    if (isStopped) {
       throw RecorderNotRunningException(
           "You cannot stop recording when the recorder is not running.");
     }
