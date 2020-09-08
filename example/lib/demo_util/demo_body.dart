@@ -128,11 +128,8 @@ class _MainBodyState extends State<MainBody> {
               requestPermissions: requestPermissions,
             ),
             Left("Recording Playback"),
-            SoundPlayerUI.fromTrack(
-              track,
-              showTitle: true,
-              autoFocus: PlayerState().hushOthers
-            ),
+            SoundPlayerUI.fromTrack(track,
+                showTitle: true, autoFocus: PlayerState().hushOthers),
           ],
         )));
   }
@@ -289,8 +286,16 @@ class _MainBodyState extends State<MainBody> {
     return RaisedButton(
       child: Text('Play Asset via Shade'),
       onPressed: () {
-        var player = SoundPlayer.withShadeUI();
-        player.onStopped = ({wasUser}) => player.release();
+        var player = SoundPlayer.withShadeUI(autoFocus: false);
+        player.onStopped = ({wasUser}) {
+          player.release();
+          player.audioFocus(AudioFocus.abandonFocus);
+        };
+        if (PlayerState().hushOthers) {
+          player.audioFocus(AudioFocus.hushOthersWithResume);
+        } else {
+          player.audioFocus(AudioFocus.stopOthersWithResume);
+        }
         player.play(createAssetTrack());
         Scaffold.of(context).showSnackBar(new SnackBar(
             content: new Text("Playing via the OS's Media Player.")));
@@ -352,6 +357,6 @@ void playRemoteURL() async {
   soundPlayer.onStopped = ({wasUser}) => soundPlayer.release();
 
   Track track = Track.fromURL(
-      'https://file-examples.com/wp-content/uploads/2017/11/file_example_MP3_2MG.mp3');
+      'https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_2MG.mp3');
   await soundPlayer.play(track);
 }
