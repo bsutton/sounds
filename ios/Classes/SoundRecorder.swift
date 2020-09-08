@@ -242,7 +242,7 @@ class SoundRecorder: NSObject, AVAudioRecorderDelegate {
         progressTimer = Timer.scheduledTimer(
             timeInterval: TimeInterval(progressIntervalSeconds),
             target: self,
-            selector: #selector(SoundPlayer.updateProgress(_:)),
+            selector: #selector(SoundPlayer.updateProgress()),
             userInfo: nil,
             repeats: true)
     }
@@ -260,8 +260,7 @@ class SoundRecorder: NSObject, AVAudioRecorderDelegate {
         result("setProgressInterval")
     }
 
-    @objc func updateProgress(_ atimer: Timer?) {
-        assert(progressTimer == atimer)
+    @objc func updateProgress() {
         let decibels = getDbLevel()
         let currentTime = NSNumber(value: Double(audioRecorder?.currentTime * 1000))
         audioRecorder?.updateMeters()

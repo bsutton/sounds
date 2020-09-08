@@ -269,7 +269,7 @@ class SoundPlayer: NSObject, AVAudioPlayerDelegate {
         progressTimer = Timer.scheduledTimer(
             timeInterval: TimeInterval(progressIntervalSeconds),
             target: self,
-            selector: #selector(updateProgress(_:)),
+            selector: #selector(updateProgress()),
             userInfo: nil,
             repeats: true)
         print("started ProgressTimer")
@@ -283,9 +283,8 @@ class SoundPlayer: NSObject, AVAudioPlayerDelegate {
         }
     }
 
-    @objc func updateProgress(_ atimer: Timer?) {
+    @objc func updateProgress() {
         print("entered updateProgress")
-        assert(progressTimer == atimer)
         let duration = NSNumber(value: Double(audioPlayer?.duration * 1000))
         let currentTime = NSNumber(value: Double(audioPlayer?.currentTime * 1000))
 
@@ -485,7 +484,7 @@ class SoundPlayer: NSObject, AVAudioPlayerDelegate {
     func seek(toPlayer positionInMilli: Int, result: FlutterResult) {
         if audioPlayer != nil {
             audioPlayer?.currentTime = TimeInterval(positionInMilli / 1000)
-            updateProgress(nil)
+            updateProgress()
             result(NSNumber(long: positionInMilli).stringValue)
         } else {
             result(
