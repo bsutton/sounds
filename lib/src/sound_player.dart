@@ -766,7 +766,7 @@ class SoundPlayer implements SlotEntry {
           await _stopOthersWithResume();
           break;
         case AudioFocus.hushOthersWithResume:
-          await _hushOthersNoResume();
+          await _hushOthersWithResume();
           break;
         case AudioFocus.abandonFocus:
           await _plugin.audioFocus(this, request: false);
@@ -775,13 +775,13 @@ class SoundPlayer implements SlotEntry {
     });
   }
 
-  Future _hushOthersNoResume() async {
+  Future _hushOthersWithResume() async {
     if (Platform.isIOS) {
       await iosSetCategory(
           IOSSessionCategory.playAndRecord,
           IOSSessionMode.defaultMode,
-          IOSSessionCategoryOption.iosDuckOthers |
-              IOSSessionCategoryOption.iosDefaultToSpeaker);
+          IOSSessionCategoryOption.iosDuckOthers); //|
+      //     IOSSessionCategoryOption.iosDefaultToSpeaker);
     } else if (Platform.isAndroid) {
       await _androidFocusRequest(AndroidAudioFocusGain.transientMayDuck);
     }
