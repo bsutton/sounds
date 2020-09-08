@@ -17,7 +17,7 @@ dependencies:
     sdk: flutter
   sounds:
     path: ..    
-  sounds_common: 1.0.1
+  sounds_common: ^1.0.0
     #path: ../../sounds_common
 
   # The following adds the Cupertino Icons font to your application.
@@ -30,9 +30,9 @@ dependencies:
   uuid: ^2.0.4
 
 
-dependency_overrides:
-  sounds_common:
-    path: ../../sounds_common      
+#dependency_overrides:
+#  sounds_common:
+#    path: ../../sounds_common      
 
 dev_dependencies:
   flutter_test:

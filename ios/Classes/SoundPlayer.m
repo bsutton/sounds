@@ -565,7 +565,7 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
         if (audioPlayer)
         {
                 audioPlayer.currentTime = positionInMilli / 1000;
-                [self updateProgress:nil];
+                  [self updateProgress];
             	result([[NSNumber numberWithLong:positionInMilli] stringValue]);
         } else
         {
@@ -607,7 +607,7 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
         NSLog(@"starting ProgressTimer interval:%lf", progressIntervalSeconds);
         self->progressTimer = [NSTimer scheduledTimerWithTimeInterval:progressIntervalSeconds
                                            target:self
-                                           selector:@selector(updateProgress:)
+                                                             selector:@selector(updateProgress)
                                            userInfo:nil
                                            repeats:YES];
     NSLog(@"started ProgressTimer");
@@ -623,20 +623,16 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 
 
 
-- (void)updateProgress:(NSTimer*) atimer
-{
-        NSLog(@"entered updateProgress");
-        assert (progressTimer == atimer);
+- (void)updateProgress{
+      //  NSLog(@"entered updateProgress");
         NSNumber *duration = [NSNumber numberWithDouble:audioPlayer.duration * 1000];
         NSNumber *currentTime = [NSNumber numberWithDouble:audioPlayer.currentTime * 1000];
 
         NSString* status = [NSString stringWithFormat:@"{\"duration\": \"%@\", \"current_position\": \"%@\"}"
                 , [duration stringValue],  [currentTime stringValue]];
-        NSLog(@"sending updateProgress: %@",  status);
+       // NSLog(@"sending updateProgress: %@",  status);
         [self invokeCallback:@"updateProgress" stringArg:status];
 }
-
-
 
 
 // post fix with _Sounds to avoid conflicts with common libs including path_provider
@@ -649,7 +645,7 @@ extern void SoundPlayerReg(NSObject<FlutterPluginRegistrar>* registrar)
 
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag
 {
-        NSLog(@"audioPlayerDidFinishPlaying");
+     //   NSLog(@"audioPlayerDidFinishPlaying");
         if ( (setActiveDone != BY_USER) && (setActiveDone != NOT_SET) )
         {
                 [[AVAudioSession sharedInstance] setActive: NO error: nil];

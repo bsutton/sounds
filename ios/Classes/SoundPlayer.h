@@ -53,7 +53,7 @@ extern NSMutableArray* _Nullable playerSlots;
 - (void)resumePlayer:(FlutterResult _Nonnull )result;
 - (void)startProgressTimer;
 - (void)stopProgressTimer;
-- (void)updateProgress:(NSTimer *_Nullable)timer;
+- (void)updateProgress;
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *_Nonnull)player successfully:(BOOL)flag;
 - (void)pause;
 - (bool)resume;
