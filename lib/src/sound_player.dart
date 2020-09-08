@@ -780,8 +780,8 @@ class SoundPlayer implements SlotEntry {
       await iosSetCategory(
           IOSSessionCategory.playAndRecord,
           IOSSessionMode.defaultMode,
-          IOSSessionCategoryOption.iosDuckOthers); //|
-      //     IOSSessionCategoryOption.iosDefaultToSpeaker);
+          IOSSessionCategoryOption.iosDuckOthers |
+              IOSSessionCategoryOption.iosDefaultToSpeaker);
     } else if (Platform.isAndroid) {
       await _androidFocusRequest(AndroidAudioFocusGain.transientMayDuck);
     }
