@@ -86,7 +86,7 @@ class ShadePlayerManager: SoundPlayerManager {
 
         if "initializeMediaPlayer" == call?.method {
             assert(playerSlots?[slotNo] == NSNull())
-            aShadePlayer = ShadePlayer(slotNo)
+            aShadePlayer = ShadePlayer(slotNo) as? ShadePlayer
             playerSlots?[slotNo] = aShadePlayer
 
             aShadePlayer?.initializeShadePlayer(call, result: result)
@@ -503,3 +503,4 @@ class ShadePlayer: SoundPlayer {
 
 //---------------------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------------------
