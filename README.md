@@ -1,18 +1,24 @@
 # Sounds
 
-Sounds is a fork of the Flutter Sound project.
+Sounds is a Flutter package allowing you to play and record audio for both the android and ios platforms.
 
-Sounds is almost a complete rewrite of the dart code from Flutter Sound.
-The aim of the rewrite has been resolve a number of issues apparent in Flutter Sound:
-* jank during playback.
-* crashes due to threading issues.
-* redesign the api so it is clean and consistent.
-* design an api that will accomodate future expansion of the core feature set.
-* provide additional features.
-* Hide internal apis from the public api.
-* Provide a consistent error handling mechanisim via exceptions.
-* Remove duplicated code.
-* Bring the code in line with Google's recommended best practices.
+Sounds provides both a high level API and widgets for:
+* play audio 
+* record audio
+
+Sounds can be used to play a beep from an asset all the way up to implementing a complete media player.
+
+The API is designed so you can use the supplied widgets or roll your own.
+The Sounds package supports playback from:
+* Assets
+* Files
+* URL
+
+# Documentation:
+
+The primary documentation for Sounds is now hosted on [gitbooks](https://bsutton.gitbook.io/sounds/)
+
+
 
 <img src="https://raw.githubusercontent.com/bsutton/sounds/master/SoundsLogo.png" width="70%" height="70%" />
 
