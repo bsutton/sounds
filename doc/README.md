@@ -24,7 +24,6 @@ The Sounds package supports playback from:
 * Assets
 * Files
 * URL
-* Native Streams \(with sync\).
 
 ## Features
 
@@ -43,16 +42,16 @@ The core classes are:
 
 | Class | Usage |
 | :--- | :--- |
-| [SoundPlayerUI](https://github.com/bsutton/sounds/wiki/SoundPlayerUI) | A Flutter Widget Audio Player |
-| [SoundRecorderUI](https://github.com/bsutton/sounds/wiki/SoundRecorderUI) | A Flutter Widget for recording |
-| [QuickPlay](https://github.com/bsutton/sounds/wiki/QuickPlay) | Plays an audio file without a UI. |
-| [SoudPlayer.noUI](https://github.com/bsutton/sounds/wiki/SoundPlayer) | API to playback audio with fine grained control |
-| [SoundPlayer.withShadeUI](https://github.com/bsutton/sounds/wiki/SoundPlayer) | API to playback audio using the OS's Shade \(media player\) |
-| [SoundRecorder](https://github.com/bsutton/sounds/wiki/SoundRecorder) | API to record audio with fine grained control. |
-| [Track](https://github.com/bsutton/sounds/wiki/Track) | Container for audio used by all of the above classes. |
-| [MediaFormat](https://github.com/bsutton/sounds/wiki/MediaFormat) | Defines what MediaFormat is being used. |
-| [RecorderPlaybackController](https://github.com/bsutton/sounds/wiki/RecorderPlaybackController) | Flutter InheritedWidget used to co-ordinate Recording and Playback in a single UI. |
-| [Albums](https://github.com/bsutton/sounds/wiki/Albums) | Play a sequence of Tracks via the OS's Shade \(media player\) |
+| [SoundPlayerUI](soundplayerui.md) | A Flutter Widget Audio Player |
+| [SoundRecorderUI](soundrecorderui.md) | A Flutter Widget for recording |
+| [QuickPlay](quickplay.md) | Plays an audio file without a UI. Easiest way to play a beep. |
+| [SoundPlayer.noUI](soundplayer.md#headless-playback-no-ui) | API to playback audio with fine grained control |
+| [SoundPlayer.withShadeUI](soundplayer.md#os-shade-using-the-os-media-ui) | API to playback audio using the OS's Shade \(media player\) |
+| [SoundRecorder](soundrecorder.md) | API to record audio with fine grained control. |
+| [Track](track.md) | Container for audio used by all of the above classes. |
+| [MediaFormat](mediaformat.md) | Defines what MediaFormat is being used. |
+| [RecorderPlaybackController](recorderplaybackcontroller.md) | Flutter InheritedWidget used to co-ordinate Recording and Playback in a single UI. |
+| [Albums](albums.md) | Play a sequence of Tracks via the OS's Shade \(media player\) |
 
 ![](.gitbook/assets/image%20%281%29.png)
 
@@ -66,7 +65,7 @@ Sounds is a large and complex project which requires me to maintain multiple har
 
 I greatly appreciate any contributions to the project which can be as simple as providing feedback on the API or documentation.
 
-See the [Contributing](https://github.com/bsutton/sounds#Contributing) section below for details.
+See the [Contributing](contributing/overview.md) section below for details.
 
 #### Sponsorship
 
@@ -89,41 +88,41 @@ If you can't afford a coffee then show your support by 'liking' the Sounds proje
 
 ## Documentation
 
-[Install](https://github.com/bsutton/sounds/wiki/Install)
+[Install](installing.md)
 
-[Wiki](https://github.com/bsutton/sounds/wiki/Home) High level guide to using Sounds.
+[Manual](https://bsutton.gitbook.io/sounds/)
 
 [API Reference](https://pub.dev/documentation/sounds/latest/)
 
 ### Roadmap
 
-See the [Roadmap](https://github.com/bsutton/sounds/wiki/RoadMap) for details on the future of Sounds.
+See the [Roadmap](roadmap.md) for details on the future of Sounds.
 
 ### Contributing
 
-See the [Contributing](https://github.com/bsutton/sounds/wiki/Contributing) guide for details on contributing to Sounds.
+See the [Contributing](contributing/overview.md) guide for details on contributing to Sounds.
 
 The key classes are:
 
 ### Api classes
 
-QuickPlay - instantly play an audio file \(no ui\). Perfect for the odd beep.
+[QuickPlay](quickplay.md) - instantly play an audio file \(no ui\). Perfect for the odd beep.
 
-Track - Defines a track including the artist details and the audio media.
+[Track](track.md) - Defines a track including the artist details and the audio media.
 
-Album - play a collection of tracks via the OSs' audio UI.
+[Album](albums.md) - play a collection of tracks via the OSs' audio UI.
 
-SoundPlayer - provides an API for playing audio including pause/resume/seek.
+[SoundPlayer](soundplayer.md) - provides an API for playing audio including pause/resume/seek.
 
-SoundRecorder - API for recording audio.
+[SoundRecorder](soundrecorder.md) - API for recording audio.
 
 ### Widgets
 
-SoundPlayerUI - displays an HTML 5 style audio controller widget.
+[SoundPlayerUI](soundplayerui.md) - displays an HTML 5 style audio controller widget.
 
-SoundRecorderUI - displays a recording widget.
+[SoundRecorderUI](soundrecorderui.md) - displays a recording widget.
 
-RecorderPlaybackController - pairs a SoundPlayerUI and SoundRecorderUI to provide a coordinated recording/playback UI.
+[RecorderPlaybackController](recorderplaybackcontroller.md) - pairs a SoundPlayerUI and SoundRecorderUI to provide a coordinated recording/playback UI.
 
-Note: there are some limitations on the supported MediaFormat.
+Note: there are some limitations on the supported [MediaFormat](mediaformat.md).
 

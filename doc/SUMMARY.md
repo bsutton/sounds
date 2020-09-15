@@ -3,6 +3,12 @@
 * [Introduction](README.md)
 * [Installing](installing.md)
 * [Roadmap](roadmap.md)
+
+## API
+
+---
+
+* [Overview](overview.md)
 * [AudioSource](audiosource.md)
 * [Albums](albums.md)
 * [Downloader](downloader.md)
