@@ -5,6 +5,8 @@ The API is split into two categories:
 * Low level API
 * Widgets
 
+Detailed API documentation is available on [pub.dev](https://pub.dev/packages/sounds).
+
 The Low level API provides detailed but simple control over audio playback and recording.
 
 Sounds ships with two Widgets and a Widget Controller:
