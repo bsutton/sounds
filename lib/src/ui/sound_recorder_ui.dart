@@ -230,7 +230,7 @@ class SoundRecorderUIState extends State<SoundRecorderUI> {
     if (!_isRecording) {
       _requestPermission(context, widget.audio.track).then((accepted) async {
         if (accepted) {
-          Log.e(green('started Recording to: '
+          Log.d(green('started Recording to: '
               '${widget.audio.track.identity})'));
           await _recorder.record(
             widget.audio.track,
