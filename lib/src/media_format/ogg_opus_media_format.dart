@@ -11,9 +11,9 @@ class OggOpusMediaFormat extends NativeMediaFormat {
     int bitRate = 16000,
   }) : super.detail(
           name: 'ogg/opus',
-          sampleRate: 16000,
-          numChannels: 1,
-          bitRate: 16000,
+          sampleRate: sampleRate,
+          numChannels: numChannels,
+          bitRate: bitRate,
         );
 
   @override
