@@ -27,10 +27,10 @@ class Track: NSObject {
     var albumArtFile: String?
     var dataBuffer: FlutterStandardTypedData?
 
-    convenience init(fromJson jsonString: String?) {
+    convenience init?(fromJson jsonString: String?) {
         let jsonData = jsonString?.data(using: .utf8)
 
-        var error: Error? = nil
+        let error: Error? = nil
         var responseObj: [AnyHashable : Any]? = nil
         do {
             if let jsonData = jsonData {

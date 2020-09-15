@@ -47,7 +47,7 @@ class ShadePlayerManager: SoundPlayerManager {
             name: "com.bsutton.sounds.sounds_shade_player",
             binaryMessenger: registrar?.messenger())
         shadePlayerManager = ShadePlayerManager() // In super class
-        registrar?.addMethodCallDelegate(shadePlayerManager, channel: _channel)
+        registrar?.addMethodCallDelegate(shadePlayerManager as! FlutterPlugin, channel: _channel ?? <#default value#>)
     }
 
     override func freeSlot(_ slotNo: Int) {
@@ -60,7 +60,7 @@ class ShadePlayerManager: SoundPlayerManager {
     }
 
     override func invokeCallback(_ methodName: String?, arguments call: [AnyHashable : Any]?) {
-        _channel?.invokeMethod(methodName, arguments: call)
+        _channel?.invokeMethod(methodName ?? <#default value#>, arguments: call)
     }
 
     override func getManager() -> SoundPlayerManager? {
@@ -114,8 +114,8 @@ class ShadePlayer: SoundPlayer {
     private var forwardTarget: Any?
     private var backwardTarget: Any?
     private var pauseTarget: Any?
-    private var setCategoryDone: t_SET_CATEGORY_DONE!
-    private var setActiveDone: t_SET_CATEGORY_DONE!
+    internal var setCategoryDone: t_SET_CATEGORY_DONE!
+    internal var setActiveDone: t_SET_CATEGORY_DONE!
     private var slotNo = 0
 
     convenience init?(_ aSlotNo: Int) {
@@ -202,13 +202,13 @@ class ShadePlayer: SoundPlayer {
                                 }
                             } catch {
                             }
-                            self.audioPlayer.delegate = self
+                            self.audioPlayer?.delegate = self
 
                             DispatchQueue.main.async(execute: {
                                 UIApplication.shared.beginReceivingRemoteControlEvents()
                             })
 
-                            self.audioPlayer.play()
+                            self.audioPlayer?.play()
                         })
                 }
 
@@ -244,7 +244,7 @@ class ShadePlayer: SoundPlayer {
         } else {
             // The audio file is stored as a buffer
             let dataBuffer = track?.dataBuffer
-            let bufferData = dataBuffer?.init()
+            let bufferData = dataBuffer?.type(of: init)()
             do {
                 if let bufferData = bufferData {
                     audioPlayer = try AVAudioPlayer(data: bufferData)
@@ -274,7 +274,7 @@ class ShadePlayer: SoundPlayer {
         result(NSNumber(value: true))
     }
 
-    func release(_ call: FlutterMethodCall?, result: FlutterResult) {
+    override func release(_ call: FlutterMethodCall?, result: FlutterResult) {
         // The code used to release all the media player resources is the same of the one needed
         // to stop the media playback. Then, use that one.
         // [self stopRecorder:result];
@@ -313,7 +313,7 @@ class ShadePlayer: SoundPlayer {
         let dic = [
             "slotNo": NSNumber(value: Int32(slotNo)),
             "arg": stringArg ?? ""
-        ]
+            ] as [String : Any]
         getPlugin()?.invokeCallback(methodName, arguments: dic)
     }
 

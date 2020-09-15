@@ -29,22 +29,23 @@ var soundPlayerManager: SoundPlayerManager? // Singleton
 
 
 func SoundPlayerReg(_ registrar: (NSObjectProtocol & FlutterPluginRegistrar)?) {
-    SoundPlayerManager.register(withRegistrar: registrar)
+    SoundPlayerManager.register(with: registrar)
 }
 
 class SoundPlayerManager: NSObject, FlutterPlugin {
-    class func register(withRegistrar registrar: (NSObjectProtocol & FlutterPluginRegistrar)?) {
-        _channel = FlutterMethodChannel(
+    class func register(with registrar: (NSObjectProtocol & FlutterPluginRegistrar)?) {
+       var _channel = FlutterMethodChannel(
             name: "com.bsutton.sounds.sound_player",
-            binaryMessenger: registrar?.messenger())
+            binaryMessenger: registrar?.messenger() as! FlutterBinaryMessenger)
         assert(soundPlayerManager == nil)
         soundPlayerManager = SoundPlayerManager()
-        registrar?.addMethodCallDelegate(soundPlayerManager, channel: _channel)
+        registrar?.addMethodCallDelegate(soundPlayerManager as! FlutterPlugin, channel: _channel)
     }
 
     func handle(_ call: FlutterMethodCall?, result: FlutterResult) {
         let slotNo = (call?.arguments["slotNo"] as? NSNumber)?.intValue ?? 0
-
+        let test = call?.arguments["slotNo"]
+        let fds = call?.arguments
         // The dart code supports lazy initialization of players.
         // This means that players can be registered (and slots allocated)
         // on the client side in a different order to which the players
@@ -121,20 +122,21 @@ class SoundPlayerManager: NSObject, FlutterPlugin {
         result("queued")
 
         let afUrl = URL(fileURLWithPath: path ?? "")
-        var fileID: AudioFileID
+        var fileID: AudioFileID?
         var status = AudioFileOpenURL(afUrl as CFURL, .readPermission, AudioFileTypeID(0), &fileID)
         var outDataSize = Float64(0)
         var thePropSize = UInt32(MemoryLayout<Float64>.size)
-        status = AudioFileGetProperty(fileID, kAudioFilePropertyEstimatedDuration, UnsafeMutablePointer<UInt32>(mutating: &thePropSize), UnsafeMutableRawPointer(mutating: &outDataSize))
-        AudioFileClose(fileID)
-
+        if let wfileID = fileID {
+        status = AudioFileGetProperty(wfileID, kAudioFilePropertyEstimatedDuration, UnsafeMutablePointer<UInt32>(mutating: &thePropSize), UnsafeMutableRawPointer(mutating: &outDataSize))
+            AudioFileClose(wfileID)
+        }
         print("\("getDuration status\(Int(status))")")
 
         if status == kAudioServicesNoError {
             let milliseconds = Int(outDataSize * 1000)
 
             let args = String(
-                format: "{\"callbackUuid\": \"%@\", \"milliseconds\": %d}", callbackUuid, milliseconds)
+                format: "{\"callbackUuid\": \"%@\", \"milliseconds\": %d}", callbackUuid as! CVarArg, milliseconds)
 
             let dic = [
                 "slotNo": NSNumber(value: Int32(slotNo)),
@@ -144,7 +146,7 @@ class SoundPlayerManager: NSObject, FlutterPlugin {
         } else {
             /// danger will robison, danger
             let args = String(
-                format: "{\"callbackUuid\": \"%@\", \"description\": \"%d\"}", callbackUuid, Int(status))
+                format: "{\"callbackUuid\": \"%@\", \"description\": \"%d\"}", callbackUuid as! CVarArg, Int(status))
             let dic = [
                 "slotNo": NSNumber(value: Int32(slotNo)),
                 "arg": args
@@ -269,7 +271,7 @@ class SoundPlayer: NSObject, AVAudioPlayerDelegate {
         progressTimer = Timer.scheduledTimer(
             timeInterval: TimeInterval(progressIntervalSeconds),
             target: self,
-            selector: #selector(updateProgress()),
+            selector: #selector(updateProgress),
             userInfo: nil,
             repeats: true)
         print("started ProgressTimer")
@@ -286,7 +288,7 @@ class SoundPlayer: NSObject, AVAudioPlayerDelegate {
     @objc func updateProgress() {
         print("entered updateProgress")
         let duration = NSNumber(value: Double(audioPlayer?.duration * 1000))
-        let currentTime = NSNumber(value: Double(audioPlayer?.currentTime * 1000))
+        let currentTime = NSNumber(value: Double(audioPlayer?.currentTime ?? <#default value#> * 1000))
 
         let status = String(
             format: "{\"duration\": \"%@\", \"current_position\": \"%@\"}", duration.stringValue, currentTime.stringValue)
@@ -303,14 +305,15 @@ class SoundPlayer: NSObject, AVAudioPlayerDelegate {
             }
             setActiveDone = .not_SET
         }
-
-        let duration = NSNumber(value: Double(audioPlayer?.duration * 1000))
-        let currentTime = NSNumber(value: Double(audioPlayer?.currentTime * 1000))
-
+        if let uaudioPlayer = audioPlayer {
+        let duration = NSNumber(value: Double(uaudioPlayer.duration * 1000))
+        let currentTime = NSNumber(value: Double(uaudioPlayer.currentTime * 1000))
+        
         let status = String(format: "{\"duration\": \"%@\", \"current_position\": \"%@\"}", duration.stringValue, currentTime.stringValue)
 
         invokeCallback("audioPlayerFinishedPlaying", stringArg: status)
         isPaused = false
+        }
         stopProgressTimer()
     }
 
@@ -485,7 +488,7 @@ class SoundPlayer: NSObject, AVAudioPlayerDelegate {
         if audioPlayer != nil {
             audioPlayer?.currentTime = TimeInterval(positionInMilli / 1000)
             updateProgress()
-            result(NSNumber(long: positionInMilli).stringValue)
+            result(NSNumber(value: positionInMilli).stringValue)
         } else {
             result(
                 FlutterError(
