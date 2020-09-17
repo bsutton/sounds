@@ -41,7 +41,7 @@ export 'src/media_format/well_know_media_formats.dart';
 export 'src/quick_play.dart' show QuickPlay;
 export 'src/recording_disposition.dart' show RecordingDisposition;
 export 'src/sound_player.dart'
-    show SoundPlayer
+    show SoundPlayer, PlayerInvalidStateException
     hide
         updateProgress,
         audioPlayerFinished,
@@ -55,3 +55,5 @@ export 'src/ui/recorder_playback_controller.dart'
     show RecorderPlaybackController;
 export 'src/ui/sound_player_ui.dart' show SoundPlayerUI;
 export 'src/ui/sound_recorder_ui.dart' show SoundRecorderUI;
+export 'src/audio_source.dart' show AudioSource;
+export 'src/quality.dart' show Quality;
