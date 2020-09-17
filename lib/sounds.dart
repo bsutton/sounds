@@ -41,7 +41,7 @@ export 'src/media_format/well_know_media_formats.dart';
 export 'src/quick_play.dart' show QuickPlay;
 export 'src/recording_disposition.dart' show RecordingDisposition;
 export 'src/sound_player.dart'
-    show SoundPlayer
+    show SoundPlayer, PlayerInvalidStateException
     hide
         updateProgress,
         audioPlayerFinished,
