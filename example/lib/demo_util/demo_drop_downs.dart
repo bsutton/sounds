@@ -54,12 +54,15 @@ class _DropdownsState extends State<Dropdowns> {
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: <Widget>[
-          mediaDropdown,
-          codecDropdown,
-        ],
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            mediaDropdown,
+            codecDropdown,
+          ],
+        ),
       ),
     );
   }
