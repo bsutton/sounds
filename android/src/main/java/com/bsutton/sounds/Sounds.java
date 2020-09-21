@@ -27,6 +27,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
+import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 // this enum MUST be synchronized with lib/sounds.dart and ios/Classes/SoundsPlugin.h
@@ -38,9 +39,24 @@ enum t_CODEC {
 
 public class Sounds implements FlutterPlugin, ActivityAware {
 	public static final boolean FULL_FLAVOR = true;
-	static Context ctx;
-	static Registrar reg;
-	static Activity androidActivity;
+
+	private static Sounds instance;
+	private Object initializationLock = new Object();
+
+	private Context ctx;
+	private Activity androidActivity;
+
+	public static Sounds instance() {
+		return instance;
+	}
+
+	public Context context() {
+		return ctx;
+	}
+
+	public Activity androidActivity() {
+		return androidActivity;
+	}
 
 	/// latch to control access until we have been full initialised.
 	/// This class supports v1 and v2 of the flutter embedding so there
@@ -58,11 +74,21 @@ public class Sounds implements FlutterPlugin, ActivityAware {
 	 */
 	@Override
 	public void onAttachedToEngine(FlutterPlugin.FlutterPluginBinding binding) {
-		ctx = binding.getApplicationContext();
+		onAttachedToEngine(binding.getApplicationContext(), binding.getBinaryMessenger());
+	}
 
-		SoundPlayerPlugin.attachSoundPlayer(ctx, binding.getBinaryMessenger());
-		SoundRecorderPlugin.attachSoundRecorder(ctx, binding.getBinaryMessenger());
-		ShadePlayerPlugin.attachShadePlayer(ctx, binding.getBinaryMessenger());
+	public void onAttachedToEngine(Context applicationContext, BinaryMessenger messenger) {
+		synchronized (initializationLock) {
+			if (SoundPlayerPlugin.channel != null) {
+				// already attached to a FlutterEngine
+				return;
+			}
+
+			ctx = applicationContext;
+			SoundPlayerPlugin.attachSoundPlayer(applicationContext, messenger);
+			SoundRecorderPlugin.attachSoundRecorder(applicationContext, messenger);
+			ShadePlayerPlugin.attachShadePlayer(applicationContext, messenger);
+		}
 	}
 
 	/**
@@ -71,14 +97,10 @@ public class Sounds implements FlutterPlugin, ActivityAware {
 	 * Only called on older systems.
 	 */
 	public static void registerWith(Registrar registrar) {
-		reg = registrar;
-		ctx = registrar.context();
-		androidActivity = registrar.activity();
-
-		SoundPlayerPlugin.attachSoundPlayer(ctx, registrar.messenger());
-		SoundRecorderPlugin.attachSoundRecorder(ctx, registrar.messenger());
-		ShadePlayerPlugin.attachShadePlayer(ctx, registrar.messenger());
-
+		if (instance == null) {
+			instance = new Sounds();
+		}
+		instance.onAttachedToEngine(registrar.context(), registrar.messenger());
 		/// We are fully initialised for v1 embedding
 		initialised.countDown();
 
