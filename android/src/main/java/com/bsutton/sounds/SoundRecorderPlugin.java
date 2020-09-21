@@ -55,6 +55,13 @@ class SoundRecorderPlugin implements MethodCallHandler {
 		androidContext = ctx;
 	}
 
+	public static void detachSoundRecorder() {
+		channel.setMethodCallHandler(null);
+		channel = null;
+		slots = null;
+		soundRecorderPlugin = null;
+	}
+
 	void invokeCallback(String methodName, Map dic) {
 		// Log.d(TAG, "calling dart " + methodName + dic.toString());
 		channel.invokeMethod(methodName, dic);

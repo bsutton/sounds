@@ -84,6 +84,13 @@ class ShadePlayerPlugin extends SoundPlayerPlugin implements MethodCallHandler {
 
 	}
 
+	public static void detachShadePlayer() {
+		channel.setMethodCallHandler(null);
+		channel = null;
+		slots = null;
+		soundPlayerPlugin = null;
+	}
+
 	void invokeCallback(String methodName, Map dic) {
 		channel.invokeMethod(methodName, dic);
 	}

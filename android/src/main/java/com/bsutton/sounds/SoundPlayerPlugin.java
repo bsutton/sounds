@@ -73,6 +73,13 @@ class SoundPlayerPlugin implements MethodCallHandler {
 
 	}
 
+	public static void detachSoundPlayer() {
+		channel.setMethodCallHandler(null);
+		channel = null;
+		slots = null;
+		soundPlayerPlugin = null;
+	}
+
 	void invokeCallback(String methodName, Map dic) {
 		Log.d(TAG, "SoundPlayer: invokeCallback " + methodName);
 		channel.invokeMethod(methodName, dic);
