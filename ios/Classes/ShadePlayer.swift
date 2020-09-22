@@ -35,22 +35,22 @@ import MediaPlayer
 private var _channel: FlutterMethodChannel?
 
 func ShadePlayerReg(_ registrar: (NSObjectProtocol & FlutterPluginRegistrar)?) {
-    ShadePlayerManager.register(withRegistrar: registrar)
+    ShadePlayerManager.register(with: registrar)
 }
 
 var shadePlayerManager: ShadePlayerManager? // Singleton
 
 class ShadePlayerManager: SoundPlayerManager {
     //NSMutableArray* ShadePlayerSlots;
-    override class func register(withRegistrar registrar: FlutterPluginRegistrar) {
-        _channel = FlutterMethodChannel(
+    override class func register(with registrar: FlutterPluginRegistrar) {
+        let _channel = FlutterMethodChannel(
             name: "com.bsutton.sounds.sounds_shade_player",
-            binaryMessenger: registrar.messenger())
+            binaryMessenger: registrar!.messenger())
         shadePlayerManager = ShadePlayerManager() // In super class
-        registrar.addMethodCallDelegate(shadePlayerManager as! FlutterPlugin, channel: _channel)
+        registrar?.addMethodCallDelegate(shadePlayerManager!, channel: _channel)
     }
 
-    override func freeSlot(_ slotNo: Int) {
+    override func freeSlot(slotNo: Int) {
         playerSlots?[slotNo] = NSNull()
     }
 
@@ -60,7 +60,7 @@ class ShadePlayerManager: SoundPlayerManager {
     }
 
     override func invokeCallback(_ methodName: String?, arguments call: [AnyHashable : Any]?) {
-        _channel?.invokeMethod(methodName ?? <#default value#>, arguments: call)
+        _channel?.invokeMethod(methodName!, arguments: call)
     }
 
     override func getManager() -> SoundPlayerManager? {
@@ -68,7 +68,8 @@ class ShadePlayerManager: SoundPlayerManager {
     }
 
     override func handle(_ call: FlutterMethodCall?, result: FlutterResult) {
-        var slotNo = (call?.arguments["slotNo"] as? NSNumber)?.intValue ?? 0
+        let args = call?.arguments as! Dictionary<String, Any>
+        var slotNo = (args["slotNo"] as? NSNumber)?.intValue ?? 0
 
         // The dart code supports lazy initialization of players.
         // This means that players can be registered (and slots allocated)
@@ -85,8 +86,9 @@ class ShadePlayerManager: SoundPlayerManager {
         var aShadePlayer = playerSlots?[slotNo] as? ShadePlayer
 
         if "initializeMediaPlayer" == call?.method {
-            assert(playerSlots?[slotNo] == NSNull())
-            aShadePlayer = ShadePlayer(slotNo) as? ShadePlayer
+            //assert(playerSlots?[slotNo] == NSNull())
+            assert(playerSlots?[slotNo] == nil)
+            aShadePlayer = ShadePlayer(aSlotNo: slotNo)
             playerSlots?[slotNo] = aShadePlayer
 
             aShadePlayer?.initializeShadePlayer(call, result: result)
@@ -95,7 +97,7 @@ class ShadePlayerManager: SoundPlayerManager {
             playerSlots?[slotNo] = NSNull()
             slotNo = -1
         } else if "startShadePlayer" == call?.method {
-            aShadePlayer?.start(call, result: result)
+            aShadePlayer?.start(call: call, result: result)
         } else {
             super.handle(call, result: result)
         }
@@ -114,20 +116,21 @@ class ShadePlayer: SoundPlayer {
     private var forwardTarget: Any?
     private var backwardTarget: Any?
     private var pauseTarget: Any?
-    internal var setCategoryDone: t_SET_CATEGORY_DONE!
-    internal var setActiveDone: t_SET_CATEGORY_DONE!
+    //internal override var setCategoryDone: t_SET_CATEGORY_DONE!
+    //internal override var setActiveDone: t_SET_CATEGORY_DONE!
     private var slotNo = 0
 
-    convenience init?(_ aSlotNo: Int) {
-        slotNo = aSlotNo
-    }
-
-    func start(_ call: FlutterMethodCall?, result: FlutterResult) {
-        let trackDict = call?.arguments["track"] as? [AnyHashable : Any]
-        track = Track(fromDictionary: trackDict)
-        let canPause = (call?.arguments["canPause"] as? NSNumber)?.boolValue ?? false
-        let canSkipForward = (call?.arguments["canSkipForward"] as? NSNumber)?.boolValue ?? false
-        let canSkipBackward = (call?.arguments["canSkipBackward"] as? NSNumber)?.boolValue ?? false
+    override init(aSlotNo: Int) {
+          slotNo = aSlotNo
+        super.init(aSlotNo: slotNo)
+      }
+    
+    func start(call: FlutterMethodCall?, result: FlutterResult) {
+        let args = call?.arguments as? Dictionary<String, Any>
+        let trackDict = (args?["track"] as? Dictionary<String, Any>)
+        let canPause = (args?["canPause"] as? NSNumber)?.boolValue ?? false
+        let canSkipForward = (args?["canSkipForward"] as? NSNumber)?.boolValue ?? false
+        let canSkipBackward = (args?["canSkipBackward"] as? NSNumber)?.boolValue ?? false
 
 
         if track == nil {
@@ -244,12 +247,14 @@ class ShadePlayer: SoundPlayer {
         } else {
             // The audio file is stored as a buffer
             let dataBuffer = track?.dataBuffer
-            let bufferData = dataBuffer?.type(of: init)()
+            let bufferData = dataBuffer?.data
             do {
                 if let bufferData = bufferData {
                     audioPlayer = try AVAudioPlayer(data: bufferData)
                 }
-            } catch {
+            }
+            catch{
+                
             }
             audioPlayer?.delegate = self
             DispatchQueue.main.async(
@@ -300,7 +305,7 @@ class ShadePlayer: SoundPlayer {
             backwardTarget = nil
         }
 
-        getPlugin()?.freeSlot(slotNo)
+        getPlugin()?.freeSlot(slotNo: slotNo)
         result("The player has been successfully released")
 
     }
@@ -340,8 +345,8 @@ class ShadePlayer: SoundPlayer {
             // current track .
             let url = URL(string: track?.albumArtUrl ?? "")
             var artworkImage: UIImage? = nil
-            if let url = url, let data = Data(contentsOf: url) {
-                artworkImage = UIImage(data: data)
+            if let url = url, let data = Data(contentsOf: url){
+                               artworkImage = UIImage(data: data)
             }
             if artworkImage != nil {
                 let albumArt = MPMediaItemArtwork(
@@ -440,9 +445,9 @@ class ShadePlayer: SoundPlayer {
         do {
             pauseTarget = commandCenter.togglePlayPauseCommand.addTarget(handler: { event in
 
-                let b = self.audioPlayer.isPlaying
+                let b = self.audioPlayer?.isPlaying ?? false
                 // If the caller wants to control the pause button, just call him
-                if b {
+                if b{
                     if canPause {
                         self.invokeCallback("pause", boolArg: true)
                     } else {

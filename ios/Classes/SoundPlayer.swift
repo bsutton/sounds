@@ -32,20 +32,21 @@ func SoundPlayerReg(_ registrar: (NSObjectProtocol & FlutterPluginRegistrar)?) {
     SoundPlayerManager.register(with: registrar)
 }
 
+
 class SoundPlayerManager: NSObject, FlutterPlugin {
-    class func register(with registrar: (NSObjectProtocol & FlutterPluginRegistrar)?) {
-       var _channel = FlutterMethodChannel(
-            name: "com.bsutton.sounds.sound_player",
-            binaryMessenger: registrar.messenger())
+        
+    class func register(with registrar: FlutterPluginRegistrar) {
+       let _channel = FlutterMethodChannel(
+        name: "com.bsutton.sounds.sound_player",
+        binaryMessenger: registrar.messenger())
         assert(soundPlayerManager == nil)
         soundPlayerManager = SoundPlayerManager()
         registrar?.addMethodCallDelegate(soundPlayerManager as! FlutterPlugin, channel: _channel)
     }
 
     func handle(_ call: FlutterMethodCall?, result: FlutterResult) {
-        let slotNo = (call?.arguments["slotNo"] as? NSNumber)?.intValue ?? 0
-        let test = call?.arguments["slotNo"]
-        let fds = call?.arguments
+        let args = call?.arguments as! Dictionary<String, Any>
+        let slotNo = (args["slotNo"] as? NSNumber)?.intValue ?? 0
         // The dart code supports lazy initialization of players.
         // This means that players can be registered (and slots allocated)
         // on the client side in a different order to which the players
@@ -58,10 +59,9 @@ class SoundPlayerManager: NSObject, FlutterPlugin {
         }
 
         var aSoundPlayer = playerSlots?[slotNo] as? SoundPlayer
-
         if "initializeMediaPlayer" == call?.method {
-            assert(playerSlots?[slotNo] == NSNull())
-            aSoundPlayer = SoundPlayer(slotNo)
+            assert(playerSlots?[slotNo] == nil)
+            aSoundPlayer = SoundPlayer(aSlotNo: slotNo)
             playerSlots?[slotNo] = aSoundPlayer
             aSoundPlayer?.initializeSoundPlayer(call, result: result)
         } else if "releaseMediaPlayer" == call?.method {
@@ -69,14 +69,15 @@ class SoundPlayerManager: NSObject, FlutterPlugin {
             playerSlots?[slotNo] = NSNull()
             playerSlots?[slotNo] = NSNull()
         } else if "getDuration" == call?.method {
-            let path = call?.arguments["path"] as? String
-            let callbackUuid = call?.arguments["callbackUuid"] as? String
+            //assert(args != nil)
+            let path = args["path"] as! String
+            let callbackUuid = args["callbackUuid"] as? String
             soundPlayerManager?.getDuration(path, callbackUuid: callbackUuid, slotNo: slotNo, result: result)
         } else if "startPlayer" == call?.method {
-            let path = call?.arguments["path"] as? String
+            let path = args["path"] as? String
             aSoundPlayer?.start(path, result: result)
         } else if "startPlayerFromBuffer" == call?.method {
-            let dataBuffer = call?.arguments["dataBuffer"] as? FlutterStandardTypedData
+            let dataBuffer = args["dataBuffer"] as? FlutterStandardTypedData
             aSoundPlayer?.start(fromBuffer: dataBuffer, result: result)
         } else if "stopPlayer" == call?.method {
             aSoundPlayer?.stop()
@@ -86,21 +87,22 @@ class SoundPlayerManager: NSObject, FlutterPlugin {
         } else if "resumePlayer" == call?.method {
             aSoundPlayer?.resumePlayer(result)
         } else if "seekToPlayer" == call?.method {
-            let positionInMilli = call?.arguments["milli"] as? NSNumber
+            let positionInMilli = args["milli"] as? NSNumber
             aSoundPlayer?.seek(toPlayer: positionInMilli?.intValue ?? 0, result: result)
         } else if "setProgressInterval" == call?.method {
-            let intervalInMilli = call?.arguments["milli"] as? NSNumber
+            let intervalInMilli = args["milli"] as? NSNumber
             aSoundPlayer?.setProgressInterval(intervalInMilli?.intValue ?? 0, result: result)
         } else if "setVolume" == call?.method {
-            let volume = call?.arguments["volume"] as? NSNumber
+            let volume = args["volume"] as? NSNumber
             aSoundPlayer?.setVolume(volume?.doubleValue ?? 0.0, result: result)
         } else if "iosSetCategory" == call?.method {
-            let categ = call?.arguments["category"] as? String
-            let mode = call?.arguments["mode"] as? String
-            let options = call?.arguments["options"] as? NSNumber
+            //assert(args != nil)
+            let categ = args["category"] as? String
+            let mode = args["mode"] as? String
+            let options = args["options"] as? NSNumber
             aSoundPlayer?.setCategory(categ, mode: mode, options: options?.intValue ?? 0, result: result)
         } else if "setActive" == call?.method {
-            let enabled = (call?.arguments["enabled"] as? NSNumber)?.boolValue ?? false
+            let enabled = (args["enabled"] as? NSNumber)?.boolValue ?? false
             aSoundPlayer?.setActive(enabled, result: result)
         } else if "getResourcePath" == call?.method {
             result(Bundle.main.resourcePath)
@@ -108,12 +110,11 @@ class SoundPlayerManager: NSObject, FlutterPlugin {
             result(FlutterMethodNotImplemented)
         }
     }
-
+    
     func invokeCallback(_ methodName: String?, arguments call: [AnyHashable : Any]?) {
-        _channel?.invokeMethod(methodName, arguments: call)
+        _channel!.invokeMethod(methodName! , arguments: call)
     }
-
-    func freeSlot(_ slotNo: Int) {
+    func freeSlot(slotNo: Int) {
         playerSlots?[slotNo] = NSNull()
     }
 
@@ -141,7 +142,7 @@ class SoundPlayerManager: NSObject, FlutterPlugin {
             let dic = [
                 "slotNo": NSNumber(value: Int32(slotNo)),
                 "arg": args
-            ]
+                ] as [String : Any]
             invokeCallback("durationResults", arguments: dic)
         } else {
             /// danger will robison, danger
@@ -150,7 +151,7 @@ class SoundPlayerManager: NSObject, FlutterPlugin {
             let dic = [
                 "slotNo": NSNumber(value: Int32(slotNo)),
                 "arg": args
-            ]
+                ] as [String : Any]
             invokeCallback("onError", arguments: dic)
         }
 
@@ -165,7 +166,6 @@ class SoundPlayerManager: NSObject, FlutterPlugin {
         return soundPlayerManager
     }
 }
-
 class SoundPlayer: NSObject, AVAudioPlayerDelegate {
     var audioPlayer: AVAudioPlayer?
     var isPaused = false
@@ -181,7 +181,7 @@ class SoundPlayer: NSObject, AVAudioPlayerDelegate {
         return soundPlayerManager
     }
 
-    convenience init?(_ aSlotNo: Int) {
+    init(aSlotNo: Int) {
         slotNo = aSlotNo
     }
 
@@ -287,8 +287,8 @@ class SoundPlayer: NSObject, AVAudioPlayerDelegate {
 
     @objc func updateProgress() {
         print("entered updateProgress")
-        let duration = NSNumber(value: Double(audioPlayer?.duration * 1000))
-        let currentTime = NSNumber(value: Double(audioPlayer?.currentTime ?? <#default value#> * 1000))
+        let duration = NSNumber(value: Double(audioPlayer!.duration * 1000))
+        let currentTime = NSNumber(value: Double((audioPlayer?.currentTime)! * 1000))
 
         let status = String(
             format: "{\"duration\": \"%@\", \"current_position\": \"%@\"}", duration.stringValue, currentTime.stringValue)
@@ -447,7 +447,7 @@ class SoundPlayer: NSObject, AVAudioPlayerDelegate {
 
     func start(fromBuffer dataBuffer: FlutterStandardTypedData?, result: FlutterResult) {
         do {
-            if let data = dataBuffer?.init() {
+            if let data = dataBuffer?.data{
                 audioPlayer = try AVAudioPlayer(data: data)
             }
         } catch {
@@ -522,9 +522,9 @@ class SoundPlayer: NSObject, AVAudioPlayerDelegate {
         var b = false
         do {
             try AVAudioSession.sharedInstance().setCategory(
-                        AVAudioSession.Category(categ /* AVAudioSessionCategoryPlayback */),
-                        mode: AVAudioSession.Mode(mode),
-                        options: AVAudioSession.CategoryOptions(rawValue: options))
+                AVAudioSession.Category(rawValue: categ!/* AVAudioSessionCategoryPlayback */),
+                        mode: AVAudioSession.Mode(rawValue: mode!),
+                        options: AVAudioSession.CategoryOptions(rawValue: UInt(options)))
             b = true
         } catch {
         }
@@ -568,7 +568,7 @@ class SoundPlayer: NSObject, AVAudioPlayerDelegate {
     }
 
     func release(_ call: FlutterMethodCall?, result: FlutterResult) {
-        getPlugin()?.freeSlot(slotNo)
+        getPlugin()?.freeSlot(slotNo: slotNo)
         result("The player has been successfully released")
 
     }
@@ -577,7 +577,7 @@ class SoundPlayer: NSObject, AVAudioPlayerDelegate {
         let dic = [
             "slotNo": NSNumber(value: Int32(slotNo)),
             "arg": stringArg ?? ""
-        ]
+            ] as [String : Any]
         getPlugin()?.invokeCallback(methodName, arguments: dic)
     }
 

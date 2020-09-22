@@ -27,10 +27,20 @@ class Track: NSObject {
     var albumArtFile: String?
     var dataBuffer: FlutterStandardTypedData?
 
+    init(path: String?, title: String?, artist: String?, albumArtUrl: String?, albumArtAsset: String? ,albumArtFile: String?,dataBuffer: FlutterStandardTypedData?){
+        self.path = path
+        self.title = title
+        self.artist = artist
+        self.albumArtUrl = albumArtUrl
+        self.albumArtAsset = albumArtAsset
+        self.albumArtFile = albumArtFile
+        self.dataBuffer = dataBuffer
+        
+    }
+    
     convenience init?(fromJson jsonString: String?) {
         let jsonData = jsonString?.data(using: .utf8)
 
-        let error: Error? = nil
         var responseObj: [AnyHashable : Any]? = nil
         do {
             if let jsonData = jsonData {
@@ -38,60 +48,36 @@ class Track: NSObject {
                     with: jsonData,
                     options: []) as? [AnyHashable : Any]
             }
-        } catch {
         }
-
-        if error == nil {
-            let pathString = responseObj?["path"] as? String
-            path = pathString
-
-            let titleString = responseObj?["title"] as? String
-            title = titleString
-
-            let artistString = responseObj?["artist"] as? String
-            artist = artistString
-
-            let albumArtUrlString = responseObj?["albumArtUrl"] as? String
-            albumArtUrl = albumArtUrlString
-
-            let albumArtAssetString = responseObj?["albumArtAsset"] as? String
-            albumArtAsset = albumArtAssetString
-
-            let albumArtFileString = responseObj?["albumArtFile"] as? String
-            albumArtFile = albumArtFileString
-
-
-            let dataBufferJson = responseObj?["dataBuffer"] as? FlutterStandardTypedData
-            dataBuffer = dataBufferJson
-        } else {
-            print("Error in parsing JSON")
+        catch{
+            print("Error in parsing JSON of Track")
             return nil
         }
+        
+                 // let args = responseObj as! Dictionary<String, Any>
+               //   assert(init)
+                  let pathString = responseObj?["path"] as? String
+                  let titleString = responseObj?["title"] as? String
+                  let artistString = responseObj?["artist"] as? String
+                  let albumArtUrlString = responseObj?["albumArtUrl"] as? String
+                  let albumArtAssetString = responseObj?["albumArtAsset"] as? String
+                  let albumArtFileString = responseObj?["albumArtFile"] as? String
+                  let dataBufferJson = responseObj?["dataBuffer"] as? FlutterStandardTypedData
+        
+        self.init(path: pathString, title: titleString, artist: artistString, albumArtUrl: albumArtUrlString, albumArtAsset: albumArtAssetString, albumArtFile: albumArtFileString, dataBuffer: dataBufferJson)
+        
     }
 
     convenience init(fromDictionary jsonData: [AnyHashable : Any]?) {
         let pathString = jsonData?["path"] as? String
-        path = pathString
-
         let titleString = jsonData?["title"] as? String
-        title = titleString
-
         let artistString = jsonData?["artist"] as? String
-        artist = artistString
-
         let albumArtUrlString = jsonData?["albumArtUrl"] as? String
-        albumArtUrl = albumArtUrlString
-
         let albumArtAssetString = jsonData?["albumArtAsset"] as? String
-        albumArtAsset = albumArtAssetString
-
         let albumArtFileString = jsonData?["albumArtFile"] as? String
-        albumArtFile = albumArtFileString
-
-
         let dataBufferJson = jsonData?["dataBuffer"] as? FlutterStandardTypedData
-        dataBuffer = dataBufferJson
-    }
+        
+         self.init(path: pathString, title: titleString, artist: artistString, albumArtUrl: albumArtUrlString, albumArtAsset: albumArtAssetString, albumArtFile: albumArtFileString, dataBuffer: dataBufferJson)    }
 
     // Returns true if the audio file is stored as a path represented by a string, false if
     // it is stored as a buffer.
