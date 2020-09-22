@@ -36,7 +36,7 @@ class SoundPlayerManager: NSObject, FlutterPlugin {
     class func register(with registrar: (NSObjectProtocol & FlutterPluginRegistrar)?) {
        var _channel = FlutterMethodChannel(
             name: "com.bsutton.sounds.sound_player",
-            binaryMessenger: registrar?.messenger() as! FlutterBinaryMessenger)
+            binaryMessenger: registrar.messenger())
         assert(soundPlayerManager == nil)
         soundPlayerManager = SoundPlayerManager()
         registrar?.addMethodCallDelegate(soundPlayerManager as! FlutterPlugin, channel: _channel)

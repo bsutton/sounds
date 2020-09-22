@@ -42,12 +42,12 @@ var shadePlayerManager: ShadePlayerManager? // Singleton
 
 class ShadePlayerManager: SoundPlayerManager {
     //NSMutableArray* ShadePlayerSlots;
-    override class func register(withRegistrar registrar: (NSObjectProtocol & FlutterPluginRegistrar)?) {
+    override class func register(withRegistrar registrar: FlutterPluginRegistrar) {
         _channel = FlutterMethodChannel(
             name: "com.bsutton.sounds.sounds_shade_player",
-            binaryMessenger: registrar?.messenger())
+            binaryMessenger: registrar.messenger())
         shadePlayerManager = ShadePlayerManager() // In super class
-        registrar?.addMethodCallDelegate(shadePlayerManager as! FlutterPlugin, channel: _channel ?? <#default value#>)
+        registrar.addMethodCallDelegate(shadePlayerManager as! FlutterPlugin, channel: _channel)
     }
 
     override func freeSlot(_ slotNo: Int) {

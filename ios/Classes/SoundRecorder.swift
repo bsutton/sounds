@@ -42,13 +42,13 @@ var soundRecorderManager: SoundRecorderManager? // Singleton
 class SoundRecorderManager: NSObject, FlutterPlugin {
     private var soundRecorderSlots: [AnyHashable]?
 
-    class func register(with registrar: (NSObjectProtocol & FlutterPluginRegistrar)) {
+    class func register(with registrar:  FlutterPluginRegistrar) {
         _channel = FlutterMethodChannel(
             name: "com.bsutton.sounds.sound_recorder",
             binaryMessenger: registrar.messenger())
         assert(soundRecorderManager == nil)
         soundRecorderManager = SoundRecorderManager()
-        registrar.addMethodCallDelegate(soundRecorderManager!, channel: _channel ?? <#default value#>)
+        registrar.addMethodCallDelegate(soundRecorderManager!, channel: _channel)
     }
 
     func handle(_ call: FlutterMethodCall, result: FlutterResult) {
