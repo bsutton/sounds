@@ -1,4 +1,9 @@
 # 1.0.7
+pubspec updated with new version number
+Fixed issue #22 After resume track was not in correct state due to incorrect release method.
+change log statements to debug rather than error.
+
+# 1.0.7
 Fixed issue #22 After resume track was not in correct state due to incorrect release method.
 change log statements to debug rather than error.
 released 1.0.6
