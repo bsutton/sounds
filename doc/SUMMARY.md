@@ -8,7 +8,7 @@
 ## Guides
 
 * [Widgets](guides/widgets.md)
-* [Beep, Beep](guides/beep-beep.md)
+* [Short Sounds](guides/beep-beep.md)
 
 ## API
 
