@@ -41,7 +41,7 @@ The federated model allows third party developers to contribute a Platform speci
 
 ## Pigeon
 
-The Pigeon project is a new Dart project for building Platform APIs that work with the Federated plugin model.
+The [Pigeon](https://pub.dev/packages/pigeon) project is a new Dart project for building Platform APIs that work with the Federated plugin model.
 
 The Pigeon project allows Sounds to define the Sounds Platform API in Dart and then have Pigeon generate the Platform specific communications layer. 
 
