@@ -6,22 +6,21 @@
 
 ## API
 
----
-
-* [Overview](overview.md)
-* [AudioSource](audiosource.md)
-* [Albums](albums.md)
-* [Downloader](downloader.md)
-* [iOSCategory](ioscategory.md)
-* [MediaFormat](mediaformat.md)
-* [Monitoring](monitoring.md)
-* [Quickplay](quickplay.md)
-* [RecorderPlaybackController](recorderplaybackcontroller.md)
-* [SoundPlayer](soundplayer.md)
-* [SoundPlayerUI](soundplayerui.md)
-* [SoundRecorder](soundrecorder.md)
-* [SoundRecorderUI](soundrecorderui.md)
-* [Track](track.md)
+* [Overview](api/overview.md)
+* [AudioSource](api/audiosource.md)
+* [Albums](api/albums.md)
+* [Caching](api/caching.md)
+* [Downloader](api/downloader.md)
+* [iOSCategory](api/ioscategory.md)
+* [MediaFormat](api/mediaformat.md)
+* [Monitoring](api/monitoring.md)
+* [Quickplay](api/quickplay.md)
+* [RecorderPlaybackController](api/recorderplaybackcontroller.md)
+* [SoundPlayer](api/soundplayer.md)
+* [SoundPlayerUI](api/soundplayerui.md)
+* [SoundRecorder](api/soundrecorder.md)
+* [SoundRecorderUI](api/soundrecorderui.md)
+* [Track](api/track.md)
 
 ## Platforms
 

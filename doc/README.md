@@ -42,16 +42,16 @@ The core classes are:
 
 | Class | Usage |
 | :--- | :--- |
-| [SoundPlayerUI](soundplayerui.md) | A Flutter Widget Audio Player |
-| [SoundRecorderUI](soundrecorderui.md) | A Flutter Widget for recording |
-| [QuickPlay](quickplay.md) | Plays an audio file without a UI. Easiest way to play a beep. |
-| [SoundPlayer.noUI](soundplayer.md#headless-playback-no-ui) | API to playback audio with fine grained control |
-| [SoundPlayer.withShadeUI](soundplayer.md#os-shade-using-the-os-media-ui) | API to playback audio using the OS's Shade \(media player\) |
-| [SoundRecorder](soundrecorder.md) | API to record audio with fine grained control. |
-| [Track](track.md) | Container for audio used by all of the above classes. |
-| [MediaFormat](mediaformat.md) | Defines what MediaFormat is being used. |
-| [RecorderPlaybackController](recorderplaybackcontroller.md) | Flutter InheritedWidget used to co-ordinate Recording and Playback in a single UI. |
-| [Albums](albums.md) | Play a sequence of Tracks via the OS's Shade \(media player\) |
+| [SoundPlayerUI](api/soundplayerui.md) | A Flutter Widget Audio Player |
+| [SoundRecorderUI](api/soundrecorderui.md) | A Flutter Widget for recording |
+| [QuickPlay](api/quickplay.md) | Plays an audio file without a UI. Easiest way to play a beep. |
+| [SoundPlayer.noUI](api/soundplayer.md#headless-playback-no-ui) | API to playback audio with fine grained control |
+| [SoundPlayer.withShadeUI](api/soundplayer.md#os-shade-using-the-os-media-ui) | API to playback audio using the OS's Shade \(media player\) |
+| [SoundRecorder](api/soundrecorder.md) | API to record audio with fine grained control. |
+| [Track](api/track.md) | Container for audio used by all of the above classes. |
+| [MediaFormat](api/mediaformat.md) | Defines what MediaFormat is being used. |
+| [RecorderPlaybackController](api/recorderplaybackcontroller.md) | Flutter InheritedWidget used to co-ordinate Recording and Playback in a single UI. |
+| [Albums](api/albums.md) | Play a sequence of Tracks via the OS's Shade \(media player\) |
 
 ![](.gitbook/assets/image%20%281%29.png)
 
@@ -106,23 +106,23 @@ The key classes are:
 
 ### Api classes
 
-[QuickPlay](quickplay.md) - instantly play an audio file \(no ui\). Perfect for the odd beep.
+[QuickPlay](api/quickplay.md) - instantly play an audio file \(no ui\). Perfect for the odd beep.
 
-[Track](track.md) - Defines a track including the artist details and the audio media.
+[Track](api/track.md) - Defines a track including the artist details and the audio media.
 
-[Album](albums.md) - play a collection of tracks via the OSs' audio UI.
+[Album](api/albums.md) - play a collection of tracks via the OSs' audio UI.
 
-[SoundPlayer](soundplayer.md) - provides an API for playing audio including pause/resume/seek.
+[SoundPlayer](api/soundplayer.md) - provides an API for playing audio including pause/resume/seek.
 
-[SoundRecorder](soundrecorder.md) - API for recording audio.
+[SoundRecorder](api/soundrecorder.md) - API for recording audio.
 
 ### Widgets
 
-[SoundPlayerUI](soundplayerui.md) - displays an HTML 5 style audio controller widget.
+[SoundPlayerUI](api/soundplayerui.md) - displays an HTML 5 style audio controller widget.
 
-[SoundRecorderUI](soundrecorderui.md) - displays a recording widget.
+[SoundRecorderUI](api/soundrecorderui.md) - displays a recording widget.
 
-[RecorderPlaybackController](recorderplaybackcontroller.md) - pairs a SoundPlayerUI and SoundRecorderUI to provide a coordinated recording/playback UI.
+[RecorderPlaybackController](api/recorderplaybackcontroller.md) - pairs a SoundPlayerUI and SoundRecorderUI to provide a coordinated recording/playback UI.
 
-Note: there are some limitations on the supported [MediaFormat](mediaformat.md).
+Note: there are some limitations on the supported [MediaFormat](api/mediaformat.md).
 
