@@ -31,6 +31,7 @@
 ## Contributing
 
 * [Overview](contributing/overview.md)
+* [Platform Implementations](contributing/platform-implementations.md)
 * [Building](contributing/building.md)
 * [Debugging](contributing/debugging.md)
 * [Logging](contributing/logging.md)
