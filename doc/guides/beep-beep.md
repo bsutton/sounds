@@ -1,10 +1,10 @@
 # Short Sounds
 
-A common use case for Sounds is to play simple audio files such as a beep.
+A common use case for Sounds is to play short audio files such as a beep.
 
-The best way to play these short audio files is to use the [Quickplay](../api/quickplay.md) API.
+The best way to play these short audio files is to use the [QuickPlay](../api/quickplay.md) API.
 
-The Quickplay API simply allows you to trigger the playback of a audio Track. There is no UI involved and resource cleanup is automatic.
+The QuickPlay API simply allows you to trigger the playback of a audio Track. There is no UI involved and resource cleanup is automatic.
 
 ```text
 QuickPlay.fromAsset('assets/beep.wav', volume: 1.0);

@@ -17,7 +17,7 @@ Each constructor loads audio media from a different source.
 
 ### fromAsset
 
-To play audio from a project asset copy the file to your assets directory in the root of your Flutter project. \(i.e. under the folder that contains your pubspec.yaml.\)
+To play audio from a Flutter asset copy the file to your assets directory in the root of your Flutter project. \(i.e. under the folder that contains your pubspec.yaml.\)
 
 `assets/sample.acc`
 
@@ -26,26 +26,19 @@ Add the asset to the 'assets' section of your pubspec.yaml
 ```yaml
 flutter:
   assets:
-  - sample.acc
+  - beep.acc
 ```
 
 Now play the file.
 
 ```dart
 /// play the audio with no controls
-QuickPlay.fromFile('beep.acc');
+QuickPlay.fromAsset('assets/beep.acc');
 
 /// If you need to control/monitor the playback
 var player = SoundPlayer.noUI();
 player.onStopped = ({wasUser}) => player.release();
-player.play(Track.fromFile('sample.aac'));
-```
-
-To play a track from an asset use:
-
-```dart
-var track = Track.fromAsset('asset/somfile.aac');
-QuickPlay.fromTrack(track);
+player.play(Track.fromAsset('assets/beep.aac'));
 ```
 
 ### fromFile
@@ -69,7 +62,7 @@ To play a track from a buffer use:
 
 ```dart
 Uint8List buffer = ....
-// Load a local audio file and get it as a buffer
+// Load a local audio file into a buffer
 Uint8List buffer = (await rootBundle.load('assets/samples/audio.mp3'))
     	.buffer
     	.asUint8List();

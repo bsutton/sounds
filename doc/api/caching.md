@@ -2,7 +2,7 @@
 
 If you repeatedly need to play a sound \(such as a beep\) you may want to cache the audio.
 
-The simplest way to cache Audio is to cache a [Track](track.md) object which can be re-used as many times as necessary.
+The simplest way to cache audio is to cache a [Track](track.md) object which can be re-used as many times as necessary.
 
 When creating a [Track](track.md) set the `autoRelease` argument to false.
 
@@ -18,5 +18,5 @@ If you set `autoRelease` to `false` you MUST call `Track.release` when you no lo
 
 You may re-use the Track any number of times and you only need to call `Track.release` once.
 
-If may re-use the Track after calling `Track.release` but you must once again call `Track.release.`
+You may re-use the Track after calling `Track.release` but you must once again call `Track.release.`
 
