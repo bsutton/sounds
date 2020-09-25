@@ -12,7 +12,7 @@ When recording audio you need access to the devices microphone and possibly its 
 
 Sounds does not manage permissions for you. You must ensure that the appropriate permissions are obtained.
 
-The package [permission\_handler](https://pub.dev/packages/permission_handler) provides a convenient set of methods for manageing permissions.
+The package [permission\_handler](https://pub.dev/packages/permission_handler) provides a convenient set of methods for managing permissions.
 
 When requesting permissions the OS will display a prompt to the user. I generally recommend that you only prompt the user for the required permissions at the point in time that they require them.
 

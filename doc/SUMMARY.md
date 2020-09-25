@@ -5,6 +5,10 @@
 * [Roadmap](roadmap.md)
 * [Untitled](untitled.md)
 
+## Guides
+
+* [Widgets](guides/widgets.md)
+
 ## API
 
 * [Overview](api/overview.md)
