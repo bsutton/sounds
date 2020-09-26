@@ -13,7 +13,7 @@ The `SoundPlayer` operates in one of two modes:
 | Headless | SoundPlayer.noUI\(\) | audio is played back with no UI. You need to build your own UI to control playback. |
 | OS Shade | SoundPlayer.withShadeUI\(\) | the OS' built in media player \(often referred to as the Shade or Notification Area\) is displayed allowing audio playback to be controlled. Using the Shade allows the user to control the audio even if their phone is locked. |
 
-A `SoundPlayer` can be reused to play mulitiple audio tracks. This is particularly useful if you are using the `SoundPlayer.withShadeUI()` constructor as it means you can transition from one `Track` to the next track without the OS' media player 'flickering' as you change tracks.
+A `SoundPlayer` can be reused to play multiple audio tracks. This is particularly useful if you are using the `SoundPlayer.withShadeUI()` constructor as it means you can transition from one `Track` to the next track without the OS' media player 'flickering' as you change tracks.
 
 ### Alternatives
 
@@ -214,6 +214,20 @@ var Stream<PlaybackDisposition> = SoundPlayer.noUI().dispositionStream(interval)
 ```
 
 The result is a stream of `PlaybackDisposition`s which includes both the audio's duration \(length\) and current position.
+
+## Race Conditions
+
+It is common when directly controlling playback to encounter race conditions.
+
+An example of a race conditions is attempting to stop the player just as the track naturally ends.
+
+You should be prepared to handle the state related errors whenever you try to change the state of playback \(e.g. pause/resume/stop\).
+
+Some of the causes of Race Conditions.
+
+* Track naturally ends as you attempt to stop or pause the audio.
+* User changes the playback state via the Shade \(when it is enabled\).
+* The Application pauses causing audio playback to stop.
 
 ## System pauses
 
