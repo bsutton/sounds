@@ -4,6 +4,8 @@
 
 The `MediaFormat` class allows you to select the Codec and Container when recording and when doing audio conversions.
 
+Detailed MediaFormat API documentation can be found on [pub.dev](https://pub.dev/documentation/sounds/latest/sounds/sounds-library.html).
+
 Both Android and iOS are able to automatically detect the format of an audio file when doing playback. You simply have make certain that your audio file is encoded using one of the supported MediaFormats.
 
 If you need to do audio conversions the [sounds\_codec](https://github.com/bsutton/sounds_codec) project \(a work in progress\) is intended to provide conversions between MediaFormats.

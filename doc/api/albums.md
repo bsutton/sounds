@@ -4,6 +4,8 @@
 
 Sounds supports the concept of Albums which are, as you would expect, a collection of `Track`s which can be played in order.
 
+Detailed Albums API documentation can be found on [pub.dev](https://pub.dev/documentation/sounds/latest/sounds/sounds-library.html).
+
 The `Album` uses the OSs Media Player \(Shade\) to display the tracks as they are played.
 
 A user can use the skip back, forward and pause buttons to navigate the album.

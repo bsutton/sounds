@@ -2,9 +2,9 @@
 
 If you repeatedly need to play a sound \(such as a beep\) you may want to cache the audio.
 
-The simplest way to cache audio is to cache a [Track](track.md) object which can be re-used as many times as necessary.
+The simplest way to cache audio is to cache a [Track](../api/track.md) object which can be re-used as many times as necessary.
 
-When creating a [Track](track.md) set the `autoRelease` argument to false.
+When creating a [Track](../api/track.md) set the `autoRelease` argument to false.
 
 ```text
 var track = Track.fromFile('path/to/audio', autoRelease=false);

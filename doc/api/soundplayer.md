@@ -2,7 +2,7 @@
 
 ## Overview
 
-The `SoundPlayer` class provide an API for playing audio.
+A `SoundPlayer` establishes an audio session and allows you to play multiple audio files \(Tracks\) within the session.
 
 Detailed SoundPlayer API documentation can be found on [pub.dev](https://pub.dev/documentation/sounds/latest/sounds/sounds-library.html).
 

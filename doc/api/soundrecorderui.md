@@ -4,6 +4,8 @@
 
 The SoundRecorderUI widget provide a simple UI for recording audio.
 
+Detailed SoundRecorderUI API documentation can be found on [pub.dev](https://pub.dev/documentation/sounds/latest/sounds/sounds-library.html).
+
 The audio is recorded to a [Track](track.md).
 
 ### permissions

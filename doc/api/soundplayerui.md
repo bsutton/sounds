@@ -4,6 +4,8 @@
 
 The SoundPlayerUI provides a Playback widget styled after the HTML 5 audio player.![](https://raw.githubusercontent.com/bsutton/sounds/master/images/SoundPlayerUI.png)
 
+Detailed SoundPlayerUI API documentation can be found on [pub.dev](https://pub.dev/documentation/sounds/latest/sounds/sounds-library.html).
+
 The player displays a loading indicator and allows the user to pause/resume/skip via the progress bar.
 
 You can also pause/resume the player via an api call to SoundPlayerUI's state using a GlobalKey.

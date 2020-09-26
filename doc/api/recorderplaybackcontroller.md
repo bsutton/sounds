@@ -4,6 +4,8 @@
 
 The `RecorderPlaybackController` widget provides a means to co-ordinate a [SoundRecorderUI](soundrecorderui.md) and [SoundPlayerUI](soundplayerui.md) so that a user can record and playback via a single UI.
 
+Detailed RecorderPlaybackController API documentation can be found on [pub.dev](https://pub.dev/documentation/sounds/latest/sounds/sounds-library.html).
+
 The `RecorderPlaybackController` is an InheritedWidget which allows the [SoundRecorderUI](soundrecorderui.md) and [SoundPlayerUI](soundplayerui.md) to find and attach to it.
 
 [SoundRecorderUI](soundrecorderui.md) and [SoundPlayerUI](soundplayerui.md) widgets will automatically search for and attach to the nearest `RecorderPlaybackController` above them in the widget tree.

@@ -4,6 +4,8 @@
 
 The `SoundRecorder` class provides an api for recording audio.
 
+Detailed SoundRecorder API documentation can be found on [pub.dev](https://pub.dev/documentation/sounds/latest/sounds/sounds-library.html).
+
 If you need a widget then you should be using `SoundRecorderUI`.
 
 The `SoundRecorder` class records audio into a [Track](track.md).

@@ -4,6 +4,8 @@
 
 QuickPlay provides the simplest method to play audio.
 
+Detailed QuickPlay API documentation can be found on [pub.dev](https://pub.dev/documentation/sounds/latest/sounds/sounds-library.html).
+
 QuickPlay is ideal for playing short sounds but can play audio of any duration.
 
 QuickPlay does not provide a UI and will play the audio from start to end.

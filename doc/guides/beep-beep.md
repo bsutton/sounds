@@ -12,7 +12,7 @@ QuickPlay.fromAsset('assets/beep.wav', volume: 1.0);
 
 We recommend that you ship your short audio files as Flutter assets and load the asset using the`QuickPlay.fromAsset` or `Track.fromAsset` methods.
 
-You should also read the section on [caching](../api/caching.md) as you may want to cache the track to reduce lag between the user clicking a button and the audio playing.
+You should also read the section on [caching](caching.md) as you may want to cache the track to reduce lag between the user clicking a button and the audio playing.
 
 ```text
 

@@ -9,17 +9,17 @@
 
 * [Widgets](guides/widgets.md)
 * [Short Sounds](guides/beep-beep.md)
+* [Caching](guides/caching.md)
+* [Monitoring](guides/monitoring.md)
 
 ## API
 
 * [Overview](api/overview.md)
 * [AudioSource](api/audiosource.md)
 * [Albums](api/albums.md)
-* [Caching](api/caching.md)
 * [Downloader](api/downloader.md)
 * [iOSCategory](api/ioscategory.md)
 * [MediaFormat](api/mediaformat.md)
-* [Monitoring](api/monitoring.md)
 * [Quickplay](api/quickplay.md)
 * [RecorderPlaybackController](api/recorderplaybackcontroller.md)
 * [SoundPlayer](api/soundplayer.md)

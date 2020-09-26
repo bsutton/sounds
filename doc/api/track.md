@@ -4,6 +4,8 @@
 
 The Track class holds track information as well as the audio media.
 
+Detailed Track API documentation can be found on [pub.dev](https://pub.dev/documentation/sounds/latest/sounds/sounds-library.html).
+
 Sounds plays audio from a `Track` and records into a `Track`.
 
 The Track class has the following constructors:
