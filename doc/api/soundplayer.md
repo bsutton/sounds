@@ -4,6 +4,8 @@
 
 The `SoundPlayer` class provide an API for playing audio.
 
+Detailed SoundPlayer API documentation can be found on [pub.dev](https://pub.dev/documentation/sounds/latest/sounds/sounds-library.html).
+
 The `SoundPlayer` provides detailed control over audio playback \(pause/resume/seek\) including monitoring playback progress.
 
 The `SoundPlayer` operates in one of two modes:
