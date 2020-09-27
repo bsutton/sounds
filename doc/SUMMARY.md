@@ -11,6 +11,7 @@
 * [Short Sounds](guides/beep-beep.md)
 * [Caching](guides/caching.md)
 * [Monitoring](guides/monitoring.md)
+* [Shade/Notification area](guides/shade-notification-area.md)
 
 ## API
 
