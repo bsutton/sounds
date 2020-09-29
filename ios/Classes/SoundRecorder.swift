@@ -176,11 +176,12 @@ class SoundRecorder: NSObject, AVAudioRecorderDelegate {
             // set volume default to speaker
             var success = false
             do {
-                try audioSession.overrideOutputAudioPort(AVAudioSessionPortOverrideSpeaker)
+                //preffered method
+               // try //audioSession.overrideOutputAudioPort(AVAudioSessionPortOverrideSpeaker)
 
                 // tristans go at compiling.
-                // let port = audioSession.preferredInput
-                // try audioSession.overrideOutputAudioPort(AVAudioSession.PortOverride(rawValue: AVAudioSession.PortOverride.RawValue(kAudioSessionOverrideAudioRoute_Speaker))!)
+                _ = audioSession.preferredInput
+                 try audioSession.overrideOutputAudioPort(AVAudioSession.PortOverride(rawValue: AVAudioSession.PortOverride.RawValue(kAudioSessionOverrideAudioRoute_Speaker))!)
                 success = true
             } catch {
                 print("error doing outputaudioportoverride - \(error.localizedDescription)")

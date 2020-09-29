@@ -29,19 +29,25 @@ var soundPlayerManager: SoundPlayerManager? // Singleton
 
 
 func SoundPlayerReg(_ registrar: (NSObjectProtocol & FlutterPluginRegistrar)?) {
-    SoundPlayerManager.register(with: registrar)
+    SoundPlayerManager.register(with: registrar as! FlutterPluginRegistrar)
 }
 
 
 class SoundPlayerManager: NSObject, FlutterPlugin {
-        
+    public var _channel = FlutterMethodChannel()
+    
+    func setChannel(channel: FlutterMethodChannel){
+        _channel = channel
+    }
     class func register(with registrar: FlutterPluginRegistrar) {
-       let _channel = FlutterMethodChannel(
-        name: "com.bsutton.sounds.sound_player",
-        binaryMessenger: registrar.messenger())
+       let channel = FlutterMethodChannel(
+         name: "com.bsutton.sounds.sound_player",
+         binaryMessenger: registrar.messenger())
         assert(soundPlayerManager == nil)
         soundPlayerManager = SoundPlayerManager()
-        registrar?.addMethodCallDelegate(soundPlayerManager as! FlutterPlugin, channel: _channel)
+        soundPlayerManager!.setChannel(channel: channel)
+        registrar.addMethodCallDelegate(soundPlayerManager!, channel: channel)
+
     }
 
     func handle(_ call: FlutterMethodCall?, result: FlutterResult) {
@@ -112,7 +118,7 @@ class SoundPlayerManager: NSObject, FlutterPlugin {
     }
     
     func invokeCallback(_ methodName: String?, arguments call: [AnyHashable : Any]?) {
-        _channel!.invokeMethod(methodName! , arguments: call)
+        _channel.invokeMethod(methodName! , arguments: call)
     }
     func freeSlot(slotNo: Int) {
         playerSlots?[slotNo] = NSNull()

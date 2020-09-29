@@ -35,7 +35,7 @@ import MediaPlayer
 private var _channel: FlutterMethodChannel?
 
 func ShadePlayerReg(_ registrar: (NSObjectProtocol & FlutterPluginRegistrar)?) {
-    ShadePlayerManager.register(with: registrar)
+    ShadePlayerManager.register(with: registrar!)
 }
 
 var shadePlayerManager: ShadePlayerManager? // Singleton
@@ -45,9 +45,9 @@ class ShadePlayerManager: SoundPlayerManager {
     override class func register(with registrar: FlutterPluginRegistrar) {
         let _channel = FlutterMethodChannel(
             name: "com.bsutton.sounds.sounds_shade_player",
-            binaryMessenger: registrar!.messenger())
+            binaryMessenger: registrar.messenger())
         shadePlayerManager = ShadePlayerManager() // In super class
-        registrar?.addMethodCallDelegate(shadePlayerManager!, channel: _channel)
+        registrar.addMethodCallDelegate(shadePlayerManager!, channel: _channel)
     }
 
     override func freeSlot(slotNo: Int) {
@@ -60,7 +60,7 @@ class ShadePlayerManager: SoundPlayerManager {
     }
 
     override func invokeCallback(_ methodName: String?, arguments call: [AnyHashable : Any]?) {
-        _channel?.invokeMethod(methodName!, arguments: call)
+        _channel.invokeMethod(methodName!, arguments: call)
     }
 
     override func getManager() -> SoundPlayerManager? {
@@ -127,7 +127,7 @@ class ShadePlayer: SoundPlayer {
     
     func start(call: FlutterMethodCall?, result: FlutterResult) {
         let args = call?.arguments as? Dictionary<String, Any>
-        let trackDict = (args?["track"] as? Dictionary<String, Any>)
+        _ = (args?["track"] as? Dictionary<String, Any>)
         let canPause = (args?["canPause"] as? NSNumber)?.boolValue ?? false
         let canSkipForward = (args?["canSkipForward"] as? NSNumber)?.boolValue ?? false
         let canSkipBackward = (args?["canSkipBackward"] as? NSNumber)?.boolValue ?? false
@@ -345,9 +345,16 @@ class ShadePlayer: SoundPlayer {
             // current track .
             let url = URL(string: track?.albumArtUrl ?? "")
             var artworkImage: UIImage? = nil
-            if let url = url, let data = Data(contentsOf: url){
-                               artworkImage = UIImage(data: data)
+            do{
+                let data = try Data(contentsOf: url!)
+                artworkImage = UIImage(data: data)
             }
+            catch{
+                print("failed to set data")
+                
+            }
+            
+            
             if artworkImage != nil {
                 let albumArt = MPMediaItemArtwork(
                     boundsSize: artworkImage?.size ?? CGSize.zero,
