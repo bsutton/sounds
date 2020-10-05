@@ -151,7 +151,7 @@ class QuickPlay {
 
   Future<void> _play(double volume) async {
     await _player.setVolume(volume);
-    await _player.audioFocus(AudioFocus.hushOthersWithResume);
+    await _player.requestAudioFocus(AudioFocus.hushOthersWithResume);
     _player.onStopped = ({wasUser}) {
       _player.release();
       if (_onStopped != null) _onStopped();

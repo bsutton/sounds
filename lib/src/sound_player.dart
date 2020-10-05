@@ -15,31 +15,22 @@
  */
 
 import 'dart:async';
-import 'dart:io';
 
 import 'package:meta/meta.dart';
 import 'package:sounds_common/sounds_common.dart';
+import 'package:sounds_platform_interface/sounds_platform_interface.dart';
+import 'package:uuid/uuid.dart';
 
 import '../sounds.dart';
-import 'android/android_audio_focus_gain.dart';
-
 import 'audio_focus.dart';
-import 'ios/ios_session_category.dart';
-import 'ios/ios_session_category_option.dart';
-import 'ios/ios_session_mode.dart';
 import 'media_format/native_media_formats.dart';
-import 'plugins/base_plugin.dart';
-import 'plugins/player_base_plugin.dart';
-import 'plugins/sound_player_plugin.dart';
-import 'plugins/sound_player_shade_plugin.dart';
+import 'plugins/app_life_cycle_observer.dart';
 
-/// An api for playing audio.
-///
 /// A [SoundPlayer] establishes an audio session and allows
 /// you to play multiple audio files within the session.
 ///
 /// [SoundPlayer] can either be used headless ([SoundPlayer.noUI] or
-/// use the OSs' built in Media Player [SoundPlayer.withIU].
+/// use the OSs' built in Media Player (shade) [SoundPlayer.withIU].
 ///
 /// You can use the headless mode to build you own UI for playing sound
 /// or use Soundss own [SoundPlayerUI] widget.
@@ -47,12 +38,26 @@ import 'plugins/sound_player_shade_plugin.dart';
 /// Once you have finished using a [SoundPlayer] you MUST call
 /// [SoundPlayer.release] to free up any resources.
 ///
-class SoundPlayer implements SlotEntry {
-  final PlayerBasePlugin _plugin;
+class SoundPlayer {
+  final String _uuid = Uuid().v4();
+
+  SoundPlayerProxy __proxy;
+
+  final AppLifeCycleObserver _lifeCycleObserver = AppLifeCycleObserver();
+
+  SoundPlayerProxy get _proxy {
+    if (__proxy == null) {
+      __proxy = SoundPlayerProxy();
+      __proxy.uuid = _uuid;
+    }
+    return __proxy;
+  }
+
+  final _plugin = SoundsToPlatformApi();
 
   PlayerEvent _onSkipForward;
   PlayerEvent _onSkipBackward;
-  OSPlayerStateEvent _onUpdatePlaybackState;
+
   PlayerEventWithCause _onPaused;
   PlayerEventWithCause _onResumed;
   PlayerEventWithCause _onStarted;
@@ -92,39 +97,23 @@ class SoundPlayer implements SlotEntry {
   /// The track that we are currently playing.
   Track _track;
 
-  ///
-  PlayerState playerState = PlayerState.isStopped;
+  var _internalPlayerState = _InternalPlayerState.preInitialised;
 
   ///
   /// Disposition stream components
   ///
 
   /// The stream source
-  StreamController<PlaybackDisposition> _playerController =
-      StreamController<PlaybackDisposition>.broadcast();
+  var _playerController = StreamController<PlaybackDisposition>.broadcast();
 
   /// The current playback position as last sent on the stream.
   Duration _currentPosition = Duration.zero;
 
-  /// Used to flag that the player is ready to play.
-  /// When this completion completes [_playerReady] is set
-  /// to [true].
-  Completer<bool> _playerReadyCompletion = Completer<bool>();
-
-  /// Used to wait for the plugin to connect us to an OS MediaPlayer
-  Future<bool> _playerReady;
-
-  /// When we do a [_softRelease] we need to flag that the plugin
-  /// needs to be re-initialized so we set this to true.
-  /// Its also true on construction to force the initial initialisation.
-  bool _pluginInitRequired = true;
-
-  /// hack until we implement onConnect in the all the plugins.
-  final bool _fakePlayerReady;
-
   /// Used to track when we have been paused when the app is paused.
   /// We should only resume playing if we wer playing when paused.
   bool _inSystemPause = false;
+
+  final bool _showShade;
 
   /// Create a [SoundPlayer] that displays the OS' audio UI (often
   /// referred to as a shade).
@@ -166,9 +155,8 @@ class SoundPlayer implements SlotEntry {
       this.canSkipForward = false,
       bool playInBackground = false,
       bool autoFocus = true})
-      : _fakePlayerReady = Platform.isIOS,
-        _playInBackground = playInBackground,
-        _plugin = SoundPlayerShadePlugin(),
+      : _playInBackground = playInBackground,
+        _showShade = true,
         _autoFocus = autoFocus {
     _commonInit();
   }
@@ -193,9 +181,8 @@ class SoundPlayer implements SlotEntry {
   /// The above example guarentees that the player will be released.
   /// {@end-tool}
   SoundPlayer.noUI({bool playInBackground = false, bool autoFocus = true})
-      : _fakePlayerReady = true,
-        _playInBackground = playInBackground,
-        _plugin = SoundPlayerPlugin(),
+      : _playInBackground = playInBackground,
+        _showShade = false,
         _autoFocus = autoFocus {
     canPause = false;
     canSkipBackward = false;
@@ -205,52 +192,34 @@ class SoundPlayer implements SlotEntry {
 
   /// once off initialisation used by all ctors.
   void _commonInit() {
-    _plugin.register(this);
-    _plugin.onPlayerReady = _onPlayerReady;
+    _lifeCycleObserver.onSystemAppPaused = _onSystemAppPaused;
+    _lifeCycleObserver.onSystemAppResumed = _onSystemAppResumed;
 
-    /// track the current position
+    /// set up a listener to track the current position
     _playerController.stream.listen((playbackDisposition) {
       _currentPosition = playbackDisposition.position;
     });
   }
 
-  /// initializes the plugin
-  ///
-  /// This will be called multiple times in the life cycle
-  /// of a [SoundPlayer] as we release the plugin
-  /// each time we stop the player.
-  ///
-  Future<R> _initializeAndRun<R>(Future<R> Function() run) async {
-    if (_pluginInitRequired) {
-      _pluginInitRequired = false;
-
-      _playerReadyCompletion = Completer<bool>();
-
-      /// we allow five seconds for the connect to complete or
-      /// we timeout returning false.
-      _playerReady = _playerReadyCompletion.future
-          .timeout(Duration(seconds: 5), onTimeout: () => Future.value(false));
-
-      /// The plugin will call [onPlayerReady] which completes
-      /// the intialisation.
-      await _plugin.initializePlayer(this);
-
-      setProgressInterval(Duration(milliseconds: 100));
-
-      /// hack until we implement [onPlayerReady] in the all the OS
-      /// native plugins.
-      if (_fakePlayerReady) _onPlayerReady(result: true);
-    }
-    return _playerReady.then((ready) {
-      if (ready) {
-        return run();
+  Future<void> _initialize() async {
+    if (_internalPlayerState == _InternalPlayerState.preInitialised) {
+      if (_showShade) {
+        var args = InitializePlayerWithShade();
+        args.player = _proxy;
+        args.playInBackground = _playInBackground;
+        args.canPause = canPause;
+        args.canSkipBackward = canSkipBackward;
+        args.canSkipForward = canSkipForward;
+        await _plugin.initializePlayerWithShade(args);
       } else {
-        /// This can happen if you have a breakpoint in you code and
-        /// you don't let the initialisation logic complete.
-        throw PlayerInvalidStateException(
-            "AudioPlayer initialisation timeout.");
+        var args = InitializePlayer();
+        args.player = _proxy;
+        args.playInBackground = _playInBackground;
+
+        await _plugin.initializePlayer(args);
+        _internalPlayerState = _InternalPlayerState.initialised;
       }
-    });
+    }
   }
 
   /// Call this method once you are done with the player
@@ -258,15 +227,15 @@ class SoundPlayer implements SlotEntry {
   /// await the [release] to ensure that all resources are released before
   /// you take future action.
   Future<void> release() async {
-    if (!_plugin.isRegistered(this)) {
+    if (_internalPlayerState == _InternalPlayerState.preInitialised) {
       throw PlayerInvalidStateException(
-          "The player is no longer registered. Did you call release() twice?");
+          "The player is not initialised. Did you call release() twice?");
     }
-    return _initializeAndRun(() async {
-      _closeDispositionStream();
-      await _softRelease();
-      _plugin.release(this);
-    });
+
+    _lifeCycleObserver.dispose();
+    await _closeDispositionStream();
+    await _softRelease();
+    await _plugin.releasePlayer(_proxy);
   }
 
   /// If the player is pushed into the
@@ -279,21 +248,19 @@ class SoundPlayer implements SlotEntry {
     // Stop the player playback before releasing
 
     if (isPlaying) {
-      await _plugin.stop(this);
+      await _plugin.stopPlayer(_proxy);
     }
 
     // release the android/ios resources but
     // leave the slot intact so we can resume.
-    if (!_pluginInitRequired) {
-      /// looks like this method is re-entrant when app is pausing
-      /// so we need to protect ourselves from being called twice.
-      _pluginInitRequired = true;
-
-      _playerReady = null;
-
+    if (_internalPlayerState != _InternalPlayerState.preInitialised) {
       /// the plugin is in an initialized state
       /// so we need to release it.
-      await _plugin.releasePlayer(this);
+      await _plugin.releasePlayer(_proxy);
+
+      /// looks like this method is re-entrant when app is pausing
+      /// so we need to protect ourselves from being called twice.
+      _internalPlayerState = _InternalPlayerState.preInitialised;
     }
 
     if (_track != null) {
@@ -301,107 +268,97 @@ class SoundPlayer implements SlotEntry {
     }
   }
 
-  /// callback occurs when the OS MediaPlayer successfully connects:
-  /// TODO: implement the onPlayerReady event from iOS.
-  /// [result] true if the connection succeeded.
-  void _onPlayerReady({bool result}) {
-    _playerReadyCompletion.complete(result);
-  }
-
   /// Starts playback.
   /// The [track] to play.
-  Future<void> play(Track track) async {
-    if (_autoFocus) {
-      audioFocus(AudioFocus.hushOthersWithResume);
-    }
+  /// To start playback from an position other than the start of
+  /// the [track] pass a non-zero value to [startAt] which indicates
+  /// the start position, in milliseconds, from the start of the
+  /// track.
+  Future<void> play(Track track, {int startAt = 0}) async {
     assert(track != null);
+    await _initialize();
+
+    if (_autoFocus) {
+      requestAudioFocus(AudioFocus.hushOthersWithResume);
+    }
 
     if (!isStopped) {
       throw PlayerInvalidStateException("The player must not be running.");
     }
 
-    var started = Completer<void>();
-
     _currentPosition = Duration.zero;
+    _track = track;
 
-    return _initializeAndRun<void>(() async {
-      _track = track;
+    // Check the current MediaFormat is supported on this platform
+    // if we were supplied the format.
+    if (track.mediaFormat != null &&
+        !await NativeMediaFormats().isNativeDecoder(track.mediaFormat)) {
+      var exception = PlayerInvalidStateException(
+          'The selected MediaFormat ${track.mediaFormat.name} is not '
+          'supported on this platform.');
+      throw exception;
+    }
 
-      // Check the current MediaFormat is supported on this platform
-      // if we were supplied the format.
-      if (track.mediaFormat != null &&
-          !await NativeMediaFormats().isNativeDecoder(track.mediaFormat)) {
-        var exception = PlayerInvalidStateException(
-            'The selected MediaFormat ${track.mediaFormat.name} is not '
-            'supported on this platform.');
-        started.completeError(exception);
-        throw exception;
-      }
+    Log.d('calling prepare stream');
+    await prepareStream(
+        track, (disposition) => _playerController.add(disposition));
 
-      Log.d('calling prepare stream');
-      await prepareStream(
-          track, (disposition) => _playerController.add(disposition));
+    // Not awaiting this may cause issues if someone immediately tries
+    // to stop.
+    // I think we need a completer to control transitions.
+    Log.d('calling _plugin.play');
 
-      // Not awaiting this may cause issues if someone immediately tries
-      // to stop.
-      // I think we need a completer to control transitions.
-      Log.d('calling _plugin.play');
-      _plugin.play(this, track).then<void>((_) {
-        /// If the user called seekTo before starting the player
-        /// we immediate do a seek.
-        /// TODO: does this cause any audio glitch (i.e starts playing)
-        /// and then seeks.
-        /// If so we may need to modify the plugin so we pass in a seekTo
-        /// argument.
-        Log.d('calling seek');
-        if (_seekTo != null) {
-          seekTo(_seekTo);
-          _seekTo = null;
-        }
+    var args = StartPlayer();
+    args.player = _proxy;
+    args.startAt = startAt;
+    args.track = trackProxy(track);
+    await _plugin.startPlayer(args);
 
-        // TODO: we should wait for the os to notify us that the start
-        // has happened.
-        playerState = PlayerState.isPlaying;
+    /// If the user called seekTo before starting the player
+    /// we immediate do a seek.
+    /// TODO: does this cause any audio glitch (i.e starts playing)
+    /// and then seeks.
+    /// If so we may need to modify the plugin so we pass in a seekTo
+    /// argument.
+    Log.d('calling seek');
+    if (_seekTo != null) {
+      await seekTo(_seekTo);
+      _seekTo = null;
+    }
 
-        Log.d('calling complete');
-        started.complete();
-        if (_onStarted != null) _onStarted(wasUser: false);
-      })
-          // ignore: avoid_types_on_closure_parameters
-          .catchError((Object error, StackTrace st) {
-        Log.e('_plugin.play threw an error', error: error, stackTrace: st);
-        started.completeError(error, st);
-      });
-      return started.future;
-    });
+    // TODO: we should wait for the os to notify us that the start
+    // has happened.
+    _internalPlayerState = _InternalPlayerState.playing;
+
+    if (_onStarted != null) _onStarted(wasUser: false);
   }
 
   /// Stops playback.
   /// Use the [wasUser] to indicate if the stop was a caused by a user action
   /// or the application called stop.
   Future<void> stop({@required bool wasUser}) async {
-    if (playerState == PlayerState.isStopped) {
+    if (isStopped) {
       throw PlayerInvalidStateException('Player is not playing.');
     }
 
-    return _initializeAndRun(() async {
-      try {
-        playerState = PlayerState.isStopped;
-        await _plugin.stop(this);
+    await _initialize;
 
-        // when we get the real system onSystemStopped being
-        // called via the plugin then we can delete this line.
-        _onSystemStopped();
-      } on Object catch (e) {
-        Log.d(e.toString());
-        rethrow;
-      }
-    });
+    try {
+      _internalPlayerState = _InternalPlayerState.stopped;
+      await _plugin.stopPlayer(_proxy);
+
+      // when we get the real system onSystemStopped being
+      // called via the plugin then we can delete this line.
+      _onSystemStopped();
+    } on Object catch (e) {
+      Log.d(e.toString());
+      rethrow;
+    }
   }
 
   void _onSystemStopped() {
     if (_autoFocus) {
-      audioFocus(AudioFocus.abandonFocus);
+      releaseAudioFocus();
     }
   }
 
@@ -409,30 +366,28 @@ class SoundPlayer implements SlotEntry {
   /// If you call this and the audio is not playing
   /// a [PlayerInvalidStateException] will be thrown.
   Future<void> pause() async {
-    if (playerState != PlayerState.isPlaying) {
+    await _initialize();
+    if (_internalPlayerState != _InternalPlayerState.playing) {
       throw PlayerInvalidStateException('Player is not playing.');
     }
 
-    return _initializeAndRun(() async {
-      playerState = PlayerState.isPaused;
-      await _plugin.pause(this);
-      if (_onPaused != null) _onPaused(wasUser: false);
-    });
+    _internalPlayerState = _InternalPlayerState.paused;
+    await _plugin.pausePlayer(_proxy);
+    if (_onPaused != null) _onPaused(wasUser: false);
   }
 
   /// Resumes playback.
   /// If you call this when audio is not paused
   /// then a [PlayerInvalidStateException] will be thrown.
   Future<void> resume() async {
-    if (playerState != PlayerState.isPaused) {
+    await _initialize();
+    if (_internalPlayerState != _InternalPlayerState.paused) {
       throw PlayerInvalidStateException('Player is not paused.');
     }
 
-    return _initializeAndRun(() async {
-      playerState = PlayerState.isPlaying;
-      await _plugin.resume(this);
-      if (_onResumed != null) _onResumed(wasUser: false);
-    });
+    _internalPlayerState = _InternalPlayerState.playing;
+    await _plugin.resumePlayer(_proxy);
+    if (_onResumed != null) _onResumed(wasUser: false);
   }
 
   /// Moves the current playback position to the given offset in the
@@ -444,17 +399,19 @@ class SoundPlayer implements SlotEntry {
   /// [play] we will start playing the recording from the [position]
   /// passed to [seekTo].
   Future<void> seekTo(Duration position) async {
-    return _initializeAndRun(() async {
-      if (!isPlaying) {
-        _seekTo = position;
-      } else {
-        await _plugin.seekToPlayer(this, position);
-      }
-    });
+    await _initialize();
+    if (!isPlaying) {
+      _seekTo = position;
+    } else {
+      var args = SeekToPlayer();
+      await _plugin.seekToPlayer(args);
+    }
   }
 
   /// Rewinds the current track by the given interval
-  Future<void> rewind(Duration interval) {
+  Future<void> rewind(Duration interval) async {
+    await _initialize();
+
     _currentPosition -= interval;
 
     /// There may be a chance of a race condition if the underlying
@@ -465,19 +422,22 @@ class SoundPlayer implements SlotEntry {
   /// Sets the playback volume
   /// The [volume] must be in the range 0.0 to 1.0.
   Future<void> setVolume(double volume) async {
-    return _initializeAndRun(() async {
-      await _plugin.setVolume(this, volume);
-    });
+    await _initialize();
+
+    var args = SetVolume();
+    args.player = _proxy;
+    args.volume = volume;
+    await _plugin.setVolume(args);
   }
 
   /// [true] if the player is currently playing audio
-  bool get isPlaying => playerState == PlayerState.isPlaying;
+  bool get isPlaying => _internalPlayerState == _InternalPlayerState.playing;
 
   /// [true] if the player is playing but the audio is paused
-  bool get isPaused => playerState == PlayerState.isPaused;
+  bool get isPaused => _internalPlayerState == _InternalPlayerState.paused;
 
   /// [true] if the player is stopped.
-  bool get isStopped => playerState == PlayerState.isStopped;
+  bool get isStopped => _internalPlayerState == _InternalPlayerState.stopped;
 
   /// Provides a stream of dispositions which
   /// provide updated position and duration
@@ -499,7 +459,7 @@ class SoundPlayer implements SlotEntry {
   /// TODO does this need to be exposed?
   /// The simple action of stopping the playback may be sufficient
   /// Given the user has to call stop
-  void _closeDispositionStream() {
+  Future<void> _closeDispositionStream() async {
     if (_playerController != null) {
       _playerController.close();
       _playerController = null;
@@ -517,10 +477,14 @@ class SoundPlayer implements SlotEntry {
   /// Sets the time between callbacks from the platform specific code
   /// used to notify us of playback progress.
   Future<void> setProgressInterval(Duration interval) async {
-    return _initializeAndRun(() async {
-      assert(interval.inMilliseconds > 0);
-      await _plugin.setProgressInterval(this, interval);
-    });
+    await _initialize();
+    assert(interval.inMilliseconds > 0);
+
+    var args = SetPlaybackProgressInterval();
+    args.player = _proxy;
+    args.interval = interval.inMilliseconds;
+
+    await _plugin.setPlaybackProgressInterval(args);
   }
 
   /// internal method.
@@ -533,9 +497,9 @@ class SoundPlayer implements SlotEntry {
 
     _playerController?.add(finalPosition);
     if (_autoFocus) {
-      audioFocus(AudioFocus.abandonFocus);
+      releaseAudioFocus();
     }
-    playerState = PlayerState.isStopped;
+    _internalPlayerState = _InternalPlayerState.stopped;
     if (_onStopped != null) _onStopped(wasUser: false);
   }
 
@@ -572,14 +536,14 @@ class SoundPlayer implements SlotEntry {
   /// System event telling us that our app has been resumed.
   /// If we had previously stopped then we resuming playing
   /// from the last position - 1 second.
-  void _onSystemAppResumed() {
+  Future<void> _onSystemAppResumed() async {
     Log.d(red('onSystemAppResumed _playInBackground=$_playInBackground '
         'track=$_track'));
 
     if (_inSystemPause && !_playInBackground && _track != null) {
       _inSystemPause = false;
-      seekTo(_currentPosition);
-      play(_track);
+      await seekTo(_currentPosition);
+      await play(_track);
     }
   }
 
@@ -591,38 +555,6 @@ class SoundPlayer implements SlotEntry {
   /// handles a skip forward coming up from the player
   void _onSystemSkipBackward() {
     if (_onSkipBackward != null) _onSkipBackward();
-  }
-
-  void _onSystemUpdatePlaybackState(SystemPlaybackState systemPlaybackState) {
-    /// I have concerns about how these state changes interact with
-    /// the SoundPlayer's own state management.
-    /// Really we need a consistent source of 'state' and this should come
-    /// up from the OS. The problem is that whilst ShadePlayer.java provides
-    /// these state changes the SoundPlayer does not.
-    /// I'm also not certain how to get a 'start' event out of android's
-    /// MediaPlayer it will emmit an onPrepared event but I don't know
-    /// if this happens in association with a start or whether it can happen
-    /// but no start happens.
-    /// Also need to find out if the call to MediaPlayer.start is async or
-    /// sync as the doco is unclear.
-    switch (systemPlaybackState) {
-      case SystemPlaybackState.playing:
-        playerState = PlayerState.isPlaying;
-        if (_onStarted != null) _onStarted(wasUser: false);
-        break;
-      case SystemPlaybackState.paused:
-        playerState = PlayerState.isPaused;
-        if (_onPaused != null) _onPaused(wasUser: false);
-        break;
-      case SystemPlaybackState.stopped:
-        playerState = PlayerState.isStopped;
-        if (_onStopped != null) _onStopped(wasUser: true);
-        break;
-    }
-
-    if (_onUpdatePlaybackState != null) {
-      _onUpdatePlaybackState(systemPlaybackState);
-    }
   }
 
   /// Pass a callback if you want to be notified
@@ -651,13 +583,6 @@ class SoundPlayer implements SlotEntry {
   // ignore: avoid_setters_without_getters
   set onSkipBackward(PlayerEvent onSkipBackward) {
     _onSkipBackward = onSkipBackward;
-  }
-
-  /// Pass a callback if you want to be notified
-  /// when the OS Media Player changes state.
-  // ignore: avoid_setters_without_getters
-  set onUpdatePlaybackState(OSPlayerStateEvent onUpdatePlaybackState) {
-    _onUpdatePlaybackState = onUpdatePlaybackState;
   }
 
   ///
@@ -722,145 +647,81 @@ class SoundPlayer implements SlotEntry {
     _onStopped = onStopped;
   }
 
-  /// For iOS only.
-  /// If this function is not called,
-  /// everything is managed by default by sounds.
-  /// If this function is called,
-  /// it is probably called just once when the app starts.
-  ///
-  /// NOTE: in reality it is being called everytime we start
-  /// playing audio which from my reading appears to be correct.
-  ///
-  /// After calling this function,
-  /// the caller is responsible for using [audioFocus]
-  /// and [abandonAudioFocus]
-  ///    probably before startRecorder or startPlayer
-  /// and stopPlayer and stopRecorder
-  ///
-  /// TODO
-  /// Is this in the correct spot if it is only called once?
-  /// Should we have a configuration object that sets
-  /// up global options?
-  ///
-  /// I think this really needs to be abstracted out via our api.
-  /// We should try to avoid any OS specific api's being exposed as
-  /// part of the public api.
-  ///
-  Future<bool> iosSetCategory(
-      IOSSessionCategory category, IOSSessionMode mode, int options) async {
-    return _initializeAndRun<bool>(() async {
-      return await _plugin.iosSetCategory(this, category, mode, options);
-    });
-  }
-
-  ///  The caller can manage the audio focus with this function.
+  /// The caller can manage the audio focus with this function.
   /// Depending on your configuration this will either make
   /// this player the loudest stream or it will silence all other stream.
-  Future<void> audioFocus(AudioFocus mode) async {
-    return _initializeAndRun(() async {
-      switch (mode) {
-        case AudioFocus.stopOthersNoResume:
-          await _stopOthersNoResume();
-          break;
-        case AudioFocus.stopOthersWithResume:
-          await _stopOthersWithResume();
-          break;
-        case AudioFocus.hushOthersWithResume:
-          await _hushOthersWithResume();
-          break;
-        case AudioFocus.abandonFocus:
-          await _plugin.audioFocus(this, request: false);
-          break;
-      }
-    });
+  Future<void> requestAudioFocus(AudioFocus audioFocus) async {
+    await _initialize();
+
+    var args = RequestAudioFocus();
+
+    args.player = _proxy;
+    args.audioFocus = AudioFocusHelper.generate(audioFocus);
+    await _plugin.requestAudioFocus(args);
   }
 
-  Future _hushOthersWithResume() async {
-    if (Platform.isIOS) {
-      await iosSetCategory(
-          IOSSessionCategory.playAndRecord,
-          IOSSessionMode.defaultMode,
-          IOSSessionCategoryOption.iosDuckOthers |
-              IOSSessionCategoryOption.iosDefaultToSpeaker);
-    } else if (Platform.isAndroid) {
-      await _androidFocusRequest(AndroidAudioFocusGain.transientMayDuck);
-    }
-    await _plugin.audioFocus(this, request: true);
-  }
+  /// The caller can manage the audio focus with this function.
+  /// Depending on your configuration this will either make
+  /// this player the loudest stream or it will silence all other stream.
+  Future<void> releaseAudioFocus() async {
+    await _initialize();
 
-  Future _stopOthersWithResume() async {
-    await _androidFocusRequest(AndroidAudioFocusGain.transientExclusive);
-    await _plugin.audioFocus(this, request: true);
-    // TODO: how do you stop other players?
-  }
-
-  Future _stopOthersNoResume() async {
-    if (Platform.isIOS) {
-      await iosSetCategory(
-          IOSSessionCategory.playAndRecord,
-          IOSSessionMode.defaultMode,
-          IOSSessionCategoryOption.iosDefaultToSpeaker);
-    } else if (Platform.isAndroid) {
-      await _androidFocusRequest(AndroidAudioFocusGain.stopOthers);
-    }
-    await _plugin.audioFocus(this, request: true);
-  }
-
-  /// For Android only.
-  /// If this function is not called, everything is
-  ///  managed by default by sounds.
-  /// If this function is called, it is probably called
-  ///  just once when the app starts.
-  /// After calling this function, the caller is responsible
-  ///  for using correctly requestFocus
-  ///    probably before startRecorder or startPlayer
-  /// and stopPlayer and stopRecorder
-  ///
-  /// Unlike [requestFocus] this method allows us to set the gain.
-  ///
-
-  Future<bool> _androidFocusRequest(int focusGain) async {
-    return _initializeAndRun<bool>(() async {
-      return await _plugin.androidFocusRequest(this, focusGain);
-    });
-  }
-
-  /// Callback for when a system error occured in the OS player.
-  /// The OS Player will have been stopped so we try to reflect
-  /// its state.
-  void _onSystemError(String description) {
-    try {
-      playerState = PlayerState.isStopped;
-      if (_onStopped != null) _onStopped(wasUser: false);
-    } on Object catch (e) {
-      Log.d(e.toString());
-      rethrow;
-    }
+    await _plugin.releaseAudioFocus(_proxy);
   }
 
   /// Gets the duration of the passed [path].
   /// The [path] MUST be stored on the local file system
   /// otherwise an [ArgumentError] will be thrown.
   /// An Asset is not considered to be on the local file system.
-  Future<Duration> duration(String path) {
-    return _plugin.duration(this, path);
+  Future<Duration> duration(String path) async {
+    var args = GetDuration();
+    args.player = _proxy;
+    args.track = TrackProxy();
+    args.track.uuid = Track.fromFile(path).uuid;
+
+    var response = await _plugin.getDuration(args);
+    return Duration(milliseconds: response.duration);
   }
 }
 
-///
-enum PlayerState {
-  ///
-  isStopped,
+/// Forwarders so we can hide methods from the public api.
 
-  /// Player is stopped
-  isPlaying,
+void updateProgress(SoundPlayer player, PlaybackDisposition disposition) =>
+    player._updateProgress(disposition);
 
-  ///
-  isPaused,
+/// Called if the audio has reached the end of the audio source
+/// or if we or the os stopped the playback prematurely.
+void audioPlayerFinished(SoundPlayer player, PlaybackDisposition status) =>
+    player._audioPlayerFinished(status);
+
+/// handles an audio pause coming up from the player
+void onSystemPaused(SoundPlayer player) => player._onSystemPaused();
+
+/// handles an audio resume coming up from the player
+void onSystemResumed(SoundPlayer player) => player._onSystemResumed();
+
+/// handles a skip forward coming up from the player
+void onSystemSkipForward(SoundPlayer player) => player._onSystemSkipForward();
+
+/// handles a skip forward coming up from the player
+void onSystemSkipBackward(SoundPlayer player) => player._onSystemSkipBackward();
+
+/// Get the unique id for this sound player.
+String soundPlayerUuid(SoundPlayer player) => player._uuid;
+
+enum _InternalPlayerState {
+  preInitialised,
+
+  initialised,
+
+  stopped,
+
+  playing,
+
+  paused
 }
 
 typedef PlayerEvent = void Function();
-typedef OSPlayerStateEvent = void Function(SystemPlaybackState);
 
 /// TODO should we be passing an object that contains
 /// information such as the position in the track when
@@ -890,40 +751,3 @@ class NotImplementedException implements Exception {
 
   String toString() => _message;
 }
-
-/// Forwarders so we can hide methods from the public api.
-
-void updateProgress(SoundPlayer player, PlaybackDisposition disposition) =>
-    player._updateProgress(disposition);
-
-/// Called if the audio has reached the end of the audio source
-/// or if we or the os stopped the playback prematurely.
-void audioPlayerFinished(SoundPlayer player, PlaybackDisposition status) =>
-    player._audioPlayerFinished(status);
-
-/// handles a pause coming up from the player
-void onSystemPaused(SoundPlayer player) => player._onSystemPaused();
-
-/// handles a resume coming up from the player
-void onSystemResumed(SoundPlayer player) => player._onSystemResumed();
-
-/// System event notification that the app has paused
-void onSystemAppPaused(SoundPlayer player) => player._onSystemAppPaused();
-
-/// System event notification that the app has resumed
-void onSystemAppResumed(SoundPlayer player) => player._onSystemAppResumed();
-
-/// handles a skip forward coming up from the player
-void onSystemSkipForward(SoundPlayer player) => player._onSystemSkipForward();
-
-/// handles a skip forward coming up from the player
-void onSystemSkipBackward(SoundPlayer player) => player._onSystemSkipBackward();
-
-/// Handles playback state changes coming up from the OS Media Player
-void onSystemUpdatePlaybackState(
-        SoundPlayer player, SystemPlaybackState playbackState) =>
-    player._onSystemUpdatePlaybackState(playbackState);
-
-/// Called when a system error occured when trying to play audio.
-void onSystemError(SoundPlayer player, String description) =>
-    player._onSystemError(description);

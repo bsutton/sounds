@@ -14,16 +14,18 @@
  *   along with Sounds.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'package:sounds_platform_interface/sounds_platform_interface.dart';
+
 /// Used to control the audio quality.
 ///  Currently it only applies to iOS.
 class Quality {
-  final int _value;
-  const Quality._internal(this._value);
-  String toString() => 'IOSQuality.$_value';
+  final int _quality;
+  const Quality._internal(this._quality);
+  String toString() => '$_quality';
 
   /// returns the quality which is a bit mask
   /// mapped to a set of static consts (MIN, LOW, ...)
-  int get value => _value;
+  int get quality => _quality;
 
   /// minimum quality
   static const min = Quality._internal(0);
@@ -39,4 +41,24 @@ class Quality {
 
   /// max available quality.
   static const max = Quality._internal(0x7F);
+}
+
+/// Used to generate a QualityProxy to pass
+/// a Quality object down to the platform.
+class QualityHelper {
+  /// Generates a QualityProxy
+  static QualityProxy generate(Quality quality) {
+    var proxy = QualityProxy();
+    proxy.quality = quality.quality;
+
+    /// pass all of the constants down so we don't have
+    /// to manually keep them in sync.
+    proxy.min = Quality.min._quality;
+    proxy.low = Quality.low._quality;
+    proxy.medium = Quality.medium._quality;
+    proxy.high = Quality.high._quality;
+    proxy.max = Quality.max._quality;
+
+    return proxy;
+  }
 }

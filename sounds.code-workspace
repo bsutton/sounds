@@ -2,6 +2,12 @@
 	"folders": [
 		{
 			"path": "."
+		},
+		{
+			"path": "../sounds_common"
+		},
+		{
+			"path": "../sounds_platform_interface"
 		}
 	]
 }

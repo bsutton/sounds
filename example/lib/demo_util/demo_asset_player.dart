@@ -5,7 +5,6 @@ import 'package:sounds/sounds.dart';
 
 import 'demo_active_codec.dart';
 import 'demo_common.dart';
-import 'demo_player_state.dart';
 
 ///
 class AssetPlayer extends StatelessWidget {

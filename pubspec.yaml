@@ -14,7 +14,11 @@ dependencies:
   path: ^1.6.4
   path_provider: ^1.6.7
   provider: ^4.1.0
-  sounds_common: ^1.0.0
+  sounds_common: #^1.0.0
+    path: ../sounds_common
+  sounds_platform_interface:
+    path: ../sounds_platform_interface
+
   uuid: ^2.0.4
   flutter: 
     sdk: flutter
@@ -22,10 +26,13 @@ dev_dependencies:
   dart_numerics: ^0.0.5
   pedantic: ^1.9.0
   effective_dart: ^1.2.1
-  dcli: ^0.24.1
+  dcli: ^0.33.0
   e2e: ^0.7.0
   lint: ^1.1.1
   pub_semver: ^1.4.4
+  pigeon: 
+    path: ../../packages/packages/pigeon
+
   flutter_test: 
     sdk: flutter
   flutter_driver: 
@@ -38,3 +45,5 @@ flutter:
         pluginClass: Sounds
       ios: 
         pluginClass: Sounds
+
+
