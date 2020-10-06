@@ -24,8 +24,6 @@ import 'package:uuid/uuid.dart';
 import '../sounds.dart';
 import 'audio_source.dart';
 
-import 'media_format/native_media_format.dart';
-import 'media_format/native_media_formats.dart';
 import 'plugins/app_life_cycle_observer.dart';
 import 'quality.dart';
 import 'recording_disposition.dart';
@@ -39,13 +37,7 @@ typedef RequestPermission = Future<bool> Function(Track track);
 
 typedef RecorderEventWithCause = void Function({bool wasUser});
 
-enum _InternalRecorderState {
-  preinitialisation,
-  initialised,
-  recording,
-  stopped,
-  paused
-}
+enum _InternalRecorderState { preinitialisation, initialised, recording, stopped, paused }
 
 /// Provide an API for recording audio.
 class SoundRecorder {
@@ -108,14 +100,12 @@ class SoundRecorder {
   /// resume recording when the app is resumed.
   final bool _playInBackground;
 
-  _InternalRecorderState _internalRecorderState =
-      _InternalRecorderState.preinitialisation;
+  _InternalRecorderState _internalRecorderState = _InternalRecorderState.preinitialisation;
 
   /// Create a [SoundRecorder] to record audio.
   ///
 
-  SoundRecorder({bool playInBackground = false})
-      : _playInBackground = playInBackground {
+  SoundRecorder({bool playInBackground = false}) : _playInBackground = playInBackground {
     _proxy = SoundRecorderProxy();
     _proxy.uuid = _uuid;
 
@@ -135,8 +125,7 @@ class SoundRecorder {
   /// and want to release any resources the recorder has attached.
   Future<void> release() async {
     if (_internalRecorderState == _InternalRecorderState.preinitialisation) {
-      throw RecorderInvalidStateException(
-          'The recorder is no longer registered. '
+      throw RecorderInvalidStateException('The recorder is no longer registered. '
           'Did you call release() twice?');
     }
     _dispositionManager.release();
@@ -149,8 +138,7 @@ class SoundRecorder {
   }
 
   /// Future indicating if initialisation has completed.
-  bool get isInitialized =>
-      _internalRecorderState != _InternalRecorderState.preinitialisation;
+  bool get isInitialized => _internalRecorderState != _InternalRecorderState.preinitialisation;
 
   /// Starts the recorder recording to the
   /// passed in [Track].
@@ -197,9 +185,8 @@ class SoundRecorder {
           "specified for it's [mediaFormat]");
     }
 
-    if (!(track.mediaFormat is NativeMediaFormat)) {
-      throw MediaFormatException(
-          'Only [NativeMediaFormat]s can be used when recording');
+    if (!(await track.mediaFormat.isNativeEncoder)) {
+      throw MediaFormatException('Only [NativeMediaFormat]s can be used when recording');
     }
 
     /// We must not already be recording.
@@ -208,21 +195,18 @@ class SoundRecorder {
     }
 
     if (!track.isFile) {
-      throw RecorderException(
-          "Only file based tracks are supported. Used Track.fromFile().");
+      throw RecorderException("Only file based tracks are supported. Used Track.fromFile().");
     }
 
     await _initialize();
 
-    _recordingTrack =
-        RecordingTrack(track, track.mediaFormat as NativeMediaFormat);
+    _recordingTrack = RecordingTrack(track, track.mediaFormat);
 
     /// Throws an exception if the path isn't valid.
     _recordingTrack.validatePath();
 
     /// the MediaFormat must be supported.
-    if (!await NativeMediaFormats()
-        .isNativeEncoder(_recordingTrack.track.mediaFormat)) {
+    if (!await _recordingTrack.track.mediaFormat.isNativeEncoder) {
       throw MediaFormatException('MediaFormat not supported.');
     }
 
@@ -255,8 +239,7 @@ class SoundRecorder {
   }
 
   /// returns true if we are recording.
-  bool get isRecording =>
-      _internalRecorderState == _InternalRecorderState.recording;
+  bool get isRecording => _internalRecorderState == _InternalRecorderState.recording;
 
   /// returns true if the record is stopped.
   bool get isStopped => !isRecording;
@@ -271,8 +254,7 @@ class SoundRecorder {
   /// time that it is sent.
   /// Set the [interval] to control the time between each
   /// event. [interval] defaults to 10ms.
-  Stream<RecordingDisposition> dispositionStream(
-      {Duration interval = const Duration(milliseconds: 10)}) {
+  Stream<RecordingDisposition> dispositionStream({Duration interval = const Duration(milliseconds: 10)}) {
     return _dispositionManager.stream(interval: interval);
   }
 
@@ -284,8 +266,7 @@ class SoundRecorder {
   /// size of the file this could take a few moments to a few minutes.
   Future<void> stop() async {
     if (isStopped) {
-      throw RecorderNotRunningException(
-          "You cannot stop recording when the recorder is not running.");
+      throw RecorderNotRunningException("You cannot stop recording when the recorder is not running.");
     }
 
     await _plugin.stopRecording(_proxy);
@@ -303,8 +284,7 @@ class SoundRecorder {
   /// otherwise an [RecorderNotRunningException]
   Future<void> pause() async {
     if (!isRecording) {
-      throw RecorderNotRunningException(
-          "You cannot pause recording when the recorder is not running.");
+      throw RecorderNotRunningException("You cannot pause recording when the recorder is not running.");
     }
 
     await _plugin.pauseRecording(_proxy);
@@ -318,8 +298,7 @@ class SoundRecorder {
   /// otherwise a [RecorderNotPausedException] will be thrown.
   Future<void> resume() async {
     if (!isPaused) {
-      throw RecorderNotPausedException(
-          "You cannot resume recording when the recorder is not paused.");
+      throw RecorderNotPausedException("You cannot resume recording when the recorder is not paused.");
     }
 
     _timePaused += (DateTime.now().difference(_pauseStarted));
@@ -432,12 +411,10 @@ class SoundRecorder {
 
 /// Sets the frequency at which duration updates are sent to
 /// duration listeners.
-void recorderSetProgressInterval(SoundRecorder recorder, Duration interval) =>
-    recorder._setProgressInterval(interval);
+void recorderSetProgressInterval(SoundRecorder recorder, Duration interval) => recorder._setProgressInterval(interval);
 
 ///
-void recorderUpdateProgress(
-        SoundRecorder recorder, Duration duration, double decibels) =>
+void recorderUpdateProgress(SoundRecorder recorder, Duration duration, double decibels) =>
     recorder._updateProgress(duration, decibels);
 
 /// App pause/resume events.
@@ -448,8 +425,7 @@ void recorderUpdateProgress(
 void onSystemAppPaused(SoundRecorder recorder) => recorder._onSystemAppPaused();
 
 /// System event notification that the app has resumed
-void onSystemAppResumed(SoundRecorder recorder) =>
-    recorder._onSystemAppResumed();
+void onSystemAppResumed(SoundRecorder recorder) => recorder._onSystemAppResumed();
 
 /// Get the unique id for this sound player.
 String soundRecoderUuid(SoundRecorder recorder) => recorder._uuid;
