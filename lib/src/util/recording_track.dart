@@ -42,7 +42,8 @@ class RecordingTrack {
   void validatePath() {
     /// the directory where we are recording to MUST exist.
     if (!FileUtil().directoryExists(dirname(track.path))) {
-      throw DirectoryNotFoundException('The directory ${dirname(track.path)} must exists');
+      throw DirectoryNotFoundException(
+          'The directory ${dirname(track.path)} must exists');
     }
   }
 

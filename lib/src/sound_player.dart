@@ -227,7 +227,8 @@ class SoundPlayer {
   /// you take future action.
   Future<void> release() async {
     if (_internalPlayerState == _InternalPlayerState.preInitialised) {
-      throw PlayerInvalidStateException("The player is not initialised. Did you call release() twice?");
+      throw PlayerInvalidStateException(
+          "The player is not initialised. Did you call release() twice?");
     }
 
     _lifeCycleObserver.dispose();
@@ -290,13 +291,15 @@ class SoundPlayer {
     // Check the current MediaFormat is supported on this platform
     // if we were supplied the format.
     if (track.mediaFormat != null && !await track.mediaFormat.isNativeDecoder) {
-      var exception = PlayerInvalidStateException('The selected MediaFormat ${track.mediaFormat.name} is not '
+      var exception = PlayerInvalidStateException(
+          'The selected MediaFormat ${track.mediaFormat.name} is not '
           'supported on this platform.');
       throw exception;
     }
 
     Log.d('calling prepare stream');
-    await prepareStream(track, (disposition) => _playerController.add(disposition));
+    await prepareStream(
+        track, (disposition) => _playerController.add(disposition));
 
     // Not awaiting this may cause issues if someone immediately tries
     // to stop.
@@ -487,8 +490,8 @@ class SoundPlayer {
   /// audio has finished playing to the end.
   void _audioPlayerFinished(PlaybackDisposition status) {
     // if we have finished then position should be at the end.
-    var finalPosition =
-        PlaybackDisposition(PlaybackDispositionState.stopped, position: status.duration, duration: status.duration);
+    var finalPosition = PlaybackDisposition(PlaybackDispositionState.stopped,
+        position: status.duration, duration: status.duration);
 
     _playerController?.add(finalPosition);
     if (_autoFocus) {
@@ -679,11 +682,13 @@ class SoundPlayer {
 
 /// Forwarders so we can hide methods from the public api.
 
-void updateProgress(SoundPlayer player, PlaybackDisposition disposition) => player._updateProgress(disposition);
+void updateProgress(SoundPlayer player, PlaybackDisposition disposition) =>
+    player._updateProgress(disposition);
 
 /// Called if the audio has reached the end of the audio source
 /// or if we or the os stopped the playback prematurely.
-void audioPlayerFinished(SoundPlayer player, PlaybackDisposition status) => player._audioPlayerFinished(status);
+void audioPlayerFinished(SoundPlayer player, PlaybackDisposition status) =>
+    player._audioPlayerFinished(status);
 
 /// handles an audio pause coming up from the player
 void onSystemPaused(SoundPlayer player) => player._onSystemPaused();

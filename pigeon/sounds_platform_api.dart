@@ -299,6 +299,24 @@ abstract class SoundsToPlatformApi {
   @async
   Response resumeRecording(SoundRecorderProxy recorder);
 
+  /// Returns the list of native media formats the platform
+  /// can encode (record) to.
+  /// We pass a MediaFormatProxy as a hack until pigeon supports
+  /// enum/consts. The proxy contains a list of well known
+  /// media formats that the OS can use to indicate
+  /// that they are supported.
+  @async
+  MediaFormatResponse getNativeEncoderFormats(MediaFormatProxy proxy);
+
+  /// Returns the list of native media formats the platform
+  /// can decode (playback) from.
+  /// We pass a MediaFormatProxy as a hack until pigeon supports
+  /// enum/consts. The proxy contains a list of well known
+  /// media formats that the OS can use to indicate
+  /// that they are supported.
+  @async
+  MediaFormatResponse getNativeDecoderFormats(MediaFormatProxy proxy);
+
   /// Sets the interval between progress messages being generated from
   /// the platform code when the passed recorder is recording.
   ///
@@ -459,6 +477,12 @@ class MediaFormatProxy {
   int sampleRate;
   int numChannels;
   int bitRate;
+  String adtsAac;
+  String capOpus;
+  String mp3;
+  String oggOpus;
+  String oggVorbis;
+  String pcm;
 }
 
 class TrackProxy {
@@ -491,6 +515,14 @@ class BoolResponse extends Response {
   bool boolResult;
 }
 
+class MediaFormatResponse extends Response {
+  /// generics are not supported by pigeon as yet.
+  /// A list of media format names.
+  /// The names must be from the set defined in
+  /// [WellKnownMediaFormats].
+  List mediaFormats;
+}
+
 class InitializePlayer {
   SoundPlayerProxy player;
   bool playInBackground;
@@ -516,8 +548,8 @@ class SeekToPlayer {
 }
 
 class GetDuration {
-  SoundPlayerProxy player;
-  TrackProxy track;
+  /// path to the audio that we need to get the duration of.
+  String path;
 }
 
 class SetVolume {
