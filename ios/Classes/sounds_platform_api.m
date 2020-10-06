@@ -94,6 +94,10 @@ static NSDictionary* wrapResult(NSDictionary *result, FlutterError *error) {
 +(FLTQualityProxy*)fromMap:(NSDictionary*)dict;
 -(NSDictionary*)toMap;
 @end
+@interface FLTMediaFormatResponse ()
++(FLTMediaFormatResponse*)fromMap:(NSDictionary*)dict;
+-(NSDictionary*)toMap;
+@end
 @interface FLTSetRecordingProgressInterval ()
 +(FLTSetRecordingProgressInterval*)fromMap:(NSDictionary*)dict;
 -(NSDictionary*)toMap;
@@ -270,10 +274,34 @@ static NSDictionary* wrapResult(NSDictionary *result, FlutterError *error) {
   if ((NSNull *)result.bitRate == [NSNull null]) {
     result.bitRate = nil;
   }
+  result.adtsAac = dict[@"adtsAac"];
+  if ((NSNull *)result.adtsAac == [NSNull null]) {
+    result.adtsAac = nil;
+  }
+  result.capOpus = dict[@"capOpus"];
+  if ((NSNull *)result.capOpus == [NSNull null]) {
+    result.capOpus = nil;
+  }
+  result.mp3 = dict[@"mp3"];
+  if ((NSNull *)result.mp3 == [NSNull null]) {
+    result.mp3 = nil;
+  }
+  result.oggOpus = dict[@"oggOpus"];
+  if ((NSNull *)result.oggOpus == [NSNull null]) {
+    result.oggOpus = nil;
+  }
+  result.oggVorbis = dict[@"oggVorbis"];
+  if ((NSNull *)result.oggVorbis == [NSNull null]) {
+    result.oggVorbis = nil;
+  }
+  result.pcm = dict[@"pcm"];
+  if ((NSNull *)result.pcm == [NSNull null]) {
+    result.pcm = nil;
+  }
   return result;
 }
 -(NSDictionary*)toMap {
-  return [NSDictionary dictionaryWithObjectsAndKeys:(self.name ? self.name : [NSNull null]), @"name", (self.sampleRate ? self.sampleRate : [NSNull null]), @"sampleRate", (self.numChannels ? self.numChannels : [NSNull null]), @"numChannels", (self.bitRate ? self.bitRate : [NSNull null]), @"bitRate", nil];
+  return [NSDictionary dictionaryWithObjectsAndKeys:(self.name ? self.name : [NSNull null]), @"name", (self.sampleRate ? self.sampleRate : [NSNull null]), @"sampleRate", (self.numChannels ? self.numChannels : [NSNull null]), @"numChannels", (self.bitRate ? self.bitRate : [NSNull null]), @"bitRate", (self.adtsAac ? self.adtsAac : [NSNull null]), @"adtsAac", (self.capOpus ? self.capOpus : [NSNull null]), @"capOpus", (self.mp3 ? self.mp3 : [NSNull null]), @"mp3", (self.oggOpus ? self.oggOpus : [NSNull null]), @"oggOpus", (self.oggVorbis ? self.oggVorbis : [NSNull null]), @"oggVorbis", (self.pcm ? self.pcm : [NSNull null]), @"pcm", nil];
 }
 @end
 
@@ -312,18 +340,14 @@ static NSDictionary* wrapResult(NSDictionary *result, FlutterError *error) {
 @implementation FLTGetDuration
 +(FLTGetDuration*)fromMap:(NSDictionary*)dict {
   FLTGetDuration* result = [[FLTGetDuration alloc] init];
-  result.player = [FLTSoundPlayerProxy fromMap:dict[@"player"]];
-  if ((NSNull *)result.player == [NSNull null]) {
-    result.player = nil;
-  }
-  result.track = [FLTTrackProxy fromMap:dict[@"track"]];
-  if ((NSNull *)result.track == [NSNull null]) {
-    result.track = nil;
+  result.path = dict[@"path"];
+  if ((NSNull *)result.path == [NSNull null]) {
+    result.path = nil;
   }
   return result;
 }
 -(NSDictionary*)toMap {
-  return [NSDictionary dictionaryWithObjectsAndKeys:(self.player ? [self.player toMap] : [NSNull null]), @"player", (self.track ? [self.track toMap] : [NSNull null]), @"track", nil];
+  return [NSDictionary dictionaryWithObjectsAndKeys:(self.path ? self.path : [NSNull null]), @"path", nil];
 }
 @end
 
@@ -536,6 +560,20 @@ static NSDictionary* wrapResult(NSDictionary *result, FlutterError *error) {
 }
 -(NSDictionary*)toMap {
   return [NSDictionary dictionaryWithObjectsAndKeys:(self.quality ? self.quality : [NSNull null]), @"quality", (self.min ? self.min : [NSNull null]), @"min", (self.low ? self.low : [NSNull null]), @"low", (self.medium ? self.medium : [NSNull null]), @"medium", (self.high ? self.high : [NSNull null]), @"high", (self.max ? self.max : [NSNull null]), @"max", nil];
+}
+@end
+
+@implementation FLTMediaFormatResponse
++(FLTMediaFormatResponse*)fromMap:(NSDictionary*)dict {
+  FLTMediaFormatResponse* result = [[FLTMediaFormatResponse alloc] init];
+  result.mediaFormats = dict[@"mediaFormats"];
+  if ((NSNull *)result.mediaFormats == [NSNull null]) {
+    result.mediaFormats = nil;
+  }
+  return result;
+}
+-(NSDictionary*)toMap {
+  return [NSDictionary dictionaryWithObjectsAndKeys:(self.mediaFormats ? self.mediaFormats : [NSNull null]), @"mediaFormats", nil];
 }
 @end
 
@@ -1086,6 +1124,40 @@ void FLTSoundsToPlatformApiSetup(id<FlutterBinaryMessenger> binaryMessenger, id<
         FlutterError *error;
         FLTSoundRecorderProxy *input = [FLTSoundRecorderProxy fromMap:message];
         FLTResponse *output = [api resumeRecording:input error:&error];
+        callback(wrapResult([output toMap], error));
+      }];
+    }
+    else {
+      [channel setMessageHandler:nil];
+    }
+  }
+  {
+    FlutterBasicMessageChannel *channel =
+      [FlutterBasicMessageChannel
+        messageChannelWithName:@"dev.flutter.pigeon.SoundsToPlatformApi.getNativeEncoderFormats"
+        binaryMessenger:binaryMessenger];
+    if (api) {
+      [channel setMessageHandler:^(id _Nullable message, FlutterReply callback) {
+        FlutterError *error;
+        FLTMediaFormatProxy *input = [FLTMediaFormatProxy fromMap:message];
+        FLTMediaFormatResponse *output = [api getNativeEncoderFormats:input error:&error];
+        callback(wrapResult([output toMap], error));
+      }];
+    }
+    else {
+      [channel setMessageHandler:nil];
+    }
+  }
+  {
+    FlutterBasicMessageChannel *channel =
+      [FlutterBasicMessageChannel
+        messageChannelWithName:@"dev.flutter.pigeon.SoundsToPlatformApi.getNativeDecoderFormats"
+        binaryMessenger:binaryMessenger];
+    if (api) {
+      [channel setMessageHandler:^(id _Nullable message, FlutterReply callback) {
+        FlutterError *error;
+        FLTMediaFormatProxy *input = [FLTMediaFormatProxy fromMap:message];
+        FLTMediaFormatResponse *output = [api getNativeDecoderFormats:input error:&error];
         callback(wrapResult([output toMap], error));
       }];
     }

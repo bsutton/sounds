@@ -25,6 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 @class FLTStartRecording;
 @class FLTAudioSourceProxy;
 @class FLTQualityProxy;
+@class FLTMediaFormatResponse;
 @class FLTSetRecordingProgressInterval;
 @class FLTOnPlaybackProgress;
 @class FLTOnRecordingProgress;
@@ -73,6 +74,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, strong, nullable) NSNumber * sampleRate;
 @property(nonatomic, strong, nullable) NSNumber * numChannels;
 @property(nonatomic, strong, nullable) NSNumber * bitRate;
+@property(nonatomic, copy, nullable) NSString * adtsAac;
+@property(nonatomic, copy, nullable) NSString * capOpus;
+@property(nonatomic, copy, nullable) NSString * mp3;
+@property(nonatomic, copy, nullable) NSString * oggOpus;
+@property(nonatomic, copy, nullable) NSString * oggVorbis;
+@property(nonatomic, copy, nullable) NSString * pcm;
 @end
 
 @interface FLTSeekToPlayer : NSObject
@@ -85,8 +92,7 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @interface FLTGetDuration : NSObject
-@property(nonatomic, strong, nullable) FLTSoundPlayerProxy * player;
-@property(nonatomic, strong, nullable) FLTTrackProxy * track;
+@property(nonatomic, copy, nullable) NSString * path;
 @end
 
 @interface FLTSetVolume : NSObject
@@ -144,6 +150,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, strong, nullable) NSNumber * medium;
 @property(nonatomic, strong, nullable) NSNumber * high;
 @property(nonatomic, strong, nullable) NSNumber * max;
+@end
+
+@interface FLTMediaFormatResponse : NSObject
+@property(nonatomic, strong, nullable) NSArray * mediaFormats;
 @end
 
 @interface FLTSetRecordingProgressInterval : NSObject
@@ -212,6 +222,8 @@ NS_ASSUME_NONNULL_BEGIN
 -(nullable FLTResponse *)stopRecording:(FLTSoundRecorderProxy*)input error:(FlutterError *_Nullable *_Nonnull)error;
 -(nullable FLTResponse *)pauseRecording:(FLTSoundRecorderProxy*)input error:(FlutterError *_Nullable *_Nonnull)error;
 -(nullable FLTResponse *)resumeRecording:(FLTSoundRecorderProxy*)input error:(FlutterError *_Nullable *_Nonnull)error;
+-(nullable FLTMediaFormatResponse *)getNativeEncoderFormats:(FLTMediaFormatProxy*)input error:(FlutterError *_Nullable *_Nonnull)error;
+-(nullable FLTMediaFormatResponse *)getNativeDecoderFormats:(FLTMediaFormatProxy*)input error:(FlutterError *_Nullable *_Nonnull)error;
 -(nullable FLTResponse *)setRecordingProgressInterval:(FLTSetRecordingProgressInterval*)input error:(FlutterError *_Nullable *_Nonnull)error;
 @end
 
