@@ -1,6 +1,5 @@
 package com.bsutton.sounds;
 
-import java.util.concurrent.CountDownLatch;
 
 /*
  * This file is part of Sounds (Sounds).
@@ -26,6 +25,8 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
+import java.util.concurrent.CountDownLatch;
+
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 
@@ -36,7 +37,7 @@ enum t_CODEC {
 	, MP3, VORBIS, PCM
 }
 
-public class Sounds implements FlutterPlugin, ActivityAware {
+public class SoundsPlugin implements FlutterPlugin, ActivityAware {
 	public static final boolean FULL_FLAVOR = true;
 	static Context ctx;
 	static Registrar reg;

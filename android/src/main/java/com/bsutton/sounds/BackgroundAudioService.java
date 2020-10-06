@@ -15,7 +15,6 @@ package com.bsutton.sounds;
  *   along with Sounds .  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -30,7 +29,6 @@ import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.AudioAttributes;
 import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -51,7 +49,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.arch.core.util.Function;
 import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.media.MediaBrowserServiceCompat;
 import androidx.media.app.NotificationCompat.MediaStyle;
 import androidx.media.session.MediaButtonReceiver;
@@ -123,7 +120,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
 	boolean flautoInitialised(String action) {
 		boolean initialised = false;
 		try {
-			initialised = Sounds.initialised.await(0, TimeUnit.SECONDS);
+			initialised = SoundsPlugin.initialised.await(0, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
 			// NOOP. Will probably never happen and we can't re-throw it anyway
 			Log.d(TAG, "That was unexpected.", e);

@@ -15,20 +15,15 @@ package com.bsutton.sounds;
  *   along with Sounds .  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import android.app.Activity;
-import android.app.Activity;
 import android.content.ComponentName;
 import android.os.RemoteException;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.session.MediaControllerCompat;
-import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
 
 import androidx.arch.core.util.Function;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 public class MediaBrowserHelper {
 	MediaControllerCompat mediaControllerCompat;
@@ -52,10 +47,10 @@ public class MediaBrowserHelper {
 			// completed,
 			// start the audio playback.
 			try {
-				assert (Sounds.androidActivity != null);
-				mediaControllerCompat = new MediaControllerCompat(Sounds.androidActivity,
+				assert (SoundsPlugin.androidActivity != null);
+				mediaControllerCompat = new MediaControllerCompat(SoundsPlugin.androidActivity,
 						mMediaBrowserCompat.getSessionToken());
-				MediaControllerCompat.setMediaController(Sounds.androidActivity, mediaControllerCompat);
+				MediaControllerCompat.setMediaController(SoundsPlugin.androidActivity, mediaControllerCompat);
 
 				Log.w("MediaBrowserHelper", "onConnect = Success");
 
@@ -118,11 +113,11 @@ public class MediaBrowserHelper {
 	 * Initialize the media browser in this class
 	 */
 	private void initMediaBrowser() {
-		assert (Sounds.androidActivity != null);
+		assert (SoundsPlugin.androidActivity != null);
 		// Create and connect a MediaBrowserCompat
-		mMediaBrowserCompat = new MediaBrowserCompat(Sounds.androidActivity,
-				new ComponentName(Sounds.androidActivity, BackgroundAudioService.class),
-				mMediaBrowserCompatConnectionCallback, Sounds.androidActivity.getIntent().getExtras());
+		mMediaBrowserCompat = new MediaBrowserCompat(SoundsPlugin.androidActivity,
+				new ComponentName(SoundsPlugin.androidActivity, BackgroundAudioService.class),
+				mMediaBrowserCompatConnectionCallback, SoundsPlugin.androidActivity.getIntent().getExtras());
 
 		mMediaBrowserCompat.connect();
 	}
