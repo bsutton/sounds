@@ -17,9 +17,6 @@ package com.bsutton.sounds;
  *   along with Sounds (Sounds).  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import io.flutter.embedding.engine.plugins.FlutterPlugin;
-import io.flutter.embedding.engine.plugins.activity.ActivityAware;
-
 import android.app.Activity;
 import android.content.Context;
 
@@ -27,6 +24,8 @@ import androidx.annotation.NonNull;
 
 import java.util.concurrent.CountDownLatch;
 
+import io.flutter.embedding.engine.plugins.FlutterPlugin;
+import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 
