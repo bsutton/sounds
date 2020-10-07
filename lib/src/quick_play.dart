@@ -56,14 +56,16 @@ class QuickPlay {
   ///
   /// Pass a callback to [onStopped] if you want to be notified
   /// that audio has stopped playing.
-  QuickPlay.fromTrack(this._track, {int volume, bool withShadeUI = false, PlayerEvent onStopped})
+  QuickPlay.fromTrack(this._track,
+      {int volume, bool withShadeUI = false, PlayerEvent onStopped})
       : _onStopped = onStopped {
     QuickPlay._internal(volume, withShadeUI);
   }
 
   QuickPlay._internal(int volume, bool withShadeUI) {
     if (withShadeUI) {
-      _player = SoundPlayer.withShadeUI(canPause: false, canSkipBackward: false, canSkipForward: false);
+      _player = SoundPlayer.withShadeUI(
+          canPause: false, canSkipBackward: false, canSkipForward: false);
     } else {
       _player = SoundPlayer.noUI();
     }
@@ -92,7 +94,8 @@ class QuickPlay {
   ///
   /// Pass a callback to [onStopped] if you want to be notified
   /// that audio has stopped playing.
-  QuickPlay.fromFile(String path, {int volume, bool withShadeUI = false, PlayerEvent onStopped})
+  QuickPlay.fromFile(String path,
+      {int volume, bool withShadeUI = false, PlayerEvent onStopped})
       : _onStopped = onStopped {
     _track = Track.fromFile(path);
     QuickPlay._internal(volume, withShadeUI);
@@ -114,7 +117,8 @@ class QuickPlay {
   ///
   /// Pass a callback to [onStopped] if you want to be notified
   /// that audio has stopped playing.
-  QuickPlay.fromURL(String url, {int volume, bool withShadeUI = false, PlayerEvent onStopped})
+  QuickPlay.fromURL(String url,
+      {int volume, bool withShadeUI = false, PlayerEvent onStopped})
       : _onStopped = onStopped {
     _track = Track.fromURL(url);
     QuickPlay._internal(volume, withShadeUI);
@@ -134,7 +138,10 @@ class QuickPlay {
   /// Pass a callback to [onStopped] if you want to be notified
   /// that audio has stopped playing.
   QuickPlay.fromBuffer(Uint8List dataBuffer,
-      {int volume, @required MediaFormat mediaFormat, bool withShadeUI = false, PlayerEvent onStopped})
+      {int volume,
+      @required MediaFormat mediaFormat,
+      bool withShadeUI = false,
+      PlayerEvent onStopped})
       : _onStopped = onStopped {
     _track = Track.fromBuffer(dataBuffer, mediaFormat: mediaFormat);
     QuickPlay._internal(volume, withShadeUI);

@@ -132,7 +132,8 @@ abstract class SoundsToPlatformApi {
   /// best to honour the settings.
   ///
   @async
-  Response initializePlayerWithShade(InitializePlayerWithShade initializePlayerWithShade);
+  Response initializePlayerWithShade(
+      InitializePlayerWithShade initializePlayerWithShade);
 
   /// Once Sounds has finished with a [SoundPlayerProxy] it will call
   /// [releasePlayer] indicating that all resources associated with the
@@ -250,7 +251,8 @@ abstract class SoundsToPlatformApi {
   /// If this method is called with an [interval] of 0 then progress
   /// messages should be suppressed.
   @async
-  Response setPlaybackProgressInterval(SetPlaybackProgressInterval setPlaybackProgressInterval);
+  Response setPlaybackProgressInterval(
+      SetPlaybackProgressInterval setPlaybackProgressInterval);
 
   /// Requests the audio focus setting the mode and gain.
   ///
@@ -358,7 +360,8 @@ abstract class SoundsToPlatformApi {
   /// If this method is called with an [interval] of 0 then progress
   /// messages should be suppressed.
   @async
-  Response setRecordingProgressInterval(SetRecordingProgressInterval setRecordingProgressInterval);
+  Response setRecordingProgressInterval(
+      SetRecordingProgressInterval setRecordingProgressInterval);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -487,11 +490,13 @@ abstract class SoundsFromPlatformApi {
 }
 
 void configurePigeon(PigeonOptions opts) {
-  opts.dartOut = '../sounds_platform_interface/lib/sounds_platform_interface.dart';
+  opts.dartOut =
+      '../sounds_platform_interface/lib/sounds_platform_interface.dart';
   opts.objcHeaderOut = 'ios/Classes/sounds_platform_api.h';
   opts.objcSourceOut = 'ios/Classes/sounds_platform_api.m';
   opts.objcOptions.prefix = 'FLT';
-  opts.javaOut = 'android/src/main/java/com/bsutton/sounds/SoundsPlatformApi.java';
+  opts.javaOut =
+      'android/src/main/java/com/bsutton/sounds/SoundsPlatformApi.java';
   opts.javaOptions.package = 'com.bsutton.sounds';
 }
 
