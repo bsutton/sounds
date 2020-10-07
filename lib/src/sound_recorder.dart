@@ -144,6 +144,7 @@ class SoundRecorder {
     }
     _recordingTrack?.release();
     await _plugin.releaseRecorder(_proxy);
+    _internalRecorderState = _InternalRecorderState.preinitialisation;
   }
 
   /// Future indicating if initialisation has completed.
@@ -400,14 +401,16 @@ class SoundRecorder {
   /// This could be a problem with some apps if they want to
   /// record in the background.
   Future<void> _onSystemAppPaused() async {
-    Log.d(red('onSystemAppPaused  track=${_recordingTrack?.track}'));
-    if (isRecording && !_playInBackground) {
-      /// CONSIDER: this could be expensive as we do a [recode]
-      /// when we stop. We might need to look at doing a lazy
-      /// call to [recode].
-      await stop();
+    if (isInitialized) {
+      Log.d(red('onSystemAppPaused  track=${_recordingTrack?.track}'));
+      if (isRecording && !_playInBackground) {
+        /// CONSIDER: this could be expensive as we do a [recode]
+        /// when we stop. We might need to look at doing a lazy
+        /// call to [recode].
+        await stop();
+      }
+      await release();
     }
-    await release();
   }
 
   /// System event telling us that our app has been resumed.
