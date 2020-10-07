@@ -18,82 +18,74 @@ package com.bsutton.sounds;
 import android.content.Context;
 import android.media.AudioFocusRequest;
 import android.media.AudioManager;
-import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
 
 import androidx.annotation.UiThread;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.time.Duration;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import io.flutter.plugin.common.MethodCall;
-import io.flutter.plugin.common.MethodChannel.Result;
+import static com.bsutton.sounds.ErrorCodes.errnoAudioServiceDied;
+import static com.bsutton.sounds.ErrorCodes.errnoGeneral;
+import static com.bsutton.sounds.ErrorCodes.errnoIOError;
+import static com.bsutton.sounds.ErrorCodes.errnoMalformedMedia;
+import static com.bsutton.sounds.ErrorCodes.errnoTimeout;
+import static com.bsutton.sounds.ErrorCodes.errnoUnsupportedMediaFormat;
 
 //-------------------------------------------------------------------------------------------------------------
 
-public class SoundPlayer {
-	enum t_SET_CATEGORY_DONE {
-		NOT_SET, FOR_PLAYING, // sounds did it during startPlayer()
-		BY_USER // The caller did it himself : Sounds must not change that)
-	};
-
+public class SoundPlayer extends SoundsProxy  {
 	final static String TAG = "SoundPlayer";
 	final PlayerAudioModel model = new PlayerAudioModel();
-	final private Handler tickHandler = new Handler();
-	t_SET_CATEGORY_DONE setActiveDone = t_SET_CATEGORY_DONE.NOT_SET;
-	AudioFocusRequest audioFocusRequest = null;
-	AudioManager audioManager;
-	int slotNo;
 
-	static final String ERR_UNKNOWN = "ERR_UNKNOWN";
-	static final String ERR_PLAYER_IS_NULL = "ERR_PLAYER_IS_NULL";
-	static final String ERR_PLAYER_IS_PLAYING = "ERR_PLAYER_IS_PLAYING";
+	// Used to make callback on the main UI thread
+	final private Handler mainUIHandler = new Handler();
 
-	SoundPlayer(int aSlotNo) {
-		slotNo = aSlotNo;
+	// stores the current audio focus mode so we can restore it
+	// after resuming.
+	private AudioFocusRequest audioFocusRequest = null;
+	protected AudioManager audioManager;
+
+	private boolean playInBackground;
+
+	 private SoundsPlatformApi.SoundPlayerProxy playerProxy;
+	 private SoundsPlatformApi.TrackProxy trackProxy;
+
+	void initializeSoundPlayer(SoundsPlatformApi.SoundPlayerProxy playerProxy, boolean playInBackground) {
+		this.playerProxy = playerProxy;
+
+		audioManager = (AudioManager) SoundsPlugin.ctx.getSystemService(Context.AUDIO_SERVICE);
+
+		this.playInBackground = playInBackground;
 	}
 
-	SoundPlayerPlugin getPlugin() {
-		return SoundPlayerPlugin.soundPlayerPlugin;
+	@Override
+	public void dispose() {
+		try {
+			releaseSoundPlayer();
+		}
+		catch (SoundsException e)
+		{
+			Log.d(TAG, "SoundPlayer.dispose() Exception: " + e.toString());
+		}
+	}
+	void releaseSoundPlayer()  throws SoundsException {
+		// no op.
 	}
 
-	void initializeSoundPlayer(final MethodCall call, final Result result) {
-		audioManager = (AudioManager) SoundPlayerPlugin.androidContext.getSystemService(Context.AUDIO_SERVICE);
-		result.success("Flutter Player Initialized");
-	}
 
-	void releaseSoundPlayer(final MethodCall call, final Result result) {
-		result.success("Flutter Recorder Released");
-	}
+	public void startPlayer(SoundsPlatformApi.TrackProxy track, Duration startAt ) throws SoundsException {
+		assert (track.getPath() != null);
 
-	public void startPlayer(final MethodCall call, final Result result) {
-		final String path = call.argument("path");
-		_startPlayer(path, result);
-	}
-
-	public void _startPlayer(String path, final Result result) {
-		assert (path != null);
+		this.trackProxy = track;
 		if (this.model.getMediaPlayer() != null) {
 			/// re-start after media has been paused
 			Boolean isPaused = !this.model.getMediaPlayer().isPlaying()
 					&& this.model.getMediaPlayer().getCurrentPosition() > 1;
 
-			if (isPaused) {
-				this.model.getMediaPlayer().start();
-				result.success("player resumed.");
-				return;
-			}
-
-			Log.e(TAG, "Player is already running. Stop it first.");
-			result.success("player is already running.");
-			return;
+			throw new SoundsException(ErrorCodes.errnoAlreadyPlaying, "Already playing. Call stop first.");
 		}
 
 		/// This causes an IllegalStateException to be throw by the MediaPlayer.
@@ -101,48 +93,49 @@ public class SoundPlayer {
 		this.model.setMediaPlayer(new MediaPlayer());
 
 		try {
-			this.model.getMediaPlayer().setDataSource(path);
-			if (setActiveDone == t_SET_CATEGORY_DONE.NOT_SET) {
-				setActiveDone = t_SET_CATEGORY_DONE.FOR_PLAYING;
-				requestFocus();
-			}
+			this.model.getMediaPlayer().setDataSource(track.getPath());
+
 
 			/// set up the listeners before we start.
-			this.model.getMediaPlayer().setOnPreparedListener(mp -> onPreparedListener(mp, result));
+			this.model.getMediaPlayer().setOnPreparedListener(mp -> onPreparedListener(mp));
 			// Detect when finish playing.
 			this.model.getMediaPlayer().setOnCompletionListener(mp -> completeListener(mp));
 			this.model.getMediaPlayer().setOnErrorListener((mp, what, extra) -> onError(mp, what, extra));
 
-			this.model.getMediaPlayer().prepareAsync();
+			this.model.getMediaPlayer().prepare();
 		} catch (Exception e) {
-			Log.e(TAG, "startPlayer() exception", e);
-			result.error(ERR_UNKNOWN, ERR_UNKNOWN, e.getMessage());
+			throw new SoundsException(ErrorCodes.errnoGeneral, "startPlayer() Exception" + e.getCause().getClass().getSimpleName() + " " + e.getMessage());
 		}
 	}
 
 	// listener for the MediaPlayer
 	// Called when the MediaPlayer has finished preparing the media for playback.
-	private void onPreparedListener(MediaPlayer mp, final Result result) {
+	private void onPreparedListener(MediaPlayer mp) {
 		Log.d(TAG, "mediaPlayer prepared and start");
 		mp.start();
 		startProgressTimer(mp);
-		result.success("");
 	}
 
 	// Called by the media player if an error occurs during playback.
 	private boolean onError(MediaPlayer mp, int what, int extra) {
-		String description = translateErrorCodes(extra);
-		Log.e(TAG, "MediaPlayer error: " + description + " what: " + what + " extra: " + extra);
-
 		stopProgressTimer(mp, false);
 		/// reset the player.
 		mp.reset();
 		mp.release();
 		this.model.setMediaPlayer(null);
+		SoundsPlatformApi.OnError args =
+				 translateErrorCodes(what, extra);
+				new SoundsPlatformApi.OnError();
 
-		getPlugin().sendError(slotNo, description, what, extra, null);
-
+				mainUIHandler.post(new Runnable() {
+					@Override
+					public void run() {
+						new SoundsPlatformApi.SoundsFromPlatformApi(SoundsPlugin.getBinaryMessenger()).onError(args, null);
+					}
+				});
 		return true;
+
+
 	}
 
 	// Called when the audio stops, this can be due
@@ -153,22 +146,23 @@ public class SoundPlayer {
 		/*
 		 * Reset player.
 		 */
-		Log.d(TAG, "Plays completed.");
-		try {
-			JSONObject json = new JSONObject();
-			json.put("duration", String.valueOf(mp.getDuration()));
-			json.put("current_position", String.valueOf(mp.getCurrentPosition()));
-			getPlugin().invokeCallbackWithString(slotNo, "audioPlayerFinishedPlaying", json.toString());
-		} catch (Exception e) {
-			Log.d(TAG, "Json Exception: " + e.toString());
-		}
+		Log.d(TAG, "Playback completed.");
+
+		SoundsPlatformApi.OnPlaybackStopped args = new SoundsPlatformApi.OnPlaybackStopped();
+		args.setPlayer(playerProxy);
+		args.setTrack(trackProxy);
+		args.setErrorCode(0L);
+
+		mainUIHandler.post(new Runnable() {
+			@Override
+			public void run() {
+				new SoundsPlatformApi.SoundsFromPlatformApi(SoundsPlugin.getBinaryMessenger()).onPlaybackStopped(args, null);
+			}
+		});
+
+
 		if (mp.isPlaying()) {
 			mp.stop();
-		}
-		if ((setActiveDone != t_SET_CATEGORY_DONE.BY_USER) && (setActiveDone != t_SET_CATEGORY_DONE.NOT_SET)) {
-
-			setActiveDone = t_SET_CATEGORY_DONE.NOT_SET;
-			abandonFocus();
 		}
 
 		mp.reset();
@@ -176,17 +170,11 @@ public class SoundPlayer {
 		model.setMediaPlayer(null);
 	}
 
-	public void stopPlayer(final MethodCall call, final Result result) {
+	public void stopPlayer() throws SoundsException {
 		MediaPlayer mp = this.model.getMediaPlayer();
 
 		if (mp == null) {
-			result.success("Player already Closed");
-			return;
-		}
-		if ((setActiveDone != t_SET_CATEGORY_DONE.BY_USER) && (setActiveDone != t_SET_CATEGORY_DONE.NOT_SET)) {
-
-			setActiveDone = t_SET_CATEGORY_DONE.NOT_SET;
-			abandonFocus();
+			throw new SoundsException(ErrorCodes.errnoUnknownPlayer, "The MediaPlayer does not exist");
 		}
 
 		try {
@@ -195,240 +183,206 @@ public class SoundPlayer {
 			mp.reset();
 			mp.release();
 			this.model.setMediaPlayer(null);
-			result.success("stopped player.");
+
 		} catch (Exception e) {
-			Log.e(TAG, "stopPlay exception: " + e.getMessage());
-			result.error(ERR_UNKNOWN, ERR_UNKNOWN, e.getMessage());
+			throw new SoundsException(ErrorCodes.errnoGeneral, "stopPlayer() Exception" + e.getCause().getClass().getSimpleName() + " " + e.getMessage());
 		}
 	}
 
-	public void pausePlayer(final MethodCall call, final Result result) {
+	public void pausePlayer() throws SoundsException {
 		MediaPlayer mp = this.model.getMediaPlayer();
 		if (mp == null) {
-			result.error(ERR_PLAYER_IS_NULL, "pausePlayer()", ERR_PLAYER_IS_NULL);
-			return;
-		}
-		if ((setActiveDone != t_SET_CATEGORY_DONE.BY_USER) && (setActiveDone != t_SET_CATEGORY_DONE.NOT_SET)) {
-			setActiveDone = t_SET_CATEGORY_DONE.NOT_SET;
-			abandonFocus();
+			throw new SoundsException(ErrorCodes.errnoUnknownPlayer, "The MediaPlayer does not exist");
 		}
 
 		try {
 			stopProgressTimer(mp, true);
 			mp.pause();
-			result.success("paused player.");
+
 		} catch (Exception e) {
-			Log.e(TAG, "pausePlay exception: " + e.getMessage());
-			result.error(ERR_UNKNOWN, ERR_UNKNOWN, e.getMessage());
+			throw new SoundsException(ErrorCodes.errnoGeneral, "pausePlayer() Exception" + e.getCause().getClass().getSimpleName() + " " + e.getMessage());
 		}
 
 	}
 
-	public void resumePlayer(final MethodCall call, final Result result) {
+	public void resumePlayer() throws SoundsException {
 		MediaPlayer mp = this.model.getMediaPlayer();
 
 		if (mp == null) {
-			result.error(ERR_PLAYER_IS_NULL, "resumePlayer", ERR_PLAYER_IS_NULL);
-			return;
+			throw new SoundsException(ErrorCodes.errnoUnknownPlayer, "The MediaPlayer does not exist");
 		}
 
 		if (mp.isPlaying()) {
-			result.error(ERR_PLAYER_IS_PLAYING, ERR_PLAYER_IS_PLAYING, ERR_PLAYER_IS_PLAYING);
-			return;
-		}
-		if (setActiveDone == t_SET_CATEGORY_DONE.NOT_SET) {
-			setActiveDone = t_SET_CATEGORY_DONE.FOR_PLAYING;
-			requestFocus();
+			throw new SoundsException(ErrorCodes.errnoAlreadyPlaying, "The Audio is already playing");
 		}
 
 		try {
 			startProgressTimer(mp);
 			mp.seekTo(mp.getCurrentPosition());
 			mp.start();
-			result.success("resumed player.");
+			Log.d(TAG, "resumed");
 		} catch (Exception e) {
-			Log.e(TAG, "mediaPlayer resume: " + e.getMessage());
-			result.error(ERR_UNKNOWN, ERR_UNKNOWN, e.getMessage());
+			throw new SoundsException(ErrorCodes.errnoGeneral, "resumePlayer() Exception" + e.getCause().getClass().getSimpleName() + " " + e.getMessage());
 		}
 	}
 
-	public void seekToPlayer(final MethodCall call, final Result result) {
+	public void seekToPlayer(Duration seekTo) throws SoundsException {
 		MediaPlayer mp = this.model.getMediaPlayer();
 
-		int millis = call.argument("milli");
-
 		if (mp == null) {
-			result.error(ERR_PLAYER_IS_NULL, "seekToPlayer()", ERR_PLAYER_IS_NULL);
-			return;
+			throw new SoundsException(ErrorCodes.errnoUnknownPlayer, "The MediaPlayer does not exist");
 		}
 
 		int currentMillis = mp.getCurrentPosition();
 		Log.d(TAG, "currentMillis: " + currentMillis);
 		// millis += currentMillis; [This was the problem for me]
 
-		Log.d(TAG, "seekTo: " + millis);
+		int seekToMillis = (int)seekTo.toMillis();
 
-		mp.seekTo(millis);
-		result.success(String.valueOf(millis));
+		Log.d(TAG, "seekTo: " + seekToMillis);
+
+		mp.seekTo(seekToMillis);
 	}
 
-	public void setVolume(final MethodCall call, final Result result) {
+	public void setVolume(float volume) throws SoundsException {
 		MediaPlayer mp = this.model.getMediaPlayer();
 
-		double volume = call.argument("volume");
-
 		if (mp == null) {
-			result.error(ERR_PLAYER_IS_NULL, "setVolume()", ERR_PLAYER_IS_NULL);
-			return;
+			throw new SoundsException(ErrorCodes.errnoUnknownPlayer, "The MediaPlayer does not exist");
 		}
-
-		float mVolume = (float) volume;
-		mp.setVolume(mVolume, mVolume);
-		result.success("Set volume");
+		mp.setVolume(volume, volume);
 	}
 
-	public void setProgressInterval(final MethodCall call, Result result) {
-		if (call.argument("milli") == null) {
-			return;
-		}
-		int duration = call.argument("milli");
-
-		this.model.progressInterval = duration;
-		result.success("setProgressInterval: " + this.model.progressInterval);
+	public void setProgressInterval(Duration interval) {
+		this.model.progressInterval = interval;
 	}
 
 	private void startProgressTimer(MediaPlayer mp) {
 		// make certain no tickers are currently running.
 		stopProgressTimer(mp, false);
 
-		tickHandler.post(() -> sendUpdateProgress(mp));
+		mainUIHandler.post(() -> sendPlaybackProgress(mp));
 	}
 
 	private void stopProgressTimer(MediaPlayer mp, boolean sendFinal) {
 		/// send a final update before we stop the ticker
 		/// so dart sees the last position we reached.
 		if (sendFinal) {
-			sendUpdateProgress(mp);
+			sendPlaybackProgress(mp);
 		}
-		tickHandler.removeCallbacksAndMessages(null);
+		mainUIHandler.removeCallbacksAndMessages(null);
 	}
 
 	@UiThread
-	private void sendUpdateProgress(MediaPlayer mp) {
+	private void sendPlaybackProgress(MediaPlayer mp) {
 		try {
-			JSONObject json = new JSONObject();
-			json.put("duration", String.valueOf(mp.getDuration()));
-			json.put("current_position", String.valueOf(mp.getCurrentPosition()));
-			getPlugin().invokeCallbackWithString(slotNo, "updateProgress", json.toString());
 
+			SoundsPlatformApi.OnPlaybackProgress args = 			new SoundsPlatformApi.OnPlaybackProgress();
+			args.setPlayer(playerProxy);
+			args.setTrack(trackProxy);
+			args.setDuration((long)mp.getDuration());
+			args.setPosition((long)mp.getCurrentPosition());
+
+			mainUIHandler.post(new Runnable() {
+				@Override
+				public void run() {
+					new SoundsPlatformApi.SoundsFromPlatformApi(SoundsPlugin.getBinaryMessenger()).onPlaybackProgress(args, null);
+				}
+			});
 			// reschedule ourselves.
-			tickHandler.postDelayed(() -> sendUpdateProgress(mp), (model.progressInterval));
+			mainUIHandler.postDelayed(() -> sendPlaybackProgress(mp), (model.progressInterval.toMillis()));
 		} catch (Exception e) {
 			Log.d(TAG, "Exception: " + e.toString());
 		}
 	}
 
-	void androidAudioFocusRequest(final MethodCall call, final Result result) {
-		Integer focusGain = call.argument("focusGain");
+	/**
+	 * changes the curretn audioFocus mode and then requests it.
+	 * @param audioFocus
+	 */
+	void requestAudioFocus(SoundsPlatformApi.AudioFocusProxy audioFocus) {
+		long agnosticMode = audioFocus.getAudioFocusMode();
 
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			audioFocusRequest = new AudioFocusRequest.Builder(focusGain)
-					// .setAudioAttributes(mPlaybackAttributes)
-					// .setAcceptsDelayedFocusGain(true)
-					// .setWillPauseWhenDucked(true)
-					// .setOnAudioFocusChangeListener(this, mMyHandler)
-					.build();
-			Boolean b = true;
-			setActiveDone = t_SET_CATEGORY_DONE.NOT_SET;
+		int androidMode = AudioManager.AUDIOFOCUS_GAIN;
+		if (agnosticMode == audioFocus.getStopOthersNoResume())
+			androidMode = AudioManager.AUDIOFOCUS_GAIN; //1
+		else if (agnosticMode == audioFocus.getStopOthersWithResume())
+			androidMode = AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE; // 4;
+		else if (agnosticMode == audioFocus.getHushOthersWithResume())
+			androidMode = AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK; // 3;
+		/// 2 - transient -not currently supported.
 
-			result.success(b);
-		} else {
-			Boolean b = false;
-			result.success(b);
+		requestFocus();
+	}
+
+
+	private void requestFocus() {
+		if (canRequestAudioFocus()) {
+			if (audioManager.requestAudioFocus(audioFocusRequest) != AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
+			{
+				Log.w(TAG, "Unable to requests audio focus - Grant denied");
+			}
 		}
 	}
 
-	boolean requestFocus() {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			if (audioFocusRequest == null) {
+	private boolean  canRequestAudioFocus()
+	{
+		if (audioFocusRequest == null) {
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
 				audioFocusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
 						// .setAudioAttributes(mPlaybackAttributes)
 						// .setAcceptsDelayedFocusGain(true)
 						// .setWillPauseWhenDucked(true)
 						// .setOnAudioFocusChangeListener(this, mMyHandler)
 						.build();
-			}
-			return (audioManager.requestAudioFocus(audioFocusRequest) == AudioManager.AUDIOFOCUS_REQUEST_GRANTED);
-		} else {
-			return false;
+			} else
+				Log.w(TAG, "Unable to requests audio focus - old android version");
 		}
-	}
 
-	boolean abandonFocus() {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			if (audioFocusRequest == null) {
-				audioFocusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
-						// .setAudioAttributes(mPlaybackAttributes)
-						// .setAcceptsDelayedFocusGain(true)
-						// .setWillPauseWhenDucked(true)
-						// .setOnAudioFocusChangeListener(this, mMyHandler)
-						.build();
-			}
-			return (audioManager
-					.abandonAudioFocusRequest(audioFocusRequest) == AudioManager.AUDIOFOCUS_REQUEST_GRANTED);
-		} else {
-			return false;
-		}
+		return audioFocusRequest != null;
 
 	}
 
-	void setActive(final MethodCall call, final Result result) {
-		Boolean enabled = call.argument("enabled");
-
-		Boolean b = false;
-		try {
-			if (enabled) {
-				if (setActiveDone != t_SET_CATEGORY_DONE.NOT_SET) { // Already activated. Nothing todo;
-					setActiveDone = t_SET_CATEGORY_DONE.BY_USER;
-					result.success(b);
-					return;
-				}
-				setActiveDone = t_SET_CATEGORY_DONE.BY_USER;
-				b = requestFocus();
-			} else {
-				if (setActiveDone == t_SET_CATEGORY_DONE.NOT_SET) { // Already desactivated
-					result.success(b);
-					return;
-				}
-
-				setActiveDone = t_SET_CATEGORY_DONE.NOT_SET;
-				b = abandonFocus();
+	void releaseAudioFocus() {
+		if (canRequestAudioFocus()) {
+			if (audioManager
+					.abandonAudioFocusRequest(audioFocusRequest) != AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
+			{
+				Log.w(TAG, "Unable to abandon audio focus - Grant denied");
 			}
-		} catch (Exception e) {
-			b = false;
 		}
-		result.success(b);
 	}
 
 	/// Attempts to translate Android media errors into general error strings.
 	/// These strings need to match equavalent error generated from iOS.
-	String translateErrorCodes(int what) {
-		String error;
-		if (what == MediaPlayer.MEDIA_ERROR_IO) {
-			error = "File or Network Error";
-		} else if (what == MediaPlayer.MEDIA_ERROR_MALFORMED) {
-			error = "Malformed audio. Does not match the expected MediaFormat";
-		} else if (what == MediaPlayer.MEDIA_ERROR_SERVER_DIED) {
-			error = "Media server stopped";
-		} else if (what == MediaPlayer.MEDIA_ERROR_TIMED_OUT) {
-			error = "Timeout";
-		} else if (what == MediaPlayer.MEDIA_ERROR_UNKNOWN) {
-			error = "An unknown error occured";
-		} else if (what == MediaPlayer.MEDIA_ERROR_UNSUPPORTED) {
-			error = "Unsupported MediaFormat";
+	SoundsPlatformApi.OnError translateErrorCodes(int mediaPlayerError, int extra) {
+		SoundsPlatformApi.OnError error = new SoundsPlatformApi.OnError();
+
+		if (mediaPlayerError == MediaPlayer.MEDIA_ERROR_IO) {
+			error.setErrorCode(errnoIOError);
+			error.setError("File or Network Error");
+		} else if (mediaPlayerError == MediaPlayer.MEDIA_ERROR_MALFORMED) {
+			error.setErrorCode(errnoMalformedMedia);
+			error.setError("Malformed audio. Does not match the expected MediaFormat");
+		} else if (mediaPlayerError == MediaPlayer.MEDIA_ERROR_SERVER_DIED) {
+			error.setErrorCode(errnoAudioServiceDied);
+			error.setError("Media server stopped");
+		} else if (mediaPlayerError == MediaPlayer.MEDIA_ERROR_TIMED_OUT) {
+			error.setErrorCode(errnoTimeout);
+			error.setError("Timeout");
+		} else if (mediaPlayerError == MediaPlayer.MEDIA_ERROR_UNKNOWN) {
+			error.setErrorCode(errnoGeneral);
+			error.setError("An unknown error occured");
+		} else if (mediaPlayerError == MediaPlayer.MEDIA_ERROR_UNSUPPORTED) {
+			error.setErrorCode(errnoUnsupportedMediaFormat);
+			error.setError("Unsupported MediaFormat");
 		} else {
-			error = "Unknown error code: " + what;
+			error.setErrorCode(errnoGeneral);
+			error.setError("Unknown error code: " + mediaPlayerError);
 		}
+
+		Log.e(TAG, "MediaPlayer error: " + error.getError() + " what: " + mediaPlayerError + " extra: " + extra);
 		return error;
 	}
 

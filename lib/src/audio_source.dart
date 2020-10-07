@@ -19,6 +19,7 @@ import 'package:sounds_platform_interface/sounds_platform_interface.dart';
 ///
 /// Determines the source that should be recorded.
 /// Currently these are only supported by android.
+///
 /// For iOS we always record from the microphone.
 class AudioSource {
   final int _source;
@@ -28,7 +29,10 @@ class AudioSource {
   ///
   int get source => _source;
 
-  ///
+  /// The const defined here are intended to be platform agnostic
+  /// however the exactly match the Android definitions which
+  /// the android platform depends on. If you change
+  /// these you MUST update the android platform code.
   static const defaultSource = AudioSource._internal(0);
 
   ///

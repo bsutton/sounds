@@ -29,7 +29,6 @@ import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
@@ -58,11 +57,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
 
 public class BackgroundAudioService extends MediaBrowserServiceCompat
 		implements MediaPlayer.OnCompletionListener, AudioManager.OnAudioFocusChangeListener {
@@ -70,11 +67,11 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
 	final static String TAG = "BackgroundAudioService";
 	static final String notificationChannelId = "sounds_channel_01";
 
-	public static Callable mediaPlayerOnPreparedListener;
-	public static Callable mediaPlayerOnCompletionListener;
-	public static Callable skipTrackForwardHandler;
-	public static Callable skipTrackBackwardHandler;
-	public static Callable pauseHandler;
+	public static Callable<Void> mediaPlayerOnPreparedListener;
+	public static Callable<Void> mediaPlayerOnCompletionListener;
+	public static Callable<Void> skipTrackForwardHandler;
+	public static Callable<Void> skipTrackBackwardHandler;
+	public static Callable<Void> pauseHandler;
 	public static Function playbackStateUpdater;
 	// public static boolean includeAudioPlayerFeatures;
 	// public static Activity activity;
@@ -98,13 +95,12 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
 	/**
 	 * The track that we're currently playing
 	 */
-	public static Track currentTrack;
+	public static SoundsPlatformApi.TrackProxy currentTrack;
 	public static boolean pauseResumeCalledByApp = false;
 
 	private boolean mIsNoisyReceiverRegistered;
 	private MediaPlayer mMediaPlayer;
 	private MediaSessionCompat mMediaSessionCompat;
-	private AudioFocusRequest mAudioFocusRequest;
 	private BroadcastReceiver mNoisyReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -117,18 +113,13 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
 
 	};
 
-	boolean flautoInitialised(String action) {
-		boolean initialised = false;
-		try {
-			initialised = SoundsPlugin.initialised.await(0, TimeUnit.SECONDS);
-		} catch (InterruptedException e) {
-			// NOOP. Will probably never happen and we can't re-throw it anyway
-			Log.d(TAG, "That was unexpected.", e);
-		}
+	boolean notReady(String action) {
+		boolean initialised = SoundsPlugin.await();
+
 		if (!initialised) {
-			Log.d(TAG, action + " called before Sounds initialised. Ignored");
+			Log.d(TAG, action + " called before SoundsPlugin initialised. Ignored");
 		}
-		return initialised;
+		return !initialised;
 	}
 
 	private MediaSessionCompat.Callback mMediaSessionCallback = new MediaSessionCompat.Callback() {
@@ -137,11 +128,10 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
 		 * Starts the playback
 		 */
 		@Override
-		@SuppressWarnings("unchecked")
 		public void onPlay() {
 			super.onPlay();
 
-			if (!flautoInitialised("onPlay"))
+			if (notReady("onPlay"))
 				return;
 
 			// Someone asked to start the playback, then start it
@@ -178,7 +168,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
 			// Someone requested to pause the playback, then pause it
 			super.onPause();
 
-			if (!flautoInitialised("onPause"))
+			if (notReady("onPause"))
 				return;
 
 			// Call the handler to pause, when given
@@ -219,7 +209,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
 		public void onPlayFromMediaId(String mediaId, Bundle extras) {
 			super.onPlayFromMediaId(mediaId, extras);
 
-			if (!flautoInitialised("onPlayFromMediaId"))
+			if (notReady("onPlayFromMediaId"))
 				return;
 
 			// Change audio track
@@ -245,7 +235,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
 		public void onSeekTo(long pos) {
 			super.onSeekTo(pos);
 
-			if (!flautoInitialised("onSeekTo"))
+			if (notReady("onSeekTo"))
 				return;
 
 			// Seek the playback to the given position
@@ -260,7 +250,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
 		public void onStop() {
 			super.onStop();
 
-			if (!flautoInitialised("onStop"))
+			if (notReady("onStop"))
 				return;
 
 			// Stop the media player
@@ -281,7 +271,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
 
 		@Override
 		public void onSkipToNext() {
-			if (!flautoInitialised("onSkipToNext"))
+			if (notReady("onSkipToNext"))
 				return;
 
 			// Call the handler to skip forward, when given
@@ -298,7 +288,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
 
 		@Override
 		public void onSkipToPrevious() {
-			if (!flautoInitialised("onSkipToPrevious"))
+			if (notReady("onSkipToPrevious"))
 				return;
 
 			// Call the handler to skip backward, when given
@@ -318,7 +308,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
 	 * Starts the playback of the player (without requesting audio focus).
 	 */
 	@SuppressWarnings("unchecked")
-	private boolean startPlayerPlayback() {
+	private void startPlayerPlayback() {
 		// if (Sounds.androidActivity == null)
 		{
 			// Log.e( TAG, "BackgroundAudioService.startPlayerPlayback() :
@@ -343,7 +333,6 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
 
 		// Update the playback state
 		playbackStateUpdater.apply(SystemPlaybackState.PLAYING);
-		return true;
 	}
 
 	private void stopBackgroundAudioService(boolean removeNotification) {
@@ -428,7 +417,6 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public void onCompletion(MediaPlayer mediaPlayer) {
 		// The actions to perform when the audio file has finished
 		// The media source reached the end
@@ -505,10 +493,10 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
 		// Set the onCompletion listener
 		mMediaPlayer.setOnCompletionListener(this);
 		// Set the onPreparedListener
-		mMediaPlayer.setOnPreparedListener(mp -> onPreparedListener(mp));
+		mMediaPlayer.setOnPreparedListener(mp -> onPreparedListener());
 	}
 
-	private void onPreparedListener(MediaPlayer mp) {
+	private void onPreparedListener() {
 		// Start retrieving the album art if the audio player features should be
 		// included
 		// if(includeAudioPlayerFeatures) {
@@ -526,6 +514,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
 				albumArt = BitmapFactory.decodeStream(istr);
 
 			} catch (IOException e) {
+				Log.w(TAG, "Failed to load AlbumArt from asset" +currentTrack.getAlbumArtAsset() );
 			}
 		} else if (currentTrack.getAlbumArtFile() != null) {
 			try {
@@ -534,6 +523,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
 				albumArt = BitmapFactory.decodeStream(istr);
 
 			} catch (IOException e) {
+				Log.w(TAG, "Failed to load AlbumArt from file" +currentTrack.getAlbumArtFile() );
 			}
 		} else {
 			try {
@@ -542,6 +532,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
 				albumArt = BitmapFactory.decodeStream(istr);
 
 			} catch (IOException e) {
+				Log.w(TAG, "Failed to load AppIcon.png from asset");
 			}
 
 		}
@@ -604,19 +595,17 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
 
 		// Add the track duration
 		metadataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, mMediaPlayer.getDuration());
-		// Include the other metadata if the audio player features should be included
-		if (true) {
-			// Add the display icon and the album art
-			metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON, albumArt);
-			metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, albumArt);
 
-			// lock screen icon for pre lollipop
-			metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, albumArt);
-			metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, currentTrack.getTitle());
-			metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, currentTrack.getArtist());
-			// metadataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, 1);
-			// metadataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, 1);
-		}
+		// Add the display icon and the album art
+		metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON, albumArt);
+		metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, albumArt);
+
+		// lock screen icon for pre lollipop
+		metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, albumArt);
+		metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, currentTrack.getTitle());
+		metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, currentTrack.getArtist());
+		// metadataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, 1);
+		// metadataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, 1);
 		// Pass the metadata of the currently playing audio file to the media session
 		mMediaSessionCompat.setMetadata(metadataBuilder.build());
 	}
@@ -643,36 +632,6 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
 		Log.w("BackgroundAudioServce", "resetMediaPlayer-completed");
 	}
 
-	/**
-	 * Returns whether the audio focus was successfully retrieved.
-	 *
-	 * @return Whether the audio focus was successfully retrieved.
-	 */
-	/*
-	 * private boolean successfullyRetrievedAudioFocus() { // Get a reference to the
-	 * system AudioManager AudioManager audioManager = (AudioManager)
-	 * getSystemService(Context.AUDIO_SERVICE);
-	 *
-	 * // Request audio focus to stream music int result; if
-	 * (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-	 * AudioAttributes playbackAttributes = new AudioAttributes.Builder()
-	 * .setUsage(AudioAttributes.USAGE_MEDIA)
-	 * .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC) .build();
-	 *
-	 * mAudioFocusRequest = new
-	 * AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
-	 * .setAudioAttributes(playbackAttributes) .setOnAudioFocusChangeListener(this)
-	 * .build();
-	 *
-	 * result = audioManager.requestAudioFocus(mAudioFocusRequest); } else { result
-	 * = audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC,
-	 * AudioManager.AUDIOFOCUS_GAIN); }
-	 *
-	 *
-	 * // Check whether the audio focus was gained return result ==
-	 * AudioManager.AUDIOFOCUS_GAIN; }
-	 *
-	 */
 	private void setMediaPlaybackState(int state) {
 		// Build a playback state from the given state
 		PlaybackStateCompat.Builder playbackStateBuilder = new PlaybackStateCompat.Builder();
@@ -742,7 +701,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
 	 */
 	private void displayNotification(Context context, NotificationCompat.Action action) {
 
-		NotificationManager notificationManager = null;
+		NotificationManager notificationManager;
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 			// Get the audio metadata
 			MediaControllerCompat controller = mMediaSessionCompat.getController();
@@ -765,7 +724,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
 							? MediaButtonReceiver.buildMediaButtonPendingIntent(this,
 									PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS)
 							: null);
-			boolean skipForwardEnabled = true; // skipTrackForwardHandler != null;
+			boolean skipForwardEnabled = skipTrackForwardHandler != null;
 			NotificationCompat.Action skipForward = new NotificationCompat.Action(
 					skipForwardEnabled ? R.drawable.ic_skip_next_on : R.drawable.ic_skip_next_off, "Skip Forward",
 					skipForwardEnabled
@@ -827,8 +786,6 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
 				connection.connect();
 				InputStream in = connection.getInputStream();
 				return BitmapFactory.decodeStream(in);
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

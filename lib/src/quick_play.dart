@@ -56,21 +56,19 @@ class QuickPlay {
   ///
   /// Pass a callback to [onStopped] if you want to be notified
   /// that audio has stopped playing.
-  QuickPlay.fromTrack(this._track,
-      {double volume, bool withShadeUI = false, PlayerEvent onStopped})
+  QuickPlay.fromTrack(this._track, {int volume, bool withShadeUI = false, PlayerEvent onStopped})
       : _onStopped = onStopped {
     QuickPlay._internal(volume, withShadeUI);
   }
 
-  QuickPlay._internal(double volume, bool withShadeUI) {
+  QuickPlay._internal(int volume, bool withShadeUI) {
     if (withShadeUI) {
-      _player = SoundPlayer.withShadeUI(
-          canPause: false, canSkipBackward: false, canSkipForward: false);
+      _player = SoundPlayer.withShadeUI(canPause: false, canSkipBackward: false, canSkipForward: false);
     } else {
       _player = SoundPlayer.noUI();
     }
 
-    volume ??= 0.5;
+    volume ??= 50;
 
     _play(volume);
   }
@@ -90,12 +88,11 @@ class QuickPlay {
   /// If you pass [withShadeUI]=true then the OSs' media player is displayed
   /// but all of the UI controls are disabled.
   ///
-  /// The [volume] must be in the range 0.0 to 1.0. Defaults to 0.5
+  /// The [volume] must be in the range 0 to 100. Defaults to 50
   ///
   /// Pass a callback to [onStopped] if you want to be notified
   /// that audio has stopped playing.
-  QuickPlay.fromFile(String path,
-      {double volume, bool withShadeUI = false, PlayerEvent onStopped})
+  QuickPlay.fromFile(String path, {int volume, bool withShadeUI = false, PlayerEvent onStopped})
       : _onStopped = onStopped {
     _track = Track.fromFile(path);
     QuickPlay._internal(volume, withShadeUI);
@@ -113,12 +110,11 @@ class QuickPlay {
   /// If you pass [withShadeUI]=true then the OSs' media player is displayed
   /// but all of the UI controls are disabled.
   ///
-  /// The [volume] must be in the range 0.0 to 1.0. Defaults to 0.5
+  /// The [volume] must be in the range 0 to 100 Defaults to 50
   ///
   /// Pass a callback to [onStopped] if you want to be notified
   /// that audio has stopped playing.
-  QuickPlay.fromURL(String url,
-      {double volume, bool withShadeUI = false, PlayerEvent onStopped})
+  QuickPlay.fromURL(String url, {int volume, bool withShadeUI = false, PlayerEvent onStopped})
       : _onStopped = onStopped {
     _track = Track.fromURL(url);
     QuickPlay._internal(volume, withShadeUI);
@@ -133,15 +129,12 @@ class QuickPlay {
   /// By default no UI is displayed.
   /// If you pass [withShadeUI]=true then the OSs' media player is displayed
   /// but all of the UI controls are disabled.
-  /// The [volume] must be in the range 0.0 to 1.0. Defaults to 0.5
+  /// The [volume] must be in the range 1 to 100. Defaults to 50
   ///
   /// Pass a callback to [onStopped] if you want to be notified
   /// that audio has stopped playing.
   QuickPlay.fromBuffer(Uint8List dataBuffer,
-      {double volume,
-      @required MediaFormat mediaFormat,
-      bool withShadeUI = false,
-      PlayerEvent onStopped})
+      {int volume, @required MediaFormat mediaFormat, bool withShadeUI = false, PlayerEvent onStopped})
       : _onStopped = onStopped {
     _track = Track.fromBuffer(dataBuffer, mediaFormat: mediaFormat);
     QuickPlay._internal(volume, withShadeUI);
@@ -149,7 +142,7 @@ class QuickPlay {
 
   /// Starts playback.
 
-  Future<void> _play(double volume) async {
+  Future<void> _play(int volume) async {
     await _player.setVolume(volume);
     await _player.requestAudioFocus(AudioFocus.hushOthersWithResume);
     _player.onStopped = ({wasUser}) {

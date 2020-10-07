@@ -2,8 +2,14 @@ package com.bsutton.sounds;
 
 import android.media.MediaPlayer;
 
+import java.time.Duration;
+
 class PlayerAudioModel {
-	public int progressInterval = 10;
+
+	/**
+	 * The interval between each progress event being sent.
+	 */
+	public Duration progressInterval = Duration.ofMillis(100);
 
 	private MediaPlayer mediaPlayer;
 	private long playTime = 0;

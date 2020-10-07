@@ -209,7 +209,7 @@ public class MediaBrowserHelper {
 	 *
 	 * @param track The currently playing track.
 	 */
-	void setNotificationMetadata(Track track) {
+	void setNotificationMetadata(SoundsPlatformApi.TrackProxy track) {
 		BackgroundAudioService.currentTrack = track;
 	}
 

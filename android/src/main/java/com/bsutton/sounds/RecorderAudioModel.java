@@ -2,8 +2,10 @@ package com.bsutton.sounds;
 
 import android.media.MediaRecorder;
 
+import java.time.Duration;
+
 class RecorderAudioModel {
-	public int progressIntervalMillis = 800;
+	public Duration progressInterval = Duration.ofMillis(100);
 	private MediaRecorder mediaRecorder;
 
 	// The time at which the current recording was started.

@@ -3,11 +3,12 @@
 
 package com.bsutton.sounds;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import io.flutter.plugin.common.BasicMessageChannel;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.StandardMessageCodec;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 /** Generated class from Pigeon. */
 @SuppressWarnings("unused")
@@ -185,11 +186,41 @@ public class SoundsPlatformApi {
     public MediaFormatProxy getMediaFormat() { return mediaFormat; }
     public void setMediaFormat(MediaFormatProxy setterArg) { this.mediaFormat = setterArg; }
 
+    private String title;
+    public String getTitle() { return title; }
+    public void setTitle(String setterArg) { this.title = setterArg; }
+
+    private String artist;
+    public String getArtist() { return artist; }
+    public void setArtist(String setterArg) { this.artist = setterArg; }
+
+    private String album;
+    public String getAlbum() { return album; }
+    public void setAlbum(String setterArg) { this.album = setterArg; }
+
+    private String albumArtUrl;
+    public String getAlbumArtUrl() { return albumArtUrl; }
+    public void setAlbumArtUrl(String setterArg) { this.albumArtUrl = setterArg; }
+
+    private String albumArtAsset;
+    public String getAlbumArtAsset() { return albumArtAsset; }
+    public void setAlbumArtAsset(String setterArg) { this.albumArtAsset = setterArg; }
+
+    private String albumArtFile;
+    public String getAlbumArtFile() { return albumArtFile; }
+    public void setAlbumArtFile(String setterArg) { this.albumArtFile = setterArg; }
+
     HashMap toMap() {
       HashMap<String, Object> toMapResult = new HashMap<>();
       toMapResult.put("uuid", uuid);
       toMapResult.put("path", path);
       toMapResult.put("mediaFormat", mediaFormat.toMap());
+      toMapResult.put("title", title);
+      toMapResult.put("artist", artist);
+      toMapResult.put("album", album);
+      toMapResult.put("albumArtUrl", albumArtUrl);
+      toMapResult.put("albumArtAsset", albumArtAsset);
+      toMapResult.put("albumArtFile", albumArtFile);
       return toMapResult;
     }
     static TrackProxy fromMap(HashMap map) {
@@ -200,6 +231,18 @@ public class SoundsPlatformApi {
       fromMapResult.path = (String)path;
       Object mediaFormat = map.get("mediaFormat");
       fromMapResult.mediaFormat = MediaFormatProxy.fromMap((HashMap)mediaFormat);
+      Object title = map.get("title");
+      fromMapResult.title = (String)title;
+      Object artist = map.get("artist");
+      fromMapResult.artist = (String)artist;
+      Object album = map.get("album");
+      fromMapResult.album = (String)album;
+      Object albumArtUrl = map.get("albumArtUrl");
+      fromMapResult.albumArtUrl = (String)albumArtUrl;
+      Object albumArtAsset = map.get("albumArtAsset");
+      fromMapResult.albumArtAsset = (String)albumArtAsset;
+      Object albumArtFile = map.get("albumArtFile");
+      fromMapResult.albumArtFile = (String)albumArtFile;
       return fromMapResult;
     }
   }
@@ -222,12 +265,42 @@ public class SoundsPlatformApi {
     public Long getBitRate() { return bitRate; }
     public void setBitRate(Long setterArg) { this.bitRate = setterArg; }
 
+    private String adtsAac;
+    public String getAdtsAac() { return adtsAac; }
+    public void setAdtsAac(String setterArg) { this.adtsAac = setterArg; }
+
+    private String capOpus;
+    public String getCapOpus() { return capOpus; }
+    public void setCapOpus(String setterArg) { this.capOpus = setterArg; }
+
+    private String mp3;
+    public String getMp3() { return mp3; }
+    public void setMp3(String setterArg) { this.mp3 = setterArg; }
+
+    private String oggOpus;
+    public String getOggOpus() { return oggOpus; }
+    public void setOggOpus(String setterArg) { this.oggOpus = setterArg; }
+
+    private String oggVorbis;
+    public String getOggVorbis() { return oggVorbis; }
+    public void setOggVorbis(String setterArg) { this.oggVorbis = setterArg; }
+
+    private String pcm;
+    public String getPcm() { return pcm; }
+    public void setPcm(String setterArg) { this.pcm = setterArg; }
+
     HashMap toMap() {
       HashMap<String, Object> toMapResult = new HashMap<>();
       toMapResult.put("name", name);
       toMapResult.put("sampleRate", sampleRate);
       toMapResult.put("numChannels", numChannels);
       toMapResult.put("bitRate", bitRate);
+      toMapResult.put("adtsAac", adtsAac);
+      toMapResult.put("capOpus", capOpus);
+      toMapResult.put("mp3", mp3);
+      toMapResult.put("oggOpus", oggOpus);
+      toMapResult.put("oggVorbis", oggVorbis);
+      toMapResult.put("pcm", pcm);
       return toMapResult;
     }
     static MediaFormatProxy fromMap(HashMap map) {
@@ -240,6 +313,18 @@ public class SoundsPlatformApi {
       fromMapResult.numChannels = (numChannels == null) ? null : ((numChannels instanceof Integer) ? (Integer)numChannels : (Long)numChannels);
       Object bitRate = map.get("bitRate");
       fromMapResult.bitRate = (bitRate == null) ? null : ((bitRate instanceof Integer) ? (Integer)bitRate : (Long)bitRate);
+      Object adtsAac = map.get("adtsAac");
+      fromMapResult.adtsAac = (String)adtsAac;
+      Object capOpus = map.get("capOpus");
+      fromMapResult.capOpus = (String)capOpus;
+      Object mp3 = map.get("mp3");
+      fromMapResult.mp3 = (String)mp3;
+      Object oggOpus = map.get("oggOpus");
+      fromMapResult.oggOpus = (String)oggOpus;
+      Object oggVorbis = map.get("oggVorbis");
+      fromMapResult.oggVorbis = (String)oggVorbis;
+      Object pcm = map.get("pcm");
+      fromMapResult.pcm = (String)pcm;
       return fromMapResult;
     }
   }
@@ -272,17 +357,38 @@ public class SoundsPlatformApi {
 
   /** Generated class from Pigeon that represents data sent in messages. */
   public static class DurationResponse {
+    private Boolean success;
+    public Boolean getSuccess() { return success; }
+    public void setSuccess(Boolean setterArg) { this.success = setterArg; }
+
+    private Long errorCode;
+    public Long getErrorCode() { return errorCode; }
+    public void setErrorCode(Long setterArg) { this.errorCode = setterArg; }
+
+    private String error;
+    public String getError() { return error; }
+    public void setError(String setterArg) { this.error = setterArg; }
+
     private Long duration;
     public Long getDuration() { return duration; }
     public void setDuration(Long setterArg) { this.duration = setterArg; }
 
     HashMap toMap() {
       HashMap<String, Object> toMapResult = new HashMap<>();
+      toMapResult.put("success", success);
+      toMapResult.put("errorCode", errorCode);
+      toMapResult.put("error", error);
       toMapResult.put("duration", duration);
       return toMapResult;
     }
     static DurationResponse fromMap(HashMap map) {
       DurationResponse fromMapResult = new DurationResponse();
+      Object success = map.get("success");
+      fromMapResult.success = (Boolean)success;
+      Object errorCode = map.get("errorCode");
+      fromMapResult.errorCode = (errorCode == null) ? null : ((errorCode instanceof Integer) ? (Integer)errorCode : (Long)errorCode);
+      Object error = map.get("error");
+      fromMapResult.error = (String)error;
       Object duration = map.get("duration");
       fromMapResult.duration = (duration == null) ? null : ((duration instanceof Integer) ? (Integer)duration : (Long)duration);
       return fromMapResult;
@@ -291,26 +397,19 @@ public class SoundsPlatformApi {
 
   /** Generated class from Pigeon that represents data sent in messages. */
   public static class GetDuration {
-    private SoundPlayerProxy player;
-    public SoundPlayerProxy getPlayer() { return player; }
-    public void setPlayer(SoundPlayerProxy setterArg) { this.player = setterArg; }
-
-    private TrackProxy track;
-    public TrackProxy getTrack() { return track; }
-    public void setTrack(TrackProxy setterArg) { this.track = setterArg; }
+    private String path;
+    public String getPath() { return path; }
+    public void setPath(String setterArg) { this.path = setterArg; }
 
     HashMap toMap() {
       HashMap<String, Object> toMapResult = new HashMap<>();
-      toMapResult.put("player", player.toMap());
-      toMapResult.put("track", track.toMap());
+      toMapResult.put("path", path);
       return toMapResult;
     }
     static GetDuration fromMap(HashMap map) {
       GetDuration fromMapResult = new GetDuration();
-      Object player = map.get("player");
-      fromMapResult.player = SoundPlayerProxy.fromMap((HashMap)player);
-      Object track = map.get("track");
-      fromMapResult.track = TrackProxy.fromMap((HashMap)track);
+      Object path = map.get("path");
+      fromMapResult.path = (String)path;
       return fromMapResult;
     }
   }
@@ -321,9 +420,9 @@ public class SoundsPlatformApi {
     public SoundPlayerProxy getPlayer() { return player; }
     public void setPlayer(SoundPlayerProxy setterArg) { this.player = setterArg; }
 
-    private Double volume;
-    public Double getVolume() { return volume; }
-    public void setVolume(Double setterArg) { this.volume = setterArg; }
+    private Long volume;
+    public Long getVolume() { return volume; }
+    public void setVolume(Long setterArg) { this.volume = setterArg; }
 
     HashMap toMap() {
       HashMap<String, Object> toMapResult = new HashMap<>();
@@ -336,7 +435,7 @@ public class SoundsPlatformApi {
       Object player = map.get("player");
       fromMapResult.player = SoundPlayerProxy.fromMap((HashMap)player);
       Object volume = map.get("volume");
-      fromMapResult.volume = (Double)volume;
+      fromMapResult.volume = (volume == null) ? null : ((volume instanceof Integer) ? (Integer)volume : (Long)volume);
       return fromMapResult;
     }
   }
@@ -429,6 +528,46 @@ public class SoundsPlatformApi {
       fromMapResult.stopOthersWithResume = (stopOthersWithResume == null) ? null : ((stopOthersWithResume instanceof Integer) ? (Integer)stopOthersWithResume : (Long)stopOthersWithResume);
       Object hushOthersWithResume = map.get("hushOthersWithResume");
       fromMapResult.hushOthersWithResume = (hushOthersWithResume == null) ? null : ((hushOthersWithResume instanceof Integer) ? (Integer)hushOthersWithResume : (Long)hushOthersWithResume);
+      return fromMapResult;
+    }
+  }
+
+  /** Generated class from Pigeon that represents data sent in messages. */
+  public static class BoolResponse {
+    private Boolean success;
+    public Boolean getSuccess() { return success; }
+    public void setSuccess(Boolean setterArg) { this.success = setterArg; }
+
+    private Long errorCode;
+    public Long getErrorCode() { return errorCode; }
+    public void setErrorCode(Long setterArg) { this.errorCode = setterArg; }
+
+    private String error;
+    public String getError() { return error; }
+    public void setError(String setterArg) { this.error = setterArg; }
+
+    private Boolean boolResult;
+    public Boolean getBoolResult() { return boolResult; }
+    public void setBoolResult(Boolean setterArg) { this.boolResult = setterArg; }
+
+    HashMap toMap() {
+      HashMap<String, Object> toMapResult = new HashMap<>();
+      toMapResult.put("success", success);
+      toMapResult.put("errorCode", errorCode);
+      toMapResult.put("error", error);
+      toMapResult.put("boolResult", boolResult);
+      return toMapResult;
+    }
+    static BoolResponse fromMap(HashMap map) {
+      BoolResponse fromMapResult = new BoolResponse();
+      Object success = map.get("success");
+      fromMapResult.success = (Boolean)success;
+      Object errorCode = map.get("errorCode");
+      fromMapResult.errorCode = (errorCode == null) ? null : ((errorCode instanceof Integer) ? (Integer)errorCode : (Long)errorCode);
+      Object error = map.get("error");
+      fromMapResult.error = (String)error;
+      Object boolResult = map.get("boolResult");
+      fromMapResult.boolResult = (Boolean)boolResult;
       return fromMapResult;
     }
   }
@@ -643,6 +782,46 @@ public class SoundsPlatformApi {
   }
 
   /** Generated class from Pigeon that represents data sent in messages. */
+  public static class MediaFormatResponse {
+    private Boolean success;
+    public Boolean getSuccess() { return success; }
+    public void setSuccess(Boolean setterArg) { this.success = setterArg; }
+
+    private Long errorCode;
+    public Long getErrorCode() { return errorCode; }
+    public void setErrorCode(Long setterArg) { this.errorCode = setterArg; }
+
+    private String error;
+    public String getError() { return error; }
+    public void setError(String setterArg) { this.error = setterArg; }
+
+    private ArrayList mediaFormats;
+    public ArrayList getMediaFormats() { return mediaFormats; }
+    public void setMediaFormats(ArrayList setterArg) { this.mediaFormats = setterArg; }
+
+    HashMap toMap() {
+      HashMap<String, Object> toMapResult = new HashMap<>();
+      toMapResult.put("success", success);
+      toMapResult.put("errorCode", errorCode);
+      toMapResult.put("error", error);
+      toMapResult.put("mediaFormats", mediaFormats);
+      return toMapResult;
+    }
+    static MediaFormatResponse fromMap(HashMap map) {
+      MediaFormatResponse fromMapResult = new MediaFormatResponse();
+      Object success = map.get("success");
+      fromMapResult.success = (Boolean)success;
+      Object errorCode = map.get("errorCode");
+      fromMapResult.errorCode = (errorCode == null) ? null : ((errorCode instanceof Integer) ? (Integer)errorCode : (Long)errorCode);
+      Object error = map.get("error");
+      fromMapResult.error = (String)error;
+      Object mediaFormats = map.get("mediaFormats");
+      fromMapResult.mediaFormats = (ArrayList)mediaFormats;
+      return fromMapResult;
+    }
+  }
+
+  /** Generated class from Pigeon that represents data sent in messages. */
   public static class SetRecordingProgressInterval {
     private SoundRecorderProxy recorder;
     public SoundRecorderProxy getRecorder() { return recorder; }
@@ -841,6 +1020,32 @@ public class SoundsPlatformApi {
   }
 
   /** Generated class from Pigeon that represents data sent in messages. */
+  public static class OnShadePaused {
+    private SoundPlayerProxy player;
+    public SoundPlayerProxy getPlayer() { return player; }
+    public void setPlayer(SoundPlayerProxy setterArg) { this.player = setterArg; }
+
+    private TrackProxy track;
+    public TrackProxy getTrack() { return track; }
+    public void setTrack(TrackProxy setterArg) { this.track = setterArg; }
+
+    HashMap toMap() {
+      HashMap<String, Object> toMapResult = new HashMap<>();
+      toMapResult.put("player", player.toMap());
+      toMapResult.put("track", track.toMap());
+      return toMapResult;
+    }
+    static OnShadePaused fromMap(HashMap map) {
+      OnShadePaused fromMapResult = new OnShadePaused();
+      Object player = map.get("player");
+      fromMapResult.player = SoundPlayerProxy.fromMap((HashMap)player);
+      Object track = map.get("track");
+      fromMapResult.track = TrackProxy.fromMap((HashMap)track);
+      return fromMapResult;
+    }
+  }
+
+  /** Generated class from Pigeon that represents data sent in messages. */
   public static class OnShadeResumed {
     private SoundPlayerProxy player;
     public SoundPlayerProxy getPlayer() { return player; }
@@ -866,6 +1071,32 @@ public class SoundsPlatformApi {
     }
   }
 
+  /** Generated class from Pigeon that represents data sent in messages. */
+  public static class OnError {
+    private Long errorCode;
+    public Long getErrorCode() { return errorCode; }
+    public void setErrorCode(Long setterArg) { this.errorCode = setterArg; }
+
+    private String error;
+    public String getError() { return error; }
+    public void setError(String setterArg) { this.error = setterArg; }
+
+    HashMap toMap() {
+      HashMap<String, Object> toMapResult = new HashMap<>();
+      toMapResult.put("errorCode", errorCode);
+      toMapResult.put("error", error);
+      return toMapResult;
+    }
+    static OnError fromMap(HashMap map) {
+      OnError fromMapResult = new OnError();
+      Object errorCode = map.get("errorCode");
+      fromMapResult.errorCode = (errorCode == null) ? null : ((errorCode instanceof Integer) ? (Integer)errorCode : (Long)errorCode);
+      Object error = map.get("error");
+      fromMapResult.error = (String)error;
+      return fromMapResult;
+    }
+  }
+
   public interface Result<T> {
     void success(T result);
   }
@@ -885,17 +1116,19 @@ public class SoundsPlatformApi {
     void setPlaybackProgressInterval(SetPlaybackProgressInterval arg,Result<Response> result);
     void requestAudioFocus(RequestAudioFocus arg,Result<Response> result);
     void releaseAudioFocus(SoundPlayerProxy arg,Result<Response> result);
-    void isShadeSupported(Result<Response> result);
-    void isShadePauseSupported(Result<Response> result);
-    void isShadeSkipForwardSupported(Result<Response> result);
-    void isShadeSkipBackwardsSupported(Result<Response> result);
-    void isBackgroundPlaybackSupported(Result<Response> result);
+    void isShadeSupported(Result<BoolResponse> result);
+    void isShadePauseSupported(Result<BoolResponse> result);
+    void isShadeSkipForwardSupported(Result<BoolResponse> result);
+    void isShadeSkipBackwardsSupported(Result<BoolResponse> result);
+    void isBackgroundPlaybackSupported(Result<BoolResponse> result);
     void initializeRecorder(SoundRecorderProxy arg,Result<Response> result);
     void releaseRecorder(SoundRecorderProxy arg,Result<Response> result);
     void startRecording(StartRecording arg,Result<Response> result);
     void stopRecording(SoundRecorderProxy arg,Result<Response> result);
     void pauseRecording(SoundRecorderProxy arg,Result<Response> result);
     void resumeRecording(SoundRecorderProxy arg,Result<Response> result);
+    void getNativeEncoderFormats(MediaFormatProxy arg,Result<MediaFormatResponse> result);
+    void getNativeDecoderFormats(MediaFormatProxy arg,Result<MediaFormatResponse> result);
     void setRecordingProgressInterval(SetRecordingProgressInterval arg,Result<Response> result);
 
     /** Sets up an instance of `SoundsToPlatformApi` to handle messages through the `binaryMessenger` */
@@ -1372,6 +1605,46 @@ public class SoundsPlatformApi {
       }
       {
         BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(binaryMessenger, "dev.flutter.pigeon.SoundsToPlatformApi.getNativeEncoderFormats", new StandardMessageCodec());
+        if (api != null) {
+          channel.setMessageHandler((message, reply) -> {
+            HashMap<String, HashMap> wrapped = new HashMap<>();
+            try {
+              @SuppressWarnings("ConstantConditions")
+              MediaFormatProxy input = MediaFormatProxy.fromMap((HashMap)message);
+              api.getNativeEncoderFormats(input,result -> {wrapped.put("result", result.toMap());reply.reply(wrapped);});
+            }
+            catch (Exception exception) {
+              wrapped.put("error", wrapError(exception));
+              reply.reply(wrapped);
+            }
+          });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(binaryMessenger, "dev.flutter.pigeon.SoundsToPlatformApi.getNativeDecoderFormats", new StandardMessageCodec());
+        if (api != null) {
+          channel.setMessageHandler((message, reply) -> {
+            HashMap<String, HashMap> wrapped = new HashMap<>();
+            try {
+              @SuppressWarnings("ConstantConditions")
+              MediaFormatProxy input = MediaFormatProxy.fromMap((HashMap)message);
+              api.getNativeDecoderFormats(input,result -> {wrapped.put("result", result.toMap());reply.reply(wrapped);});
+            }
+            catch (Exception exception) {
+              wrapped.put("error", wrapError(exception));
+              reply.reply(wrapped);
+            }
+          });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
             new BasicMessageChannel<>(binaryMessenger, "dev.flutter.pigeon.SoundsToPlatformApi.setRecordingProgressInterval", new StandardMessageCodec());
         if (api != null) {
           channel.setMessageHandler((message, reply) -> {
@@ -1442,7 +1715,7 @@ public class SoundsPlatformApi {
         callback.reply(null);
       });
     }
-    public void onShadePaused(SoundPlayerProxy argInput, Reply<Void> callback) {
+    public void onShadePaused(OnShadePaused argInput, Reply<Void> callback) {
       BasicMessageChannel<Object> channel =
           new BasicMessageChannel<>(binaryMessenger, "dev.flutter.pigeon.SoundsFromPlatformApi.onShadePaused", new StandardMessageCodec());
       HashMap inputMap = argInput.toMap();
@@ -1453,6 +1726,14 @@ public class SoundsPlatformApi {
     public void onShadeResumed(OnShadeResumed argInput, Reply<Void> callback) {
       BasicMessageChannel<Object> channel =
           new BasicMessageChannel<>(binaryMessenger, "dev.flutter.pigeon.SoundsFromPlatformApi.onShadeResumed", new StandardMessageCodec());
+      HashMap inputMap = argInput.toMap();
+      channel.send(inputMap, channelReply -> {
+        callback.reply(null);
+      });
+    }
+    public void onError(OnError argInput, Reply<Void> callback) {
+      BasicMessageChannel<Object> channel =
+          new BasicMessageChannel<>(binaryMessenger, "dev.flutter.pigeon.SoundsFromPlatformApi.onError", new StandardMessageCodec());
       HashMap inputMap = argInput.toMap();
       channel.send(inputMap, channelReply -> {
         callback.reply(null);

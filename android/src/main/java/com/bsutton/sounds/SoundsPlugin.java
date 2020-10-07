@@ -19,94 +19,190 @@ package com.bsutton.sounds;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
+import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 
-// this enum MUST be synchronized with lib/sounds.dart and ios/Classes/SoundsPlugin.h
-enum t_CODEC {
-	DEFAULT, AAC, OPUS, CODEC_CAF_OPUS // Apple encapsulates its bits in its own special envelope : .caf instead of a
-										// regular ogg/opus (.opus). This is completely stupid, this is Apple.
-	, MP3, VORBIS, PCM
-}
 
 public class SoundsPlugin implements FlutterPlugin, ActivityAware {
-	public static final boolean FULL_FLAVOR = true;
-	static Context ctx;
-	static Registrar reg;
-	static Activity androidActivity;
+    private static final String TAG = "SoundsPlugin";
+    public static final boolean FULL_FLAVOR = true;
+    static Context ctx;
+    static Activity androidActivity;
+    static FlutterState flutterState;
 
-	/// latch to control access until we have been full initialised.
-	/// This class supports v1 and v2 of the flutter embedding so there
-	/// are two ways we can be initialised.
-	/// Both paths drop the latch.
-	static CountDownLatch initialised = new CountDownLatch(1);
+    static BinaryMessenger getBinaryMessenger() {
+        return flutterState.getBinaryMessenger();
+    }
 
 	/**
-	 * v2 Plugin Sounds.
-	 * 
-	 * Only called on new systems
-	 * 
-	 * see:
-	 * https://flutter.dev/docs/development/packages-and-plugins/plugin-api-migration
-	 */
-	@Override
-	public void onAttachedToEngine(FlutterPlugin.FlutterPluginBinding binding) {
-		ctx = binding.getApplicationContext();
+	 * class that handles calls from flutter and dispatches the
+	 * calls into java.
+ 	 */
+    static private FromFlutterDispatcher dispatcher;
 
-		SoundPlayerPlugin.attachSoundPlayer(ctx, binding.getBinaryMessenger());
-		SoundRecorderPlugin.attachSoundRecorder(ctx, binding.getBinaryMessenger());
-		ShadePlayerPlugin.attachShadePlayer(ctx, binding.getBinaryMessenger());
-	}
+    /// latch to control access until we have been full initialised.
+    /// This class supports v1 and v2 of the flutter embedding so there
+    /// are two ways we can be initialised.
+    /// Both paths drop the latch.
+    static CountDownLatch initialised = new CountDownLatch(1);
+
+    // Call this method to wait for the plugin to be fully initialised.
+    // returns true if the plug succesfully initialised.
+    // will return false
+    public static boolean await()  {
+        boolean success = false;
+        try {
+            success =  initialised.await(1, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            // NOOP. Will probably never happen and we can't re-throw it anyway
+            Log.d(TAG, "Timeout occured waiting for SoundsPlugin to initialise.");
+        }
+        return  success;
+    }
+
+
+    /******************************************************************************************
+     *
+     *  Flutter v2 embedding.
+     *
+     * see:
+     * https://flutter.dev/docs/development/packages-and-plugins/plugin-api-migration
+     *
+     ******************************************************************************************/
+
+    @Override
+    public void onAttachedToEngine(FlutterPlugin.FlutterPluginBinding binding) {
+        ctx = binding.getApplicationContext();
+
+		flutterState =
+				new FlutterState(
+						binding.getApplicationContext(),
+						binding.getBinaryMessenger()
+				);
+
+		dispatcher = new FromFlutterDispatcher(binding.getApplicationContext());
+		flutterState.startListening(dispatcher);
+    }
+
+
+    /**
+     * Activity started.
+     *
+     * @param binding
+     */
+    @Override
+    public void onAttachedToActivity(@NonNull ActivityPluginBinding binding) {
+        androidActivity = binding.getActivity();
+
+        /// We are fully initialised for v2 embedding
+        initialised.countDown();
+    }
+
+
+    @Override
+    public void onDetachedFromEngine(FlutterPlugin.FlutterPluginBinding binding) {
+        if (flutterState == null) {
+            Log.wtf(TAG, "Detached from the engine before registering to it.");
+        }
+
+        dispatcher.disposeAll();
+        flutterState.stopListening();
+        flutterState = null;
+
+    }
+
+    @Override
+    public void onDetachedFromActivity() {
+    }
+
+    @Override
+    public void onReattachedToActivityForConfigChanges(@NonNull ActivityPluginBinding binding) {
+
+    }
+
+    @Override
+    public void onDetachedFromActivityForConfigChanges() {
+
+    }
+
+
+	/******************************************************************************************
+	 *
+     *  Flutter v1 embedding.
+     *
+	 ******************************************************************************************/
+
 
 	/**
 	 * v1 Plugin Sounds.
-	 * 
-	 * Only called on older systems.
-	 */
-	public static void registerWith(Registrar registrar) {
-		reg = registrar;
-		ctx = registrar.context();
-		androidActivity = registrar.activity();
+     * <p>
+     * Only called on older systems.
+     */
+    public static void registerWith(Registrar registrar) {
+        ctx = registrar.context();
+        androidActivity = registrar.activity();
 
-		SoundPlayerPlugin.attachSoundPlayer(ctx, registrar.messenger());
-		SoundRecorderPlugin.attachSoundRecorder(ctx, registrar.messenger());
-		ShadePlayerPlugin.attachShadePlayer(ctx, registrar.messenger());
+        Log.d(TAG, "SoundsPlugin() for v1 embedding");
+        flutterState =
+                new FlutterState(
+                        registrar.context(),
+                        registrar.messenger()
+                );
 
-		/// We are fully initialised for v1 embedding
-		initialised.countDown();
+        dispatcher = new FromFlutterDispatcher(registrar.context());
+        flutterState.startListening(dispatcher);
 
-	}
+        registrar.addViewDestroyListener(
+                view -> {
+                    flutterState.stopListening();
+                    flutterState = null;
+                    return false; // We are not interested in assuming ownership of the NativeView.
+                });
 
-	@Override
-	public void onDetachedFromEngine(FlutterPlugin.FlutterPluginBinding binding) {
-	}
+        /// We are fully initialised for v1 embedding
+        initialised.countDown();
+    }
 
-	@Override
-	public void onDetachedFromActivity() {
-	}
 
-	@Override
-	public void onReattachedToActivityForConfigChanges(@NonNull ActivityPluginBinding binding) {
 
-	}
 
-	@Override
-	public void onDetachedFromActivityForConfigChanges() {
 
-	}
+	private static final class FlutterState {
+        private final Context applicationContext;
+        private final BinaryMessenger binaryMessenger;
 
-	@Override
-	public void onAttachedToActivity(@NonNull ActivityPluginBinding binding) {
-		androidActivity = binding.getActivity();
 
-		/// We are fully initialised for v2 embedding
-		initialised.countDown();
-	}
+        BinaryMessenger getBinaryMessenger() {
+            return binaryMessenger;
+        }
+
+        FlutterState(
+                Context applicationContext,
+                BinaryMessenger messenger
+                ) {
+            this.applicationContext = applicationContext;
+            this.binaryMessenger = messenger;
+        }
+
+        void startListening(FromFlutterDispatcher dispatcher) {
+			SoundsPlatformApi.SoundsToPlatformApi.setup(binaryMessenger, dispatcher);
+        }
+
+        void stopListening() {
+            dispatcher.onDestroy();
+			SoundsPlatformApi.SoundsToPlatformApi.setup(binaryMessenger, null);
+			dispatcher = null;
+        }
+    }
 }
+

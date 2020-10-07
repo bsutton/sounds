@@ -15,11 +15,8 @@ abstract class SoundsToPlatformApi {
   /// The list of specific errors that can be passed from the platform to dart.
   static const errnoGeneral = 1;
 
-  /// Indicates that a track contained audio using an unsupported
-  /// media format. The error description should contain additional
-  /// details which acuratly describes what aspect of the Media Format
-  /// was not supported.
-  static const errnoUnsupportedMediaFormat = 2;
+  /// A timeout occured. The error message contains the reason
+  static const errnoTimeout = 2;
 
   /// Indicates that Dart attempted to perform an action on a player
   /// which has either not been initialised or has been released.
@@ -42,6 +39,42 @@ abstract class SoundsToPlatformApi {
   /// vai the startPlayerWithShade method and the Platform does not
   /// support a shade.
   static const errnoShadeNotSupported = 7;
+
+  /// Indicates that a track contained audio using an unsupported
+  /// media format. The error description should contain additional
+  /// details which acuratly describes what aspect of the Media Format
+  /// was not supported.
+  static const errnoUnsupportedMediaFormat = 8;
+
+  /// Malformed audio. The passed audio does not match the expected MediaFormat
+  static const errnoMalformedMedia = 9;
+
+  /// an IO error occured reading/writing to a file or
+  /// network address.
+  static const errnoIOError = 10;
+
+  /// The platform audio service failed.
+  static const errnoAudioServiceDied = 11;
+
+  /// The api was passed an invalid argument. The description
+  /// contains the details.
+  static const errnoInvalidArgument = 12;
+
+  /// The user doesn't given the app permission to access the AudioSource
+  /// e.g. microphone. This error can occur when you try to start recording
+  /// without seeking the users permission.
+  static const errnoAudioSourcePermissionDenied = 13;
+
+  /// A call was made to stop the recording when the recorder
+  /// wasn't currently playing.
+  static const errnoNotRecording = 14;
+
+  /// A call with a uuid for which there was no active recorder.
+  static const errnoUnknownRecorder = 15;
+
+  /// A call was made that is not supported by the current
+  /// platform. The description will contain further details.
+  static const errnoNotSupported = 16;
 
   /// Each [SoundPlayerProxy] MUST be initialized before
   /// any other calls can be made for the [SoundPlayerProxy].
@@ -99,8 +132,7 @@ abstract class SoundsToPlatformApi {
   /// best to honour the settings.
   ///
   @async
-  Response initializePlayerWithShade(
-      InitializePlayerWithShade initializePlayerWithShade);
+  Response initializePlayerWithShade(InitializePlayerWithShade initializePlayerWithShade);
 
   /// Once Sounds has finished with a [SoundPlayerProxy] it will call
   /// [releasePlayer] indicating that all resources associated with the
@@ -218,8 +250,7 @@ abstract class SoundsToPlatformApi {
   /// If this method is called with an [interval] of 0 then progress
   /// messages should be suppressed.
   @async
-  Response setPlaybackProgressInterval(
-      SetPlaybackProgressInterval setPlaybackProgressInterval);
+  Response setPlaybackProgressInterval(SetPlaybackProgressInterval setPlaybackProgressInterval);
 
   /// Requests the audio focus setting the mode and gain.
   ///
@@ -249,22 +280,22 @@ abstract class SoundsToPlatformApi {
 
   /// Return true if the Platform supports a shade/notification area.
   @async
-  Response isShadeSupported();
+  BoolResponse isShadeSupported();
 
   /// Return true if the Platform supports a shade/notification area
   /// and is able to display a pause/resume button.
   @async
-  Response isShadePauseSupported();
+  BoolResponse isShadePauseSupported();
 
   /// Return true if the Platform supports a shade/notification area
   /// and is able to display a skip forward button.
   @async
-  Response isShadeSkipForwardSupported();
+  BoolResponse isShadeSkipForwardSupported();
 
   /// Return true if the Platform supports a shade/notification area
   /// and is able to display a skip backwards button.
   @async
-  Response isShadeSkipBackwardsSupported();
+  BoolResponse isShadeSkipBackwardsSupported();
 
   /// Return true if the Platform supports background playback.
   /// i.e. playback continues even when the app is no longer the
@@ -273,7 +304,7 @@ abstract class SoundsToPlatformApi {
   /// On desktop active means the app that has the mouse/keyboard focus.
   /// On mobile active is the foreground app.
   @async
-  Response isBackgroundPlaybackSupported();
+  BoolResponse isBackgroundPlaybackSupported();
 
   //////////////////////////////////////////////////////////////////
   ///
@@ -327,8 +358,7 @@ abstract class SoundsToPlatformApi {
   /// If this method is called with an [interval] of 0 then progress
   /// messages should be suppressed.
   @async
-  Response setRecordingProgressInterval(
-      SetRecordingProgressInterval setRecordingProgressInterval);
+  Response setRecordingProgressInterval(SetRecordingProgressInterval setRecordingProgressInterval);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -405,7 +435,6 @@ abstract class SoundsFromPlatformApi {
   ///  - [onStopped] was called.
   ///  - the audio played to completion.
   ///  - the user skipped to another track.
-  ///  - the sound player is released.
   ///  - an error occurs that causes the track to stop playing.
   ///  - playback was stopped due to the app being sent to the background.
   ///  - playback was stopped (as apposed to paused) via the shade
@@ -434,7 +463,7 @@ abstract class SoundsFromPlatformApi {
   /// [track] represents the current track that was playing when the
   /// user initiated the pause.
   @async
-  void onShadePaused(SoundPlayerProxy player, TrackProxy track);
+  void onShadePaused(OnShadePaused onShadePaused);
 
   /// The platform MUST emit this method when the OS Media Player
   /// is used to resume playback.
@@ -443,16 +472,26 @@ abstract class SoundsFromPlatformApi {
   /// user initialied the skip.
   @async
   void onShadeResumed(OnShadeResumed onShadeResumed);
+
+  /// Allows the platform to report error that occur
+  /// outside the normal call flow.
+  /// e.g. during playback
+  ///
+  /// If the platform reports an error then dart will
+  /// assume that playback has stopped.
+  ///
+  /// The normal course of action will be for dart to
+  /// call releasePlayer to release all resources.
+  @async
+  void onError(OnError error);
 }
 
 void configurePigeon(PigeonOptions opts) {
-  opts.dartOut =
-      '../sounds_platform_interface/lib/sounds_platform_interface.dart';
+  opts.dartOut = '../sounds_platform_interface/lib/sounds_platform_interface.dart';
   opts.objcHeaderOut = 'ios/Classes/sounds_platform_api.h';
   opts.objcSourceOut = 'ios/Classes/sounds_platform_api.m';
   opts.objcOptions.prefix = 'FLT';
-  opts.javaOut =
-      'android/src/main/java/com/bsutton/sounds/SoundsPlatformApi.java';
+  opts.javaOut = 'android/src/main/java/com/bsutton/sounds/SoundsPlatformApi.java';
   opts.javaOptions.package = 'com.bsutton.sounds';
 }
 
@@ -493,6 +532,24 @@ class TrackProxy {
 
   MediaFormatProxy mediaFormat;
 
+  /// The title of this track
+  String title;
+
+  /// The name of the artist of this track
+  String artist;
+
+  /// The album the track belongs.
+  String album;
+
+  /// The URL that points to the album art of the track
+  String albumArtUrl;
+
+  /// The asset that points to the album art of the track
+  String albumArtAsset;
+
+  /// The file that points to the album art of the track
+  String albumArtFile;
+
   TrackProxy(this.uuid);
 }
 
@@ -502,12 +559,25 @@ class Response {
   String error;
 }
 
-class DurationResponse extends Response {
+class OnError {
+  int errorCode;
+  String error;
+}
+
+class DurationResponse {
+  bool success;
+  int errorCode;
+  String error;
+
   /// the duration of the track in milliseconds.
   int duration;
 }
 
-class BoolResponse extends Response {
+class BoolResponse {
+  bool success;
+  int errorCode;
+  String error;
+
   /// Used to indicate a true/false response.
   /// This value is separate from the [success] field
   /// in that [success] is used simply to indicate if
@@ -515,7 +585,11 @@ class BoolResponse extends Response {
   bool boolResult;
 }
 
-class MediaFormatResponse extends Response {
+class MediaFormatResponse {
+  bool success;
+  int errorCode;
+  String error;
+
   /// generics are not supported by pigeon as yet.
   /// A list of media format names.
   /// The names must be from the set defined in
@@ -554,7 +628,7 @@ class GetDuration {
 
 class SetVolume {
   SoundPlayerProxy player;
-  double volume;
+  int volume;
 }
 
 class SetPlaybackProgressInterval {
