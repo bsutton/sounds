@@ -88,13 +88,12 @@ abstract class SoundsToPlatformApi {
   /// If the Platform does not support playing audio in the background
   /// then the Platform MUST return [errnoBackgroudAudioNotSupported].
   ///
-  /// If the app becomes in-active then the app will call [release]
+  /// If the app becomes in-active then the app will call [releasePlayer]
   /// unless the audio is currently playing and [startPlayer] was called
   /// with [playInBackground] = true.
   ///
   /// The platform MUST not return until the platform media player is
   /// fully initialised.
-  @async
   Response initializePlayer(InitializePlayer initializePlayer);
 
   /// Each [SoundPlayerProxy] MUST be initialized before
@@ -109,7 +108,7 @@ abstract class SoundsToPlatformApi {
   /// If the Platform does not support playing audio in the background
   /// then the Platform MUST return [errnoBackgroudAudioNotSupported].
   ///
-  /// If the app becomes in-active then the app will call [release]
+  /// If the app becomes in-active then the app will call [releasePlayer]
   /// unless the audio is currently playing and [startPlayer] was called
   /// with [playInBackground] = true.
   ///
@@ -131,7 +130,6 @@ abstract class SoundsToPlatformApi {
   /// If any of the options are set to true then the Platform SHOULD do its
   /// best to honour the settings.
   ///
-  @async
   Response initializePlayerWithShade(
       InitializePlayerWithShade initializePlayerWithShade);
 
@@ -143,7 +141,6 @@ abstract class SoundsToPlatformApi {
   /// called MUST result in the error [errnoUnknownPlayer].
   ///
   /// The platform MUST not return until all resources are released.
-  @async
   Response releasePlayer(SoundPlayerProxy player);
 
   /// Instructs the Platform to start playing the [TrackProxy] on
@@ -165,7 +162,6 @@ abstract class SoundsToPlatformApi {
   /// The [startAt] argument provides an initial seek offset in millseconds
   /// from the start of the track. If [startAt] is passed with a non-zero
   /// value then the player should start playing the track from that position.
-  @async
   Response startPlayer(StartPlayer startPlayer);
 
   /// Instructs the Platform to stop the [SoundPlayerProxy] playing.
@@ -179,7 +175,6 @@ abstract class SoundsToPlatformApi {
   /// as such the Platform should take all reasonable stepts to ensure the
   /// audio has stopped.
   ///
-  @async
   Response stopPlayer(SoundPlayerProxy player);
 
   /// Instructs the Platform to pause the [SoundPlayerProxy].
@@ -188,13 +183,11 @@ abstract class SoundsToPlatformApi {
   ///
   /// If the [SoundPlayerProxy] is not currently playing then the Platform
   /// MUST return  [errnoNotPlaying].
-  @async
   Response pausePlayer(SoundPlayerProxy player);
 
   /// Instructs the Platform to resume the [SoundPlayerProxy].
   ///
   /// The Platform MUST not return until the audio has resumed.
-  @async
   Response resumePlayer(SoundPlayerProxy player);
 
   /// Instructs the Platform to update the current playback position for the
@@ -217,7 +210,6 @@ abstract class SoundsToPlatformApi {
   /// The call MUST return immediately and the platform must
   /// emit a call to [onSeekCompleted] once the player has actually stopped
   /// playing.
-  @async
   Response seekToPlayer(SeekToPlayer seekPlayer);
 
   /// Get the duration of an audio file located at [path].
@@ -231,14 +223,12 @@ abstract class SoundsToPlatformApi {
   /// If the Track's codec is not supported then [getDurationCompleted]
   /// must return with [success] = false and an error of the form:
   /// 'The codec $codec is not supported'.
-  @async
   DurationResponse getDuration(GetDuration getDuration);
 
   ///
   /// Sets the volume between 0 and 100.
   ///
   /// On android this will need to be scaled to a value between 0 and 1.
-  @async
   Response setVolume(SetVolume setVolume);
 
   /// Sets the interval between progress messages being generated from
@@ -250,7 +240,6 @@ abstract class SoundsToPlatformApi {
   ///
   /// If this method is called with an [interval] of 0 then progress
   /// messages should be suppressed.
-  @async
   Response setPlaybackProgressInterval(
       SetPlaybackProgressInterval setPlaybackProgressInterval);
 
@@ -270,33 +259,27 @@ abstract class SoundsToPlatformApi {
   ///
   ///   return await _plugin.iosSetCategory(this, category, mode, options);
   ///
-  @async
   Response requestAudioFocus(RequestAudioFocus requestAudioFocus);
 
   /// Release the audio focus.
   /// The affect on other media players will a result of a prior
   /// call to [requestAudioFocus] and the [AudioFocus] mode that was passed.
   /// was setActive(false)
-  @async
   Response releaseAudioFocus(SoundPlayerProxy player);
 
   /// Return true if the Platform supports a shade/notification area.
-  @async
   BoolResponse isShadeSupported();
 
   /// Return true if the Platform supports a shade/notification area
   /// and is able to display a pause/resume button.
-  @async
   BoolResponse isShadePauseSupported();
 
   /// Return true if the Platform supports a shade/notification area
   /// and is able to display a skip forward button.
-  @async
   BoolResponse isShadeSkipForwardSupported();
 
   /// Return true if the Platform supports a shade/notification area
   /// and is able to display a skip backwards button.
-  @async
   BoolResponse isShadeSkipBackwardsSupported();
 
   /// Return true if the Platform supports background playback.
@@ -305,7 +288,6 @@ abstract class SoundsToPlatformApi {
   ///
   /// On desktop active means the app that has the mouse/keyboard focus.
   /// On mobile active is the foreground app.
-  @async
   BoolResponse isBackgroundPlaybackSupported();
 
   //////////////////////////////////////////////////////////////////
@@ -314,22 +296,16 @@ abstract class SoundsToPlatformApi {
   ///
   /// /////////////////////////////////////////////////////////////
 
-  @async
   Response initializeRecorder(SoundRecorderProxy recorder);
 
-  @async
   Response releaseRecorder(SoundRecorderProxy recorder);
 
-  @async
   Response startRecording(StartRecording startRecording);
 
-  @async
   Response stopRecording(SoundRecorderProxy recorder);
 
-  @async
   Response pauseRecording(SoundRecorderProxy recorder);
 
-  @async
   Response resumeRecording(SoundRecorderProxy recorder);
 
   /// Returns the list of native media formats the platform
@@ -338,7 +314,6 @@ abstract class SoundsToPlatformApi {
   /// enum/consts. The proxy contains a list of well known
   /// media formats that the OS can use to indicate
   /// that they are supported.
-  @async
   MediaFormatResponse getNativeEncoderFormats(MediaFormatProxy proxy);
 
   /// Returns the list of native media formats the platform
@@ -347,7 +322,6 @@ abstract class SoundsToPlatformApi {
   /// enum/consts. The proxy contains a list of well known
   /// media formats that the OS can use to indicate
   /// that they are supported.
-  @async
   MediaFormatResponse getNativeDecoderFormats(MediaFormatProxy proxy);
 
   /// Sets the interval between progress messages being generated from
@@ -359,7 +333,6 @@ abstract class SoundsToPlatformApi {
   ///
   /// If this method is called with an [interval] of 0 then progress
   /// messages should be suppressed.
-  @async
   Response setRecordingProgressInterval(
       SetRecordingProgressInterval setRecordingProgressInterval);
 }
@@ -390,8 +363,39 @@ abstract class SoundsFromPlatformApi {
   ///
   /// If the interval has been set to zero then no progress events
   /// should be emitted.
-  @async
   void onPlaybackProgress(OnPlaybackProgress onPlaybackProgress);
+
+  /// The platform MUST emit this method when audio stops playing
+  /// because it naturally reach its end.
+  void onPlaybackFinished(OnPlaybackFinished onPlaybackStopped);
+
+  /// The platform MUST emit this method when the OS Media Player
+  /// is used to skip forward to the next track.
+  ///
+  /// [track] represents the current track that was playing when the
+  /// user initiated the skip.
+  void onShadeSkipForward(OnShadeSkipForward onShadeSkipForward);
+
+  /// The platform MUST emit this method when the OS Media Player
+  /// is used to skip backward to the next track.
+  ///
+  /// [track] represents the current track that was playing when the
+  /// user initiated the skip.
+  void onShadeSkipBackward(OnShadeSkipBackward onShadeSkipBackward);
+
+  /// The platform MUST emit this method when the OS Media Player
+  /// is used to pause playback
+  ///
+  /// [track] represents the current track that was playing when the
+  /// user initiated the pause.
+  void onShadePaused(OnShadePaused onShadePaused);
+
+  /// The platform MUST emit this method when the OS Media Player
+  /// is used to resume playback.
+  ///
+  /// [track] represents the current track that was playing when the
+  /// user initialied the skip.
+  void onShadeResumed(OnShadeResumed onShadeResumed);
 
   /// The platform MUST emit calls to this method whenever audio is
   /// being recorded.
@@ -403,78 +407,7 @@ abstract class SoundsFromPlatformApi {
   ///
   /// If the interval has been set to zero then no progress events
   /// should be emitted.
-  @async
   void onRecordingProgress(OnRecordingProgress onRecordingProgress);
-
-  /// The platform MUST emit this method whenever audio stops playing
-  /// (for any reason) and is non resumable .
-  ///
-  /// e.g. a call to [pause] would not  result in this method being
-  /// called.
-  ///
-  ///  - the audio naturally completes to the end.
-  ///  - seekToPlayer is called positioning the playback at the end of
-  ///     the audio.
-  ///  - an error occurs, causing the playback to stop.
-  ///
-  ///
-  ///
-  ///
-  /// This method should NOT be called as a result of:
-  ///
-  ///  - A call to [stopPlayer]
-  ///  - The app is paused or stopped.
-  ///  - The user skips to another track using the shade.
-  ///
-  /// If the audio stoped for a non-error then [errorCode] should be
-  /// 0. In this case the value of [error] will be ignored but must
-  /// be an empty string (null is not permitted).
-  ///
-  /// If the audio stopped because of an error then you MUST
-  /// set [errorCode] to a non-zero value and SHOULD populate the [error]
-  /// argument with an helpful error message.
-  ///
-  /// The following circumstances are noted but may not be exhaustive.
-  ///  - [onStopped] was called.
-  ///  - the audio played to completion.
-  ///  - the user skipped to another track.
-  ///  - an error occurs that causes the track to stop playing.
-  ///  - playback was stopped due to the app being sent to the background.
-  ///  - playback was stopped (as apposed to paused) via the shade
-  @async
-  void onPlaybackStopped(OnPlaybackStopped onPlaybackStopped);
-
-  /// The platform MUST emit this method when the OS Media Player
-  /// is used to skip forward to the next track.
-  ///
-  /// [track] represents the current track that was playing when the
-  /// user initiated the skip.
-  @async
-  void onShadeSkipForward(OnShadeSkipForward onShadeSkipForward);
-
-  /// The platform MUST emit this method when the OS Media Player
-  /// is used to skip backward to the next track.
-  ///
-  /// [track] represents the current track that was playing when the
-  /// user initiated the skip.
-  @async
-  void onShadeSkipBackward(OnShadeSkipBackward onShadeSkipBackward);
-
-  /// The platform MUST emit this method when the OS Media Player
-  /// is used to pause playback
-  ///
-  /// [track] represents the current track that was playing when the
-  /// user initiated the pause.
-  @async
-  void onShadePaused(OnShadePaused onShadePaused);
-
-  /// The platform MUST emit this method when the OS Media Player
-  /// is used to resume playback.
-  ///
-  /// [track] represents the current track that was playing when the
-  /// user initialied the skip.
-  @async
-  void onShadeResumed(OnShadeResumed onShadeResumed);
 
   /// Allows the platform to report error that occur
   /// outside the normal call flow.
@@ -485,15 +418,14 @@ abstract class SoundsFromPlatformApi {
   ///
   /// The normal course of action will be for dart to
   /// call releasePlayer to release all resources.
-  @async
   void onError(OnError error);
 }
 
 void configurePigeon(PigeonOptions opts) {
   opts.dartOut =
-      '../sounds_platform_interface/lib/sounds_platform_interface.dart';
-  opts.objcHeaderOut = 'ios/Classes/sounds_platform_api.h';
-  opts.objcSourceOut = 'ios/Classes/sounds_platform_api.m';
+      '../sounds_platform_interface/lib/src/sounds_platform_interface.g.dart';
+  opts.objcHeaderOut = 'ios/Classes/sounds_platform_api.g.h';
+  opts.objcSourceOut = 'ios/Classes/sounds_platform_api.g.m';
   opts.objcOptions.prefix = 'FLT';
   opts.javaOut =
       'android/src/main/java/com/bsutton/sounds/SoundsPlatformApi.java';
@@ -747,11 +679,9 @@ class OnRecordingProgress {
   int duration;
 }
 
-class OnPlaybackStopped {
+class OnPlaybackFinished {
   SoundPlayerProxy player;
   TrackProxy track;
-  int errorCode;
-  String error;
 }
 
 class OnShadeSkipForward {

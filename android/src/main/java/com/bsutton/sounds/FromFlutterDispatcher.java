@@ -37,6 +37,8 @@ public class FromFlutterDispatcher implements SoundsPlatformApi.SoundsToPlatform
         return response;
     }
 
+
+
     private SoundsPlatformApi.BoolResponse boolResponse(boolean response)
     {
         SoundsPlatformApi.BoolResponse boolResponse;
@@ -77,7 +79,7 @@ public class FromFlutterDispatcher implements SoundsPlatformApi.SoundsToPlatform
     }
 
     @Override
-    public void initializePlayer(SoundsPlatformApi.InitializePlayer arg, SoundsPlatformApi.Result<SoundsPlatformApi.Response> result) {
+    public SoundsPlatformApi.Response initializePlayer(SoundsPlatformApi.InitializePlayer arg) {
         SoundsPlatformApi.SoundPlayerProxy proxy = arg.getPlayer();
         String uuid = arg.getPlayer().getUuid();
         boolean playInBackground = arg.getPlayInBackground();
@@ -85,11 +87,11 @@ public class FromFlutterDispatcher implements SoundsPlatformApi.SoundsToPlatform
         soundsProxies.put(uuid, player);
         player.initializeSoundPlayer(proxy, playInBackground);
 
-        result.success(success());
+        return success();
     }
 
     @Override
-    public void initializePlayerWithShade(SoundsPlatformApi.InitializePlayerWithShade arg, SoundsPlatformApi.Result<SoundsPlatformApi.Response> result) {
+    public SoundsPlatformApi.Response initializePlayerWithShade(SoundsPlatformApi.InitializePlayerWithShade arg) {
         SoundsPlatformApi.SoundPlayerProxy proxy = arg.getPlayer();
         String uuid = arg.getPlayer().getUuid();
         boolean playInBackground = arg.getPlayInBackground();
@@ -102,31 +104,34 @@ public class FromFlutterDispatcher implements SoundsPlatformApi.SoundsToPlatform
 
         try {
             player.initializeShadePlayer(proxy, playInBackground, canPause, canSkipBackward, canSkipForward);
+            return success();
         }
         catch (SoundsException e)
         {
-            result.success(e.getResponse());
+            return e.getResponse();
         }
 
     }
 
+
+
     @Override
-    public void releasePlayer(SoundsPlatformApi.SoundPlayerProxy arg, SoundsPlatformApi.Result<SoundsPlatformApi.Response> result) {
+    public SoundsPlatformApi.Response releasePlayer(SoundsPlatformApi.SoundPlayerProxy arg) {
         try {
             String uuid = arg.getUuid();
             SoundPlayer player = getPlayer(uuid);
             player.releaseSoundPlayer();
             soundsProxies.remove(uuid);
-            result.success(success());
+            return success();
         }
         catch (SoundsException e)
         {
-            result.success(e.getResponse());
+            return e.getResponse();
         }
     }
 
     @Override
-    public void startPlayer(SoundsPlatformApi.StartPlayer arg, SoundsPlatformApi.Result<SoundsPlatformApi.Response> result) {
+    public SoundsPlatformApi.Response  startPlayer(SoundsPlatformApi.StartPlayer arg) {
         String uuid = arg.getPlayer().getUuid();
         long startAt = arg.getStartAt();
         SoundsPlatformApi.TrackProxy track = arg.getTrack();
@@ -135,77 +140,77 @@ public class FromFlutterDispatcher implements SoundsPlatformApi.SoundsToPlatform
             SoundPlayer player = getPlayer(uuid);
 
             player.startPlayer(track,  Duration.ofMillis(startAt));
-            result.success(success());
+            return success();
         }
         catch (SoundsException e)
         {
-            result.success(e.getResponse());
+            return e.getResponse();
         }
     }
 
     @Override
-    public void stopPlayer(SoundsPlatformApi.SoundPlayerProxy arg, SoundsPlatformApi.Result<SoundsPlatformApi.Response> result) {
+    public SoundsPlatformApi.Response  stopPlayer(SoundsPlatformApi.SoundPlayerProxy arg) {
         String uuid = arg.getUuid();
 
         try {
             SoundPlayer player = getPlayer(uuid);
             player.stopPlayer();
-            result.success(success());
+            return success();
         }
         catch (SoundsException e)
         {
-            result.success(e.getResponse());
+            return e.getResponse();
         }
     }
 
     @Override
-    public void pausePlayer(SoundsPlatformApi.SoundPlayerProxy arg, SoundsPlatformApi.Result<SoundsPlatformApi.Response> result) {
+    public SoundsPlatformApi.Response  pausePlayer(SoundsPlatformApi.SoundPlayerProxy arg) {
         String uuid = arg.getUuid();
 
         try {
             SoundPlayer player = getPlayer(uuid);
             player.pausePlayer();
-            result.success(success());
+            return success();
         }
         catch (SoundsException e)
         {
-            result.success(e.getResponse());
+            return e.getResponse();
         }
     }
 
     @Override
-    public void resumePlayer(SoundsPlatformApi.SoundPlayerProxy arg, SoundsPlatformApi.Result<SoundsPlatformApi.Response> result) {
+    public SoundsPlatformApi.Response  resumePlayer(SoundsPlatformApi.SoundPlayerProxy arg) {
         String uuid = arg.getUuid();
 
         try {
             SoundPlayer player = getPlayer(uuid);
             player.resumePlayer();
-            result.success(success());
+            return success();
         }
         catch (SoundsException e)
         {
-            result.success(e.getResponse());
+            return e.getResponse();
         }
 
     }
 
     @Override
-    public void seekToPlayer(SoundsPlatformApi.SeekToPlayer arg, SoundsPlatformApi.Result<SoundsPlatformApi.Response> result) {
+    public SoundsPlatformApi.Response  seekToPlayer(SoundsPlatformApi.SeekToPlayer arg) {
         String uuid = arg.getPlayer().getUuid();
         Duration seekTo = Duration.ofMillis(arg.getMilliseconds());
         try {
             SoundPlayer player = getPlayer(uuid);
             player.seekToPlayer(seekTo);
-            result.success(success());
+            return success();
         }
         catch (SoundsException e)
         {
-            result.success(e.getResponse());
+            return e.getResponse();
         }
     }
 
     @Override
-    public void getDuration(SoundsPlatformApi.GetDuration arg, SoundsPlatformApi.Result<SoundsPlatformApi.DurationResponse> result) {
+    public SoundsPlatformApi.DurationResponse  getDuration(SoundsPlatformApi.GetDuration arg) {
 
         try {
             Uri uri = Uri.parse(arg.getPath());
@@ -220,7 +225,7 @@ public class FromFlutterDispatcher implements SoundsPlatformApi.SoundsToPlatform
             response.setSuccess(true);
             response.setDuration(milliSeconds);
 
-            result.success(response);
+            return response;
         }
         catch (SoundsException e)
         {
@@ -228,12 +233,12 @@ public class FromFlutterDispatcher implements SoundsPlatformApi.SoundsToPlatform
             response.setSuccess(false);
             response.setErrorCode(e.errorCode);
             response.setError(e.error);
-            result.success(response);
+            return response;
         }
     }
 
     @Override
-    public void setVolume(SoundsPlatformApi.SetVolume arg, SoundsPlatformApi.Result<SoundsPlatformApi.Response> result) {
+    public SoundsPlatformApi.Response  setVolume(SoundsPlatformApi.SetVolume arg) {
         String uuid = arg.getPlayer().getUuid();
         /// Sounds use a value between 0 and 100
         /// but android expects 0 -1.
@@ -242,87 +247,87 @@ public class FromFlutterDispatcher implements SoundsPlatformApi.SoundsToPlatform
         try {
             SoundPlayer player = getPlayer(uuid);
             player.setVolume(volume);
-            result.success(success());
+            return success();
         }
         catch (SoundsException e)
         {
-            result.success(e.getResponse());
+            return e.getResponse();
         }
     }
 
     @Override
-    public void setPlaybackProgressInterval(SoundsPlatformApi.SetPlaybackProgressInterval arg, SoundsPlatformApi.Result<SoundsPlatformApi.Response> result) {
+    public SoundsPlatformApi.Response  setPlaybackProgressInterval(SoundsPlatformApi.SetPlaybackProgressInterval arg) {
         String uuid = arg.getPlayer().getUuid();
         Duration interval = Duration.ofMillis(arg.getInterval());
 
         try {
             SoundPlayer player = getPlayer(uuid);
             player.setProgressInterval(interval);
-            result.success(success());
+            return success();
         }
         catch (SoundsException e)
         {
-            result.success(e.getResponse());
+            return e.getResponse();
         }
     }
 
     @Override
-    public void requestAudioFocus(SoundsPlatformApi.RequestAudioFocus arg, SoundsPlatformApi.Result<SoundsPlatformApi.Response> result) {
+    public SoundsPlatformApi.Response  requestAudioFocus(SoundsPlatformApi.RequestAudioFocus arg) {
         String uuid = arg.getPlayer().getUuid();
         SoundsPlatformApi.AudioFocusProxy audioFocus = arg.getAudioFocus();
 
         try {
             SoundPlayer player = getPlayer(uuid);
             player.requestAudioFocus(audioFocus);
-            result.success(success());
+            return success();
         }
         catch (SoundsException e)
         {
-            result.success(e.getResponse());
+            return e.getResponse();
         }
     }
 
     @Override
-    public void releaseAudioFocus(SoundsPlatformApi.SoundPlayerProxy arg, SoundsPlatformApi.Result<SoundsPlatformApi.Response> result) {
+    public SoundsPlatformApi.Response  releaseAudioFocus(SoundsPlatformApi.SoundPlayerProxy arg) {
         String uuid = arg.getUuid();
 
         try {
             SoundPlayer player = getPlayer(uuid);
             player.releaseAudioFocus();
-            result.success(success());
+            return success();
         }
         catch (SoundsException e)
         {
-            result.success(e.getResponse());
+            return e.getResponse();
         }
     }
 
     @Override
-    public void isShadeSupported(SoundsPlatformApi.Result<SoundsPlatformApi.BoolResponse> result) {
-            result.success(boolResponse(true));
+    public SoundsPlatformApi.BoolResponse  isShadeSupported() {
+            return boolResponse(true);
     }
 
     @Override
-    public void isShadePauseSupported(SoundsPlatformApi.Result<SoundsPlatformApi.BoolResponse> result) {
-        result.success(boolResponse(true));
-
-    }
-
-    @Override
-    public void isShadeSkipForwardSupported(SoundsPlatformApi.Result<SoundsPlatformApi.BoolResponse> result) {
-        result.success(boolResponse(true));
+    public SoundsPlatformApi.BoolResponse isShadePauseSupported() {
+        return boolResponse(true);
 
     }
 
     @Override
-    public void isShadeSkipBackwardsSupported(SoundsPlatformApi.Result<SoundsPlatformApi.BoolResponse> result) {
-        result.success(boolResponse(true));
+    public SoundsPlatformApi.BoolResponse isShadeSkipForwardSupported() {
+        return boolResponse(true);
 
     }
 
     @Override
-    public void isBackgroundPlaybackSupported(SoundsPlatformApi.Result<SoundsPlatformApi.BoolResponse> result) {
-        result.success(boolResponse(true));
+    public SoundsPlatformApi.BoolResponse isShadeSkipBackwardsSupported() {
+        return boolResponse(true);
+
+    }
+
+    @Override
+    public SoundsPlatformApi.BoolResponse isBackgroundPlaybackSupported() {
+        return boolResponse(true);
 
     }
 
@@ -334,34 +339,34 @@ public class FromFlutterDispatcher implements SoundsPlatformApi.SoundsToPlatform
      */
 
     @Override
-    public void initializeRecorder(SoundsPlatformApi.SoundRecorderProxy arg, SoundsPlatformApi.Result<SoundsPlatformApi.Response> result) {
+    public SoundsPlatformApi.Response initializeRecorder(SoundsPlatformApi.SoundRecorderProxy arg) {
         String uuid = arg.getUuid();
 
         SoundRecorder recorder = new SoundRecorder();
         soundsProxies.put(uuid, recorder);
         recorder.initializeSoundRecorder(arg);
 
-        result.success(success());
+        return success();
     }
 
     @Override
-    public void releaseRecorder(SoundsPlatformApi.SoundRecorderProxy arg, SoundsPlatformApi.Result<SoundsPlatformApi.Response> result) {
+    public SoundsPlatformApi.Response releaseRecorder(SoundsPlatformApi.SoundRecorderProxy arg) {
         try {
             String uuid = arg.getUuid();
             SoundRecorder recorder = getRecorder(uuid);
 
             recorder.releaseSoundRecorder();
             soundsProxies.remove(uuid);
-            result.success(success());
+            return success();
         }
         catch (SoundsException e)
         {
-            result.success(e.getResponse());
+            return e.getResponse();
         }
     }
 
     @Override
-    public void startRecording(SoundsPlatformApi.StartRecording arg, SoundsPlatformApi.Result<SoundsPlatformApi.Response> result) {
+    public SoundsPlatformApi.Response startRecording(SoundsPlatformApi.StartRecording arg) {
         try {
             String uuid = arg.getRecorder().getUuid();
             SoundRecorder recorder = getRecorder(uuid);
@@ -371,105 +376,88 @@ public class FromFlutterDispatcher implements SoundsPlatformApi.SoundsToPlatform
             /// arg.getQuality();
 
             recorder.startRecorder(audioSource, track);
-            result.success(success());
+            return success();
         }
         catch (SoundsException e)
         {
-            result.success(e.getResponse());
+            return e.getResponse();
         }
     }
 
     @Override
-    public void stopRecording(SoundsPlatformApi.SoundRecorderProxy arg, SoundsPlatformApi.Result<SoundsPlatformApi.Response> result) {
+    public SoundsPlatformApi.Response stopRecording(SoundsPlatformApi.SoundRecorderProxy arg) {
         try {
             String uuid = arg.getUuid();
             SoundRecorder recorder = getRecorder(uuid);
 
             recorder.stopRecorder();
-            result.success(success());
+            return success();
         }
         catch (SoundsException e)
         {
-            result.success(e.getResponse());
+            return e.getResponse();
         }
     }
 
     @Override
-    public void pauseRecording(SoundsPlatformApi.SoundRecorderProxy arg, SoundsPlatformApi.Result<SoundsPlatformApi.Response> result) {
+    public SoundsPlatformApi.Response pauseRecording(SoundsPlatformApi.SoundRecorderProxy arg) {
         try {
             String uuid = arg.getUuid();
             SoundRecorder recorder = getRecorder(uuid);
 
             recorder.pauseRecorder();
-            result.success(success());
+            return success();
         }
         catch (SoundsException e)
         {
-            result.success(e.getResponse());
+            return e.getResponse();
         }
     }
 
     @Override
-    public void resumeRecording(SoundsPlatformApi.SoundRecorderProxy arg, SoundsPlatformApi.Result<SoundsPlatformApi.Response> result) {
+    public SoundsPlatformApi.Response resumeRecording(SoundsPlatformApi.SoundRecorderProxy arg) {
         try {
             String uuid = arg.getUuid();
             SoundRecorder recorder = getRecorder(uuid);
 
             recorder.resumeRecorder();
-            result.success(success());
+            return success();
         }
         catch (SoundsException e)
         {
-            result.success(e.getResponse());
+            return e.getResponse();
         }
     }
 
     @Override
-    public void getNativeEncoderFormats(SoundsPlatformApi.MediaFormatProxy arg, SoundsPlatformApi.Result<SoundsPlatformApi.MediaFormatResponse> result) {
+    public SoundsPlatformApi.MediaFormatResponse getNativeEncoderFormats(SoundsPlatformApi.MediaFormatProxy arg) {
 
         SoundsPlatformApi.MediaFormatResponse response = new SoundsPlatformApi.MediaFormatResponse();
-        ArrayList<String> mediaFormatNames = new ArrayList<>();
-        mediaFormatNames.add(arg.getAdtsAac());
-        mediaFormatNames.add(arg.getMp3());
-        mediaFormatNames.add(arg.getPcm());
-        mediaFormatNames.add(arg.getOggVorbis());
-        mediaFormatNames.add(arg.getOggOpus());
-
-        response.setMediaFormats(mediaFormatNames);
-
-
-        result.success(response);
+        response.setMediaFormats(AndroidMediaFormats.getNativeEncoderNames());
+        return response;
     }
 
     @Override
-    public void getNativeDecoderFormats(SoundsPlatformApi.MediaFormatProxy arg, SoundsPlatformApi.Result<SoundsPlatformApi.MediaFormatResponse> result) {
+    public SoundsPlatformApi.MediaFormatResponse getNativeDecoderFormats(SoundsPlatformApi.MediaFormatProxy arg) {
+
         SoundsPlatformApi.MediaFormatResponse response = new SoundsPlatformApi.MediaFormatResponse();
-        ArrayList<String> mediaFormatNames = new ArrayList<>();
-
-        mediaFormatNames.add(arg.getAdtsAac());
-
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            mediaFormatNames.add(arg.getOggVorbis());
-            mediaFormatNames.add(arg.getOggOpus());
-        }
-
-        response.setMediaFormats(mediaFormatNames);
-        result.success(response);
+        response.setMediaFormats(AndroidMediaFormats.getNativeDecoderNames());
+        return response;
     }
 
 
     @Override
-    public void setRecordingProgressInterval(SoundsPlatformApi.SetRecordingProgressInterval arg, SoundsPlatformApi.Result<SoundsPlatformApi.Response> result) {
+    public SoundsPlatformApi.Response setRecordingProgressInterval(SoundsPlatformApi.SetRecordingProgressInterval arg) {
 
         try {
             String uuid = arg.getRecorder().getUuid();
             Duration interval = Duration.ofMillis(arg.getInterval());
             SoundRecorder recorder = getRecorder(uuid);
             recorder.setProgressInterval(interval);
-            result.success(success());
+            return success();
         } catch (SoundsException e)
         {
-            result.success(e.getResponse());
+            return e.getResponse();
         }
 
     }

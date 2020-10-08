@@ -40,12 +40,12 @@ export 'src/recording_disposition.dart' show RecordingDisposition;
 export 'src/sound_player.dart'
     show SoundPlayer, PlayerInvalidStateException
     hide
-        updateProgress,
-        audioPlayerFinished,
-        onSystemPaused,
-        onSystemResumed,
-        onSystemSkipForward,
-        onSystemSkipBackward;
+        onPlaybackProgress,
+        onPlaybackFinished,
+        onShadePaused,
+        onShadeResumed,
+        onShadeSkipForward,
+        onShadeSkipBackward;
 export 'src/sound_recorder.dart'
     show SoundRecorder, RecorderException, RecorderInvalidStateException;
 export 'src/ui/recorder_playback_controller.dart'

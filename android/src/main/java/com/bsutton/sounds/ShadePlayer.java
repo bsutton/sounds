@@ -240,7 +240,7 @@ public class ShadePlayer extends SoundPlayer {
 				tickUIHandler.post(new Runnable() {
 					@Override
 					public void run() {
-						new SoundsPlatformApi.SoundsFromPlatformApi(SoundsPlugin.getBinaryMessenger()).onPlaybackProgress(args, null);
+						new SoundsPlatformApi.SoundsFromPlatformApi(SoundsPlugin.getBinaryMessenger()).onPlaybackProgress(args, (reply) -> {});
 					}
 				});
 				// reschedule ourselves.
@@ -357,14 +357,14 @@ public class ShadePlayer extends SoundPlayer {
 				SoundsPlatformApi.OnShadePaused args = new SoundsPlatformApi.OnShadePaused();
 				args.setPlayer(playerProxy);
 				args.setTrack(trackProxy);
-				new SoundsPlatformApi.SoundsFromPlatformApi(SoundsPlugin.getBinaryMessenger()).onShadePaused(args, null);
+				new SoundsPlatformApi.SoundsFromPlatformApi(SoundsPlugin.getBinaryMessenger()).onShadePaused(args, (reply) -> {});
 			}
 			else
 			{
 				SoundsPlatformApi.OnShadeResumed args = new SoundsPlatformApi.OnShadeResumed();
 				args.setPlayer(playerProxy);
 				args.setTrack(trackProxy);
-				new SoundsPlatformApi.SoundsFromPlatformApi(SoundsPlugin.getBinaryMessenger()).onShadeResumed(args, null);
+				new SoundsPlatformApi.SoundsFromPlatformApi(SoundsPlugin.getBinaryMessenger()).onShadeResumed(args, (reply) -> {});
 
 			}
 
@@ -390,13 +390,13 @@ public class ShadePlayer extends SoundPlayer {
 				SoundsPlatformApi.OnShadeSkipForward args = new SoundsPlatformApi.OnShadeSkipForward();
 				args.setPlayer(playerProxy);
 				args.setTrack(trackProxy);
-				new SoundsPlatformApi.SoundsFromPlatformApi(SoundsPlugin.getBinaryMessenger()).onShadeSkipForward(args, null);
+				new SoundsPlatformApi.SoundsFromPlatformApi(SoundsPlugin.getBinaryMessenger()).onShadeSkipForward(args, (reply) -> {});
 
 			} else {
 				SoundsPlatformApi.OnShadeSkipBackward args = new SoundsPlatformApi.OnShadeSkipBackward();
 				args.setPlayer(playerProxy);
 				args.setTrack(trackProxy);
-				new SoundsPlatformApi.SoundsFromPlatformApi(SoundsPlugin.getBinaryMessenger()).onShadeSkipBackward(args, null);
+				new SoundsPlatformApi.SoundsFromPlatformApi(SoundsPlugin.getBinaryMessenger()).onShadeSkipBackward(args, (reply) -> {});
 			}
 
 			return null;
@@ -458,15 +458,14 @@ public class ShadePlayer extends SoundPlayer {
 			stopProgressTimer(true);
 
 
-			SoundsPlatformApi.OnPlaybackStopped args = new SoundsPlatformApi.OnPlaybackStopped();
+			SoundsPlatformApi.OnPlaybackFinished args = new SoundsPlatformApi.OnPlaybackFinished();
 			args.setPlayer(playerProxy);
 			args.setTrack(trackProxy);
-			args.setErrorCode(0L);
 
 			tickUIHandler.post(new Runnable() {
 				@Override
 				public void run() {
-					new SoundsPlatformApi.SoundsFromPlatformApi(SoundsPlugin.getBinaryMessenger()).onPlaybackStopped(args, null);
+					new SoundsPlatformApi.SoundsFromPlatformApi(SoundsPlugin.getBinaryMessenger()).onPlaybackFinished(args, (reply) -> {});
 				}
 			});
 			return null;

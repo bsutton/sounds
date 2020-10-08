@@ -23,8 +23,8 @@ import 'package:uuid/uuid.dart';
 
 import '../sounds.dart';
 import 'audio_source.dart';
-
 import 'plugins/app_life_cycle_observer.dart';
+import 'plugins/platform_dispatcher.dart';
 import 'quality.dart';
 import 'recording_disposition.dart';
 import 'util/recording_disposition_manager.dart';
@@ -116,6 +116,7 @@ class SoundRecorder {
       : _playInBackground = playInBackground {
     _proxy = SoundRecorderProxy();
     _proxy.uuid = _uuid;
+    PlatformDispatcher().registerRecorder(_proxy, this);
 
     _lifeCycleObserver.onSystemAppPaused = _onSystemAppPaused;
     _lifeCycleObserver.onSystemAppResumed = _onSystemAppResumed;
@@ -144,6 +145,8 @@ class SoundRecorder {
     }
     _recordingTrack?.release();
     await _plugin.releaseRecorder(_proxy);
+    PlatformDispatcher().releaseRecoder(_proxy);
+    _proxy = null;
     _internalRecorderState = _InternalRecorderState.preinitialisation;
   }
 
@@ -435,7 +438,7 @@ void recorderSetProgressInterval(SoundRecorder recorder, Duration interval) =>
     recorder._setProgressInterval(interval);
 
 ///
-void recorderUpdateProgress(
+void onRecordingProgress(
         SoundRecorder recorder, Duration duration, double decibels) =>
     recorder._updateProgress(duration, decibels);
 

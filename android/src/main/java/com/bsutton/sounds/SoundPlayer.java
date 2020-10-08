@@ -15,6 +15,7 @@ package com.bsutton.sounds;
  *   along with Sounds .  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.media.AudioFocusRequest;
 import android.media.AudioManager;
@@ -130,7 +131,7 @@ public class SoundPlayer extends SoundsProxy  {
 				mainUIHandler.post(new Runnable() {
 					@Override
 					public void run() {
-						new SoundsPlatformApi.SoundsFromPlatformApi(SoundsPlugin.getBinaryMessenger()).onError(args, null);
+						new SoundsPlatformApi.SoundsFromPlatformApi(SoundsPlugin.getBinaryMessenger()).onError(args, (reply) -> {});
 					}
 				});
 		return true;
@@ -148,15 +149,14 @@ public class SoundPlayer extends SoundsProxy  {
 		 */
 		Log.d(TAG, "Playback completed.");
 
-		SoundsPlatformApi.OnPlaybackStopped args = new SoundsPlatformApi.OnPlaybackStopped();
+		SoundsPlatformApi.OnPlaybackFinished args = new SoundsPlatformApi.OnPlaybackFinished();
 		args.setPlayer(playerProxy);
 		args.setTrack(trackProxy);
-		args.setErrorCode(0L);
 
 		mainUIHandler.post(new Runnable() {
 			@Override
 			public void run() {
-				new SoundsPlatformApi.SoundsFromPlatformApi(SoundsPlugin.getBinaryMessenger()).onPlaybackStopped(args, null);
+				new SoundsPlatformApi.SoundsFromPlatformApi(SoundsPlugin.getBinaryMessenger()).onPlaybackFinished(args, (reply) -> {});
 			}
 		});
 
@@ -261,38 +261,58 @@ public class SoundPlayer extends SoundsProxy  {
 		// make certain no tickers are currently running.
 		stopProgressTimer(mp, false);
 
-		mainUIHandler.post(() -> sendPlaybackProgress(mp));
+		mainUIHandler.post(() -> sendPlaybackProgress(mp, false));
 	}
 
 	private void stopProgressTimer(MediaPlayer mp, boolean sendFinal) {
 		/// send a final update before we stop the ticker
 		/// so dart sees the last position we reached.
 		if (sendFinal) {
-			sendPlaybackProgress(mp);
+			sendPlaybackProgress(mp, true);
 		}
-		mainUIHandler.removeCallbacksAndMessages(null);
+		//mainUIHandler.removeCallbacksAndMessages(null);
 	}
 
+	// We cache the duration as during shutdown we need to send a final
+	// progress message to flutter and the mediaplay may not be available
+	Integer duration ;
+	long getDuration(MediaPlayer mp)
+	{
+		if (duration == null)
+		{
+			duration = mp.getDuration();
+		}
+		return duration;
+	}
 	@UiThread
-	private void sendPlaybackProgress(MediaPlayer mp) {
+	private void sendPlaybackProgress(MediaPlayer mp, boolean sendFinal) {
 		try {
 
-			SoundsPlatformApi.OnPlaybackProgress args = 			new SoundsPlatformApi.OnPlaybackProgress();
+			SoundsPlatformApi.OnPlaybackProgress args = new SoundsPlatformApi.OnPlaybackProgress();
 			args.setPlayer(playerProxy);
 			args.setTrack(trackProxy);
-			args.setDuration((long)mp.getDuration());
-			args.setPosition((long)mp.getCurrentPosition());
+			args.setDuration(getDuration(mp));
 
-			mainUIHandler.post(new Runnable() {
-				@Override
-				public void run() {
-					new SoundsPlatformApi.SoundsFromPlatformApi(SoundsPlugin.getBinaryMessenger()).onPlaybackProgress(args, null);
-				}
-			});
-			// reschedule ourselves.
-			mainUIHandler.postDelayed(() -> sendPlaybackProgress(mp), (model.progressInterval.toMillis()));
-		} catch (Exception e) {
-			Log.d(TAG, "Exception: " + e.toString());
+			if (mp.isPlaying())
+				args.setPosition((long) mp.getCurrentPosition());
+
+			if (sendFinal)
+				args.setPosition(getDuration(mp));
+
+			if (sendFinal || mp.isPlaying()) {
+				mainUIHandler.post(new Runnable() {
+					@Override
+					public void run() {
+						new SoundsPlatformApi.SoundsFromPlatformApi(SoundsPlugin.getBinaryMessenger()).onPlaybackProgress(args
+								, (reply) -> {
+								});
+					}
+				});
+				// reschedule ourselves.
+				mainUIHandler.postDelayed(() -> sendPlaybackProgress(mp, false), (model.progressInterval.toMillis()));
+			}
+		} catch (IllegalStateException e) {
+			Log.d(TAG, "IllegalStateException: this can occur when the player is shutting down, so don't panic." );
 		}
 	}
 
@@ -316,6 +336,7 @@ public class SoundPlayer extends SoundsProxy  {
 	}
 
 
+	@SuppressLint("NewApi")
 	private void requestFocus() {
 		if (canRequestAudioFocus()) {
 			if (audioManager.requestAudioFocus(audioFocusRequest) != AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
@@ -344,6 +365,7 @@ public class SoundPlayer extends SoundsProxy  {
 
 	}
 
+	@SuppressLint("NewApi")
 	void releaseAudioFocus() {
 		if (canRequestAudioFocus()) {
 			if (audioManager

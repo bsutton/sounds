@@ -24,6 +24,7 @@ import 'package:uuid/uuid.dart';
 import '../sounds.dart';
 import 'audio_focus.dart';
 import 'plugins/app_life_cycle_observer.dart';
+import 'plugins/platform_dispatcher.dart';
 
 /// A [SoundPlayer] establishes an audio session and allows
 /// you to play multiple audio files within the session.
@@ -48,6 +49,7 @@ class SoundPlayer {
     if (__proxy == null) {
       __proxy = SoundPlayerProxy();
       __proxy.uuid = _uuid;
+      PlatformDispatcher().registerPlayer(__proxy, this);
     }
     return __proxy;
   }
@@ -205,6 +207,7 @@ class SoundPlayer {
       if (_showShade) {
         var args = InitializePlayerWithShade();
         args.player = _proxy;
+
         args.playInBackground = _playInBackground;
         args.canPause = canPause;
         args.canSkipBackward = canSkipBackward;
@@ -235,6 +238,9 @@ class SoundPlayer {
     await _closeDispositionStream();
     await _softRelease();
     await _plugin.releasePlayer(_proxy);
+
+    PlatformDispatcher().releasePlayer(__proxy);
+    __proxy = null;
   }
 
   /// If the player is pushed into the
@@ -281,7 +287,7 @@ class SoundPlayer {
       requestAudioFocus(AudioFocus.hushOthersWithResume);
     }
 
-    if (!isStopped) {
+    if (isPlaying || isPaused) {
       throw PlayerInvalidStateException("The player must not be running.");
     }
 
@@ -495,10 +501,10 @@ class SoundPlayer {
 
   /// internal method.
   /// Called by the Platform plugin to notify us that
-  /// audio has finished playing to the end.
-  void _audioPlayerFinished(PlaybackDisposition status) {
+  /// audio has stopped playing because it reached its end.
+  void _onPlaybackFinished(PlaybackDisposition status) {
     // if we have finished then position should be at the end.
-    var finalPosition = PlaybackDisposition(PlaybackDispositionState.stopped,
+    var finalPosition = PlaybackDisposition(PlaybackDispositionState.finished,
         position: status.duration, duration: status.duration);
 
     _playerController?.add(finalPosition);
@@ -510,14 +516,14 @@ class SoundPlayer {
   }
 
   /// handles a pause coming up from the player
-  void _onSystemPaused() {
+  void _onShadePaused() {
     if (!isPaused) {
       pause();
     }
   }
 
   /// handles a resume coming up from the player
-  void _onSystemResumed() {
+  void _onShadeResumed() {
     if (isPaused) {
       resume();
     }
@@ -554,12 +560,12 @@ class SoundPlayer {
   }
 
   /// handles a skip forward coming up from the player
-  void _onSystemSkipForward() {
+  void _onShadeSkipForward() {
     if (_onSkipForward != null) _onSkipForward();
   }
 
   /// handles a skip forward coming up from the player
-  void _onSystemSkipBackward() {
+  void _onShadeSkipBackward() {
     if (_onSkipBackward != null) _onSkipBackward();
   }
 
@@ -689,26 +695,27 @@ class SoundPlayer {
 }
 
 /// Forwarders so we can hide methods from the public api.
-
-void updateProgress(SoundPlayer player, PlaybackDisposition disposition) =>
+/// Each of these calls are used by the [PlatformDispatcher]
+/// to pass calls from the platform into a player.
+void onPlaybackProgress(SoundPlayer player, PlaybackDisposition disposition) =>
     player._updateProgress(disposition);
 
 /// Called if the audio has reached the end of the audio source
 /// or if we or the os stopped the playback prematurely.
-void audioPlayerFinished(SoundPlayer player, PlaybackDisposition status) =>
-    player._audioPlayerFinished(status);
+void onPlaybackFinished(SoundPlayer player, PlaybackDisposition status) =>
+    player._onPlaybackFinished(status);
 
 /// handles an audio pause coming up from the player
-void onSystemPaused(SoundPlayer player) => player._onSystemPaused();
+void onShadePaused(SoundPlayer player) => player._onShadePaused();
 
 /// handles an audio resume coming up from the player
-void onSystemResumed(SoundPlayer player) => player._onSystemResumed();
+void onShadeResumed(SoundPlayer player) => player._onShadeResumed();
 
 /// handles a skip forward coming up from the player
-void onSystemSkipForward(SoundPlayer player) => player._onSystemSkipForward();
+void onShadeSkipForward(SoundPlayer player) => player._onShadeSkipForward();
 
 /// handles a skip forward coming up from the player
-void onSystemSkipBackward(SoundPlayer player) => player._onSystemSkipBackward();
+void onShadeSkipBackward(SoundPlayer player) => player._onShadeSkipBackward();
 
 /// Get the unique id for this sound player.
 String soundPlayerUuid(SoundPlayer player) => player._uuid;

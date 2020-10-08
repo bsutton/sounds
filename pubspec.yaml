@@ -30,8 +30,8 @@ dev_dependencies:
   e2e: ^0.7.0
   lint: ^1.1.1
   pub_semver: ^1.4.4
-  pigeon: 
-    path: ../../packages/packages/pigeon
+  pigeon: 0.1.10
+    #path: ../../packages/packages/pigeon
 
   flutter_test: 
     sdk: flutter

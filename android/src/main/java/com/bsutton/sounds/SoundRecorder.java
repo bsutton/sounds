@@ -27,6 +27,8 @@ import java.time.Duration;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+
+
 import static com.bsutton.sounds.ErrorCodes.errnoInvalidArgument;
 
 public class SoundRecorder extends SoundsProxy {
@@ -93,7 +95,7 @@ public class SoundRecorder extends SoundsProxy {
 				throw new SoundsException(ErrorCodes.errnoAudioSourcePermissionDenied,
 						"Error setting the AudioSource. Check that you have permission to use the microphone.");
 			}
-			AndroidMediaFormat mediaFormat = AndroidMediaFormat.generate(mediaFormatProxy);
+			AndroidMediaFormat mediaFormat = AndroidMediaFormats.generate(mediaFormatProxy);
 			mediaRecorder.setOutputFormat(mediaFormat.format);
 			mediaRecorder.setOutputFile(path);
 			mediaRecorder.setAudioEncoder(mediaFormat.encoder);

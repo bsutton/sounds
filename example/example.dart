@@ -61,7 +61,7 @@ class SoundExampleApp extends StatelessWidget {
   Future<bool> requestPermissions(BuildContext context, Track track) async {
     var granted = false;
 
-    /// change this to true if the track doesn't use
+    /// change this to true if the track uses
     /// external storage on android.
     var usingExternalStorage = false;
 
