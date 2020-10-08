@@ -110,7 +110,11 @@ If the appropriate permissions are not available a `RecordingPermissionException
 
 You might want to look at the package [permission\_handler](https://pub.dev/packages/permission_handler) to obtain the required permissions.
 
-The `SoundRecorder` class however does provide method to delay the permission request until it is actually required. `SoundRecorder` provides a callback that is called just before recording starts. You can use this callback to prompt the user for the required permissions.
+{% hint style="info" %}
+Most platforms require application level configuration to grant a permission. See the [Platforms](../contributing/platform-implementations.md) section for details.
+{% endhint %}
+
+You can request the microphone permission at any time however we recommend that you don't request the permission until the user performs an action that requires the microphone. By waiting until the user actually wants to access a feature you are more likely to have the user accept the permissions request.To facilitate this behaviour the `SoundRecorder` class provides a callback that is called just before recording starts. You can use this callback to prompt the user for the required permissions.
 
 ```dart
     var recording = Track.tempFile(WellKnownMediaFormats.adtsAac);
