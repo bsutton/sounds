@@ -310,7 +310,7 @@ class Audio {
 
   @override
   String toString() {
-    var desc = 'MediaFormat: ${mediaFormat.name}';
+    var desc = 'MediaFormat: ${mediaFormat?.name ?? "NONE"}';
     if (_onDisk) {
       desc += 'storage: $_storagePath';
     }
