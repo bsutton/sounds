@@ -125,7 +125,7 @@ public class SoundRecorder extends SoundsProxy {
 	public void stopRecorder() throws SoundsException {
 		// This removes all pending runnables
 		stopProgressTimer();
-
+		
 		if (this.model.getMediaRecorder() == null) {
 			Log.d(TAG, "mediaRecorder is null");
 			throw new SoundsException(ErrorCodes.errnoNotRecording, "The MediaRecorder was null");
@@ -214,7 +214,6 @@ public class SoundRecorder extends SoundsProxy {
 		}
 		return db;
 	}
-
 	// Sends a progress update to the dart code containing the current_position and
 	// the Db Level
 	// This method then re-queues itself.
@@ -229,7 +228,8 @@ public class SoundRecorder extends SoundsProxy {
 			args.setDuration(elapsed);
 			args.setDecibels(getDbLevel());
 
-			new SoundsPlatformApi.SoundsFromPlatformApi(SoundsPlugin.getBinaryMessenger()).onRecordingProgress(args, null);
+		
+			new SoundsPlatformApi.SoundsFromPlatformApi(SoundsPlugin.getBinaryMessenger()).onRecordingProgress(args, (reply) -> {});
 			// reschedule ourselves.
 			progressTickHandler.postDelayed(() -> sendRecordingUpdate(), this.model.progressInterval.toMillis());
 		} catch (Exception e) {
