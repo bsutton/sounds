@@ -288,6 +288,8 @@ class SoundRecorder {
           "You cannot stop recording when the recorder is not running.");
     }
 
+    Log.e('Track duration: ${await _recordingTrack.track.duration}');
+    Log.e('Track path: ${await _recordingTrack.track.path}');
     await _plugin.stopRecording(_proxy);
 
     _internalRecorderState = _InternalRecorderState.stopped;

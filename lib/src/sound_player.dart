@@ -282,9 +282,10 @@ class SoundPlayer {
   Future<void> play(Track track, {int startAt = 0}) async {
     assert(track != null);
     await _initialize();
-
+    Log.d('Track duration: ${await track.duration}');
+    Log.d('Track path: ${await track.path}');
     if (_autoFocus) {
-      requestAudioFocus(AudioFocus.hushOthersWithResume);
+      await requestAudioFocus(AudioFocus.hushOthersWithResume);
     }
 
     if (isPlaying || isPaused) {
@@ -416,6 +417,8 @@ class SoundPlayer {
       _seekTo = position;
     } else {
       var args = SeekToPlayer();
+      args.milliseconds = position.inMilliseconds;
+      args.player = __proxy;
       await _plugin.seekToPlayer(args);
     }
   }
