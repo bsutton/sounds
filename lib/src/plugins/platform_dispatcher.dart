@@ -9,7 +9,7 @@ import '../sound_recorder.dart' as r;
 /// Handles calls coming up from the platform and dispatching them.abstract
 
 class PlatformDispatcher implements SoundsFromPlatformApi {
-  static PlatformDispatcher _self = PlatformDispatcher._internal();
+  static final PlatformDispatcher _self = PlatformDispatcher._internal();
 
   /// Factory ctor.
   factory PlatformDispatcher() => _self;
