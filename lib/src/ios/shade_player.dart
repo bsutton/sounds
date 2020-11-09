@@ -1,4 +1,3 @@
-//  Converted to Swift 5.2 by Swiftify v5.2.19227 - https://swiftify.com/
 /*
  * This file is part of Sounds .
  *
@@ -15,192 +14,128 @@
  *   along with Sounds .  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import AVFoundation
-import Flutter
-import MediaPlayer
 
 
 
-/*
- * flauto is a sounds module.
- * Its purpose is to offer higher level functionnalities, using MediaService/MediaBrowser.
- * This module may use sounds module, but sounds module may not depends on this module.
- */
+import 'package:sounds/src/ios/track.dart';
 
-
+import '../../sounds.dart';
+import 'frameworks/avfoundation/avaudiosession.dart';
 
 /// Plays an audio track using the OSs on UI (sometimes referred to as a Shade) media
 /// player.
 /// Allows playback control even when the phone is locked.
-private var _channel: FlutterMethodChannel?
 
-func ShadePlayerReg(_ registrar: (NSObjectProtocol & FlutterPluginRegistrar)?) {
-    ShadePlayerManager.register(with: registrar!)
+/// post fix with _Sound to avoid conflicts with common libs including path_provider
+// String GetDirectoryOfType_Sounds(FileManager.SearchPathDirectory dir)  {
+//     var paths = FileManager.default.urls(for: dir, in: .userDomainMask).map(\.path)
+//     return (paths.first ?? "") + "/"
+// }
+
+class FlutterError {
+  String code;
+  String message;
+  String details;
+  ///
+  FlutterError({this.code, this.message, this.details});
 }
 
-var shadePlayerManager: ShadePlayerManager? // Singleton
+class URL
+{
+  URL(String s);
 
-class ShadePlayerManager: SoundPlayerManager {
-    //NSMutableArray* ShadePlayerSlots;
-    override class func register(with registrar: FlutterPluginRegistrar) {
-        let _channel = FlutterMethodChannel(
-            name: "com.bsutton.sounds.sounds_shade_player",
-            binaryMessenger: registrar.messenger())
-        shadePlayerManager = ShadePlayerManager() // In super class
-        registrar.addMethodCallDelegate(shadePlayerManager!, channel: _channel)
-    }
+  get scheme => null;
 
-    override func freeSlot(slotNo: Int) {
-        playerSlots?[slotNo] = NSNull()
-    }
-
-    override init() {
-        super.init()
-        playerSlots = []
-    }
-
-    override func invokeCallback(_ methodName: String?, arguments call: [AnyHashable : Any]?) {
-        _channel.invokeMethod(methodName!, arguments: call)
-    }
-
-    override func getManager() -> SoundPlayerManager? {
-        return shadePlayerManager
-    }
-
-    override func handle(_ call: FlutterMethodCall?, result: FlutterResult) {
-        let args = call?.arguments as! Dictionary<String, Any>
-        var slotNo = (args["slotNo"] as? NSNumber)?.intValue ?? 0
-
-        // The dart code supports lazy initialization of players.
-        // This means that players can be registered (and slots allocated)
-        // on the client side in a different order to which the players
-        // are initialised.
-        // As such we need to grow the slot array upto the 
-        // requested slot no. even if we haven't seen initialisation
-        // for the lower numbered slots.
-        while slotNo >= (playerSlots?.count ?? 0) {
-            playerSlots?.append(NSNull())
-        }
-
-
-        var aShadePlayer = playerSlots?[slotNo] as? ShadePlayer
-
-        if "initializeMediaPlayer" == call?.method {
-            //assert(playerSlots?[slotNo] == NSNull())
-            assert(playerSlots?[slotNo] == nil)
-            aShadePlayer = ShadePlayer(aSlotNo: slotNo)
-            playerSlots?[slotNo] = aShadePlayer
-
-            aShadePlayer?.initializeShadePlayer(call, result: result)
-        } else if "releaseMediaPlayer" == call?.method {
-            aShadePlayer?.release(call, result: result)
-            playerSlots?[slotNo] = NSNull()
-            slotNo = -1
-        } else if "startShadePlayer" == call?.method {
-            aShadePlayer?.start(call: call, result: result)
-        } else {
-            super.handle(call, result: result)
-        }
-    }
+  get host => null;
 }
 
-// post fix with _Sound to avoid conflicts with common libs including path_provider
-private func GetDirectoryOfType_Sounds(_ dir: FileManager.SearchPathDirectory) -> String? {
-    let paths = FileManager.default.urls(for: dir, in: .userDomainMask).map(\.path)
-    return (paths.first ?? "") + "/"
-}
-
-class ShadePlayer: SoundPlayer {
-    private var audioFileURL: URL?
-    private var track: Track?
-    private var forwardTarget: Any?
-    private var backwardTarget: Any?
-    private var pauseTarget: Any?
-    //internal override var setCategoryDone: t_SET_CATEGORY_DONE!
-    //internal override var setActiveDone: t_SET_CATEGORY_DONE!
-    private var slotNo = 0
-
-    override init(aSlotNo: Int) {
-          slotNo = aSlotNo
-        super.init(aSlotNo: slotNo)
+/// 
+class ShadePlayer  //extends SoundPlayer
+ {
+    URL audioFileURL;
+    Track track;
+    Function forwardTarget;
+    Function backwardTarget;
+    Function pauseTarget;
+    ///
+      void init() {
+       /// super.init();
       }
     
-    func start(call: FlutterMethodCall?, result: FlutterResult) {
-        let args = call?.arguments as? Dictionary<String, Any>
-        _ = (args?["track"] as? Dictionary<String, Any>)
-        let canPause = (args?["canPause"] as? NSNumber)?.boolValue ?? false
-        let canSkipForward = (args?["canSkipForward"] as? NSNumber)?.boolValue ?? false
-        let canSkipBackward = (args?["canSkipBackward"] as? NSNumber)?.boolValue ?? false
+    void start(Track track, bool canPause, bool canSkipForward, bool canSkipBackwards) {
 
 
-        if track == nil {
-            result(
+        if (track == null) {
+            throw
                 FlutterError(
                                 code: "UNAVAILABLE",
                                 message: "The track passed to startPlayer is not valid.",
-                                details: nil))
+                                details: null);
         }
 
 
         // Check whether the audio file is stored as a path to a file or a buffer
-        if track?.isUsingPath() ?? false {
+        if (track.isUsingPath ) {
             // The audio file is stored as a path to a file
 
-            let path = track?.path
+            var path = track.path
 
-            var isRemote = false
+            var isRemote = false;
             // Check whether a path was given
-            if NSString.self == NSNull.self {
+            if (track.hasPath()) {
                 // No path was given, get the path to a default sound
                 audioFileURL = URL(fileURLWithPath: (GetDirectoryOfType_Sounds(.cachesDirectory) ?? "") + "sound.aac")
                 // This file name is not good. Perhaps the MediaFormat is not AAC. !
             } else {
                 // A path was given, then create a NSURL with it
-                let remoteUrl = URL(string: path ?? "")
+                var remoteUrl = URL(path ?? "");
 
                 // Check whether the URL points to a local or remote file
-                if remoteUrl != nil && remoteUrl?.scheme != nil && remoteUrl?.host != nil {
-                    audioFileURL = remoteUrl
-                    isRemote = true
+                if (remoteUrl != null && remoteUrl.scheme != null 
+                && remoteUrl.host != null) {
+                    audioFileURL = remoteUrl;
+                    isRemote = true;
                 } else {
-                    audioFileURL = URL(string: path ?? "")
+                    audioFileURL = URL(path ?? "");
                 }
             }
 
             // Able to play in silent mode
-            if _setCategoryDone == .not_SET {
-                do {
-                    try AVAudioSession.sharedInstance().setCategory(
-                        .playback)
+            if (_setCategoryDone == not_SET) {
+                
+                    try{
+                       AVAudioSession.sharedInstance().setCategory(
+                        .playback);
                 } catch {
                 }
-                _setCategoryDone = .for_PLAYING
+                _setCategoryDone = for_PLAYING;
             }
 
             // Able to play in background
-            if _setActiveDone == .not_SET {
-                do {
-                    try AVAudioSession.sharedInstance()._setActive(true)
+            if (_setActiveDone == not_SET) {
+                
+                    try{
+                       AVAudioSession.sharedInstance()._setActive(true)
                 } catch {
                 }
-                _setActiveDone = .for_PLAYING
+                _setActiveDone = for_PLAYING;
             }
 
-            _isPaused = false
+            _isPaused = false;
 
             // Check whether the file path points to a remote or local file
-            if isRemote {
-                var downloadTask: URLSessionDataTask? = nil
-                if let audioFileURL = audioFileURL {
+            if (isRemote){
+                URLSessionDataTask downloadTask;
+                if var audioFileURL = audioFileURL {
                     downloadTask = URLSession.shared.dataTask(
                         with: audioFileURL,
-                        completionHandler: { data, response, error in
+                        compvarionHandler: { data, response, error in
                             // The file to play has been downloaded, then initialize the audio player
                             // and start playing.
 
                             // We must create a new Audio Player instance to be able to play a different Url
-                            do {
-                                if let data = data {
+                            try {
+                                if var data = data {
                                     self.audioPlayer = try AVAudioPlayer(data: data)
                                 }
                             } catch {
@@ -215,17 +150,17 @@ class ShadePlayer: SoundPlayer {
                         })
                 }
 
-                downloadTask?.resume()
-                startProgressTimer()
-                let filePath = audioFileURL?.absoluteString
-                result(filePath)
+                downloadTask?.resume();
+                startProgressTimer();
+                var filePath = audioFileURL?.absoluteString;
+                result(filePath);
             } else {
                 // Initialize the audio player with the file that the given path points to,
                 // and start playing.
 
                 // if (!audioPlayer) { // Fix sound distoring when playing recorded audio again.
                 do {
-                    if let audioFileURL = audioFileURL {
+                    if var audioFileURL = audioFileURL {
                         audioPlayer = try AVAudioPlayer(contentsOf: audioFileURL)
                     }
                 } catch {
@@ -241,15 +176,15 @@ class ShadePlayer: SoundPlayer {
 
                 audioPlayer?.play()
                 startProgressTimer()
-                let filePath = audioFileURL?.absoluteString
+                var filePath = audioFileURL?.absoluteString
                 result(filePath)
             }
         } else {
             // The audio file is stored as a buffer
-            let dataBuffer = track?.dataBuffer
-            let bufferData = dataBuffer?.data
+            var dataBuffer = track?.dataBuffer
+            var bufferData = dataBuffer?.data
             do {
-                if let bufferData = bufferData {
+                if var bufferData = bufferData {
                     audioPlayer = try AVAudioPlayer(data: bufferData)
                 }
             }
@@ -284,25 +219,25 @@ class ShadePlayer: SoundPlayer {
         // to stop the media playback. Then, use that one.
         // [self stopRecorder:result];
         stop()
-        let commandCenter = MPRemoteCommandCenter.shared()
-        if pauseTarget != nil {
-            if let pauseTarget = pauseTarget {
-                commandCenter.togglePlayPauseCommand.removeTarget(pauseTarget, action: nil)
+        var commandCenter = MPRemoteCommandCenter.shared()
+        if pauseTarget != null {
+            if var pauseTarget = pauseTarget {
+                commandCenter.togglePlayPauseCommand.removeTarget(pauseTarget, action: null)
             }
-            pauseTarget = nil
+            pauseTarget = null
         }
-        if forwardTarget != nil {
-            if let forwardTarget = forwardTarget {
-                commandCenter.nextTrackCommand.removeTarget(forwardTarget, action: nil)
+        if forwardTarget != null {
+            if var forwardTarget = forwardTarget {
+                commandCenter.nextTrackCommand.removeTarget(forwardTarget, action: null)
             }
-            forwardTarget = nil
+            forwardTarget = null
         }
 
-        if backwardTarget != nil {
-            if let backwardTarget = backwardTarget {
-                commandCenter.previousTrackCommand.removeTarget(backwardTarget, action: nil)
+        if backwardTarget != null {
+            if var backwardTarget = backwardTarget {
+                commandCenter.previousTrackCommand.removeTarget(backwardTarget, action: null)
             }
-            backwardTarget = nil
+            backwardTarget = null
         }
 
         getPlugin()?.freeSlot(slotNo: slotNo)
@@ -315,7 +250,7 @@ class ShadePlayer: SoundPlayer {
     }
 
     override func invokeCallback(_ methodName: String?, stringArg: String?) {
-        let dic = [
+        var dic = [
             "slotNo": NSNumber(value: Int32(slotNo)),
             "arg": stringArg ?? ""
             ] as [String : Any]
@@ -323,7 +258,7 @@ class ShadePlayer: SoundPlayer {
     }
 
     func invokeCallback(_ methodName: String?, boolArg: Bool) {
-        let dic = [
+        var dic = [
             "slotNo": NSNumber(value: Int32(slotNo)),
             "arg": NSNumber(value: boolArg)
         ]
@@ -336,17 +271,17 @@ class ShadePlayer: SoundPlayer {
     func setupNowPlaying() {
         // Initialize the MPNowPlayingInfoCenter
 
-        let playingInfoCenter = MPNowPlayingInfoCenter.default()
+        var playingInfoCenter = MPNowPlayingInfoCenter.default()
         var songInfo: [AnyHashable : Any] = [:]
         // The caller specify an asset to be used.
         // Probably good in the future to allow the caller to specify the image itself, and not a resource.
-        if (track?.albumArtUrl != nil) && (NSString.self != NSNull.self) {
+        if (track?.albumArtUrl != null) && (NSString.self != NSNull.self) {
             // Retrieve the album art for the
             // current track .
-            let url = URL(string: track?.albumArtUrl ?? "")
-            var artworkImage: UIImage? = nil
+            var url = URL(string: track?.albumArtUrl ?? "")
+            var artworkImage: UIImage? = null
             do{
-                let data = try Data(contentsOf: url!)
+                var data = try Data(contentsOf: url!)
                 artworkImage = UIImage(data: data)
             }
             catch{
@@ -355,8 +290,8 @@ class ShadePlayer: SoundPlayer {
             }
             
             
-            if artworkImage != nil {
-                let albumArt = MPMediaItemArtwork(
+            if artworkImage != null {
+                var albumArt = MPMediaItemArtwork(
                     boundsSize: artworkImage?.size ?? CGSize.zero,
                     requestHandler: { size in
                         return artworkImage!
@@ -364,10 +299,10 @@ class ShadePlayer: SoundPlayer {
 
                 songInfo[MPMediaItemPropertyArtwork] = albumArt
             }
-        } else if (track?.albumArtAsset) != nil && (NSString.self != NSNull.self) {
-            let artworkImage = UIImage(named: track?.albumArtAsset ?? "")
-            if artworkImage != nil {
-                let albumArt = MPMediaItemArtwork(
+        } else if (track?.albumArtAsset) != null && (NSString.self != NSNull.self) {
+            var artworkImage = UIImage(named: track?.albumArtAsset ?? "")
+            if artworkImage != null {
+                var albumArt = MPMediaItemArtwork(
                     boundsSize: artworkImage?.size ?? CGSize.zero,
                     requestHandler: { size in
                         return artworkImage!
@@ -375,10 +310,10 @@ class ShadePlayer: SoundPlayer {
 
                 songInfo[MPMediaItemPropertyArtwork] = albumArt
             }
-        } else if (track?.albumArtFile) != nil && (NSString.self != NSNull.self) {
-            let artworkImage = UIImage(contentsOfFile: track?.albumArtFile ?? "")
-            if artworkImage != nil {
-                let albumArt = MPMediaItemArtwork(
+        } else if (track?.albumArtFile) != null && (NSString.self != NSNull.self) {
+            var artworkImage = UIImage(contentsOfFile: track?.albumArtFile ?? "")
+            if artworkImage != null {
+                var albumArt = MPMediaItemArtwork(
                     boundsSize: artworkImage?.size ?? CGSize.zero,
                     requestHandler: { size in
                         return artworkImage!
@@ -386,9 +321,9 @@ class ShadePlayer: SoundPlayer {
                 songInfo[MPMediaItemPropertyArtwork] = albumArt
             }
         } else {
-            let artworkImage = UIImage(named: "AppIcon")
-            if artworkImage != nil {
-                let albumArt = MPMediaItemArtwork(
+            var artworkImage = UIImage(named: "AppIcon")
+            if artworkImage != null {
+                var albumArt = MPMediaItemArtwork(
                     boundsSize: artworkImage?.size ?? CGSize.zero,
                     requestHandler: { size in
                         return artworkImage!
@@ -397,14 +332,14 @@ class ShadePlayer: SoundPlayer {
             }
         }
 
-        let progress = NSNumber(value: audioPlayer?.currentTime ?? 0.0)
-        let duration = NSNumber(value: audioPlayer?.duration ?? 0.0)
+        var progress = NSNumber(value: audioPlayer?.currentTime ?? 0.0)
+        var duration = NSNumber(value: audioPlayer?.duration ?? 0.0)
 
         songInfo[MPMediaItemPropertyTitle] = track?.title
         songInfo[MPMediaItemPropertyArtist] = track?.artist
         songInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = progress
         songInfo[MPMediaItemPropertyPlaybackDuration] = duration
-        let b = audioPlayer?.isPlaying ?? false
+        var b = audioPlayer?.isPlaying ?? false
         songInfo[MPNowPlayingInfoPropertyPlaybackRate] = NSNumber(value: b ? 1.0 : 0.0)
 
         playingInfoCenter.nowPlayingInfo = songInfo as? [String : Any]
@@ -424,26 +359,26 @@ class ShadePlayer: SoundPlayer {
         //       [self pausePlayer:result];
         //       return MPRemoteCommandHandlerStatusSuccess;
         //   }];
-        let commandCenter = MPRemoteCommandCenter.shared()
+        var commandCenter = MPRemoteCommandCenter.shared()
 
-        if pauseTarget != nil {
-            if let pauseTarget = pauseTarget {
-                commandCenter.togglePlayPauseCommand.removeTarget(pauseTarget, action: nil)
+        if pauseTarget != null {
+            if var pauseTarget = pauseTarget {
+                commandCenter.togglePlayPauseCommand.removeTarget(pauseTarget, action: null)
             }
-            pauseTarget = nil
+            pauseTarget = null
         }
-        if forwardTarget != nil {
-            if let forwardTarget = forwardTarget {
-                commandCenter.nextTrackCommand.removeTarget(forwardTarget, action: nil)
+        if forwardTarget != null {
+            if var forwardTarget = forwardTarget {
+                commandCenter.nextTrackCommand.removeTarget(forwardTarget, action: null)
             }
-            forwardTarget = nil
+            forwardTarget = null
         }
 
-        if backwardTarget != nil {
-            if let backwardTarget = backwardTarget {
-                commandCenter.previousTrackCommand.removeTarget(backwardTarget, action: nil)
+        if backwardTarget != null {
+            if var backwardTarget = backwardTarget {
+                commandCenter.previousTrackCommand.removeTarget(backwardTarget, action: null)
             }
-            backwardTarget = nil
+            backwardTarget = null
         }
         commandCenter.togglePlayPauseCommand.isEnabled = true // If the caller does not want to control pause button, we will use our default action
         commandCenter.nextTrackCommand.isEnabled = canSkipForward
@@ -452,7 +387,7 @@ class ShadePlayer: SoundPlayer {
         do {
             pauseTarget = commandCenter.togglePlayPauseCommand.addTarget(handler: { event in
 
-                let b = self.audioPlayer?.isPlaying ?? false
+                var b = self.audioPlayer?.isPlaying ?? false
                 // If the caller wants to control the pause button, just call him
                 if b{
                     if canPause {
@@ -491,9 +426,9 @@ class ShadePlayer: SoundPlayer {
     override func stop() {
         stopProgressTimer()
         _isPaused = false
-        if audioPlayer != nil {
+        if audioPlayer != null {
             audioPlayer?.stop()
-            //audioPlayer = nil;
+            //audioPlayer = null;
         }
         // ????  [self cleanTarget:false canSkipForward:false canSkipBackward:false];
         if (_setActiveDone != .by_USER /* The caller did it himself : Sounds must not change that) */) && (setActiveDone != .not_SET) {
