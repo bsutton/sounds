@@ -16,287 +16,330 @@ import 'package:dart_native_gen/dart_native_gen.dart';
 // You can uncomment this line when this package is ready.
 // import 'package:coremedia/cmsamplebuffer.dart';
 
-@NativeAvailable(macos: '10.10', ios: '13.0', watchos: '6.0') @NativeUnavailable(tvos)
+@NativeAvailable(macos: '10.10', ios: '13.0', watchos: '6.0')
+@NativeUnavailable(tvos)
 @native
 class AVMovieTrack extends AVAssetTrack {
   AVMovieTrack([Class isa]) : super(isa ?? Class('AVMovieTrack'));
   AVMovieTrack.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
-  @NativeAvailable(macos: '10.11', ios: '13.0', watchos: '6.0') @NativeUnavailable(tvos)
+  @NativeAvailable(macos: '10.11', ios: '13.0', watchos: '6.0')
+  @NativeUnavailable(tvos)
   CMTimeRange get mediaPresentationTimeRange {
-Pointer<Void> result = perform(SEL('mediaPresentationTimeRange'), decodeRetVal: false);
+    Pointer<Void> result =
+        perform(SEL('mediaPresentationTimeRange'), decodeRetVal: false);
     return CMTimeRange.fromPointer(result);
+  }
 
-}
-  @NativeAvailable(macos: '10.11', ios: '13.0', watchos: '6.0') @NativeUnavailable(tvos)
-  set mediaPresentationTimeRange(CMTimeRange mediaPresentationTimeRange) => perform(SEL('setMediaPresentationTimeRange:'), args: [mediaPresentationTimeRange]);
-  @NativeAvailable(macos: '10.11', ios: '13.0', watchos: '6.0') @NativeUnavailable(tvos)
+  @NativeAvailable(macos: '10.11', ios: '13.0', watchos: '6.0')
+  @NativeUnavailable(tvos)
+  set mediaPresentationTimeRange(CMTimeRange mediaPresentationTimeRange) =>
+      perform(SEL('setMediaPresentationTimeRange:'),
+          args: [mediaPresentationTimeRange]);
+  @NativeAvailable(macos: '10.11', ios: '13.0', watchos: '6.0')
+  @NativeUnavailable(tvos)
   CMTimeRange get mediaDecodeTimeRange {
-Pointer<Void> result = perform(SEL('mediaDecodeTimeRange'), decodeRetVal: false);
+    Pointer<Void> result =
+        perform(SEL('mediaDecodeTimeRange'), decodeRetVal: false);
     return CMTimeRange.fromPointer(result);
+  }
 
-}
-  @NativeAvailable(macos: '10.11', ios: '13.0', watchos: '6.0') @NativeUnavailable(tvos)
-  set mediaDecodeTimeRange(CMTimeRange mediaDecodeTimeRange) => perform(SEL('setMediaDecodeTimeRange:'), args: [mediaDecodeTimeRange]);
-  @NativeAvailable(macos: '10.11', ios: '13.0', watchos: '6.0') @NativeUnavailable(tvos)
+  @NativeAvailable(macos: '10.11', ios: '13.0', watchos: '6.0')
+  @NativeUnavailable(tvos)
+  set mediaDecodeTimeRange(CMTimeRange mediaDecodeTimeRange) =>
+      perform(SEL('setMediaDecodeTimeRange:'), args: [mediaDecodeTimeRange]);
+  @NativeAvailable(macos: '10.11', ios: '13.0', watchos: '6.0')
+  @NativeUnavailable(tvos)
   NSInteger get alternateGroupID {
-return perform(SEL('alternateGroupID'));
+    return perform(SEL('alternateGroupID'));
+  }
 
-}
-  @NativeAvailable(macos: '10.11', ios: '13.0', watchos: '6.0') @NativeUnavailable(tvos)
-  set alternateGroupID(NSInteger alternateGroupID) => perform(SEL('setAlternateGroupID:'), args: [alternateGroupID]);
-
+  @NativeAvailable(macos: '10.11', ios: '13.0', watchos: '6.0')
+  @NativeUnavailable(tvos)
+  set alternateGroupID(NSInteger alternateGroupID) =>
+      perform(SEL('setAlternateGroupID:'), args: [alternateGroupID]);
 }
 
 extension AVMovieTrackAVMovieTrackMediaDataStorage on AVMovieTrack {
-  @NativeAvailable(macos: '10.11', ios: '13.0', watchos: '6.0') @NativeUnavailable(tvos)
+  @NativeAvailable(macos: '10.11', ios: '13.0', watchos: '6.0')
+  @NativeUnavailable(tvos)
   AVMediaDataStorage get mediaDataStorage {
-Pointer<Void> result = perform(SEL('mediaDataStorage'), decodeRetVal: false);
+    Pointer<Void> result =
+        perform(SEL('mediaDataStorage'), decodeRetVal: false);
     return AVMediaDataStorage.fromPointer(result);
+  }
 
+  @NativeAvailable(macos: '10.11', ios: '13.0', watchos: '6.0')
+  @NativeUnavailable(tvos)
+  set mediaDataStorage(AVMediaDataStorage mediaDataStorage) =>
+      perform(SEL('setMediaDataStorage:'), args: [mediaDataStorage]);
 }
-  @NativeAvailable(macos: '10.11', ios: '13.0', watchos: '6.0') @NativeUnavailable(tvos)
-  set mediaDataStorage(AVMediaDataStorage mediaDataStorage) => perform(SEL('setMediaDataStorage:'), args: [mediaDataStorage]);
 
-}
-
-@NativeAvailable(macos: '10.11', ios: '13.0', watchos: '6.0') @NativeUnavailable(tvos)
+@NativeAvailable(macos: '10.11', ios: '13.0', watchos: '6.0')
+@NativeUnavailable(tvos)
 @native
 class AVMutableMovieTrack extends AVMovieTrack {
   AVMutableMovieTrack([Class isa]) : super(isa ?? Class('AVMutableMovieTrack'));
   AVMutableMovieTrack.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
-  
+
   AVMediaDataStorage get mediaDataStorage {
-Pointer<Void> result = perform(SEL('mediaDataStorage'), decodeRetVal: false);
+    Pointer<Void> result =
+        perform(SEL('mediaDataStorage'), decodeRetVal: false);
     return AVMediaDataStorage.fromPointer(result);
+  }
 
-}
-  
-  set mediaDataStorage(AVMediaDataStorage mediaDataStorage) => perform(SEL('setMediaDataStorage:'), args: [mediaDataStorage]);
-  
+  set mediaDataStorage(AVMediaDataStorage mediaDataStorage) =>
+      perform(SEL('setMediaDataStorage:'), args: [mediaDataStorage]);
+
   NSURL get sampleReferenceBaseURL {
-Pointer<Void> result = perform(SEL('sampleReferenceBaseURL'), decodeRetVal: false);
+    Pointer<Void> result =
+        perform(SEL('sampleReferenceBaseURL'), decodeRetVal: false);
     return NSURL.fromPointer(result);
+  }
 
-}
-  
-  set sampleReferenceBaseURL(NSURL sampleReferenceBaseURL) => perform(SEL('setSampleReferenceBaseURL:'), args: [sampleReferenceBaseURL]);
-  
+  set sampleReferenceBaseURL(NSURL sampleReferenceBaseURL) =>
+      perform(SEL('setSampleReferenceBaseURL:'),
+          args: [sampleReferenceBaseURL]);
+
   bool get enabled {
-return perform(SEL('enabled'));
+    return perform(SEL('enabled'));
+  }
 
-}
-  
   set enabled(bool enabled) => perform(SEL('setEnabled:'), args: [enabled]);
-  
+
   NSInteger get alternateGroupID {
-return perform(SEL('alternateGroupID'));
+    return perform(SEL('alternateGroupID'));
+  }
 
-}
-  
-  set alternateGroupID(NSInteger alternateGroupID) => perform(SEL('setAlternateGroupID:'), args: [alternateGroupID]);
-  
+  set alternateGroupID(NSInteger alternateGroupID) =>
+      perform(SEL('setAlternateGroupID:'), args: [alternateGroupID]);
+
   bool get modified {
-return perform(SEL('modified'));
+    return perform(SEL('modified'));
+  }
 
-}
-  
   set modified(bool modified) => perform(SEL('setModified:'), args: [modified]);
-  
+
   bool get hasProtectedContent {
-return perform(SEL('hasProtectedContent'));
+    return perform(SEL('hasProtectedContent'));
+  }
 
-}
-  
-  set hasProtectedContent(bool hasProtectedContent) => perform(SEL('setHasProtectedContent:'), args: [hasProtectedContent]);
-  
+  set hasProtectedContent(bool hasProtectedContent) =>
+      perform(SEL('setHasProtectedContent:'), args: [hasProtectedContent]);
+
   CMTimeScale get timescale {
-Pointer<Void> result = perform(SEL('timescale'), decodeRetVal: false);
+    Pointer<Void> result = perform(SEL('timescale'), decodeRetVal: false);
     return CMTimeScale.fromPointer(result);
+  }
 
+  set timescale(CMTimeScale timescale) =>
+      perform(SEL('setTimescale:'), args: [timescale]);
 }
-  
-  set timescale(CMTimeScale timescale) => perform(SEL('setTimescale:'), args: [timescale]);
 
-}
-
-extension AVMutableMovieTrackAVMutableMovieTrackLanguageProperties on AVMutableMovieTrack {
-  
+extension AVMutableMovieTrackAVMutableMovieTrackLanguageProperties
+    on AVMutableMovieTrack {
   String get languageCode {
-Pointer<Void> result = perform(SEL('languageCode'), decodeRetVal: false);
+    Pointer<Void> result = perform(SEL('languageCode'), decodeRetVal: false);
     return NSString.fromPointer(result).raw;
+  }
 
-}
-  
-  set languageCode(String languageCode) => perform(SEL('setLanguageCode:'), args: [languageCode]);
-  
+  set languageCode(String languageCode) =>
+      perform(SEL('setLanguageCode:'), args: [languageCode]);
+
   String get extendedLanguageTag {
-Pointer<Void> result = perform(SEL('extendedLanguageTag'), decodeRetVal: false);
+    Pointer<Void> result =
+        perform(SEL('extendedLanguageTag'), decodeRetVal: false);
     return NSString.fromPointer(result).raw;
+  }
 
+  set extendedLanguageTag(String extendedLanguageTag) =>
+      perform(SEL('setExtendedLanguageTag:'), args: [extendedLanguageTag]);
 }
-  
-  set extendedLanguageTag(String extendedLanguageTag) => perform(SEL('setExtendedLanguageTag:'), args: [extendedLanguageTag]);
 
-}
-
-extension AVMutableMovieTrackAVMutableMovieTrackVisualProperties on AVMutableMovieTrack {
-  
+extension AVMutableMovieTrackAVMutableMovieTrackVisualProperties
+    on AVMutableMovieTrack {
   CGSize get naturalSize {
-Pointer<Void> result = perform(SEL('naturalSize'), decodeRetVal: false);
+    Pointer<Void> result = perform(SEL('naturalSize'), decodeRetVal: false);
     return CGSize.fromPointer(result);
+  }
 
-}
-  
-  set naturalSize(CGSize naturalSize) => perform(SEL('setNaturalSize:'), args: [naturalSize]);
-  
+  set naturalSize(CGSize naturalSize) =>
+      perform(SEL('setNaturalSize:'), args: [naturalSize]);
+
   CGAffineTransform get preferredTransform {
-Pointer<Void> result = perform(SEL('preferredTransform'), decodeRetVal: false);
+    Pointer<Void> result =
+        perform(SEL('preferredTransform'), decodeRetVal: false);
     return CGAffineTransform.fromPointer(result);
+  }
 
-}
-  
-  set preferredTransform(CGAffineTransform preferredTransform) => perform(SEL('setPreferredTransform:'), args: [preferredTransform]);
-  
+  set preferredTransform(CGAffineTransform preferredTransform) =>
+      perform(SEL('setPreferredTransform:'), args: [preferredTransform]);
+
   NSInteger get layer {
-return perform(SEL('layer'));
+    return perform(SEL('layer'));
+  }
 
-}
-  
   set layer(NSInteger layer) => perform(SEL('setLayer:'), args: [layer]);
-  
+
   CGSize get cleanApertureDimensions {
-Pointer<Void> result = perform(SEL('cleanApertureDimensions'), decodeRetVal: false);
+    Pointer<Void> result =
+        perform(SEL('cleanApertureDimensions'), decodeRetVal: false);
     return CGSize.fromPointer(result);
+  }
 
-}
-  
-  set cleanApertureDimensions(CGSize cleanApertureDimensions) => perform(SEL('setCleanApertureDimensions:'), args: [cleanApertureDimensions]);
-  
+  set cleanApertureDimensions(CGSize cleanApertureDimensions) =>
+      perform(SEL('setCleanApertureDimensions:'),
+          args: [cleanApertureDimensions]);
+
   CGSize get productionApertureDimensions {
-Pointer<Void> result = perform(SEL('productionApertureDimensions'), decodeRetVal: false);
+    Pointer<Void> result =
+        perform(SEL('productionApertureDimensions'), decodeRetVal: false);
     return CGSize.fromPointer(result);
+  }
 
-}
-  
-  set productionApertureDimensions(CGSize productionApertureDimensions) => perform(SEL('setProductionApertureDimensions:'), args: [productionApertureDimensions]);
-  
+  set productionApertureDimensions(CGSize productionApertureDimensions) =>
+      perform(SEL('setProductionApertureDimensions:'),
+          args: [productionApertureDimensions]);
+
   CGSize get encodedPixelsDimensions {
-Pointer<Void> result = perform(SEL('encodedPixelsDimensions'), decodeRetVal: false);
+    Pointer<Void> result =
+        perform(SEL('encodedPixelsDimensions'), decodeRetVal: false);
     return CGSize.fromPointer(result);
+  }
 
+  set encodedPixelsDimensions(CGSize encodedPixelsDimensions) =>
+      perform(SEL('setEncodedPixelsDimensions:'),
+          args: [encodedPixelsDimensions]);
 }
-  
-  set encodedPixelsDimensions(CGSize encodedPixelsDimensions) => perform(SEL('setEncodedPixelsDimensions:'), args: [encodedPixelsDimensions]);
 
-}
-
-extension AVMutableMovieTrackAVMutableMovieTrackAudibleProperties on AVMutableMovieTrack {
-  
+extension AVMutableMovieTrackAVMutableMovieTrackAudibleProperties
+    on AVMutableMovieTrack {
   double get preferredVolume {
-return perform(SEL('preferredVolume'));
+    return perform(SEL('preferredVolume'));
+  }
 
+  set preferredVolume(double preferredVolume) =>
+      perform(SEL('setPreferredVolume:'), args: [preferredVolume]);
 }
-  
-  set preferredVolume(double preferredVolume) => perform(SEL('setPreferredVolume:'), args: [preferredVolume]);
 
-}
-
-extension AVMutableMovieTrackAVMutableMovieTrackChunkProperties on AVMutableMovieTrack {
-  
+extension AVMutableMovieTrackAVMutableMovieTrackChunkProperties
+    on AVMutableMovieTrack {
   NSInteger get preferredMediaChunkSize {
-return perform(SEL('preferredMediaChunkSize'));
+    return perform(SEL('preferredMediaChunkSize'));
+  }
 
-}
-  
-  set preferredMediaChunkSize(NSInteger preferredMediaChunkSize) => perform(SEL('setPreferredMediaChunkSize:'), args: [preferredMediaChunkSize]);
-  
+  set preferredMediaChunkSize(NSInteger preferredMediaChunkSize) =>
+      perform(SEL('setPreferredMediaChunkSize:'),
+          args: [preferredMediaChunkSize]);
+
   CMTime get preferredMediaChunkDuration {
-Pointer<Void> result = perform(SEL('preferredMediaChunkDuration'), decodeRetVal: false);
+    Pointer<Void> result =
+        perform(SEL('preferredMediaChunkDuration'), decodeRetVal: false);
     return CMTime.fromPointer(result);
+  }
 
-}
-  
-  set preferredMediaChunkDuration(CMTime preferredMediaChunkDuration) => perform(SEL('setPreferredMediaChunkDuration:'), args: [preferredMediaChunkDuration]);
-  
+  set preferredMediaChunkDuration(CMTime preferredMediaChunkDuration) =>
+      perform(SEL('setPreferredMediaChunkDuration:'),
+          args: [preferredMediaChunkDuration]);
+
   NSInteger get preferredMediaChunkAlignment {
-return perform(SEL('preferredMediaChunkAlignment'));
-
-}
-  
-  set preferredMediaChunkAlignment(NSInteger preferredMediaChunkAlignment) => perform(SEL('setPreferredMediaChunkAlignment:'), args: [preferredMediaChunkAlignment]);
-
-}
-
-extension AVMutableMovieTrackAVMutableMovieTrackTrackLevelEditing on AVMutableMovieTrack {
-  
-  bool insertTimeRangeOfTrackAtTimeCopySampleDataError(CMTimeRange timeRange, AVAssetTrack track, CMTime startTime, bool copySampleData, {NSObjectRef<NSError> outError}) {
-    return perform(SEL('insertTimeRange:ofTrack:atTime:copySampleData:error:'), args: [timeRange,track,startTime,copySampleData,outError]);
+    return perform(SEL('preferredMediaChunkAlignment'));
   }
-  
+
+  set preferredMediaChunkAlignment(NSInteger preferredMediaChunkAlignment) =>
+      perform(SEL('setPreferredMediaChunkAlignment:'),
+          args: [preferredMediaChunkAlignment]);
+}
+
+extension AVMutableMovieTrackAVMutableMovieTrackTrackLevelEditing
+    on AVMutableMovieTrack {
+  bool insertTimeRangeOfTrackAtTimeCopySampleDataError(CMTimeRange timeRange,
+      AVAssetTrack track, CMTime startTime, bool copySampleData,
+      {NSObjectRef<NSError> outError}) {
+    return perform(SEL('insertTimeRange:ofTrack:atTime:copySampleData:error:'),
+        args: [timeRange, track, startTime, copySampleData, outError]);
+  }
+
   void insertEmptyTimeRange(CMTimeRange timeRange) {
-     perform(SEL('insertEmptyTimeRange:'), args: [timeRange]);
+    perform(SEL('insertEmptyTimeRange:'), args: [timeRange]);
   }
-  
+
   void removeTimeRange(CMTimeRange timeRange) {
-     perform(SEL('removeTimeRange:'), args: [timeRange]);
+    perform(SEL('removeTimeRange:'), args: [timeRange]);
   }
-  
+
   void scaleTimeRangeToDuration(CMTimeRange timeRange, CMTime duration) {
-     perform(SEL('scaleTimeRange:toDuration:'), args: [timeRange,duration]);
+    perform(SEL('scaleTimeRange:toDuration:'), args: [timeRange, duration]);
   }
-
 }
 
-extension AVMutableMovieTrackAVMutableMovieTrackMetadataEditing on AVMutableMovieTrack {
-  
+extension AVMutableMovieTrackAVMutableMovieTrackMetadataEditing
+    on AVMutableMovieTrack {
   AVMetadataItem get metadata {
-Pointer<Void> result = perform(SEL('metadata'), decodeRetVal: false);
+    Pointer<Void> result = perform(SEL('metadata'), decodeRetVal: false);
     return AVMetadataItem.fromPointer(result);
-
-}
-  
-  set metadata(AVMetadataItem metadata) => perform(SEL('setMetadata:'), args: [metadata]);
-
-}
-
-extension AVMutableMovieTrackAVMutableMovieTrackTrackAssociations on AVMutableMovieTrack {
-  
-  void addTrackAssociationToTrackType(AVMovieTrack movieTrack, AVTrackAssociationType trackAssociationType) {
-     perform(SEL('addTrackAssociationToTrack:type:'), args: [movieTrack,trackAssociationType]);
-  }
-  
-  void removeTrackAssociationToTrackType(AVMovieTrack movieTrack, AVTrackAssociationType trackAssociationType) {
-     perform(SEL('removeTrackAssociationToTrack:type:'), args: [movieTrack,trackAssociationType]);
   }
 
+  set metadata(AVMetadataItem metadata) =>
+      perform(SEL('setMetadata:'), args: [metadata]);
 }
 
-extension AVMutableMovieTrackAVMutableMovieTrackFormatDescriptions on AVMutableMovieTrack {
-  @NativeAvailable(macos: '10.13', ios: '13.0', watchos: '6.0') @NativeUnavailable(tvos)
-  void replaceFormatDescriptionWithFormatDescription(CMFormatDescriptionRef formatDescription, CMFormatDescriptionRef newFormatDescription) {
-     perform(SEL('replaceFormatDescription:withFormatDescription:'), args: [formatDescription,newFormatDescription]);
+extension AVMutableMovieTrackAVMutableMovieTrackTrackAssociations
+    on AVMutableMovieTrack {
+  void addTrackAssociationToTrackType(
+      AVMovieTrack movieTrack, AVTrackAssociationType trackAssociationType) {
+    perform(SEL('addTrackAssociationToTrack:type:'),
+        args: [movieTrack, trackAssociationType]);
   }
 
+  void removeTrackAssociationToTrackType(
+      AVMovieTrack movieTrack, AVTrackAssociationType trackAssociationType) {
+    perform(SEL('removeTrackAssociationToTrack:type:'),
+        args: [movieTrack, trackAssociationType]);
+  }
 }
 
-extension AVMutableMovieTrackAVMutableMovieTrackSampleLevelEditing on AVMutableMovieTrack {
-  @NativeAvailable(macos: '10.12', ios: '13.0', watchos: '6.0') @NativeUnavailable(tvos)
-  bool appendSampleBufferDecodeTimePresentationTimeError(CMSampleBufferRef sampleBuffer, {CMTime outDecodeTime, CMTime outPresentationTime, NSObjectRef<NSError> outError}) {
-    return perform(SEL('appendSampleBuffer:decodeTime:presentationTime:error:'), args: [sampleBuffer,outDecodeTime,outPresentationTime,outError]);
+extension AVMutableMovieTrackAVMutableMovieTrackFormatDescriptions
+    on AVMutableMovieTrack {
+  @NativeAvailable(macos: '10.13', ios: '13.0', watchos: '6.0')
+  @NativeUnavailable(tvos)
+  void replaceFormatDescriptionWithFormatDescription(
+      CMFormatDescriptionRef formatDescription,
+      CMFormatDescriptionRef newFormatDescription) {
+    perform(SEL('replaceFormatDescription:withFormatDescription:'),
+        args: [formatDescription, newFormatDescription]);
   }
-  @NativeAvailable(macos: '10.12', ios: '13.0', watchos: '6.0') @NativeUnavailable(tvos)
-  bool insertMediaTimeRangeIntoTimeRange(CMTimeRange mediaTimeRange, CMTimeRange trackTimeRange) {
-    return perform(SEL('insertMediaTimeRange:intoTimeRange:'), args: [mediaTimeRange,trackTimeRange]);
-  }
-
 }
 
-@NativeAvailable(macos: '10.10', ios: '13.0', watchos: '6.0') @NativeUnavailable(tvos)
+extension AVMutableMovieTrackAVMutableMovieTrackSampleLevelEditing
+    on AVMutableMovieTrack {
+  @NativeAvailable(macos: '10.12', ios: '13.0', watchos: '6.0')
+  @NativeUnavailable(tvos)
+  bool appendSampleBufferDecodeTimePresentationTimeError(
+      CMSampleBufferRef sampleBuffer,
+      {CMTime outDecodeTime,
+      CMTime outPresentationTime,
+      NSObjectRef<NSError> outError}) {
+    return perform(SEL('appendSampleBuffer:decodeTime:presentationTime:error:'),
+        args: [sampleBuffer, outDecodeTime, outPresentationTime, outError]);
+  }
+
+  @NativeAvailable(macos: '10.12', ios: '13.0', watchos: '6.0')
+  @NativeUnavailable(tvos)
+  bool insertMediaTimeRangeIntoTimeRange(
+      CMTimeRange mediaTimeRange, CMTimeRange trackTimeRange) {
+    return perform(SEL('insertMediaTimeRange:intoTimeRange:'),
+        args: [mediaTimeRange, trackTimeRange]);
+  }
+}
+
+@NativeAvailable(macos: '10.10', ios: '13.0', watchos: '6.0')
+@NativeUnavailable(tvos)
 @native
 class AVFragmentedMovieTrack extends AVMovieTrack {
-  AVFragmentedMovieTrack([Class isa]) : super(isa ?? Class('AVFragmentedMovieTrack'));
-  AVFragmentedMovieTrack.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
-
+  AVFragmentedMovieTrack([Class isa])
+      : super(isa ?? Class('AVFragmentedMovieTrack'));
+  AVFragmentedMovieTrack.fromPointer(Pointer<Void> ptr)
+      : super.fromPointer(ptr);
 }
 // You can uncomment this line when this package is ready.
 // import 'package:avfcore/avmovietrack.dart';

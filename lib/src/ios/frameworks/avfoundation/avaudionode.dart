@@ -27,17 +27,20 @@ class AVAudioNode extends NSObject {
   AVAudioNode.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
 
   AVAudioEngine get engine {
-    Pointer<Void> result = perform(SEL('engine'), decodeRetVal: false) as Pointer<Void>;
+    Pointer<Void> result =
+        perform(SEL('engine'), decodeRetVal: false) as Pointer<Void>;
     return AVAudioEngine.fromPointer(result);
   }
 
-  set engine(AVAudioEngine engine) => perform(SEL('setEngine:'), args: <dynamic>[engine]);
+  set engine(AVAudioEngine engine) =>
+      perform(SEL('setEngine:'), args: <dynamic>[engine]);
 
   NSUInteger get numberOfInputs {
     return perform(SEL('numberOfInputs')) as NSUInteger;
   }
 
-  set numberOfInputs(NSUInteger numberOfInputs) => perform(SEL('setNumberOfInputs:'), args: <dynamic>[numberOfInputs]);
+  set numberOfInputs(NSUInteger numberOfInputs) =>
+      perform(SEL('setNumberOfInputs:'), args: <dynamic>[numberOfInputs]);
 
   NSUInteger get numberOfOutputs {
     return perform(SEL('numberOfOutputs')) as NSUInteger;
@@ -47,66 +50,77 @@ class AVAudioNode extends NSObject {
       perform(SEL('setNumberOfOutputs:'), args: <dynamic>[numberOfOutputs]);
 
   AVAudioTime get lastRenderTime {
-    Pointer<Void> result = perform(SEL('lastRenderTime'), decodeRetVal: false) as Pointer<Void>;
+    Pointer<Void> result =
+        perform(SEL('lastRenderTime'), decodeRetVal: false) as Pointer<Void>;
     return AVAudioTime.fromPointer(result);
   }
 
-  set lastRenderTime(AVAudioTime lastRenderTime) => perform(SEL('setLastRenderTime:'), args: <dynamic>[lastRenderTime]);
+  set lastRenderTime(AVAudioTime lastRenderTime) =>
+      perform(SEL('setLastRenderTime:'), args: <dynamic>[lastRenderTime]);
   AUAudioUnit get auAudioUnit {
-    Pointer<Void> result = perform(SEL('AUAudioUnit'), decodeRetVal: false) as Pointer<Void>;
+    Pointer<Void> result =
+        perform(SEL('AUAudioUnit'), decodeRetVal: false) as Pointer<Void>;
     return AUAudioUnit.fromPointer(result);
   }
 
   ///
-  set auAudioUnit(AUAudioUnit AUAudioUnit) => perform(SEL('setAUAudioUnit:'), args: <dynamic>[AUAudioUnit]);
+  set auAudioUnit(AUAudioUnit AUAudioUnit) =>
+      perform(SEL('setAUAudioUnit:'), args: <dynamic>[AUAudioUnit]);
 
   NSTimeInterval get latency {
-    Pointer<Void> result = perform(SEL('latency'), decodeRetVal: false) as Pointer<Void>;
+    Pointer<Void> result =
+        perform(SEL('latency'), decodeRetVal: false) as Pointer<Void>;
     return NSTimeInterval.fromPointer(result);
   }
 
-  set latency(NSTimeInterval latency) => perform(SEL('setLatency:'), args: <dynamic>[latency]);
+  set latency(NSTimeInterval latency) =>
+      perform(SEL('setLatency:'), args: <dynamic>[latency]);
 
   NSTimeInterval get outputPresentationLatency {
-    Pointer<Void> result = perform(SEL('outputPresentationLatency'), decodeRetVal: false) as Pointer<Void>;
+    Pointer<Void> result =
+        perform(SEL('outputPresentationLatency'), decodeRetVal: false)
+            as Pointer<Void>;
     return NSTimeInterval.fromPointer(result);
   }
 
   @NativeAvailable(macos: '10.13', ios: '11.0', watchos: '4.0', tvos: '11.0')
   set outputPresentationLatency(NSTimeInterval outputPresentationLatency) =>
-      perform(SEL('setOutputPresentationLatency:'), args: <dynamic>[outputPresentationLatency]);
+      perform(SEL('setOutputPresentationLatency:'),
+          args: <dynamic>[outputPresentationLatency]);
 
   void reset() {
     perform(SEL('reset'));
   }
 
   AVAudioFormat inputFormatForBus(AVAudioNodeBus bus) {
-    Pointer<Void> result =
-        perform(SEL('inputFormatForBus:'), args: <dynamic>[bus], decodeRetVal: false) as Pointer<Void>;
+    Pointer<Void> result = perform(SEL('inputFormatForBus:'),
+        args: <dynamic>[bus], decodeRetVal: false) as Pointer<Void>;
     return AVAudioFormat.fromPointer(result);
   }
 
   AVAudioFormat outputFormatForBus(AVAudioNodeBus bus) {
-    Pointer<Void> result =
-        perform(SEL('outputFormatForBus:'), args: <dynamic>[bus], decodeRetVal: false) as Pointer<Void>;
+    Pointer<Void> result = perform(SEL('outputFormatForBus:'),
+        args: <dynamic>[bus], decodeRetVal: false) as Pointer<Void>;
     return AVAudioFormat.fromPointer(result);
   }
 
   String nameForInputBus(AVAudioNodeBus bus) {
-    Pointer<Void> result = perform(SEL('nameForInputBus:'), args: <dynamic>[bus], decodeRetVal: false) as Pointer<Void>;
+    Pointer<Void> result = perform(SEL('nameForInputBus:'),
+        args: <dynamic>[bus], decodeRetVal: false) as Pointer<Void>;
     return NSString.fromPointer(result).raw;
   }
 
   String nameForOutputBus(AVAudioNodeBus bus) {
-    Pointer<Void> result =
-        perform(SEL('nameForOutputBus:'), args: <dynamic>[bus], decodeRetVal: false) as Pointer<Void>;
+    Pointer<Void> result = perform(SEL('nameForOutputBus:'),
+        args: <dynamic>[bus], decodeRetVal: false) as Pointer<Void>;
     return NSString.fromPointer(result).raw;
   }
 
-  void installTapOnBusBufferSizeFormatBlock(
-      AVAudioNodeBus bus, AVAudioFrameCount bufferSize, AVAudioNodeTapBlock tapBlock,
+  void installTapOnBusBufferSizeFormatBlock(AVAudioNodeBus bus,
+      AVAudioFrameCount bufferSize, AVAudioNodeTapBlock tapBlock,
       {AVAudioFormat format}) {
-    perform(SEL('installTapOnBus:bufferSize:format:block:'), args: <dynamic>[bus, bufferSize, format, tapBlock]);
+    perform(SEL('installTapOnBus:bufferSize:format:block:'),
+        args: <dynamic>[bus, bufferSize, format, tapBlock]);
   }
 
   void removeTapOnBus(AVAudioNodeBus bus) {

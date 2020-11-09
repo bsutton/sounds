@@ -55,7 +55,8 @@ const AVError avErrorMaximumFileSizeReached = AVError(-11811);
 const AVError avErrorMediaDiscontinuity = AVError(-11812);
 
 ///
-const AVError avErrorMaximumNumberOfSamplesForFileFormatReached = AVError(-11813);
+const AVError avErrorMaximumNumberOfSamplesForFileFormatReached =
+    AVError(-11813);
 
 ///
 const AVError avErrorDeviceNotConnected = AVError(-11814);
@@ -64,7 +65,8 @@ const AVError avErrorDeviceNotConnected = AVError(-11814);
 const AVError avErrorDeviceInUseByAnotherApplication = AVError(-11815);
 
 ///
-const AVError avErrorDeviceLockedForConfigurationByAnotherProcess = AVError(-11817);
+const AVError avErrorDeviceLockedForConfigurationByAnotherProcess =
+    AVError(-11817);
 
 ///
 
@@ -98,10 +100,12 @@ const AVError avErrorCompositionTrackSegmentsNotContiguous = AVError(-11824);
 const AVError avErrorInvalidCompositionTrackSegmentDuration = AVError(-11825);
 
 ///
-const AVError avErrorInvalidCompositionTrackSegmentSourceStartTime = AVError(-11826);
+const AVError avErrorInvalidCompositionTrackSegmentSourceStartTime =
+    AVError(-11826);
 
 ///
-const AVError avErrorInvalidCompositionTrackSegmentSourceDuration = AVError(-11827);
+const AVError avErrorInvalidCompositionTrackSegmentSourceDuration =
+    AVError(-11827);
 
 ///
 const AVError avErrorFileFormatNotRecognized = AVError(-11828);

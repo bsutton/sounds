@@ -21,183 +21,188 @@ import 'package:dart_native_gen/dart_native_gen.dart';
 class AVMetadataGroup extends NSObject {
   AVMetadataGroup([Class isa]) : super(isa ?? Class('AVMetadataGroup'));
   AVMetadataGroup.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
-  
+
   AVMetadataItem get items {
-Pointer<Void> result = perform(SEL('items'), decodeRetVal: false);
+    Pointer<Void> result = perform(SEL('items'), decodeRetVal: false);
     return AVMetadataItem.fromPointer(result);
+  }
 
-}
-  
   set items(AVMetadataItem items) => perform(SEL('setItems:'), args: [items]);
-
 }
 
 extension AVMetadataGroupAVMetadataGroupIdentification on AVMetadataGroup {
   @NativeAvailable(macos: '10.11.3', ios: '9.3', tvos: '9.3', watchos: '2.3')
   String get classifyingLabel {
-Pointer<Void> result = perform(SEL('classifyingLabel'), decodeRetVal: false);
+    Pointer<Void> result =
+        perform(SEL('classifyingLabel'), decodeRetVal: false);
     return NSString.fromPointer(result).raw;
+  }
 
-}
   @NativeAvailable(macos: '10.11.3', ios: '9.3', tvos: '9.3', watchos: '2.3')
-  set classifyingLabel(String classifyingLabel) => perform(SEL('setClassifyingLabel:'), args: [classifyingLabel]);
+  set classifyingLabel(String classifyingLabel) =>
+      perform(SEL('setClassifyingLabel:'), args: [classifyingLabel]);
   @NativeAvailable(macos: '10.11.3', ios: '9.3', tvos: '9.3', watchos: '2.3')
   String get uniqueID {
-Pointer<Void> result = perform(SEL('uniqueID'), decodeRetVal: false);
+    Pointer<Void> result = perform(SEL('uniqueID'), decodeRetVal: false);
     return NSString.fromPointer(result).raw;
+  }
 
-}
   @NativeAvailable(macos: '10.11.3', ios: '9.3', tvos: '9.3', watchos: '2.3')
-  set uniqueID(String uniqueID) => perform(SEL('setUniqueID:'), args: [uniqueID]);
-
+  set uniqueID(String uniqueID) =>
+      perform(SEL('setUniqueID:'), args: [uniqueID]);
 }
 
 @NativeAvailable(macos: '10.7', ios: '4.3', tvos: '9.0', watchos: '1.0')
 @native
-class AVTimedMetadataGroup extends AVMetadataGroup with NSCopying,NSMutableCopying {
-  AVTimedMetadataGroup([Class isa]) : super(isa ?? Class('AVTimedMetadataGroup'));
+class AVTimedMetadataGroup extends AVMetadataGroup
+    with NSCopying, NSMutableCopying {
+  AVTimedMetadataGroup([Class isa])
+      : super(isa ?? Class('AVTimedMetadataGroup'));
   AVTimedMetadataGroup.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
-  
+
   CMTimeRange get timeRange {
-Pointer<Void> result = perform(SEL('timeRange'), decodeRetVal: false);
+    Pointer<Void> result = perform(SEL('timeRange'), decodeRetVal: false);
     return CMTimeRange.fromPointer(result);
+  }
 
-}
-  
-  set timeRange(CMTimeRange timeRange) => perform(SEL('setTimeRange:'), args: [timeRange]);
-  
+  set timeRange(CMTimeRange timeRange) =>
+      perform(SEL('setTimeRange:'), args: [timeRange]);
+
   AVMetadataItem get items {
-Pointer<Void> result = perform(SEL('items'), decodeRetVal: false);
+    Pointer<Void> result = perform(SEL('items'), decodeRetVal: false);
     return AVMetadataItem.fromPointer(result);
+  }
 
-}
-  
   set items(AVMetadataItem items) => perform(SEL('setItems:'), args: [items]);
-  AVTimedMetadataGroup.initWithItemsTimeRange(AVMetadataItem items, CMTimeRange timeRange)
-     : super.fromPointer(_initWithItemsTimeRange(items,timeRange));
+  AVTimedMetadataGroup.initWithItemsTimeRange(
+      AVMetadataItem items, CMTimeRange timeRange)
+      : super.fromPointer(_initWithItemsTimeRange(items, timeRange));
 
-  static Pointer<Void> _initWithItemsTimeRange(AVMetadataItem items, CMTimeRange timeRange) {
+  static Pointer<Void> _initWithItemsTimeRange(
+      AVMetadataItem items, CMTimeRange timeRange) {
     Pointer<Void> target = alloc(Class('AVTimedMetadataGroup'));
     SEL sel = SEL('initWithItems:timeRange:');
-    return msgSend(target, sel, args: [items,timeRange], decodeRetVal: false);
+    return msgSend(target, sel, args: [items, timeRange], decodeRetVal: false);
   }
 
   AVTimedMetadataGroup.initWithSampleBuffer(CMSampleBufferRef sampleBuffer)
-     : super.fromPointer(_initWithSampleBuffer(sampleBuffer));
+      : super.fromPointer(_initWithSampleBuffer(sampleBuffer));
 
   static Pointer<Void> _initWithSampleBuffer(CMSampleBufferRef sampleBuffer) {
     Pointer<Void> target = alloc(Class('AVTimedMetadataGroup'));
     SEL sel = SEL('initWithSampleBuffer:');
     return msgSend(target, sel, args: [sampleBuffer], decodeRetVal: false);
   }
-
-
 }
 
-extension AVTimedMetadataGroupAVTimedMetadataGroupSerializationSupport on AVTimedMetadataGroup {
+extension AVTimedMetadataGroupAVTimedMetadataGroupSerializationSupport
+    on AVTimedMetadataGroup {
   @NativeAvailable(macos: '10.10', ios: '8.0', tvos: '9.0', watchos: '1.0')
   CMMetadataFormatDescriptionRef copyFormatDescription() {
-    Pointer<Void> result = perform(SEL('copyFormatDescription'), decodeRetVal: false);
+    Pointer<Void> result =
+        perform(SEL('copyFormatDescription'), decodeRetVal: false);
     return CMMetadataFormatDescriptionRef.fromPointer(result);
   }
-
 }
 
 @NativeAvailable(macos: '10.7', ios: '4.3', tvos: '9.0', watchos: '1.0')
 @native
 class AVMutableTimedMetadataGroup extends AVTimedMetadataGroup {
-  AVMutableTimedMetadataGroup([Class isa]) : super(isa ?? Class('AVMutableTimedMetadataGroup'));
-  AVMutableTimedMetadataGroup.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
-  
+  AVMutableTimedMetadataGroup([Class isa])
+      : super(isa ?? Class('AVMutableTimedMetadataGroup'));
+  AVMutableTimedMetadataGroup.fromPointer(Pointer<Void> ptr)
+      : super.fromPointer(ptr);
+
   CMTimeRange get timeRange {
-Pointer<Void> result = perform(SEL('timeRange'), decodeRetVal: false);
+    Pointer<Void> result = perform(SEL('timeRange'), decodeRetVal: false);
     return CMTimeRange.fromPointer(result);
+  }
 
-}
-  
-  set timeRange(CMTimeRange timeRange) => perform(SEL('setTimeRange:'), args: [timeRange]);
-  
+  set timeRange(CMTimeRange timeRange) =>
+      perform(SEL('setTimeRange:'), args: [timeRange]);
+
   AVMetadataItem get items {
-Pointer<Void> result = perform(SEL('items'), decodeRetVal: false);
+    Pointer<Void> result = perform(SEL('items'), decodeRetVal: false);
     return AVMetadataItem.fromPointer(result);
+  }
 
-}
-  
   set items(AVMetadataItem items) => perform(SEL('setItems:'), args: [items]);
-
 }
 
 @NativeAvailable(macos: '10.11', ios: '9.0', tvos: '9.0', watchos: '2.0')
 @native
-class AVDateRangeMetadataGroup extends AVMetadataGroup with NSCopying,NSMutableCopying {
-  AVDateRangeMetadataGroup([Class isa]) : super(isa ?? Class('AVDateRangeMetadataGroup'));
-  AVDateRangeMetadataGroup.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
-  
+class AVDateRangeMetadataGroup extends AVMetadataGroup
+    with NSCopying, NSMutableCopying {
+  AVDateRangeMetadataGroup([Class isa])
+      : super(isa ?? Class('AVDateRangeMetadataGroup'));
+  AVDateRangeMetadataGroup.fromPointer(Pointer<Void> ptr)
+      : super.fromPointer(ptr);
+
   NSDate get startDate {
-Pointer<Void> result = perform(SEL('startDate'), decodeRetVal: false);
+    Pointer<Void> result = perform(SEL('startDate'), decodeRetVal: false);
     return NSDate.fromPointer(result);
-
-}
-  
-  set startDate(NSDate startDate) => perform(SEL('setStartDate:'), args: [startDate]);
-  
-  NSDate get endDate {
-Pointer<Void> result = perform(SEL('endDate'), decodeRetVal: false);
-    return NSDate.fromPointer(result);
-
-}
-  
-  set endDate(NSDate endDate) => perform(SEL('setEndDate:'), args: [endDate]);
-  
-  AVMetadataItem get items {
-Pointer<Void> result = perform(SEL('items'), decodeRetVal: false);
-    return AVMetadataItem.fromPointer(result);
-
-}
-  
-  set items(AVMetadataItem items) => perform(SEL('setItems:'), args: [items]);
-  AVDateRangeMetadataGroup(AVMetadataItem items, NSDate startDate, {NSDate endDate})
-     : super.fromPointer(_initWithItemsStartDateEndDate(items,startDate,endDate));
-
-  static Pointer<Void> _initWithItemsStartDateEndDate(AVMetadataItem items, NSDate startDate, {NSDate endDate}) {
-    Pointer<Void> target = alloc(Class('AVDateRangeMetadataGroup'));
-    SEL sel = SEL('initWithItems:startDate:endDate:');
-    return msgSend(target, sel, args: [items,startDate,endDate], decodeRetVal: false);
   }
 
+  set startDate(NSDate startDate) =>
+      perform(SEL('setStartDate:'), args: [startDate]);
 
+  NSDate get endDate {
+    Pointer<Void> result = perform(SEL('endDate'), decodeRetVal: false);
+    return NSDate.fromPointer(result);
+  }
+
+  set endDate(NSDate endDate) => perform(SEL('setEndDate:'), args: [endDate]);
+
+  AVMetadataItem get items {
+    Pointer<Void> result = perform(SEL('items'), decodeRetVal: false);
+    return AVMetadataItem.fromPointer(result);
+  }
+
+  set items(AVMetadataItem items) => perform(SEL('setItems:'), args: [items]);
+  AVDateRangeMetadataGroup(AVMetadataItem items, NSDate startDate,
+      {NSDate endDate})
+      : super.fromPointer(
+            _initWithItemsStartDateEndDate(items, startDate, endDate));
+
+  static Pointer<Void> _initWithItemsStartDateEndDate(
+      AVMetadataItem items, NSDate startDate,
+      {NSDate endDate}) {
+    Pointer<Void> target = alloc(Class('AVDateRangeMetadataGroup'));
+    SEL sel = SEL('initWithItems:startDate:endDate:');
+    return msgSend(target, sel,
+        args: [items, startDate, endDate], decodeRetVal: false);
+  }
 }
 
 @NativeAvailable(macos: '10.11', ios: '9.0', tvos: '9.0', watchos: '2.0')
 @native
 class AVMutableDateRangeMetadataGroup extends AVDateRangeMetadataGroup {
-  AVMutableDateRangeMetadataGroup([Class isa]) : super(isa ?? Class('AVMutableDateRangeMetadataGroup'));
-  AVMutableDateRangeMetadataGroup.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
-  
+  AVMutableDateRangeMetadataGroup([Class isa])
+      : super(isa ?? Class('AVMutableDateRangeMetadataGroup'));
+  AVMutableDateRangeMetadataGroup.fromPointer(Pointer<Void> ptr)
+      : super.fromPointer(ptr);
+
   NSDate get startDate {
-Pointer<Void> result = perform(SEL('startDate'), decodeRetVal: false);
+    Pointer<Void> result = perform(SEL('startDate'), decodeRetVal: false);
     return NSDate.fromPointer(result);
+  }
 
-}
-  
-  set startDate(NSDate startDate) => perform(SEL('setStartDate:'), args: [startDate]);
-  
+  set startDate(NSDate startDate) =>
+      perform(SEL('setStartDate:'), args: [startDate]);
+
   NSDate get endDate {
-Pointer<Void> result = perform(SEL('endDate'), decodeRetVal: false);
+    Pointer<Void> result = perform(SEL('endDate'), decodeRetVal: false);
     return NSDate.fromPointer(result);
+  }
 
-}
-  
   set endDate(NSDate endDate) => perform(SEL('setEndDate:'), args: [endDate]);
-  
+
   AVMetadataItem get items {
-Pointer<Void> result = perform(SEL('items'), decodeRetVal: false);
+    Pointer<Void> result = perform(SEL('items'), decodeRetVal: false);
     return AVMetadataItem.fromPointer(result);
+  }
 
-}
-  
   set items(AVMetadataItem items) => perform(SEL('setItems:'), args: [items]);
-
 }
 // You can uncomment this line when this package is ready.
 // import 'package:avfcore/avtimedmetadatagroup.dart';

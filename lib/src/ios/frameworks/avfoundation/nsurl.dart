@@ -17,1058 +17,1000 @@ import 'hacks.dart';
 // import 'package:foundation/nsitemprovider.dart';
 
 // typedef NSString * NSURLResourceKey NS_EXTENSIBLE_STRING_ENUM;
-typedef NSURLResourceKey  = String Function(String);
+typedef NSURLResourceKey = String Function(String);
 
 @native
-class NSURL extends NSObject with NSSecureCoding,NSCopying {
-  NSURL([Class isa]) : super(isa ?? Class('NSURL'));
-  NSURL.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
-  /// 
-  NSData get dataRepresentation {
-Pointer<Void> result = perform(SEL('dataRepresentation'), decodeRetVal: false);
-    return NSData.fromPointer(result);
 
-}
-  /// 
-  set dataRepresentation(NSData dataRepresentation) => perform(SEL('setDataRepresentation:'), args:  <dynamic>[dataRepresentation]);
-  
+///
+// ignore: prefer_mixin
+class NSURL extends NSObject with NSSecureCoding, NSCopying {
+  ///
+  NSURL([Class isa]) : super(isa ?? Class('NSURL'));
+
+  ///
+  NSURL.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
+
+  ///
+  NSData get dataRepresentation {
+    var result = perform(SEL('dataRepresentation'), decodeRetVal: false) as Pointer<Void>;
+    return NSData.fromPointer(result);
+  }
+
+  ///
+  set dataRepresentation(NSData dataRepresentation) =>
+      perform(SEL('setDataRepresentation:'), args: <dynamic>[dataRepresentation]);
+
   ///
   String get absoluteString {
-Pointer<Void> result = perform(SEL('absoluteString'), decodeRetVal: false);
+    var result = perform(SEL('absoluteString'), decodeRetVal: false) as Pointer<Void>;
     return NSString.fromPointer(result).raw;
+  }
 
-}
-  
-  /// 
-  set absoluteString(String absoluteString) 
-  => perform(SEL('setAbsoluteString:'), args: <dynamic>[absoluteString]);
-  
+  ///
+  set absoluteString(String absoluteString) => perform(SEL('setAbsoluteString:'), args: <dynamic>[absoluteString]);
+
   ///
   String get relativeString {
-var result = perform(SEL('relativeString'), decodeRetVal: false)
-  as Pointer<Void> ;
+    var result = perform(SEL('relativeString'), decodeRetVal: false) as Pointer<Void>;
     return NSString.fromPointer(result).raw;
+  }
 
-}
-  
-  set relativeString(String relativeString) => perform(SEL('setRelativeString:'), args:  <dynamic>[relativeString]);
-  
-  /// 
-  NSURL get baseURL {
-var result = perform(SEL('baseURL'), decodeRetVal: false)
-as Pointer<Void> ;
-    return NSURL.fromPointer(result);
+  set relativeString(String relativeString) => perform(SEL('setRelativeString:'), args: <dynamic>[relativeString]);
 
-}
-  
   ///
-  set baseURL(NSURL baseURL) => perform(SEL('setBaseURL:'), args:  <dynamic>[baseURL]);
-  
+  NSURL get baseURL {
+    var result = perform(SEL('baseURL'), decodeRetVal: false) as Pointer<Void>;
+    return NSURL.fromPointer(result);
+  }
+
+  ///
+  set baseURL(NSURL baseURL) => perform(SEL('setBaseURL:'), args: <dynamic>[baseURL]);
+
   ///
   NSURL get absoluteURL {
-var result = perform(SEL('absoluteURL'), decodeRetVal: false)
-as Pointer<Void> ;
+    var result = perform(SEL('absoluteURL'), decodeRetVal: false) as Pointer<Void>;
     return NSURL.fromPointer(result);
+  }
 
-}
-  
-  /// 
-  set absoluteURL(NSURL absoluteURL) 
-  => perform(SEL('setAbsoluteURL:'), args:  <dynamic>[absoluteURL]);
-  
+  ///
+  set absoluteURL(NSURL absoluteURL) => perform(SEL('setAbsoluteURL:'), args: <dynamic>[absoluteURL]);
+
+  ///
   String get scheme {
-Pointer<Void> result = perform(SEL('scheme'), decodeRetVal: false);
+    var result = perform(SEL('scheme'), decodeRetVal: false) as Pointer<Void>;
     return NSString.fromPointer(result).raw;
+  }
 
-}
-  
-  /// 
-  set scheme(String scheme) 
-  => perform(SEL('setScheme:'), args:  <dynamic>[scheme]);
-  
+  ///
+  set scheme(String scheme) => perform(SEL('setScheme:'), args: <dynamic>[scheme]);
+
   ///
   String get resourceSpecifier {
-var result = perform(SEL('resourceSpecifier'), decodeRetVal: false)
-as Pointer<Void> ;
+    var result = perform(SEL('resourceSpecifier'), decodeRetVal: false) as Pointer<Void>;
     return NSString.fromPointer(result).raw;
+  }
 
-}
-  
-  set resourceSpecifier(String resourceSpecifier) => perform(SEL('setResourceSpecifier:'), args:  <dynamic>[resourceSpecifier]);
-  
+  set resourceSpecifier(String resourceSpecifier) =>
+      perform(SEL('setResourceSpecifier:'), args: <dynamic>[resourceSpecifier]);
+
   ///
   String get host {
-var result = perform(SEL('host'), decodeRetVal: false)
-as Pointer<Void> ;
+    var result = perform(SEL('host'), decodeRetVal: false) as Pointer<Void>;
     return NSString.fromPointer(result).raw;
+  }
 
-}
-  
-  set host(String host) => perform(SEL('setHost:'), args:  <dynamic>[host]);
-  
+  set host(String host) => perform(SEL('setHost:'), args: <dynamic>[host]);
+
   ///
   NSNumber get port {
-var result = perform(SEL('port'), decodeRetVal: false)
-as Pointer<Void> ;
+    var result = perform(SEL('port'), decodeRetVal: false) as Pointer<Void>;
     return NSNumber.fromPointer(result);
+  }
 
-}
-  
-  set port(NSNumber port) => perform(SEL('setPort:'), args:  <dynamic>[port]);
-  
+  set port(NSNumber port) => perform(SEL('setPort:'), args: <dynamic>[port]);
+
+  ///
   String get user {
-Pointer<Void> result = perform(SEL('user'), decodeRetVal: false);
+    var result = perform(SEL('user'), decodeRetVal: false) as Pointer<Void>;
     return NSString.fromPointer(result).raw;
+  }
 
-}
-  
-  set user(String user) => perform(SEL('setUser:'), args:  <dynamic>[user]);
-  
+  ///
+  set user(String user) => perform(SEL('setUser:'), args: <dynamic>[user]);
+
   ///
   String get password {
-var result = perform(SEL('password'), decodeRetVal: false)
-as Pointer<Void> ;
+    var result = perform(SEL('password'), decodeRetVal: false) as Pointer<Void>;
     return NSString.fromPointer(result).raw;
+  }
 
-}
-///
-  
-  set password(String password) => perform(SEL('setPassword:'), args:  <dynamic>[password]);
-  
+  ///
+
+  set password(String password) => perform(SEL('setPassword:'), args: <dynamic>[password]);
+
   ///
   String get path {
-var result = perform(SEL('path'), decodeRetVal: false)
-as Pointer<Void> ;
+    var result = perform(SEL('path'), decodeRetVal: false) as Pointer<Void>;
     return NSString.fromPointer(result).raw;
+  }
 
-}
-  
-  set path(String path) => perform(SEL('setPath:'), args:  <dynamic>[path]);
-  
+  set path(String path) => perform(SEL('setPath:'), args: <dynamic>[path]);
+
   ///
   String get fragment {
-var result = perform(SEL('fragment'), decodeRetVal: false)
-as Pointer<Void> ;
+    var result = perform(SEL('fragment'), decodeRetVal: false) as Pointer<Void>;
     return NSString.fromPointer(result).raw;
+  }
 
-}
-  
   ///
-  set fragment(String fragment)
-   => perform(SEL('setFragment:'), args:  <dynamic>[fragment]);
+  set fragment(String fragment) => perform(SEL('setFragment:'), args: <dynamic>[fragment]);
 
-  
+  ///
   String get query {
-Pointer<Void> result = perform(SEL('query'), decodeRetVal: false);
+    var result = perform(SEL('query'), decodeRetVal: false) as Pointer<Void>;
     return NSString.fromPointer(result).raw;
+  }
 
-}
-  
   ///
-  set query(String query) => perform(SEL('setQuery:'), args:  <dynamic>[query]);
-  
+  set query(String query) => perform(SEL('setQuery:'), args: <dynamic>[query]);
+
   ///
   String get relativePath {
-var result = perform(SEL('relativePath'), decodeRetVal: false)
-as Pointer<Void> ;
+    var result = perform(SEL('relativePath'), decodeRetVal: false) as Pointer<Void>;
     return NSString.fromPointer(result).raw;
+  }
 
-}
-  
   ///
-  set relativePath(String relativePath)
-  => perform(SEL('setRelativePath:'), args:  <dynamic>[relativePath]);
+  set relativePath(String relativePath) => perform(SEL('setRelativePath:'), args: <dynamic>[relativePath]);
+
   ///
   bool get hasDirectoryPath {
-return perform(SEL('hasDirectoryPath')) as bool;
+    return perform(SEL('hasDirectoryPath')) as bool;
+  }
 
-}
-///
-  set hasDirectoryPath(bool hasDirectoryPath) 
-  => perform(SEL('setHasDirectoryPath:'), args:  <dynamic>[hasDirectoryPath]);
+  ///
+  set hasDirectoryPath(bool hasDirectoryPath) =>
+      perform(SEL('setHasDirectoryPath:'), args: <dynamic>[hasDirectoryPath]);
 
   ///
   String get fileSystemRepresentation {
-return perform(SEL('fileSystemRepresentation')) as String;
+    return perform(SEL('fileSystemRepresentation')) as String;
+  }
 
-}
-  set fileSystemRepresentation(String fileSystemRepresentation) 
-  => perform(SEL('setFileSystemRepresentation:')
-  , args:  <dynamic>[fileSystemRepresentation]);
-  
-  bool get fileURL {
-return perform(SEL('fileURL')) as bool;
+  set fileSystemRepresentation(String fileSystemRepresentation) =>
+      perform(SEL('setFileSystemRepresentation:'), args: <dynamic>[fileSystemRepresentation]);
 
-}
-  
   ///
-  set fileURL(bool fileURL) => perform(SEL('setFileURL:'), args:  <dynamic>[fileURL]);
-  
+  bool get fileURL {
+    return perform(SEL('fileURL')) as bool;
+  }
+
+  ///
+  set fileURL(bool fileURL) => perform(SEL('setFileURL:'), args: <dynamic>[fileURL]);
+
   ///
   NSURL get standardizedURL {
-var result = perform(SEL('standardizedURL'), decodeRetVal: false)
-as Pointer<Void> ;
+    var result = perform(SEL('standardizedURL'), decodeRetVal: false) as Pointer<Void>;
     return NSURL.fromPointer(result);
+  }
 
-}
-  
-  set standardizedURL(NSURL standardizedURL) => perform(SEL('setStandardizedURL:'), args:  <dynamic>[standardizedURL]);
+  set standardizedURL(NSURL standardizedURL) => perform(SEL('setStandardizedURL:'), args: <dynamic>[standardizedURL]);
+
   ///
   NSURL get filePathURL {
-var result = perform(SEL('filePathURL'), decodeRetVal: false)
-as Pointer<Void> ;
+    var result = perform(SEL('filePathURL'), decodeRetVal: false) as Pointer<Void>;
     return NSURL.fromPointer(result);
+  }
 
+  ///
+  set filePathURL(NSURL filePathURL) => perform(SEL('setFilePathURL:'), args: <dynamic>[filePathURL]);
 
-}
-///
-  set filePathURL(NSURL filePathURL) 
-  => perform(SEL('setFilePathURL:'), args:  <dynamic>[filePathURL]);
   ///
   NSURL.initWithSchemeHostPath(String scheme, String path, {String host})
-     : super.fromPointer(_initWithSchemeHostPath(scheme,path, host: host));
+      : super.fromPointer(_initWithSchemeHostPath(scheme, path, host: host));
 
-///
-  static Pointer<Void> _initWithSchemeHostPath(String scheme, String path
-  , {String host}) {
-    var target = alloc(Class('NSURL')) ;
-   var sel = SEL('initWithScheme:host:path:');
-
-    return msgSend(target, sel
-    , args:  <dynamic>[scheme,host,path], decodeRetVal: false)  
-    as  Pointer<Void>;
-  }
-
-///
-  NSURL.initFileURLWithPathIsDirectoryRelativeToURL(String path
-  , {bool isDir, NSURL baseURL})
-     : super.fromPointer(
-       _initFileURLWithPathIsDirectoryRelativeToURL(path,isDir
-       ,baseURL: baseURL));
-
-  static Pointer<Void> _initFileURLWithPathIsDirectoryRelativeToURL(String path
-  , bool isDir, {NSURL baseURL}) {
-    var target = alloc(Class('NSURL')) ;
-    var sel = SEL('initFileURLWithPath:isDirectory:relativeToURL:');
-    return msgSend(target, sel,
-     args:  <dynamic>[path,isDir,baseURL]
-     , decodeRetVal: false) as Pointer<Void> ;
-  }
-
-///
-  NSURL.initFileURLWithPathRelativeToURL(String path, {NSURL baseURL})
-     : super.fromPointer(
-       _initFileURLWithPathRelativeToURL(path,baseURL: baseURL));
-
-/// 
-  static Pointer<Void> _initFileURLWithPathRelativeToURL(String path
-  , {NSURL baseURL}) {
-    var target = alloc(Class('NSURL')) ;
-    var sel = SEL('initFileURLWithPath:relativeToURL:');
-    return msgSend(target, sel
-    , args:  <dynamic>[path,baseURL], decodeRetVal: false) as Pointer<Void> ;
-  }
-
-///
-  NSURL.initFileURLWithPathIsDirectory(String path, {bool isDir})
-     : super.fromPointer(_initFileURLWithPathIsDirectory(path,isDir));
-
-  static Pointer<Void> _initFileURLWithPathIsDirectory(String path
-  , bool isDir) {
+  ///
+  static Pointer<Void> _initWithSchemeHostPath(String scheme, String path, {String host}) {
     var target = alloc(Class('NSURL'));
-   var sel = SEL('initFileURLWithPath:isDirectory:');
-    return msgSend(target, sel
-    , args:  <dynamic>[path,isDir], decodeRetVal: false)  as  Pointer<Void>;
+    var sel = SEL('initWithScheme:host:path:');
+
+    return msgSend(target, sel, args: <dynamic>[scheme, host, path], decodeRetVal: false) as Pointer<Void>;
   }
 
-///
-  NSURL.initFileURLWithPath(String path)
-     : super.fromPointer(_initFileURLWithPath(path));
+  ///
+  NSURL.initFileURLWithPathIsDirectoryRelativeToURL(String path, {bool isDir, NSURL baseURL})
+      : super.fromPointer(_initFileURLWithPathIsDirectoryRelativeToURL(path, isDir, baseURL: baseURL));
 
+  static Pointer<Void> _initFileURLWithPathIsDirectoryRelativeToURL(String path, bool isDir, {NSURL baseURL}) {
+    var target = alloc(Class('NSURL'));
+    var sel = SEL('initFileURLWithPath:isDirectory:relativeToURL:');
+    return msgSend(target, sel, args: <dynamic>[path, isDir, baseURL], decodeRetVal: false) as Pointer<Void>;
+  }
+
+  ///
+  NSURL.initFileURLWithPathRelativeToURL(String path, {NSURL baseURL})
+      : super.fromPointer(_initFileURLWithPathRelativeToURL(path, baseURL: baseURL));
+
+  ///
+  static Pointer<Void> _initFileURLWithPathRelativeToURL(String path, {NSURL baseURL}) {
+    var target = alloc(Class('NSURL'));
+    var sel = SEL('initFileURLWithPath:relativeToURL:');
+    return msgSend(target, sel, args: <dynamic>[path, baseURL], decodeRetVal: false) as Pointer<Void>;
+  }
+
+  ///
+  NSURL.initFileURLWithPathIsDirectory(String path, {bool isDir})
+      : super.fromPointer(_initFileURLWithPathIsDirectory(path, isDir));
+
+  static Pointer<Void> _initFileURLWithPathIsDirectory(String path, bool isDir) {
+    var target = alloc(Class('NSURL'));
+    var sel = SEL('initFileURLWithPath:isDirectory:');
+    return msgSend(target, sel, args: <dynamic>[path, isDir], decodeRetVal: false) as Pointer<Void>;
+  }
+
+  ///
+  NSURL.initFileURLWithPath(String path) : super.fromPointer(_initFileURLWithPath(path));
 
   static Pointer<Void> _initFileURLWithPath(String path) {
     var target = alloc(Class('NSURL'));
-   var sel = SEL('initFileURLWithPath:');
-    return msgSend(target, sel, args:  <dynamic>[path], decodeRetVal: false)
-     as Pointer<Void> ;
+    var sel = SEL('initFileURLWithPath:');
+    return msgSend(target, sel, args: <dynamic>[path], decodeRetVal: false) as Pointer<Void>;
   }
 
-  /// 
-  static NSURL fileURLWithPathIsDirectoryRelativeToURL(String path
-  , {bool isDir, NSURL baseURL}) {
-    var result = Class('NSURL')
-    .perform(SEL('fileURLWithPath:isDirectory:relativeToURL:')
-    , args:  <dynamic>[path,isDir,baseURL], decodeRetVal: false)
-     as  Pointer<Void>;
+  ///
+  static NSURL fileURLWithPathIsDirectoryRelativeToURL(String path, {bool isDir, NSURL baseURL}) {
+    var result = Class('NSURL').perform(SEL('fileURLWithPath:isDirectory:relativeToURL:'),
+        args: <dynamic>[path, isDir, baseURL], decodeRetVal: false) as Pointer<Void>;
     return NSURL.fromPointer(result);
   }
+
   ///
   static NSURL fileURLWithPathRelativeToURL(String path, {NSURL baseURL}) {
-    var result = Class('NSURL')
-    .perform(SEL('fileURLWithPath:relativeToURL:')
-    , args:  <dynamic>[path,baseURL], decodeRetVal: false)as Pointer<Void> ;
+    var result = Class('NSURL').perform(SEL('fileURLWithPath:relativeToURL:'),
+        args: <dynamic>[path, baseURL], decodeRetVal: false) as Pointer<Void>;
     return NSURL.fromPointer(result);
   }
+
   ///
   static NSURL fileURLWithPathIsDirectory(String path, {bool isDir}) {
-
-    var result = Class('NSURL')
-    .perform(SEL('fileURLWithPath:isDirectory:')
-    , args:  <dynamic>[path,isDir], decodeRetVal: false) as  Pointer<Void> ;
+    var result =
+        Class('NSURL').perform(SEL('fileURLWithPath:isDirectory:'), args: <dynamic>[path, isDir], decodeRetVal: false)
+            as Pointer<Void>;
     return NSURL.fromPointer(result);
   }
-  
+
   ///
   static NSURL fileURLWithPath(String path) {
-    var result = Class('NSURL').perform(SEL('fileURLWithPath:')
-    , args:  <dynamic>[path], decodeRetVal: false) as  Pointer<Void>;
+    var result =
+        Class('NSURL').perform(SEL('fileURLWithPath:'), args: <dynamic>[path], decodeRetVal: false) as Pointer<Void>;
     return NSURL.fromPointer(result);
   }
-  /// 
-  NSURL.initFileURLWithFileSystemRepresentationIsDirectoryRelativeToURL(
-    String path, {bool isDir, NSURL baseURL})
-     : super.fromPointer(
-       _initFileURLWithFileSystemRepresentationIsDirectoryRelativeToURL(
-         path,isDir, baseURL: baseURL));
 
-///
-  static Pointer<Void> 
-  _initFileURLWithFileSystemRepresentationIsDirectoryRelativeToURL(
-    String path, bool isDir, {NSURL baseURL}) {
+  ///
+  NSURL.initFileURLWithFileSystemRepresentationIsDirectoryRelativeToURL(String path, {bool isDir, NSURL baseURL})
+      : super.fromPointer(
+            _initFileURLWithFileSystemRepresentationIsDirectoryRelativeToURL(path, isDir, baseURL: baseURL));
+
+  ///
+  static Pointer<Void> _initFileURLWithFileSystemRepresentationIsDirectoryRelativeToURL(String path, bool isDir,
+      {NSURL baseURL}) {
     var target = alloc(Class('NSURL'));
 
-   var sel 
-   = SEL('initFileURLWithFileSystemRepresentation:isDirectory:relativeToURL:');
-    return msgSend(target, sel
-    , args:  <dynamic>[path,isDir,baseURL], decodeRetVal: false)  
-    as  Pointer<Void>;
+    var sel = SEL('initFileURLWithFileSystemRepresentation:isDirectory:relativeToURL:');
+    return msgSend(target, sel, args: <dynamic>[path, isDir, baseURL], decodeRetVal: false) as Pointer<Void>;
   }
 
-/// 
-  static NSURL fileURLWithFileSystemRepresentationIsDirectoryRelativeToURL(
-    String path, {bool isDir, NSURL baseURL}) {
-    var result = Class('NSURL')
-    .perform(
-      SEL('fileURLWithFileSystemRepresentation:isDirectory:relativeToURL:')
-    , args:  <dynamic>[path,isDir,baseURL], decodeRetVal: false)  
-    as  Pointer<Void>;
+  ///
+  static NSURL fileURLWithFileSystemRepresentationIsDirectoryRelativeToURL(String path, {bool isDir, NSURL baseURL}) {
+    var result = Class('NSURL').perform(SEL('fileURLWithFileSystemRepresentation:isDirectory:relativeToURL:'),
+        args: <dynamic>[path, isDir, baseURL], decodeRetVal: false) as Pointer<Void>;
     return NSURL.fromPointer(result);
   }
+
   ///
-  NSURL.initWithString(String urlString)
-     : super.fromPointer(_initWithString(urlString));
+  NSURL.initWithString(String urlString) : super.fromPointer(_initWithString(urlString));
 
   static Pointer<Void> _initWithString(String urlString) {
     var target = alloc(Class('NSURL'));
-   var sel = SEL('initWithString:');
-    return msgSend(target, sel
-    , args:  <dynamic>[urlString], decodeRetVal: false) as  Pointer<Void>;
+    var sel = SEL('initWithString:');
+    return msgSend(target, sel, args: <dynamic>[urlString], decodeRetVal: false) as Pointer<Void>;
   }
 
-/// 
+  ///
   NSURL.initWithStringRelativeToURL(String urlString, {NSURL baseURL})
-     : super.fromPointer(_initWithStringRelativeToURL(urlString
-     ,baseURL: baseURL));
+      : super.fromPointer(_initWithStringRelativeToURL(urlString, baseURL: baseURL));
 
-///
-  static Pointer<Void> _initWithStringRelativeToURL(String URLString
-  , {NSURL baseURL}) {
+  ///
+  static Pointer<Void> _initWithStringRelativeToURL(String urlString, {NSURL baseURL}) {
     var target = alloc(Class('NSURL'));
-   var sel = SEL('initWithString:relativeToURL:');
-    return msgSend(target, sel
-    , args:  <dynamic>[URLString,baseURL], decodeRetVal: false)  
-    as  Pointer<Void>;
+    var sel = SEL('initWithString:relativeToURL:');
+    return msgSend(target, sel, args: <dynamic>[urlString, baseURL], decodeRetVal: false) as Pointer<Void>;
   }
 
-  
-  /// 
+  ///
   static NSURL urlWithString(String urlString) {
-    var result = Class('NSURL').perform(SEL('URLWithString:')
-    , args:  <dynamic>[urlString], decodeRetVal: false) as  Pointer<Void>;
+    var result =
+        Class('NSURL').perform(SEL('URLWithString:'), args: <dynamic>[urlString], decodeRetVal: false) as Pointer<Void>;
     return NSURL.fromPointer(result);
   }
-  
+
   ///
   static NSURL urlWithStringRelativeToURL(String urlString, {NSURL baseURL}) {
-    var result = Class('NSURL')
-    .perform(SEL('URLWithString:relativeToURL:')
-    , args:  <dynamic>[urlString,baseURL], decodeRetVal: false)
-     as Pointer<Void>;
+    var result = Class('NSURL').perform(SEL('URLWithString:relativeToURL:'),
+        args: <dynamic>[urlString, baseURL], decodeRetVal: false) as Pointer<Void>;
     return NSURL.fromPointer(result);
   }
-  /// 
+
+  ///
   NSURL.initWithDataRepresentationRelativeToURL(NSData data, {NSURL baseURL})
-     : super.fromPointer(_initWithDataRepresentationRelativeToURL(data,
-     baseURL: baseURL));
+      : super.fromPointer(_initWithDataRepresentationRelativeToURL(data, baseURL: baseURL));
 
-/// 
-  static Pointer<Void> _initWithDataRepresentationRelativeToURL(NSData data
-  , {NSURL baseURL}) {
+  ///
+  static Pointer<Void> _initWithDataRepresentationRelativeToURL(NSData data, {NSURL baseURL}) {
     var target = alloc(Class('NSURL'));
-   var sel = SEL('initWithDataRepresentation:relativeToURL:');
-    return msgSend(target, sel
-    , args:  <dynamic>[data,baseURL], decodeRetVal: false) as Pointer<Void>;
+    var sel = SEL('initWithDataRepresentation:relativeToURL:');
+    return msgSend(target, sel, args: <dynamic>[data, baseURL], decodeRetVal: false) as Pointer<Void>;
   }
 
-  static NSURL URLWithDataRepresentationRelativeToURL(NSData data
-  , {NSURL baseURL}) {
-    var result = Class('NSURL')
-    .perform(SEL('URLWithDataRepresentation:relativeToURL:')
-    , args:  <dynamic>[data,baseURL], decodeRetVal: false)
-    as Pointer<Void>;
+  ///
+  static NSURL urlWithDataRepresentationRelativeToURL(NSData data, {NSURL baseURL}) {
+    var result = Class('NSURL').perform(SEL('URLWithDataRepresentation:relativeToURL:'),
+        args: <dynamic>[data, baseURL], decodeRetVal: false) as Pointer<Void>;
     return NSURL.fromPointer(result);
   }
-  /// 
-  NSURL.initAbsoluteURLWithDataRepresentationRelativeToURL(NSData data
-  , {NSURL baseURL})
-     : super.fromPointer(
-       _initAbsoluteURLWithDataRepresentationRelativeToURL(data
-       ,baseURL: baseURL));
 
-  static Pointer<Void> _initAbsoluteURLWithDataRepresentationRelativeToURL(
-    NSData data, {NSURL baseURL}) {
+  ///
+  NSURL.initAbsoluteURLWithDataRepresentationRelativeToURL(NSData data, {NSURL baseURL})
+      : super.fromPointer(_initAbsoluteURLWithDataRepresentationRelativeToURL(data, baseURL: baseURL));
+
+  static Pointer<Void> _initAbsoluteURLWithDataRepresentationRelativeToURL(NSData data, {NSURL baseURL}) {
     var target = alloc(Class('NSURL'));
-   var sel = SEL('initAbsoluteURLWithDataRepresentation:relativeToURL:');
-    return msgSend(target, sel
-    , args:  <dynamic>[data,baseURL], decodeRetVal: false) as Pointer<Void>;
+    var sel = SEL('initAbsoluteURLWithDataRepresentation:relativeToURL:');
+    return msgSend(target, sel, args: <dynamic>[data, baseURL], decodeRetVal: false) as Pointer<Void>;
   }
 
-  /// 
-  static NSURL absoluteURLWithDataRepresentationRelativeToURL(NSData data
-  , {NSURL baseURL}) {
-    var result = Class('NSURL')
-        .perform(SEL('absoluteURLWithDataRepresentation:relativeToURL:')
-    , args:  <dynamic>[data,baseURL], decodeRetVal: false)
-    as Pointer<Void>;
+  ///
+  static NSURL absoluteURLWithDataRepresentationRelativeToURL(NSData data, {NSURL baseURL}) {
+    var result = Class('NSURL').perform(SEL('absoluteURLWithDataRepresentation:relativeToURL:'),
+        args: <dynamic>[data, baseURL], decodeRetVal: false) as Pointer<Void>;
     return NSURL.fromPointer(result);
   }
-  /// 
-  bool getFileSystemRepresentationMaxLength(String buffer
-  , NSUInteger maxBufferLength) {
-    return perform(SEL('getFileSystemRepresentation:maxLength:')
-    , args:  <dynamic>[buffer,maxBufferLength]) as bool;
+
+  ///
+  bool getFileSystemRepresentationMaxLength(String buffer, NSUInteger maxBufferLength) {
+    return perform(SEL('getFileSystemRepresentation:maxLength:'), args: <dynamic>[buffer, maxBufferLength]) as bool;
   }
 
-/// 
+  ///
   bool checkResourceIsReachableAndReturnError(NSObjectRef<NSError> error) {
-    return perform(SEL('checkResourceIsReachableAndReturnError:')
-    , args:  <dynamic>[error]) as bool;
+    return perform(SEL('checkResourceIsReachableAndReturnError:'), args: <dynamic>[error]) as bool;
   }
-  /// 
+
+  ///
   bool isFileReferenceURL() {
     return perform(SEL('isFileReferenceURL')) as bool;
   }
+
   ///
-  NSURL.fileReferenceURL()
-     : super.fromPointer(_fileReferenceURL());
+  NSURL.fileReferenceURL() : super.fromPointer(_fileReferenceURL());
 
   static Pointer<Void> _fileReferenceURL() {
     var target = alloc(Class('NSURL'));
-   var sel = SEL('fileReferenceURL');
-    return msgSend(target, sel, args:  <dynamic>[], decodeRetVal: false)
-    as Pointer<Void>;
+    var sel = SEL('fileReferenceURL');
+    return msgSend(target, sel, args: <dynamic>[], decodeRetVal: false) as Pointer<Void>;
   }
 
-  bool getResourceValueForKeyError(NSURLResourceKey key
-  , {NSObject value, NSObjectRef<NSError> error}) {
-    return perform(SEL('getResourceValue:forKey:error:')
-    , args:  <dynamic>[value,key,error]) as bool;
+  ///
+  bool getResourceValueForKeyError(NSURLResourceKey key, {NSObject value, NSObjectRef<NSError> error}) {
+    return perform(SEL('getResourceValue:forKey:error:'), args: <dynamic>[value, key, error]) as bool;
   }
-  /// 
-  NSObject resourceValuesForKeysError(NSURLResourceKey keys
-  , NSObjectRef<NSError> error) {
-    var result = perform(SEL('resourceValuesForKeys:error:')
-    , args:  <dynamic>[keys,error], decodeRetVal: false)
-    as Pointer<Void>;
+
+  ///
+  NSObject resourceValuesForKeysError(NSURLResourceKey keys, NSObjectRef<NSError> error) {
+    var result = perform(SEL('resourceValuesForKeys:error:'), args: <dynamic>[keys, error], decodeRetVal: false)
+        as Pointer<Void>;
     return NSObject.fromPointer(result);
   }
+
   ///
-  bool setResourceValueForKeyError(NSURLResourceKey key
-  , NSObjectRef<NSError> error, {NSObject value}) {
-    return perform(SEL('setResourceValue:forKey:error:')
-    , args:  <dynamic>[value,key,error]) as bool;
-  }
-  bool setResourceValuesError(NSObject keyedValues
-  , NSObjectRef<NSError> error) {
-    return perform(SEL('setResourceValues:error:')
-    , args:  <dynamic>[keyedValues,error]) as bool;
-  }
-  /// 
-  void removeCachedResourceValueForKey(NSURLResourceKey key) {
-     perform(SEL('removeCachedResourceValueForKey:'), args:  <dynamic>[key]);
+  bool setResourceValueForKeyError(NSURLResourceKey key, NSObjectRef<NSError> error, {NSObject value}) {
+    return perform(SEL('setResourceValue:forKey:error:'), args: <dynamic>[value, key, error]) as bool;
   }
 
-  /// 
+  ///
+  bool setResourceValuesError(NSObject keyedValues, NSObjectRef<NSError> error) {
+    return perform(SEL('setResourceValues:error:'), args: <dynamic>[keyedValues, error]) as bool;
+  }
+
+  ///
+  void removeCachedResourceValueForKey(NSURLResourceKey key) {
+    perform(SEL('removeCachedResourceValueForKey:'), args: <dynamic>[key]);
+  }
+
+  ///
   void removeAllCachedResourceValues() {
-     perform(SEL('removeAllCachedResourceValues'));
+    perform(SEL('removeAllCachedResourceValues'));
   }
-  /// 
+
+  ///
   void setTemporaryResourceValueForKey(NSURLResourceKey key, {NSObject value}) {
-     perform(SEL('setTemporaryResourceValue:forKey:')
-     , args:  <dynamic>[value,key]);
+    perform(SEL('setTemporaryResourceValue:forKey:'), args: <dynamic>[value, key]);
   }
+
   ///
   bool startAccessingSecurityScopedResource() {
-    return perform(SEL('startAccessingSecurityScopedResource'))
-    as bool;
-  }
-  ///
-  void stopAccessingSecurityScopedResource() {
-     perform(SEL('stopAccessingSecurityScopedResource'));
+    return perform(SEL('startAccessingSecurityScopedResource')) as bool;
   }
 
+  ///
+  void stopAccessingSecurityScopedResource() {
+    perform(SEL('stopAccessingSecurityScopedResource'));
+  }
 }
 
 ///
 extension NSURLNSPromisedItems on NSURL {
   ///
-  bool getPromisedItemResourceValueForKeyError(NSURLResourceKey key
-  , NSObjectRef<NSError> error, {NSObject value}) {
-    return perform(SEL('getPromisedItemResourceValue:forKey:error:')
-    , args:  <dynamic>[value,key,error]) as bool;
+  bool getPromisedItemResourceValueForKeyError(NSURLResourceKey key, NSObjectRef<NSError> error, {NSObject value}) {
+    return perform(SEL('getPromisedItemResourceValue:forKey:error:'), args: <dynamic>[value, key, error]) as bool;
   }
-  NSObject promisedItemResourceValuesForKeysError(NSURLResourceKey keys
-  , NSObjectRef<NSError> error) {
-    var result 
-    = perform(SEL('promisedItemResourceValuesForKeys:error:')
-    , args:  <dynamic>[keys,error], decodeRetVal: false) as Pointer<Void>;
+
+  ///
+  NSObject promisedItemResourceValuesForKeysError(NSURLResourceKey keys, NSObjectRef<NSError> error) {
+    var result =
+        perform(SEL('promisedItemResourceValuesForKeys:error:'), args: <dynamic>[keys, error], decodeRetVal: false)
+            as Pointer<Void>;
     return NSObject.fromPointer(result);
   }
-  /// 
+
+  ///
   bool checkPromisedItemIsReachableAndReturnError(NSObjectRef<NSError> error) {
-    return perform(SEL('checkPromisedItemIsReachableAndReturnError:')
-    , args:  <dynamic>[error]) as bool;
+    return perform(SEL('checkPromisedItemIsReachableAndReturnError:'), args: <dynamic>[error]) as bool;
   }
-
 }
-
-
 
 @native
-/// 
-class NSURLQueryItem extends NSObject with NSSecureCoding,NSCopying {
+
+///
+// ignore: prefer_mixin
+class NSURLQueryItem extends NSObject with NSSecureCoding, NSCopying {
   ///
   NSURLQueryItem([Class isa]) : super(isa ?? Class('NSURLQueryItem'));
+
   ///
   NSURLQueryItem.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
-  
+
   ///
   String get name {
-var result = perform(SEL('name'), decodeRetVal: false)
-as Pointer<Void>;
+    var result = perform(SEL('name'), decodeRetVal: false) as Pointer<Void>;
     return NSString.fromPointer(result).raw;
+  }
 
-}
-  
-  set name(String name) => perform(SEL('setName:'), args:  <dynamic>[name]);
-  
-  String get value {
-Pointer<Void> result = perform(SEL('value'), decodeRetVal: false);
-    return NSString.fromPointer(result).raw;
+  set name(String name) => perform(SEL('setName:'), args: <dynamic>[name]);
 
-}
   ///
-  set value(String value) => perform(SEL('setValue:'), args:  <dynamic>[value]);
+  String get value {
+    var result = perform(SEL('value'), decodeRetVal: false) as Pointer<Void>;
+    return NSString.fromPointer(result).raw;
+  }
 
-  
-  NSURLQueryItem(String name, {String value})
-     : super.fromPointer(_initWithNameValue(name,value));
+  ///
+  set value(String value) => perform(SEL('setValue:'), args: <dynamic>[value]);
+
+  ///
+  NSURLQueryItem.withName(String name, {String value}) : super.fromPointer(_initWithNameValue(name, value: value));
 
   static Pointer<Void> _initWithNameValue(String name, {String value}) {
     var target = alloc(Class('NSURLQueryItem'));
-   var sel = SEL('initWithName:value:');
-    return msgSend(target, sel, args:  <dynamic>[name,value], decodeRetVal: false);
+    var sel = SEL('initWithName:value:');
+    return msgSend(target, sel, args: <dynamic>[name, value], decodeRetVal: false) as Pointer<Void>;
   }
 
-  
+  ///
   static NSURLQueryItem queryItemWithNameValue(String name, {String value}) {
-    Pointer<Void> result = Class('NSURLQueryItem').perform(SEL('queryItemWithName:value:'), args:  <dynamic>[name,value], decodeRetVal: false);
+    var result = Class('NSURLQueryItem')
+        .perform(SEL('queryItemWithName:value:'), args: <dynamic>[name, value], decodeRetVal: false) as Pointer<Void>;
+    return NSURLQueryItem.fromPointer(result);
+  }
+}
+
+@native
+
+///
+// ignore: prefer_mixin
+class NSURLComponents extends NSObject with NSCopying {
+  ///
+  NSURLComponents([Class isa]) : super(isa ?? Class('NSURLComponents'));
+
+  ///
+  NSURLComponents.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
+
+  ///
+  NSURL get url {
+    var result = perform(SEL('URL'), decodeRetVal: false) as Pointer<Void>;
+    return NSURL.fromPointer(result);
+  }
+
+  ///
+  set url(NSURL url) => perform(SEL('setURL:'), args: <dynamic>[url]);
+
+  ///
+  String get string {
+    var result = perform(SEL('string'), decodeRetVal: false) as Pointer<Void>;
+    return NSString.fromPointer(result).raw;
+  }
+
+  ///
+  set string(String string) => perform(SEL('setString:'), args: <dynamic>[string]);
+
+  ///
+  String get scheme {
+    var result = perform(SEL('scheme'), decodeRetVal: false) as Pointer<Void>;
+    return NSString.fromPointer(result).raw;
+  }
+
+  ///
+  set scheme(String scheme) => perform(SEL('setScheme:'), args: <dynamic>[scheme]);
+
+  ///
+  String get user {
+    var result = perform(SEL('user'), decodeRetVal: false) as Pointer<Void>;
+    return NSString.fromPointer(result).raw;
+  }
+
+  set user(String user) => perform(SEL('setUser:'), args: <dynamic>[user]);
+
+  ///
+  String get password {
+    var result = perform(SEL('password'), decodeRetVal: false) as Pointer<Void>;
+    return NSString.fromPointer(result).raw;
+  }
+
+  ///
+  set password(String password) => perform(SEL('setPassword:'), args: <dynamic>[password]);
+
+  ////
+  String get host {
+    var result = perform(SEL('host'), decodeRetVal: false) as Pointer<Void>;
+    return NSString.fromPointer(result).raw;
+  }
+
+  set host(String host) => perform(SEL('setHost:'), args: <dynamic>[host]);
+
+  ///
+  NSNumber get port {
+    var result = perform(SEL('port'), decodeRetVal: false) as Pointer<Void>;
+    return NSNumber.fromPointer(result);
+  }
+
+  set port(NSNumber port) => perform(SEL('setPort:'), args: <dynamic>[port]);
+
+  ///
+  String get path {
+    var result = perform(SEL('path'), decodeRetVal: false) as Pointer<Void>;
+    return NSString.fromPointer(result).raw;
+  }
+
+  set path(String path) => perform(SEL('setPath:'), args: <dynamic>[path]);
+
+  ///
+  String get query {
+    var result = perform(SEL('query'), decodeRetVal: false) as Pointer<Void>;
+    return NSString.fromPointer(result).raw;
+  }
+
+  set query(String query) => perform(SEL('setQuery:'), args: <dynamic>[query]);
+
+  ///
+  String get fragment {
+    var result = perform(SEL('fragment'), decodeRetVal: false) as Pointer<Void>;
+    return NSString.fromPointer(result).raw;
+  }
+
+  ///
+  set fragment(String fragment) => perform(SEL('setFragment:'), args: <dynamic>[fragment]);
+
+  ///
+  String get percentEncodedUser {
+    var result = perform(SEL('percentEncodedUser'), decodeRetVal: false) as Pointer<Void>;
+    return NSString.fromPointer(result).raw;
+  }
+
+  ///
+  set percentEncodedUser(String percentEncodedUser) =>
+      perform(SEL('setPercentEncodedUser:'), args: <dynamic>[percentEncodedUser]);
+
+  ///
+  String get percentEncodedPassword {
+    var result = perform(SEL('percentEncodedPassword'), decodeRetVal: false) as Pointer<Void>;
+    return NSString.fromPointer(result).raw;
+  }
+
+  ///
+  set percentEncodedPassword(String percentEncodedPassword) =>
+      perform(SEL('setPercentEncodedPassword:'), args: <dynamic>[percentEncodedPassword]);
+
+  ///
+  String get percentEncodedHost {
+    var result = perform(SEL('percentEncodedHost'), decodeRetVal: false) as Pointer<Void>;
+    return NSString.fromPointer(result).raw;
+  }
+
+  ///
+  set percentEncodedHost(String percentEncodedHost) =>
+      perform(SEL('setPercentEncodedHost:'), args: <dynamic>[percentEncodedHost]);
+
+  ///
+  String get percentEncodedPath {
+    var result = perform(SEL('percentEncodedPath'), decodeRetVal: false) as Pointer<Void>;
+    return NSString.fromPointer(result).raw;
+  }
+
+  ///
+  set percentEncodedPath(String percentEncodedPath) =>
+      perform(SEL('setPercentEncodedPath:'), args: <dynamic>[percentEncodedPath]);
+
+  ////
+  String get percentEncodedQuery {
+    var result = perform(SEL('percentEncodedQuery'), decodeRetVal: false) as Pointer<Void>;
+    return NSString.fromPointer(result).raw;
+  }
+
+  ///
+  set percentEncodedQuery(String percentEncodedQuery) =>
+      perform(SEL('setPercentEncodedQuery:'), args: <dynamic>[percentEncodedQuery]);
+
+  ///
+  String get percentEncodedFragment {
+    var result = perform(SEL('percentEncodedFragment'), decodeRetVal: false) as Pointer<Void>;
+    return NSString.fromPointer(result).raw;
+  }
+
+  ///
+  set percentEncodedFragment(String percentEncodedFragment) =>
+      perform(SEL('setPercentEncodedFragment:'), args: <dynamic>[percentEncodedFragment]);
+
+  ///
+  NSRange get rangeOfScheme {
+    var result = perform(SEL('rangeOfScheme'), decodeRetVal: false) as Pointer<Void>;
+    return NSRange.fromPointer(result);
+  }
+
+  set rangeOfScheme(NSRange rangeOfScheme) => perform(SEL('setRangeOfScheme:'), args: <dynamic>[rangeOfScheme]);
+
+  ///
+  NSRange get rangeOfUser {
+    var result = perform(SEL('rangeOfUser'), decodeRetVal: false) as Pointer<Void>;
+    return NSRange.fromPointer(result);
+  }
+
+  set rangeOfUser(NSRange rangeOfUser) => perform(SEL('setRangeOfUser:'), args: <dynamic>[rangeOfUser]);
+
+  ///
+  NSRange get rangeOfPassword {
+    var result = perform(SEL('rangeOfPassword'), decodeRetVal: false) as Pointer<Void>;
+    return NSRange.fromPointer(result);
+  }
+
+  ///
+  set rangeOfPassword(NSRange rangeOfPassword) => perform(SEL('setRangeOfPassword:'), args: <dynamic>[rangeOfPassword]);
+
+  ///
+  NSRange get rangeOfHost {
+    var result = perform(SEL('rangeOfHost'), decodeRetVal: false) as Pointer<Void>;
+    return NSRange.fromPointer(result);
+  }
+
+  set rangeOfHost(NSRange rangeOfHost) => perform(SEL('setRangeOfHost:'), args: <dynamic>[rangeOfHost]);
+
+  ///
+  NSRange get rangeOfPort {
+    var result = perform(SEL('rangeOfPort'), decodeRetVal: false) as Pointer<Void>;
+    return NSRange.fromPointer(result);
+  }
+
+  ///
+  set rangeOfPort(NSRange rangeOfPort) => perform(SEL('setRangeOfPort:'), args: <dynamic>[rangeOfPort]);
+
+  ///
+  NSRange get rangeOfPath {
+    var result = perform(SEL('rangeOfPath'), decodeRetVal: false) as Pointer<Void>;
+    return NSRange.fromPointer(result);
+  }
+
+  set rangeOfPath(NSRange rangeOfPath) => perform(SEL('setRangeOfPath:'), args: <dynamic>[rangeOfPath]);
+
+  ///
+  NSRange get rangeOfQuery {
+    var result = perform(SEL('rangeOfQuery'), decodeRetVal: false) as Pointer<Void>;
+    return NSRange.fromPointer(result);
+  }
+
+  set rangeOfQuery(NSRange rangeOfQuery) => perform(SEL('setRangeOfQuery:'), args: <dynamic>[rangeOfQuery]);
+
+  ///
+  NSRange get rangeOfFragment {
+    var result = perform(SEL('rangeOfFragment'), decodeRetVal: false) as Pointer<Void>;
+    return NSRange.fromPointer(result);
+  }
+
+  set rangeOfFragment(NSRange rangeOfFragment) => perform(SEL('setRangeOfFragment:'), args: <dynamic>[rangeOfFragment]);
+
+  ///
+  NSURLQueryItem get queryItems {
+    var result = perform(SEL('queryItems'), decodeRetVal: false) as Pointer<Void>;
     return NSURLQueryItem.fromPointer(result);
   }
 
-}
+  set queryItems(NSURLQueryItem queryItems) => perform(SEL('setQueryItems:'), args: <dynamic>[queryItems]);
 
-@NativeAvailable(macos: '10.9', ios: '7.0', watchos: '2.0', tvos: '9.0')
-@native
-class NSURLComponents extends NSObject with NSCopying {
-  NSURLComponents([Class isa]) : super(isa ?? Class('NSURLComponents'));
-  NSURLComponents.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
-  
-  NSURL get URL {
-Pointer<Void> result = perform(SEL('URL'), decodeRetVal: false);
-    return NSURL.fromPointer(result);
-
-}
-  
-  set URL(NSURL URL) => perform(SEL('setURL:'), args:  <dynamic>[URL]);
-  @NativeAvailable(macos: '10.10', ios: '8.0', watchos: '2.0', tvos: '9.0')
-  String get string {
-Pointer<Void> result = perform(SEL('string'), decodeRetVal: false);
-    return NSString.fromPointer(result).raw;
-
-}
-  @NativeAvailable(macos: '10.10', ios: '8.0', watchos: '2.0', tvos: '9.0')
-  set string(String string) => perform(SEL('setString:'), args:  <dynamic>[string]);
-  
-  String get scheme {
-Pointer<Void> result = perform(SEL('scheme'), decodeRetVal: false);
-    return NSString.fromPointer(result).raw;
-
-}
-  
-  set scheme(String scheme) => perform(SEL('setScheme:'), args:  <dynamic>[scheme]);
-  
-  String get user {
-Pointer<Void> result = perform(SEL('user'), decodeRetVal: false);
-    return NSString.fromPointer(result).raw;
-
-}
-  
-  set user(String user) => perform(SEL('setUser:'), args:  <dynamic>[user]);
-  
-  String get password {
-Pointer<Void> result = perform(SEL('password'), decodeRetVal: false);
-    return NSString.fromPointer(result).raw;
-
-}
-  
-  set password(String password) => perform(SEL('setPassword:'), args:  <dynamic>[password]);
-  
-  String get host {
-Pointer<Void> result = perform(SEL('host'), decodeRetVal: false);
-    return NSString.fromPointer(result).raw;
-
-}
-  
-  set host(String host) => perform(SEL('setHost:'), args:  <dynamic>[host]);
-  
-  NSNumber get port {
-Pointer<Void> result = perform(SEL('port'), decodeRetVal: false);
-    return NSNumber.fromPointer(result);
-
-}
-  
-  set port(NSNumber port) => perform(SEL('setPort:'), args:  <dynamic>[port]);
-  
-  String get path {
-Pointer<Void> result = perform(SEL('path'), decodeRetVal: false);
-    return NSString.fromPointer(result).raw;
-
-}
-  
-  set path(String path) => perform(SEL('setPath:'), args:  <dynamic>[path]);
-  
-  String get query {
-Pointer<Void> result = perform(SEL('query'), decodeRetVal: false);
-    return NSString.fromPointer(result).raw;
-
-}
-  
-  set query(String query) => perform(SEL('setQuery:'), args:  <dynamic>[query]);
-  
-  String get fragment {
-Pointer<Void> result = perform(SEL('fragment'), decodeRetVal: false);
-    return NSString.fromPointer(result).raw;
-
-}
-  
-  set fragment(String fragment) => perform(SEL('setFragment:'), args:  <dynamic>[fragment]);
-  
-  String get percentEncodedUser {
-Pointer<Void> result = perform(SEL('percentEncodedUser'), decodeRetVal: false);
-    return NSString.fromPointer(result).raw;
-
-}
-  
-  set percentEncodedUser(String percentEncodedUser) => perform(SEL('setPercentEncodedUser:'), args:  <dynamic>[percentEncodedUser]);
-  
-  String get percentEncodedPassword {
-Pointer<Void> result = perform(SEL('percentEncodedPassword'), decodeRetVal: false);
-    return NSString.fromPointer(result).raw;
-
-}
-  
-  set percentEncodedPassword(String percentEncodedPassword) => perform(SEL('setPercentEncodedPassword:'), args:  <dynamic>[percentEncodedPassword]);
-  
-  String get percentEncodedHost {
-Pointer<Void> result = perform(SEL('percentEncodedHost'), decodeRetVal: false);
-    return NSString.fromPointer(result).raw;
-
-}
-  
-  set percentEncodedHost(String percentEncodedHost) => perform(SEL('setPercentEncodedHost:'), args:  <dynamic>[percentEncodedHost]);
-  
-  String get percentEncodedPath {
-Pointer<Void> result = perform(SEL('percentEncodedPath'), decodeRetVal: false);
-    return NSString.fromPointer(result).raw;
-
-}
-  
-  set percentEncodedPath(String percentEncodedPath) => perform(SEL('setPercentEncodedPath:'), args:  <dynamic>[percentEncodedPath]);
-  
-  String get percentEncodedQuery {
-Pointer<Void> result = perform(SEL('percentEncodedQuery'), decodeRetVal: false);
-    return NSString.fromPointer(result).raw;
-
-}
-  
-  set percentEncodedQuery(String percentEncodedQuery) => perform(SEL('setPercentEncodedQuery:'), args:  <dynamic>[percentEncodedQuery]);
-  
-  String get percentEncodedFragment {
-Pointer<Void> result = perform(SEL('percentEncodedFragment'), decodeRetVal: false);
-    return NSString.fromPointer(result).raw;
-
-}
-  
-  set percentEncodedFragment(String percentEncodedFragment) => perform(SEL('setPercentEncodedFragment:'), args:  <dynamic>[percentEncodedFragment]);
-  @NativeAvailable(macos: '10.11', ios: '9.0', watchos: '2.0', tvos: '9.0')
-  NSRange get rangeOfScheme {
-Pointer<Void> result = perform(SEL('rangeOfScheme'), decodeRetVal: false);
-    return NSRange.fromPointer(result);
-
-}
-  @NativeAvailable(macos: '10.11', ios: '9.0', watchos: '2.0', tvos: '9.0')
-  set rangeOfScheme(NSRange rangeOfScheme) => perform(SEL('setRangeOfScheme:'), args:  <dynamic>[rangeOfScheme]);
-  @NativeAvailable(macos: '10.11', ios: '9.0', watchos: '2.0', tvos: '9.0')
-  NSRange get rangeOfUser {
-Pointer<Void> result = perform(SEL('rangeOfUser'), decodeRetVal: false);
-    return NSRange.fromPointer(result);
-
-}
-  @NativeAvailable(macos: '10.11', ios: '9.0', watchos: '2.0', tvos: '9.0')
-  set rangeOfUser(NSRange rangeOfUser) => perform(SEL('setRangeOfUser:'), args:  <dynamic>[rangeOfUser]);
-  @NativeAvailable(macos: '10.11', ios: '9.0', watchos: '2.0', tvos: '9.0')
-  NSRange get rangeOfPassword {
-Pointer<Void> result = perform(SEL('rangeOfPassword'), decodeRetVal: false);
-    return NSRange.fromPointer(result);
-
-}
-  @NativeAvailable(macos: '10.11', ios: '9.0', watchos: '2.0', tvos: '9.0')
-  set rangeOfPassword(NSRange rangeOfPassword) => perform(SEL('setRangeOfPassword:'), args:  <dynamic>[rangeOfPassword]);
-  @NativeAvailable(macos: '10.11', ios: '9.0', watchos: '2.0', tvos: '9.0')
-  NSRange get rangeOfHost {
-Pointer<Void> result = perform(SEL('rangeOfHost'), decodeRetVal: false);
-    return NSRange.fromPointer(result);
-
-}
-  @NativeAvailable(macos: '10.11', ios: '9.0', watchos: '2.0', tvos: '9.0')
-  set rangeOfHost(NSRange rangeOfHost) => perform(SEL('setRangeOfHost:'), args:  <dynamic>[rangeOfHost]);
-  @NativeAvailable(macos: '10.11', ios: '9.0', watchos: '2.0', tvos: '9.0')
-  NSRange get rangeOfPort {
-Pointer<Void> result = perform(SEL('rangeOfPort'), decodeRetVal: false);
-    return NSRange.fromPointer(result);
-
-}
-  @NativeAvailable(macos: '10.11', ios: '9.0', watchos: '2.0', tvos: '9.0')
-  set rangeOfPort(NSRange rangeOfPort) => perform(SEL('setRangeOfPort:'), args:  <dynamic>[rangeOfPort]);
-  @NativeAvailable(macos: '10.11', ios: '9.0', watchos: '2.0', tvos: '9.0')
-  NSRange get rangeOfPath {
-Pointer<Void> result = perform(SEL('rangeOfPath'), decodeRetVal: false);
-    return NSRange.fromPointer(result);
-
-}
-  @NativeAvailable(macos: '10.11', ios: '9.0', watchos: '2.0', tvos: '9.0')
-  set rangeOfPath(NSRange rangeOfPath) => perform(SEL('setRangeOfPath:'), args:  <dynamic>[rangeOfPath]);
-  @NativeAvailable(macos: '10.11', ios: '9.0', watchos: '2.0', tvos: '9.0')
-  NSRange get rangeOfQuery {
-Pointer<Void> result = perform(SEL('rangeOfQuery'), decodeRetVal: false);
-    return NSRange.fromPointer(result);
-
-}
-  @NativeAvailable(macos: '10.11', ios: '9.0', watchos: '2.0', tvos: '9.0')
-  set rangeOfQuery(NSRange rangeOfQuery) => perform(SEL('setRangeOfQuery:'), args:  <dynamic>[rangeOfQuery]);
-  @NativeAvailable(macos: '10.11', ios: '9.0', watchos: '2.0', tvos: '9.0')
-  NSRange get rangeOfFragment {
-Pointer<Void> result = perform(SEL('rangeOfFragment'), decodeRetVal: false);
-    return NSRange.fromPointer(result);
-
-}
-  @NativeAvailable(macos: '10.11', ios: '9.0', watchos: '2.0', tvos: '9.0')
-  set rangeOfFragment(NSRange rangeOfFragment) => perform(SEL('setRangeOfFragment:'), args:  <dynamic>[rangeOfFragment]);
-  @NativeAvailable(macos: '10.10', ios: '8.0', watchos: '2.0', tvos: '9.0')
-  NSURLQueryItem get queryItems {
-Pointer<Void> result = perform(SEL('queryItems'), decodeRetVal: false);
-    return NSURLQueryItem.fromPointer(result);
-
-}
-  @NativeAvailable(macos: '10.10', ios: '8.0', watchos: '2.0', tvos: '9.0')
-  set queryItems(NSURLQueryItem queryItems) => perform(SEL('setQueryItems:'), args:  <dynamic>[queryItems]);
-  @NativeAvailable(macosx: '10.13', ios: '11.0', watchos: '4.0', tvos: '11.0')
+  ///
   NSURLQueryItem get percentEncodedQueryItems {
-Pointer<Void> result = perform(SEL('percentEncodedQueryItems'), decodeRetVal: false);
+    var result = perform(SEL('percentEncodedQueryItems'), decodeRetVal: false) as Pointer<Void>;
     return NSURLQueryItem.fromPointer(result);
+  }
 
-}
-  @NativeAvailable(macosx: '10.13', ios: '11.0', watchos: '4.0', tvos: '11.0')
-  set percentEncodedQueryItems(NSURLQueryItem percentEncodedQueryItems) => perform(SEL('setPercentEncodedQueryItems:'), args:  <dynamic>[percentEncodedQueryItems]);
-  NSURLComponents.init()
-     : super.fromPointer(_init());
+  set percentEncodedQueryItems(NSURLQueryItem percentEncodedQueryItems) =>
+      perform(SEL('setPercentEncodedQueryItems:'), args: <dynamic>[percentEncodedQueryItems]);
+  NSURLComponents.init() : super.fromPointer(_init());
 
   static Pointer<Void> _init() {
     var target = alloc(Class('NSURLComponents'));
-   var sel = SEL('init');
-    return msgSend(target, sel, args:  <dynamic>[], decodeRetVal: false);
+    var sel = SEL('init');
+    return msgSend(target, sel, args: <dynamic>[], decodeRetVal: false) as Pointer<Void>;
   }
 
-  NSURLComponents.initWithURLResolvingAgainstBaseURL(NSURL url, bool resolve)
-     : super.fromPointer(_initWithURLResolvingAgainstBaseURL(url,resolve));
+  ///
+  NSURLComponents.initWithURLResolvingAgainstBaseURL(NSURL url, {bool resolve})
+      : super.fromPointer(_initWithURLResolvingAgainstBaseURL(url, resolve));
 
   static Pointer<Void> _initWithURLResolvingAgainstBaseURL(NSURL url, bool resolve) {
     var target = alloc(Class('NSURLComponents'));
-   var sel = SEL('initWithURL:resolvingAgainstBaseURL:');
-    return msgSend(target, sel, args:  <dynamic>[url,resolve], decodeRetVal: false);
+    var sel = SEL('initWithURL:resolvingAgainstBaseURL:');
+    return msgSend(target, sel, args: <dynamic>[url, resolve], decodeRetVal: false) as Pointer<Void>;
   }
 
-  
-  static NSURLComponents componentsWithURLResolvingAgainstBaseURL(NSURL url, bool resolve) {
-    Pointer<Void> result = Class('NSURLComponents').perform(SEL('componentsWithURL:resolvingAgainstBaseURL:'), args:  <dynamic>[url,resolve], decodeRetVal: false);
+  ///
+  static NSURLComponents componentsWithURLResolvingAgainstBaseURL(NSURL url, {bool resolve}) {
+    var result = Class('NSURLComponents').perform(SEL('componentsWithURL:resolvingAgainstBaseURL:'),
+        args: <dynamic>[url, resolve], decodeRetVal: false) as Pointer<Void>;
     return NSURLComponents.fromPointer(result);
   }
-  NSURLComponents.initWithString(String URLString)
-     : super.fromPointer(_initWithString(URLString));
 
-  static Pointer<Void> _initWithString(String URLString) {
+////
+  NSURLComponents.initWithString(String urlString) : super.fromPointer(_initWithString(urlString));
+
+  static Pointer<Void> _initWithString(String urlString) {
     var target = alloc(Class('NSURLComponents'));
-   var sel = SEL('initWithString:');
-    return msgSend(target, sel, args:  <dynamic>[URLString], decodeRetVal: false);
+    var sel = SEL('initWithString:');
+    return msgSend(target, sel, args: <dynamic>[urlString], decodeRetVal: false) as Pointer<Void>;
   }
 
-  
-  static NSURLComponents componentsWithString(String URLString) {
-    Pointer<Void> result = Class('NSURLComponents').perform(SEL('componentsWithString:'), args:  <dynamic>[URLString], decodeRetVal: false);
+  ///
+  static NSURLComponents componentsWithString(String urlString) {
+    var result = Class('NSURLComponents')
+        .perform(SEL('componentsWithString:'), args: <dynamic>[urlString], decodeRetVal: false) as Pointer<Void>;
     return NSURLComponents.fromPointer(result);
   }
-  
-  NSURL URLRelativeToURL({NSURL baseURL}) {
-    Pointer<Void> result = perform(SEL('URLRelativeToURL:'), args:  <dynamic>[baseURL], decodeRetVal: false);
+
+  ///
+  NSURL urlRelativeToURL({NSURL baseURL}) {
+    var result = perform(SEL('URLRelativeToURL:'), args: <dynamic>[baseURL], decodeRetVal: false) as Pointer<Void>;
     return NSURL.fromPointer(result);
   }
-
 }
 
+///
 extension NSCharacterSetNSURLUtilities on NSCharacterSet {
-  @NativeAvailable(macos: '10.9', ios: '7.0', watchos: '2.0', tvos: '9.0')
-  NSCharacterSet get URLUserAllowedCharacterSet {
-Pointer<Void> result = Class('NSURLUtilities').perform(SEL('URLUserAllowedCharacterSet'), decodeRetVal: false);
+  ///
+  NSCharacterSet get urlUserAllowedCharacterSet {
+    var result =
+        Class('NSURLUtilities').perform(SEL('URLUserAllowedCharacterSet'), decodeRetVal: false) as Pointer<Void>;
     return NSCharacterSet.fromPointer(result);
+  }
 
-}
-  @NativeAvailable(macos: '10.9', ios: '7.0', watchos: '2.0', tvos: '9.0')
-  set URLUserAllowedCharacterSet(NSCharacterSet URLUserAllowedCharacterSet) => Class('NSURLUtilities').perform(SEL('setURLUserAllowedCharacterSet:'), args:  <dynamic>[URLUserAllowedCharacterSet]);
-  @NativeAvailable(macos: '10.9', ios: '7.0', watchos: '2.0', tvos: '9.0')
-  NSCharacterSet get URLPasswordAllowedCharacterSet {
-Pointer<Void> result = Class('NSURLUtilities').perform(SEL('URLPasswordAllowedCharacterSet'), decodeRetVal: false);
+  set rulUserAllowedCharacterSet(NSCharacterSet urlUserAllowedCharacterSet) => Class('NSURLUtilities')
+      .perform(SEL('setURLUserAllowedCharacterSet:'), args: <dynamic>[urlUserAllowedCharacterSet]);
+
+  ///
+  NSCharacterSet get urlPasswordAllowedCharacterSet {
+    var result =
+        Class('NSURLUtilities').perform(SEL('URLPasswordAllowedCharacterSet'), decodeRetVal: false) as Pointer<Void>;
     return NSCharacterSet.fromPointer(result);
+  }
 
-}
-  @NativeAvailable(macos: '10.9', ios: '7.0', watchos: '2.0', tvos: '9.0')
-  set URLPasswordAllowedCharacterSet(NSCharacterSet URLPasswordAllowedCharacterSet) => Class('NSURLUtilities').perform(SEL('setURLPasswordAllowedCharacterSet:'), args:  <dynamic>[URLPasswordAllowedCharacterSet]);
-  @NativeAvailable(macos: '10.9', ios: '7.0', watchos: '2.0', tvos: '9.0')
-  NSCharacterSet get URLHostAllowedCharacterSet {
-Pointer<Void> result = Class('NSURLUtilities').perform(SEL('URLHostAllowedCharacterSet'), decodeRetVal: false);
+  ///
+  set urlPasswordAllowedCharacterSet(NSCharacterSet urlPasswordAllowedCharacterSet) => Class('NSURLUtilities')
+      .perform(SEL('setURLPasswordAllowedCharacterSet:'), args: <dynamic>[urlPasswordAllowedCharacterSet]);
+
+  ///
+  NSCharacterSet get urlHostAllowedCharacterSet {
+    var result =
+        Class('NSURLUtilities').perform(SEL('URLHostAllowedCharacterSet'), decodeRetVal: false) as Pointer<Void>;
     return NSCharacterSet.fromPointer(result);
+  }
 
-}
-  @NativeAvailable(macos: '10.9', ios: '7.0', watchos: '2.0', tvos: '9.0')
-  set URLHostAllowedCharacterSet(NSCharacterSet URLHostAllowedCharacterSet) => Class('NSURLUtilities').perform(SEL('setURLHostAllowedCharacterSet:'), args:  <dynamic>[URLHostAllowedCharacterSet]);
-  @NativeAvailable(macos: '10.9', ios: '7.0', watchos: '2.0', tvos: '9.0')
-  NSCharacterSet get URLPathAllowedCharacterSet {
-Pointer<Void> result = Class('NSURLUtilities').perform(SEL('URLPathAllowedCharacterSet'), decodeRetVal: false);
+  ///
+  set urlHostAllowedCharacterSet(NSCharacterSet urlHostAllowedCharacterSet) => Class('NSURLUtilities')
+      .perform(SEL('setURLHostAllowedCharacterSet:'), args: <dynamic>[urlHostAllowedCharacterSet]);
+
+  ///
+  NSCharacterSet get urlPathAllowedCharacterSet {
+    var result =
+        Class('NSURLUtilities').perform(SEL('URLPathAllowedCharacterSet'), decodeRetVal: false) as Pointer<Void>;
     return NSCharacterSet.fromPointer(result);
+  }
 
-}
-  @NativeAvailable(macos: '10.9', ios: '7.0', watchos: '2.0', tvos: '9.0')
-  set URLPathAllowedCharacterSet(NSCharacterSet URLPathAllowedCharacterSet) => Class('NSURLUtilities').perform(SEL('setURLPathAllowedCharacterSet:'), args:  <dynamic>[URLPathAllowedCharacterSet]);
-  @NativeAvailable(macos: '10.9', ios: '7.0', watchos: '2.0', tvos: '9.0')
-  NSCharacterSet get URLQueryAllowedCharacterSet {
-Pointer<Void> result = Class('NSURLUtilities').perform(SEL('URLQueryAllowedCharacterSet'), decodeRetVal: false);
+  ///
+  set urlPathAllowedCharacterSet(NSCharacterSet urlPathAllowedCharacterSet) => Class('NSURLUtilities')
+      .perform(SEL('setURLPathAllowedCharacterSet:'), args: <dynamic>[urlPathAllowedCharacterSet]) as Pointer<Void>;
+
+  ///
+  NSCharacterSet get urlQueryAllowedCharacterSet {
+    var result =
+        Class('NSURLUtilities').perform(SEL('URLQueryAllowedCharacterSet'), decodeRetVal: false) as Pointer<Void>;
     return NSCharacterSet.fromPointer(result);
+  }
 
-}
-  @NativeAvailable(macos: '10.9', ios: '7.0', watchos: '2.0', tvos: '9.0')
-  set URLQueryAllowedCharacterSet(NSCharacterSet URLQueryAllowedCharacterSet) => Class('NSURLUtilities').perform(SEL('setURLQueryAllowedCharacterSet:'), args:  <dynamic>[URLQueryAllowedCharacterSet]);
-  @NativeAvailable(macos: '10.9', ios: '7.0', watchos: '2.0', tvos: '9.0')
-  NSCharacterSet get URLFragmentAllowedCharacterSet {
-Pointer<Void> result = Class('NSURLUtilities').perform(SEL('URLFragmentAllowedCharacterSet'), decodeRetVal: false);
+  ///
+  set urlQueryAllowedCharacterSet(NSCharacterSet urlQueryAllowedCharacterSet) => Class('NSURLUtilities')
+      .perform(SEL('setURLQueryAllowedCharacterSet:'), args: <dynamic>[urlQueryAllowedCharacterSet]);
+
+  ///
+  NSCharacterSet get urlFragmentAllowedCharacterSet {
+    var result =
+        Class('NSURLUtilities').perform(SEL('URLFragmentAllowedCharacterSet'), decodeRetVal: false) as Pointer<Void>;
     return NSCharacterSet.fromPointer(result);
+  }
 
+  set urlFragmentAllowedCharacterSet(NSCharacterSet urlFragmentAllowedCharacterSet) => Class('NSURLUtilities')
+      .perform(SEL('setURLFragmentAllowedCharacterSet:'), args: <dynamic>[urlFragmentAllowedCharacterSet]);
 }
-  @NativeAvailable(macos: '10.9', ios: '7.0', watchos: '2.0', tvos: '9.0')
-  set URLFragmentAllowedCharacterSet(NSCharacterSet URLFragmentAllowedCharacterSet) => Class('NSURLUtilities').perform(SEL('setURLFragmentAllowedCharacterSet:'), args:  <dynamic>[URLFragmentAllowedCharacterSet]);
 
-}
-
+///
 extension NSStringNSURLUtilities on NSString {
-  @NativeAvailable(macos: '10.9', ios: '7.0', watchos: '2.0', tvos: '9.0')
+  ///
   String get stringByRemovingPercentEncoding {
-Pointer<Void> result = perform(SEL('stringByRemovingPercentEncoding'), decodeRetVal: false);
+    var result = perform(SEL('stringByRemovingPercentEncoding'), decodeRetVal: false) as Pointer<Void>;
     return NSString.fromPointer(result).raw;
+  }
 
-}
-  @NativeAvailable(macos: '10.9', ios: '7.0', watchos: '2.0', tvos: '9.0')
-  set stringByRemovingPercentEncoding(String stringByRemovingPercentEncoding) => perform(SEL('setStringByRemovingPercentEncoding:'), args:  <dynamic>[stringByRemovingPercentEncoding]);
-  @NativeAvailable(macos: '10.9', ios: '7.0', watchos: '2.0', tvos: '9.0')
+  ///
+  set stringByRemovingPercentEncoding(String stringByRemovingPercentEncoding) =>
+      perform(SEL('setStringByRemovingPercentEncoding:'), args: <dynamic>[stringByRemovingPercentEncoding]);
+
+  ///
   String stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet allowedCharacters) {
-    Pointer<Void> result = perform(SEL('stringByAddingPercentEncodingWithAllowedCharacters:'), args:  <dynamic>[allowedCharacters], decodeRetVal: false);
+    var result = perform(SEL('stringByAddingPercentEncodingWithAllowedCharacters:'),
+        args: <dynamic>[allowedCharacters], decodeRetVal: false) as Pointer<Void>;
     return NSString.fromPointer(result).raw;
   }
-  @NativeDeprecated("Use -stringByAddingPercentEncodingWithAllowedCharacters: instead, which always uses the recommended UTF-8 encoding, and which encodes for a specific URL component or subcomponent since each URL component or subcomponent has different rules for what characters are valid.", macos: ['10.0', '10.11'], ios: ['2.0', '9.0'], watchos: ['2.0', '2.0'], tvos: ['9.0', '9.0'])
-  String stringByAddingPercentEscapesUsingEncoding(NSStringEncoding enc) {
-    Pointer<Void> result = perform(SEL('stringByAddingPercentEscapesUsingEncoding:'), args:  <dynamic>[enc], decodeRetVal: false);
-    return NSString.fromPointer(result).raw;
-  }
-  @NativeDeprecated("Use -stringByRemovingPercentEncoding instead, which always uses the recommended UTF-8 encoding.", macos: ['10.0', '10.11'], ios: ['2.0', '9.0'], watchos: ['2.0', '2.0'], tvos: ['9.0', '9.0'])
-  String stringByReplacingPercentEscapesUsingEncoding(NSStringEncoding enc) {
-    Pointer<Void> result = perform(SEL('stringByReplacingPercentEscapesUsingEncoding:'), args:  <dynamic>[enc], decodeRetVal: false);
-    return NSString.fromPointer(result).raw;
-  }
-
 }
 
+///
 extension NSURLNSURLPathUtilities on NSURL {
-  @NativeAvailable(macos: '10.6', ios: '4.0', watchos: '2.0', tvos: '9.0')
+  ///
   NSString get pathComponents {
-Pointer<Void> result = perform(SEL('pathComponents'), decodeRetVal: false);
+    var result = perform(SEL('pathComponents'), decodeRetVal: false) as Pointer<Void>;
     return NSString.fromPointer(result);
+  }
 
-}
-  @NativeAvailable(macos: '10.6', ios: '4.0', watchos: '2.0', tvos: '9.0')
-  set pathComponents(NSString pathComponents) => perform(SEL('setPathComponents:'), args:  <dynamic>[pathComponents]);
-  @NativeAvailable(macos: '10.6', ios: '4.0', watchos: '2.0', tvos: '9.0')
+////
+  set pathComponents(NSString pathComponents) => perform(SEL('setPathComponents:'), args: <dynamic>[pathComponents]);
+
+  ///
   String get lastPathComponent {
-Pointer<Void> result = perform(SEL('lastPathComponent'), decodeRetVal: false);
+    var result = perform(SEL('lastPathComponent'), decodeRetVal: false) as Pointer<Void>;
     return NSString.fromPointer(result).raw;
+  }
 
-}
-  @NativeAvailable(macos: '10.6', ios: '4.0', watchos: '2.0', tvos: '9.0')
-  set lastPathComponent(String lastPathComponent) => perform(SEL('setLastPathComponent:'), args:  <dynamic>[lastPathComponent]);
-  @NativeAvailable(macos: '10.6', ios: '4.0', watchos: '2.0', tvos: '9.0')
+  set lastPathComponent(String lastPathComponent) =>
+      perform(SEL('setLastPathComponent:'), args: <dynamic>[lastPathComponent]);
+
+  ///
   String get pathExtension {
-Pointer<Void> result = perform(SEL('pathExtension'), decodeRetVal: false);
+    var result = perform(SEL('pathExtension'), decodeRetVal: false) as Pointer<Void>;
     return NSString.fromPointer(result).raw;
+  }
 
-}
-  @NativeAvailable(macos: '10.6', ios: '4.0', watchos: '2.0', tvos: '9.0')
-  set pathExtension(String pathExtension) => perform(SEL('setPathExtension:'), args:  <dynamic>[pathExtension]);
-  @NativeAvailable(macos: '10.6', ios: '4.0', watchos: '2.0', tvos: '9.0')
-  NSURL get URLByDeletingLastPathComponent {
-Pointer<Void> result = perform(SEL('URLByDeletingLastPathComponent'), decodeRetVal: false);
+  ///
+  set pathExtension(String pathExtension) => perform(SEL('setPathExtension:'), args: <dynamic>[pathExtension]);
+
+  ///
+  NSURL get urlByDeletingLastPathComponent {
+    var result = perform(SEL('URLByDeletingLastPathComponent'), decodeRetVal: false) as Pointer<Void>;
     return NSURL.fromPointer(result);
+  }
 
-}
-  @NativeAvailable(macos: '10.6', ios: '4.0', watchos: '2.0', tvos: '9.0')
-  set URLByDeletingLastPathComponent(NSURL URLByDeletingLastPathComponent) => perform(SEL('setURLByDeletingLastPathComponent:'), args:  <dynamic>[URLByDeletingLastPathComponent]);
-  @NativeAvailable(macos: '10.6', ios: '4.0', watchos: '2.0', tvos: '9.0')
-  NSURL get URLByDeletingPathExtension {
-Pointer<Void> result = perform(SEL('URLByDeletingPathExtension'), decodeRetVal: false);
+  ///
+  set urlByDeletingLastPathComponent(NSURL urlByDeletingLastPathComponent) =>
+      perform(SEL('setURLByDeletingLastPathComponent:'), args: <dynamic>[urlByDeletingLastPathComponent]);
+
+  ///
+  NSURL get urlByDeletingPathExtension {
+    var result = perform(SEL('URLByDeletingPathExtension'), decodeRetVal: false) as Pointer<Void>;
     return NSURL.fromPointer(result);
+  }
 
-}
-  @NativeAvailable(macos: '10.6', ios: '4.0', watchos: '2.0', tvos: '9.0')
-  set URLByDeletingPathExtension(NSURL URLByDeletingPathExtension) => perform(SEL('setURLByDeletingPathExtension:'), args:  <dynamic>[URLByDeletingPathExtension]);
-  @NativeAvailable(macos: '10.6', ios: '4.0', watchos: '2.0', tvos: '9.0')
-  NSURL get URLByStandardizingPath {
-Pointer<Void> result = perform(SEL('URLByStandardizingPath'), decodeRetVal: false);
+  set ulrByDeletingPathExtension(NSURL urlByDeletingPathExtension) =>
+      perform(SEL('setURLByDeletingPathExtension:'), args: <dynamic>[urlByDeletingPathExtension]);
+
+  ///
+  NSURL get urlByStandardizingPath {
+    var result = perform(SEL('URLByStandardizingPath'), decodeRetVal: false) as Pointer<Void>;
     return NSURL.fromPointer(result);
+  }
 
-}
-  @NativeAvailable(macos: '10.6', ios: '4.0', watchos: '2.0', tvos: '9.0')
-  set URLByStandardizingPath(NSURL URLByStandardizingPath) => perform(SEL('setURLByStandardizingPath:'), args:  <dynamic>[URLByStandardizingPath]);
-  @NativeAvailable(macos: '10.6', ios: '4.0', watchos: '2.0', tvos: '9.0')
-  NSURL get URLByResolvingSymlinksInPath {
-Pointer<Void> result = perform(SEL('URLByResolvingSymlinksInPath'), decodeRetVal: false);
+  ///
+  set urlByStandardizingPath(NSURL urlByStandardizingPath) =>
+      perform(SEL('setURLByStandardizingPath:'), args: <dynamic>[urlByStandardizingPath]);
+
+  ///
+  NSURL get urlByResolvingSymlinksInPath {
+    var result = perform(SEL('URLByResolvingSymlinksInPath'), decodeRetVal: false) as Pointer<Void>;
     return NSURL.fromPointer(result);
+  }
 
-}
-  @NativeAvailable(macos: '10.6', ios: '4.0', watchos: '2.0', tvos: '9.0')
-  set URLByResolvingSymlinksInPath(NSURL URLByResolvingSymlinksInPath) => perform(SEL('setURLByResolvingSymlinksInPath:'), args:  <dynamic>[URLByResolvingSymlinksInPath]);
-  @NativeAvailable(macos: '10.6', ios: '4.0', watchos: '2.0', tvos: '9.0')
+  ///
+  set urlByResolvingSymlinksInPath(NSURL urlByResolvingSymlinksInPath) =>
+      perform(SEL('setURLByResolvingSymlinksInPath:'), args: <dynamic>[urlByResolvingSymlinksInPath]);
+
+  ///
   static NSURL fileURLWithPathComponents(String components) {
-    Pointer<Void> result = Class('NSURLPathUtilities').perform(SEL('fileURLWithPathComponents:'), args:  <dynamic>[components], decodeRetVal: false);
-    return NSURL.fromPointer(result);
-  }
-  @NativeAvailable(macos: '10.6', ios: '4.0', watchos: '2.0', tvos: '9.0')
-  NSURL URLByAppendingPathComponent(String pathComponent) {
-    Pointer<Void> result = perform(SEL('URLByAppendingPathComponent:'), args:  <dynamic>[pathComponent], decodeRetVal: false);
-    return NSURL.fromPointer(result);
-  }
-  @NativeAvailable(macos: '10.7', ios: '5.0', watchos: '2.0', tvos: '9.0')
-  NSURL URLByAppendingPathComponentIsDirectory(String pathComponent, bool isDirectory) {
-    Pointer<Void> result = perform(SEL('URLByAppendingPathComponent:isDirectory:'), args:  <dynamic>[pathComponent,isDirectory], decodeRetVal: false);
-    return NSURL.fromPointer(result);
-  }
-  @NativeAvailable(macos: '10.6', ios: '4.0', watchos: '2.0', tvos: '9.0')
-  NSURL URLByAppendingPathExtension(String pathExtension) {
-    Pointer<Void> result = perform(SEL('URLByAppendingPathExtension:'), args:  <dynamic>[pathExtension], decodeRetVal: false);
+    var result = Class('NSURLPathUtilities')
+        .perform(SEL('fileURLWithPathComponents:'), args: <dynamic>[components], decodeRetVal: false) as Pointer<Void>;
     return NSURL.fromPointer(result);
   }
 
+  ///
+  NSURL urlByAppendingPathComponent(String pathComponent) {
+    var result = perform(SEL('URLByAppendingPathComponent:'), args: <dynamic>[pathComponent], decodeRetVal: false)
+        as Pointer<Void>;
+    return NSURL.fromPointer(result);
+  }
+
+  ///
+  NSURL urlByAppendingPathComponentIsDirectory(String pathComponent, {bool isDirectory}) {
+    var result = perform(SEL('URLByAppendingPathComponent:isDirectory:'),
+        args: <dynamic>[pathComponent, isDirectory], decodeRetVal: false) as Pointer<Void>;
+    return NSURL.fromPointer(result);
+  }
+
+  ///
+  NSURL urlByAppendingPathExtension(String pathExtension) {
+    var result = perform(SEL('URLByAppendingPathExtension:'), args: <dynamic>[pathExtension], decodeRetVal: false)
+        as Pointer<Void>;
+    return NSURL.fromPointer(result);
+  }
 }
 
-@NativeAvailable(macos: '10.7', ios: '5.0', watchos: '2.0', tvos: '9.0')
 @native
-class NSFileSecurity extends NSObject with NSCopying,NSSecureCoding {
+
+///
+// ignore: prefer_mixin
+class NSFileSecurity extends NSObject with NSCopying, NSSecureCoding {
+  ///
   NSFileSecurity([Class isa]) : super(isa ?? Class('NSFileSecurity'));
+
+  ///
   NSFileSecurity.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
-  NSFileSecurity(NSCoder coder)
-     : super.fromPointer(_initWithCoder(coder));
+
+  ///
+  NSFileSecurity.withCoder(NSCoder coder) : super.fromPointer(_initWithCoder(coder));
 
   static Pointer<Void> _initWithCoder(NSCoder coder) {
     var target = alloc(Class('NSFileSecurity'));
-   var sel = SEL('initWithCoder:');
-    return msgSend(target, sel, args:  <dynamic>[coder], decodeRetVal: false);
+    var sel = SEL('initWithCoder:');
+    return msgSend(target, sel, args: <dynamic>[coder], decodeRetVal: false) as Pointer<Void>;
   }
-
-
 }
 
-extension NSObjectNSURLClient on NSObject {
-  @NativeDeprecated("Use NSURLConnection instead", macos: ['10.0', '10.4'], ios: ['2.0', '2.0'], watchos: ['2.0', '2.0'], tvos: ['9.0', '9.0'])
-  void URLResourceDataDidBecomeAvailable(NSURL sender, NSData newBytes) {
-     perform(SEL('URL:resourceDataDidBecomeAvailable:'), args:  <dynamic>[sender,newBytes]);
-  }
-  @NativeDeprecated("Use NSURLConnection instead", macos: ['10.0', '10.4'], ios: ['2.0', '2.0'], watchos: ['2.0', '2.0'], tvos: ['9.0', '9.0'])
-  void URLResourceDidFinishLoading(NSURL sender) {
-     perform(SEL('URLResourceDidFinishLoading:'), args:  <dynamic>[sender]);
-  }
-  @NativeDeprecated("Use NSURLConnection instead", macos: ['10.0', '10.4'], ios: ['2.0', '2.0'], watchos: ['2.0', '2.0'], tvos: ['9.0', '9.0'])
-  void URLResourceDidCancelLoading(NSURL sender) {
-     perform(SEL('URLResourceDidCancelLoading:'), args:  <dynamic>[sender]);
-  }
-  @NativeDeprecated("Use NSURLConnection instead", macos: ['10.0', '10.4'], ios: ['2.0', '2.0'], watchos: ['2.0', '2.0'], tvos: ['9.0', '9.0'])
-  void URLResourceDidFailLoadingWithReason(NSURL sender, String reason) {
-     perform(SEL('URL:resourceDidFailLoadingWithReason:'), args:  <dynamic>[sender,reason]);
-  }
-
-}
-
+///
 extension NSURLNSURLLoading on NSURL {
-  @NativeDeprecated("Use NSURLConnection instead", macos: ['10.0', '10.4'], ios: ['2.0', '2.0'], watchos: ['2.0', '2.0'], tvos: ['9.0', '9.0'])
-  NSData resourceDataUsingCache(bool shouldUseCache) {
-    Pointer<Void> result = perform(SEL('resourceDataUsingCache:'), args:  <dynamic>[shouldUseCache], decodeRetVal: false);
+  ///
+  NSData resourceDataUsingCache({bool shouldUseCache}) {
+    var result =
+        perform(SEL('resourceDataUsingCache:'), args: <dynamic>[shouldUseCache], decodeRetVal: false) as Pointer<Void>;
     return NSData.fromPointer(result);
   }
-  @NativeDeprecated("Use NSURLConnection instead", macos: ['10.0', '10.4'], ios: ['2.0', '2.0'], watchos: ['2.0', '2.0'], tvos: ['9.0', '9.0'])
-  void loadResourceDataNotifyingClientUsingCache(NSObject client, bool shouldUseCache) {
-     perform(SEL('loadResourceDataNotifyingClient:usingCache:'), args:  <dynamic>[client,shouldUseCache]);
-  }
-  @NativeDeprecated("Use NSURLConnection instead", macos: ['10.0', '10.4'], ios: ['2.0', '2.0'], watchos: ['2.0', '2.0'], tvos: ['9.0', '9.0'])
-  NSObject propertyForKey(String propertyKey) {
-    Pointer<Void> result = perform(SEL('propertyForKey:'), args:  <dynamic>[propertyKey], decodeRetVal: false);
-    return NSObject.fromPointer(result);
-  }
-  @NativeDeprecated("Use NSURLConnection instead", macos: ['10.0', '10.4'], ios: ['2.0', '2.0'], watchos: ['2.0', '2.0'], tvos: ['9.0', '9.0'])
-  bool setResourceData(NSData data) {
-    return perform(SEL('setResourceData:'), args:  <dynamic>[data]);
-  }
-  @NativeDeprecated("Use NSURLConnection instead", macos: ['10.0', '10.4'], ios: ['2.0', '2.0'], watchos: ['2.0', '2.0'], tvos: ['9.0', '9.0'])
-  bool setPropertyForKey(NSObject property, String propertyKey) {
-    return perform(SEL('setProperty:forKey:'), args:  <dynamic>[property,propertyKey]);
-  }
-  @NativeDeprecated("Use NSURLConnection instead", macos: ['10.0', '10.4'], ios: ['2.0', '2.0'], watchos: ['2.0', '2.0'], tvos: ['9.0', '9.0'])
-  NSURLHandle URLHandleUsingCache(bool shouldUseCache) {
-    Pointer<Void> result = perform(SEL('URLHandleUsingCache:'), args:  <dynamic>[shouldUseCache], decodeRetVal: false);
-    return NSURLHandle.fromPointer(result);
-  }
-
-}bsutton@slayer4:~/git/sounds_ios$ 
+}

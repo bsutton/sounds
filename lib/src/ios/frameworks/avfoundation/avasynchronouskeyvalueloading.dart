@@ -10,13 +10,10 @@ import 'package:dart_native_gen/dart_native_gen.dart';
 // You can uncomment this line when this package is ready.
 // import 'package:foundation/foundation.dart';
 
-
-
 class AVKeyValueStatus extends NSEnum {
   const AVKeyValueStatus(dynamic raw) : super(raw);
   AVKeyValueStatus.fromPointer(Pointer<Void> ptr) : super(ptr.address);
 }
-
 
 const AVKeyValueStatus AVKeyValueStatusUnknown = AVKeyValueStatus(0);
 
@@ -28,16 +25,21 @@ const AVKeyValueStatus AVKeyValueStatusFailed = AVKeyValueStatus(3);
 
 const AVKeyValueStatus AVKeyValueStatusCancelled = AVKeyValueStatus(4);
 
-
-
 abstract class AVAsynchronousKeyValueLoading {
   registerAVAsynchronousKeyValueLoading() {
-    registerProtocolCallback(this, statusOfValueForKeyError, 'statusOfValueForKey:error:', AVAsynchronousKeyValueLoading);
-    registerProtocolCallback(this, loadValuesAsynchronouslyForKeysCompletionHandler, 'loadValuesAsynchronouslyForKeys:completionHandler:', AVAsynchronousKeyValueLoading);
+    registerProtocolCallback(this, statusOfValueForKeyError,
+        'statusOfValueForKey:error:', AVAsynchronousKeyValueLoading);
+    registerProtocolCallback(
+        this,
+        loadValuesAsynchronouslyForKeysCompletionHandler,
+        'loadValuesAsynchronouslyForKeys:completionHandler:',
+        AVAsynchronousKeyValueLoading);
   }
-  
-  AVKeyValueStatus statusOfValueForKeyError(String key, {NSObjectRef<NSError> outError});  
-  void loadValuesAsynchronouslyForKeysCompletionHandler(String keys, {void handler()});
+
+  AVKeyValueStatus statusOfValueForKeyError(String key,
+      {NSObjectRef<NSError> outError});
+  void loadValuesAsynchronouslyForKeysCompletionHandler(String keys,
+      {void handler()});
 }
 // You can uncomment this line when this package is ready.
 // import 'package:avfcore/avasynchronouskeyvalueloading.dart';

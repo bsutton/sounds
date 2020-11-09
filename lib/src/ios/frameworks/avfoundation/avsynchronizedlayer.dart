@@ -10,25 +10,29 @@ import 'package:dart_native_gen/dart_native_gen.dart';
 // You can uncomment this line when this package is ready.
 // import 'package:quartzcore/caanimation.dart';
 
-@NativeAvailable(macos: '10.7', ios: '4.0', tvos: '9.0') @NativeUnavailable(watchos)
+@NativeAvailable(macos: '10.7', ios: '4.0', tvos: '9.0')
+@NativeUnavailable(watchos)
 @native
 class AVSynchronizedLayer extends CALayer {
   AVSynchronizedLayer([Class isa]) : super(isa ?? Class('AVSynchronizedLayer'));
   AVSynchronizedLayer.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
-  
-  AVPlayerItem get playerItem {
-Pointer<Void> result = perform(SEL('playerItem'), decodeRetVal: false);
-    return AVPlayerItem.fromPointer(result);
 
-}
-  
-  set playerItem(AVPlayerItem playerItem) => perform(SEL('setPlayerItem:'), args: [playerItem]);
-  
-  static AVSynchronizedLayer synchronizedLayerWithPlayerItem(AVPlayerItem playerItem) {
-    Pointer<Void> result = Class('AVSynchronizedLayer').perform(SEL('synchronizedLayerWithPlayerItem:'), args: [playerItem], decodeRetVal: false);
-    return AVSynchronizedLayer.fromPointer(result);
+  AVPlayerItem get playerItem {
+    Pointer<Void> result = perform(SEL('playerItem'), decodeRetVal: false);
+    return AVPlayerItem.fromPointer(result);
   }
 
+  set playerItem(AVPlayerItem playerItem) =>
+      perform(SEL('setPlayerItem:'), args: [playerItem]);
+
+  static AVSynchronizedLayer synchronizedLayerWithPlayerItem(
+      AVPlayerItem playerItem) {
+    Pointer<Void> result = Class('AVSynchronizedLayer').perform(
+        SEL('synchronizedLayerWithPlayerItem:'),
+        args: [playerItem],
+        decodeRetVal: false);
+    return AVSynchronizedLayer.fromPointer(result);
+  }
 }
 // You can uncomment this line when this package is ready.
 // import 'package:avfcore/avsynchronizedlayer.dart';

@@ -15,15 +15,14 @@ import 'package:dart_native_gen/dart_native_gen.dart';
 class AVAssetTrackGroup extends NSObject with NSCopying {
   AVAssetTrackGroup([Class isa]) : super(isa ?? Class('AVAssetTrackGroup'));
   AVAssetTrackGroup.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
-  
+
   NSNumber get trackIDs {
-Pointer<Void> result = perform(SEL('trackIDs'), decodeRetVal: false);
+    Pointer<Void> result = perform(SEL('trackIDs'), decodeRetVal: false);
     return NSNumber.fromPointer(result);
+  }
 
-}
-  
-  set trackIDs(NSNumber trackIDs) => perform(SEL('setTrackIDs:'), args: [trackIDs]);
-
+  set trackIDs(NSNumber trackIDs) =>
+      perform(SEL('setTrackIDs:'), args: [trackIDs]);
 }
 // You can uncomment this line when this package is ready.
 // import 'package:avfcore/avassettrackgroup.dart';

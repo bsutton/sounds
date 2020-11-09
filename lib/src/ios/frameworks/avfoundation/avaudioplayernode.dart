@@ -12,52 +12,54 @@ import 'package:dart_native_gen/dart_native_gen.dart';
 // You can uncomment this line when this package is ready.
 // import 'package:avfaudio/avaudiomixing.dart';
 
-
-
 class AVAudioPlayerNodeBufferOptions extends NSOptions {
   const AVAudioPlayerNodeBufferOptions(dynamic raw) : super(raw);
-  AVAudioPlayerNodeBufferOptions.fromPointer(Pointer<Void> ptr) : super(ptr.address);
+  AVAudioPlayerNodeBufferOptions.fromPointer(Pointer<Void> ptr)
+      : super(ptr.address);
 }
 
+const AVAudioPlayerNodeBufferOptions AVAudioPlayerNodeBufferLoops =
+    AVAudioPlayerNodeBufferOptions(1 << 0);
 
-const AVAudioPlayerNodeBufferOptions AVAudioPlayerNodeBufferLoops = AVAudioPlayerNodeBufferOptions(1<<0);
+const AVAudioPlayerNodeBufferOptions AVAudioPlayerNodeBufferInterrupts =
+    AVAudioPlayerNodeBufferOptions(1 << 1);
 
-const AVAudioPlayerNodeBufferOptions AVAudioPlayerNodeBufferInterrupts = AVAudioPlayerNodeBufferOptions(1<<1);
-
-const AVAudioPlayerNodeBufferOptions AVAudioPlayerNodeBufferInterruptsAtLoop = AVAudioPlayerNodeBufferOptions(1<<2);
-
-
-
+const AVAudioPlayerNodeBufferOptions AVAudioPlayerNodeBufferInterruptsAtLoop =
+    AVAudioPlayerNodeBufferOptions(1 << 2);
 
 class AVAudioPlayerNodeCompletionCallbackType extends NSEnum {
   const AVAudioPlayerNodeCompletionCallbackType(dynamic raw) : super(raw);
-  AVAudioPlayerNodeCompletionCallbackType.fromPointer(Pointer<Void> ptr) : super(ptr.address);
+  AVAudioPlayerNodeCompletionCallbackType.fromPointer(Pointer<Void> ptr)
+      : super(ptr.address);
 }
 
+const AVAudioPlayerNodeCompletionCallbackType
+    AVAudioPlayerNodeCompletionDataConsumed =
+    AVAudioPlayerNodeCompletionCallbackType(0);
 
-const AVAudioPlayerNodeCompletionCallbackType AVAudioPlayerNodeCompletionDataConsumed = AVAudioPlayerNodeCompletionCallbackType(0);
+const AVAudioPlayerNodeCompletionCallbackType
+    AVAudioPlayerNodeCompletionDataRendered =
+    AVAudioPlayerNodeCompletionCallbackType(1);
 
-const AVAudioPlayerNodeCompletionCallbackType AVAudioPlayerNodeCompletionDataRendered = AVAudioPlayerNodeCompletionCallbackType(1);
+const AVAudioPlayerNodeCompletionCallbackType
+    AVAudioPlayerNodeCompletionDataPlayedBack =
+    AVAudioPlayerNodeCompletionCallbackType(2);
 
-const AVAudioPlayerNodeCompletionCallbackType AVAudioPlayerNodeCompletionDataPlayedBack = AVAudioPlayerNodeCompletionCallbackType(2);
-
-
-typedef void AVAudioPlayerNodeCompletionHandler(AVAudioPlayerNodeCompletionCallbackType callbackType);
+typedef void AVAudioPlayerNodeCompletionHandler(
+    AVAudioPlayerNodeCompletionCallbackType callbackType);
 
 @NativeAvailable(macos: '10.10', ios: '8.0', watchos: '2.0', tvos: '9.0')
 @native
 class AVAudioPlayerNode extends AVAudioNode with AVAudioMixing {
   AVAudioPlayerNode([Class isa]) : super(isa ?? Class('AVAudioPlayerNode'));
   AVAudioPlayerNode.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
-  
-  bool get playing {
-return perform(SEL('playing'));
 
-}
-  
+  bool get playing {
+    return perform(SEL('playing'));
+  }
+
   set playing(bool playing) => perform(SEL('setPlaying:'), args: [playing]);
-  AVAudioPlayerNode()
-     : super.fromPointer(_init());
+  AVAudioPlayerNode() : super.fromPointer(_init());
 
   static Pointer<Void> _init() {
     Pointer<Void> target = alloc(Class('AVAudioPlayerNode'));
@@ -65,67 +67,117 @@ return perform(SEL('playing'));
     return msgSend(target, sel, args: [], decodeRetVal: false);
   }
 
-  
-  void scheduleBufferCompletionHandler(AVAudioPCMBuffer buffer, {AVAudioNodeCompletionHandler completionHandler}) {
-     perform(SEL('scheduleBuffer:completionHandler:'), args: [buffer,completionHandler]);
+  void scheduleBufferCompletionHandler(AVAudioPCMBuffer buffer,
+      {AVAudioNodeCompletionHandler completionHandler}) {
+    perform(SEL('scheduleBuffer:completionHandler:'),
+        args: [buffer, completionHandler]);
   }
+
   @NativeAvailable(macos: '10.13', ios: '11.0', watchos: '4.0', tvos: '11.0')
-  void scheduleBufferCompletionCallbackTypeCompletionHandler(AVAudioPCMBuffer buffer, AVAudioPlayerNodeCompletionCallbackType callbackType, {AVAudioPlayerNodeCompletionHandler completionHandler}) {
-     perform(SEL('scheduleBuffer:completionCallbackType:completionHandler:'), args: [buffer,callbackType,completionHandler]);
+  void scheduleBufferCompletionCallbackTypeCompletionHandler(
+      AVAudioPCMBuffer buffer,
+      AVAudioPlayerNodeCompletionCallbackType callbackType,
+      {AVAudioPlayerNodeCompletionHandler completionHandler}) {
+    perform(SEL('scheduleBuffer:completionCallbackType:completionHandler:'),
+        args: [buffer, callbackType, completionHandler]);
   }
-  
-  void scheduleBufferAtTimeOptionsCompletionHandler(AVAudioPCMBuffer buffer, AVAudioPlayerNodeBufferOptions options, {AVAudioTime when, AVAudioNodeCompletionHandler completionHandler}) {
-     perform(SEL('scheduleBuffer:atTime:options:completionHandler:'), args: [buffer,when,options,completionHandler]);
+
+  void scheduleBufferAtTimeOptionsCompletionHandler(
+      AVAudioPCMBuffer buffer, AVAudioPlayerNodeBufferOptions options,
+      {AVAudioTime when, AVAudioNodeCompletionHandler completionHandler}) {
+    perform(SEL('scheduleBuffer:atTime:options:completionHandler:'),
+        args: [buffer, when, options, completionHandler]);
   }
+
   @NativeAvailable(macos: '10.13', ios: '11.0', watchos: '4.0', tvos: '11.0')
-  void scheduleBufferAtTimeOptionsCompletionCallbackTypeCompletionHandler(AVAudioPCMBuffer buffer, AVAudioPlayerNodeBufferOptions options, AVAudioPlayerNodeCompletionCallbackType callbackType, {AVAudioTime when, AVAudioPlayerNodeCompletionHandler completionHandler}) {
-     perform(SEL('scheduleBuffer:atTime:options:completionCallbackType:completionHandler:'), args: [buffer,when,options,callbackType,completionHandler]);
+  void scheduleBufferAtTimeOptionsCompletionCallbackTypeCompletionHandler(
+      AVAudioPCMBuffer buffer,
+      AVAudioPlayerNodeBufferOptions options,
+      AVAudioPlayerNodeCompletionCallbackType callbackType,
+      {AVAudioTime when,
+      AVAudioPlayerNodeCompletionHandler completionHandler}) {
+    perform(
+        SEL('scheduleBuffer:atTime:options:completionCallbackType:completionHandler:'),
+        args: [buffer, when, options, callbackType, completionHandler]);
   }
-  
-  void scheduleFileAtTimeCompletionHandler(AVAudioFile file, {AVAudioTime when, AVAudioNodeCompletionHandler completionHandler}) {
-     perform(SEL('scheduleFile:atTime:completionHandler:'), args: [file,when,completionHandler]);
+
+  void scheduleFileAtTimeCompletionHandler(AVAudioFile file,
+      {AVAudioTime when, AVAudioNodeCompletionHandler completionHandler}) {
+    perform(SEL('scheduleFile:atTime:completionHandler:'),
+        args: [file, when, completionHandler]);
   }
+
   @NativeAvailable(macos: '10.13', ios: '11.0', watchos: '4.0', tvos: '11.0')
-  void scheduleFileAtTimeCompletionCallbackTypeCompletionHandler(AVAudioFile file, AVAudioPlayerNodeCompletionCallbackType callbackType, {AVAudioTime when, AVAudioPlayerNodeCompletionHandler completionHandler}) {
-     perform(SEL('scheduleFile:atTime:completionCallbackType:completionHandler:'), args: [file,when,callbackType,completionHandler]);
+  void scheduleFileAtTimeCompletionCallbackTypeCompletionHandler(
+      AVAudioFile file, AVAudioPlayerNodeCompletionCallbackType callbackType,
+      {AVAudioTime when,
+      AVAudioPlayerNodeCompletionHandler completionHandler}) {
+    perform(
+        SEL('scheduleFile:atTime:completionCallbackType:completionHandler:'),
+        args: [file, when, callbackType, completionHandler]);
   }
-  
-  void scheduleSegmentStartingFrameFrameCountAtTimeCompletionHandler(AVAudioFile file, AVAudioFramePosition startFrame, AVAudioFrameCount numberFrames, {AVAudioTime when, AVAudioNodeCompletionHandler completionHandler}) {
-     perform(SEL('scheduleSegment:startingFrame:frameCount:atTime:completionHandler:'), args: [file,startFrame,numberFrames,when,completionHandler]);
+
+  void scheduleSegmentStartingFrameFrameCountAtTimeCompletionHandler(
+      AVAudioFile file,
+      AVAudioFramePosition startFrame,
+      AVAudioFrameCount numberFrames,
+      {AVAudioTime when,
+      AVAudioNodeCompletionHandler completionHandler}) {
+    perform(
+        SEL('scheduleSegment:startingFrame:frameCount:atTime:completionHandler:'),
+        args: [file, startFrame, numberFrames, when, completionHandler]);
   }
+
   @NativeAvailable(macos: '10.13', ios: '11.0', watchos: '4.0', tvos: '11.0')
-  void scheduleSegmentStartingFrameFrameCountAtTimeCompletionCallbackTypeCompletionHandler(AVAudioFile file, AVAudioFramePosition startFrame, AVAudioFrameCount numberFrames, AVAudioPlayerNodeCompletionCallbackType callbackType, {AVAudioTime when, AVAudioPlayerNodeCompletionHandler completionHandler}) {
-     perform(SEL('scheduleSegment:startingFrame:frameCount:atTime:completionCallbackType:completionHandler:'), args: [file,startFrame,numberFrames,when,callbackType,completionHandler]);
+  void
+      scheduleSegmentStartingFrameFrameCountAtTimeCompletionCallbackTypeCompletionHandler(
+          AVAudioFile file,
+          AVAudioFramePosition startFrame,
+          AVAudioFrameCount numberFrames,
+          AVAudioPlayerNodeCompletionCallbackType callbackType,
+          {AVAudioTime when,
+          AVAudioPlayerNodeCompletionHandler completionHandler}) {
+    perform(
+        SEL('scheduleSegment:startingFrame:frameCount:atTime:completionCallbackType:completionHandler:'),
+        args: [
+          file,
+          startFrame,
+          numberFrames,
+          when,
+          callbackType,
+          completionHandler
+        ]);
   }
-  
+
   void stop() {
-     perform(SEL('stop'));
+    perform(SEL('stop'));
   }
-  
+
   void prepareWithFrameCount(AVAudioFrameCount frameCount) {
-     perform(SEL('prepareWithFrameCount:'), args: [frameCount]);
+    perform(SEL('prepareWithFrameCount:'), args: [frameCount]);
   }
-  
+
   void play() {
-     perform(SEL('play'));
+    perform(SEL('play'));
   }
-  
+
   void playAtTime({AVAudioTime when}) {
-     perform(SEL('playAtTime:'), args: [when]);
+    perform(SEL('playAtTime:'), args: [when]);
   }
-  
+
   void pause() {
-     perform(SEL('pause'));
+    perform(SEL('pause'));
   }
-  
+
   AVAudioTime nodeTimeForPlayerTime(AVAudioTime playerTime) {
-    Pointer<Void> result = perform(SEL('nodeTimeForPlayerTime:'), args: [playerTime], decodeRetVal: false);
-    return AVAudioTime.fromPointer(result);
-  }
-  
-  AVAudioTime playerTimeForNodeTime(AVAudioTime nodeTime) {
-    Pointer<Void> result = perform(SEL('playerTimeForNodeTime:'), args: [nodeTime], decodeRetVal: false);
+    Pointer<Void> result = perform(SEL('nodeTimeForPlayerTime:'),
+        args: [playerTime], decodeRetVal: false);
     return AVAudioTime.fromPointer(result);
   }
 
+  AVAudioTime playerTimeForNodeTime(AVAudioTime nodeTime) {
+    Pointer<Void> result = perform(SEL('playerTimeForNodeTime:'),
+        args: [nodeTime], decodeRetVal: false);
+    return AVAudioTime.fromPointer(result);
+  }
 }

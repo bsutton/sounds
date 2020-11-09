@@ -22,36 +22,44 @@ class AVAudioFormat extends NSObject with NSSecureCoding {
     return perform(SEL('standard')) as bool;
   }
 
-  set standard(bool standard) => perform(SEL('setStandard:'), args: <dynamic>[standard]);
+  set standard(bool standard) =>
+      perform(SEL('setStandard:'), args: <dynamic>[standard]);
 
   AVAudioCommonFormat get commonFormat {
-    Pointer<Void> result = perform(SEL('commonFormat'), decodeRetVal: false) as Pointer<Void>;
+    Pointer<Void> result =
+        perform(SEL('commonFormat'), decodeRetVal: false) as Pointer<Void>;
     return AVAudioCommonFormat.fromPointer(result);
   }
 
-  set commonFormat(AVAudioCommonFormat commonFormat) => perform(SEL('setCommonFormat:'), args: <dynamic>[commonFormat]);
+  set commonFormat(AVAudioCommonFormat commonFormat) =>
+      perform(SEL('setCommonFormat:'), args: <dynamic>[commonFormat]);
 
   AVAudioChannelCount get channelCount {
-    Pointer<Void> result = perform(SEL('channelCount'), decodeRetVal: false) as Pointer<Void>;
+    Pointer<Void> result =
+        perform(SEL('channelCount'), decodeRetVal: false) as Pointer<Void>;
     return AVAudioChannelCount.fromPointer(result);
   }
 
-  set channelCount(AVAudioChannelCount channelCount) => perform(SEL('setChannelCount:'), args: <dynamic>[channelCount]);
+  set channelCount(AVAudioChannelCount channelCount) =>
+      perform(SEL('setChannelCount:'), args: <dynamic>[channelCount]);
 
   double get sampleRate {
     return perform(SEL('sampleRate')) as double;
   }
 
-  set sampleRate(double sampleRate) => perform(SEL('setSampleRate:'), args: <dynamic>[sampleRate]);
+  set sampleRate(double sampleRate) =>
+      perform(SEL('setSampleRate:'), args: <dynamic>[sampleRate]);
 
   bool get interleaved {
     return perform(SEL('interleaved')) as bool;
   }
 
-  set interleaved(bool interleaved) => perform(SEL('setInterleaved:'), args: <dynamic>[interleaved]);
+  set interleaved(bool interleaved) =>
+      perform(SEL('setInterleaved:'), args: <dynamic>[interleaved]);
 
   AudioStreamBasicDescription get streamDescription {
-    Pointer<Void> result = perform(SEL('streamDescription'), decodeRetVal: false) as Pointer<Void>;
+    Pointer<Void> result =
+        perform(SEL('streamDescription'), decodeRetVal: false) as Pointer<Void>;
     return AudioStreamBasicDescription.fromPointer(result);
   }
 
@@ -59,7 +67,8 @@ class AVAudioFormat extends NSObject with NSSecureCoding {
       perform(SEL('setStreamDescription:'), args: <dynamic>[streamDescription]);
 
   AVAudioChannelLayout get channelLayout {
-    Pointer<Void> result = perform(SEL('channelLayout'), decodeRetVal: false) as Pointer<Void>;
+    Pointer<Void> result =
+        perform(SEL('channelLayout'), decodeRetVal: false) as Pointer<Void>;
     return AVAudioChannelLayout.fromPointer(result);
   }
 
@@ -67,11 +76,13 @@ class AVAudioFormat extends NSObject with NSSecureCoding {
       perform(SEL('setChannelLayout:'), args: <dynamic>[channelLayout]);
   @NativeAvailable(macos: '10.12', ios: '10.0', watchos: '3.0', tvos: '10.0')
   NSData get magicCookie {
-    Pointer<Void> result = perform(SEL('magicCookie'), decodeRetVal: false) as Pointer<Void>;
+    Pointer<Void> result =
+        perform(SEL('magicCookie'), decodeRetVal: false) as Pointer<Void>;
     return NSData.fromPointer(result);
   }
 
-  set magicCookie(NSData magicCookie) => perform(SEL('setMagicCookie:'), args: <dynamic>[magicCookie]);
+  set magicCookie(NSData magicCookie) =>
+      perform(SEL('setMagicCookie:'), args: <dynamic>[magicCookie]);
 
 /*  id get settings {
     Pointer<Void> result = perform(SEL('settings'), decodeRetVal: false) as Pointer<Void>;
@@ -79,10 +90,12 @@ class AVAudioFormat extends NSObject with NSSecureCoding {
   }
   */
 
-  set settings(id settings) => perform(SEL('setSettings:'), args: <dynamic>[settings]);
+  set settings(id settings) =>
+      perform(SEL('setSettings:'), args: <dynamic>[settings]);
   @NativeAvailable(macos: '10.11', ios: '9.0', watchos: '2.0', tvos: '9.0')
   CMAudioFormatDescriptionRef get formatDescription {
-    Pointer<Void> result = perform(SEL('formatDescription'), decodeRetVal: false) as Pointer<Void>;
+    Pointer<Void> result =
+        perform(SEL('formatDescription'), decodeRetVal: false) as Pointer<Void>;
     return CMAudioFormatDescriptionRef.fromPointer(result);
   }
 
@@ -91,81 +104,119 @@ class AVAudioFormat extends NSObject with NSSecureCoding {
   AVAudioFormat.initWithStreamDescription(AudioStreamBasicDescription asbd)
       : super.fromPointer(_initWithStreamDescription(asbd));
 
-  static Pointer<Void> _initWithStreamDescription(AudioStreamBasicDescription asbd) {
+  static Pointer<Void> _initWithStreamDescription(
+      AudioStreamBasicDescription asbd) {
     Pointer<Void> target = alloc(Class('AVAudioFormat'));
     SEL sel = SEL('initWithStreamDescription:');
-    return msgSend(target, sel, args: <dynamic>[asbd], decodeRetVal: false) as Pointer<Void>;
+    return msgSend(target, sel, args: <dynamic>[asbd], decodeRetVal: false)
+        as Pointer<Void>;
   }
 
-  AVAudioFormat.initWithStreamDescriptionChannelLayout(AudioStreamBasicDescription asbd, {AVAudioChannelLayout layout})
-      : super.fromPointer(_initWithStreamDescriptionChannelLayout(asbd, layout: layout));
+  AVAudioFormat.initWithStreamDescriptionChannelLayout(
+      AudioStreamBasicDescription asbd,
+      {AVAudioChannelLayout layout})
+      : super.fromPointer(
+            _initWithStreamDescriptionChannelLayout(asbd, layout: layout));
 
-  static Pointer<Void> _initWithStreamDescriptionChannelLayout(AudioStreamBasicDescription asbd,
+  static Pointer<Void> _initWithStreamDescriptionChannelLayout(
+      AudioStreamBasicDescription asbd,
       {AVAudioChannelLayout layout}) {
     Pointer<Void> target = alloc(Class('AVAudioFormat'));
     SEL sel = SEL('initWithStreamDescription:channelLayout:');
-    return msgSend(target, sel, args: <dynamic>[asbd, layout], decodeRetVal: false) as Pointer<Void>;
+    return msgSend(target, sel,
+        args: <dynamic>[asbd, layout], decodeRetVal: false) as Pointer<Void>;
   }
 
-  AVAudioFormat.initStandardFormatWithSampleRateChannels(double sampleRate, AVAudioChannelCount channels)
-      : super.fromPointer(_initStandardFormatWithSampleRateChannels(sampleRate, channels));
+  AVAudioFormat.initStandardFormatWithSampleRateChannels(
+      double sampleRate, AVAudioChannelCount channels)
+      : super.fromPointer(
+            _initStandardFormatWithSampleRateChannels(sampleRate, channels));
 
-  static Pointer<Void> _initStandardFormatWithSampleRateChannels(double sampleRate, AVAudioChannelCount channels) {
+  static Pointer<Void> _initStandardFormatWithSampleRateChannels(
+      double sampleRate, AVAudioChannelCount channels) {
     Pointer<Void> target = alloc(Class('AVAudioFormat'));
     SEL sel = SEL('initStandardFormatWithSampleRate:channels:');
-    return msgSend(target, sel, args: <dynamic>[sampleRate, channels], decodeRetVal: false) as Pointer<Void>;
+    return msgSend(target, sel,
+        args: <dynamic>[sampleRate, channels],
+        decodeRetVal: false) as Pointer<Void>;
   }
 
-  AVAudioFormat.initStandardFormatWithSampleRateChannelLayout(double sampleRate, AVAudioChannelLayout layout)
-      : super.fromPointer(_initStandardFormatWithSampleRateChannelLayout(sampleRate, layout));
+  AVAudioFormat.initStandardFormatWithSampleRateChannelLayout(
+      double sampleRate, AVAudioChannelLayout layout)
+      : super.fromPointer(
+            _initStandardFormatWithSampleRateChannelLayout(sampleRate, layout));
 
-  static Pointer<Void> _initStandardFormatWithSampleRateChannelLayout(double sampleRate, AVAudioChannelLayout layout) {
+  static Pointer<Void> _initStandardFormatWithSampleRateChannelLayout(
+      double sampleRate, AVAudioChannelLayout layout) {
     Pointer<Void> target = alloc(Class('AVAudioFormat'));
     SEL sel = SEL('initStandardFormatWithSampleRate:channelLayout:');
-    return msgSend(target, sel, args: <dynamic>[sampleRate, layout], decodeRetVal: false) as Pointer<Void>;
+    return msgSend(target, sel,
+        args: <dynamic>[sampleRate, layout],
+        decodeRetVal: false) as Pointer<Void>;
   }
 
   AVAudioFormat.initWithCommonFormatSampleRateChannelsInterleaved(
-      AVAudioCommonFormat format, double sampleRate, AVAudioChannelCount channels, bool interleaved)
-      : super.fromPointer(
-            _initWithCommonFormatSampleRateChannelsInterleaved(format, sampleRate, channels, interleaved));
+      AVAudioCommonFormat format,
+      double sampleRate,
+      AVAudioChannelCount channels,
+      bool interleaved)
+      : super.fromPointer(_initWithCommonFormatSampleRateChannelsInterleaved(
+            format, sampleRate, channels, interleaved));
 
   static Pointer<Void> _initWithCommonFormatSampleRateChannelsInterleaved(
-      AVAudioCommonFormat format, double sampleRate, AVAudioChannelCount channels, bool interleaved) {
+      AVAudioCommonFormat format,
+      double sampleRate,
+      AVAudioChannelCount channels,
+      bool interleaved) {
     Pointer<Void> target = alloc(Class('AVAudioFormat'));
     SEL sel = SEL('initWithCommonFormat:sampleRate:channels:interleaved:');
-    return msgSend(target, sel, args: <dynamic>[format, sampleRate, channels, interleaved], decodeRetVal: false)
-        as Pointer<Void>;
+    return msgSend(target, sel,
+        args: <dynamic>[format, sampleRate, channels, interleaved],
+        decodeRetVal: false) as Pointer<Void>;
   }
 
   AVAudioFormat.initWithCommonFormatSampleRateInterleavedChannelLayout(
-      AVAudioCommonFormat format, double sampleRate, bool interleaved, AVAudioChannelLayout layout)
+      AVAudioCommonFormat format,
+      double sampleRate,
+      bool interleaved,
+      AVAudioChannelLayout layout)
       : super.fromPointer(
-            _initWithCommonFormatSampleRateInterleavedChannelLayout(format, sampleRate, interleaved, layout));
+            _initWithCommonFormatSampleRateInterleavedChannelLayout(
+                format, sampleRate, interleaved, layout));
 
   static Pointer<Void> _initWithCommonFormatSampleRateInterleavedChannelLayout(
-      AVAudioCommonFormat format, double sampleRate, bool interleaved, AVAudioChannelLayout layout) {
+      AVAudioCommonFormat format,
+      double sampleRate,
+      bool interleaved,
+      AVAudioChannelLayout layout) {
     Pointer<Void> target = alloc(Class('AVAudioFormat'));
     SEL sel = SEL('initWithCommonFormat:sampleRate:interleaved:channelLayout:');
-    return msgSend(target, sel, args: <dynamic>[format, sampleRate, interleaved, layout], decodeRetVal: false)
-        as Pointer<Void>;
+    return msgSend(target, sel,
+        args: <dynamic>[format, sampleRate, interleaved, layout],
+        decodeRetVal: false) as Pointer<Void>;
   }
 
-  AVAudioFormat.initWithSettings(NSObject settings) : super.fromPointer(_initWithSettings(settings));
+  AVAudioFormat.initWithSettings(NSObject settings)
+      : super.fromPointer(_initWithSettings(settings));
 
   static Pointer<Void> _initWithSettings(NSObject settings) {
     Pointer<Void> target = alloc(Class('AVAudioFormat'));
     SEL sel = SEL('initWithSettings:');
-    return msgSend(target, sel, args: <dynamic>[settings], decodeRetVal: false) as Pointer<Void>;
+    return msgSend(target, sel, args: <dynamic>[settings], decodeRetVal: false)
+        as Pointer<Void>;
   }
 
-  AVAudioFormat.initWithCMAudioFormatDescription(CMAudioFormatDescriptionRef formatDescription)
+  AVAudioFormat.initWithCMAudioFormatDescription(
+      CMAudioFormatDescriptionRef formatDescription)
       : super.fromPointer(_initWithCMAudioFormatDescription(formatDescription));
 
-  static Pointer<Void> _initWithCMAudioFormatDescription(CMAudioFormatDescriptionRef formatDescription) {
+  static Pointer<Void> _initWithCMAudioFormatDescription(
+      CMAudioFormatDescriptionRef formatDescription) {
     Pointer<Void> target = alloc(Class('AVAudioFormat'));
     SEL sel = SEL('initWithCMAudioFormatDescription:');
-    return msgSend(target, sel, args: <dynamic>[formatDescription], decodeRetVal: false) as Pointer<Void>;
+    return msgSend(target, sel,
+        args: <dynamic>[formatDescription],
+        decodeRetVal: false) as Pointer<Void>;
   }
 
   bool isEqual(covariant NSObject object) {

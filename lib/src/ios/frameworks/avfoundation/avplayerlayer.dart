@@ -12,56 +12,65 @@ import 'package:dart_native_gen/dart_native_gen.dart';
 // You can uncomment this line when this package is ready.
 // import 'package:quartzcore/coreanimation.dart';
 
-@NativeAvailable(macos: '10.7', ios: '4.0', tvos: '9.0') @NativeUnavailable(watchos)
+@NativeAvailable(macos: '10.7', ios: '4.0', tvos: '9.0')
+@NativeUnavailable(watchos)
 @native
 class AVPlayerLayer extends CALayer {
   AVPlayerLayer([Class isa]) : super(isa ?? Class('AVPlayerLayer'));
   AVPlayerLayer.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
-  
+
   AVPlayer get player {
-Pointer<Void> result = perform(SEL('player'), decodeRetVal: false);
+    Pointer<Void> result = perform(SEL('player'), decodeRetVal: false);
     return AVPlayer.fromPointer(result);
-
-}
-  
-  set player(AVPlayer player) => perform(SEL('setPlayer:'), args: [player]);
-  
-  AVLayerVideoGravity get videoGravity {
-Pointer<Void> result = perform(SEL('videoGravity'), decodeRetVal: false);
-    return AVLayerVideoGravity.fromPointer(result);
-
-}
-  
-  set videoGravity(AVLayerVideoGravity videoGravity) => perform(SEL('setVideoGravity:'), args: [videoGravity]);
-  
-  bool get readyForDisplay {
-return perform(SEL('readyForDisplay'));
-
-}
-  
-  set readyForDisplay(bool readyForDisplay) => perform(SEL('setReadyForDisplay:'), args: [readyForDisplay]);
-  @NativeAvailable(macos: '10.9', ios: '7.0', tvos: '9.0') @NativeUnavailable(watchos)
-  CGRect get videoRect {
-Pointer<Void> result = perform(SEL('videoRect'), decodeRetVal: false);
-    return CGRect.fromPointer(result);
-
-}
-  @NativeAvailable(macos: '10.9', ios: '7.0', tvos: '9.0') @NativeUnavailable(watchos)
-  set videoRect(CGRect videoRect) => perform(SEL('setVideoRect:'), args: [videoRect]);
-  @NativeAvailable(macos: '10.11', ios: '9.0', tvos: '9.0') @NativeUnavailable(watchos)
-  id get pixelBufferAttributes {
-Pointer<Void> result = perform(SEL('pixelBufferAttributes'), decodeRetVal: false);
-    return id.fromPointer(result);
-
-}
-  @NativeAvailable(macos: '10.11', ios: '9.0', tvos: '9.0') @NativeUnavailable(watchos)
-  set pixelBufferAttributes(id pixelBufferAttributes) => perform(SEL('setPixelBufferAttributes:'), args: [pixelBufferAttributes]);
-  
-  static AVPlayerLayer playerLayerWithPlayer({AVPlayer player}) {
-    Pointer<Void> result = Class('AVPlayerLayer').perform(SEL('playerLayerWithPlayer:'), args: [player], decodeRetVal: false);
-    return AVPlayerLayer.fromPointer(result);
   }
 
+  set player(AVPlayer player) => perform(SEL('setPlayer:'), args: [player]);
+
+  AVLayerVideoGravity get videoGravity {
+    Pointer<Void> result = perform(SEL('videoGravity'), decodeRetVal: false);
+    return AVLayerVideoGravity.fromPointer(result);
+  }
+
+  set videoGravity(AVLayerVideoGravity videoGravity) =>
+      perform(SEL('setVideoGravity:'), args: [videoGravity]);
+
+  bool get readyForDisplay {
+    return perform(SEL('readyForDisplay'));
+  }
+
+  set readyForDisplay(bool readyForDisplay) =>
+      perform(SEL('setReadyForDisplay:'), args: [readyForDisplay]);
+  @NativeAvailable(macos: '10.9', ios: '7.0', tvos: '9.0')
+  @NativeUnavailable(watchos)
+  CGRect get videoRect {
+    Pointer<Void> result = perform(SEL('videoRect'), decodeRetVal: false);
+    return CGRect.fromPointer(result);
+  }
+
+  @NativeAvailable(macos: '10.9', ios: '7.0', tvos: '9.0')
+  @NativeUnavailable(watchos)
+  set videoRect(CGRect videoRect) =>
+      perform(SEL('setVideoRect:'), args: [videoRect]);
+  @NativeAvailable(macos: '10.11', ios: '9.0', tvos: '9.0')
+  @NativeUnavailable(watchos)
+  id get pixelBufferAttributes {
+    Pointer<Void> result =
+        perform(SEL('pixelBufferAttributes'), decodeRetVal: false);
+    return id.fromPointer(result);
+  }
+
+  @NativeAvailable(macos: '10.11', ios: '9.0', tvos: '9.0')
+  @NativeUnavailable(watchos)
+  set pixelBufferAttributes(id pixelBufferAttributes) =>
+      perform(SEL('setPixelBufferAttributes:'), args: [pixelBufferAttributes]);
+
+  static AVPlayerLayer playerLayerWithPlayer({AVPlayer player}) {
+    Pointer<Void> result = Class('AVPlayerLayer').perform(
+        SEL('playerLayerWithPlayer:'),
+        args: [player],
+        decodeRetVal: false);
+    return AVPlayerLayer.fromPointer(result);
+  }
 }
 // You can uncomment this line when this package is ready.
 // import 'package:avfcore/avplayerlayer.dart';

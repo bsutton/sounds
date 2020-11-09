@@ -17,60 +17,83 @@ import 'package:dart_native_gen/dart_native_gen.dart';
 @NativeAvailable(macos: '10.7', ios: '4.0', tvos: '9.0', watchos: '1.0')
 @native
 class AVCompositionTrackSegment extends AVAssetTrackSegment {
-  AVCompositionTrackSegment([Class isa]) : super(isa ?? Class('AVCompositionTrackSegment'));
-  AVCompositionTrackSegment.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
-  
+  AVCompositionTrackSegment([Class isa])
+      : super(isa ?? Class('AVCompositionTrackSegment'));
+  AVCompositionTrackSegment.fromPointer(Pointer<Void> ptr)
+      : super.fromPointer(ptr);
+
   bool get empty {
-return perform(SEL('empty'));
+    return perform(SEL('empty'));
+  }
 
-}
-  
   set empty(bool empty) => perform(SEL('setEmpty:'), args: [empty]);
-  
+
   NSURL get sourceURL {
-Pointer<Void> result = perform(SEL('sourceURL'), decodeRetVal: false);
+    Pointer<Void> result = perform(SEL('sourceURL'), decodeRetVal: false);
     return NSURL.fromPointer(result);
+  }
 
-}
-  
-  set sourceURL(NSURL sourceURL) => perform(SEL('setSourceURL:'), args: [sourceURL]);
-  
+  set sourceURL(NSURL sourceURL) =>
+      perform(SEL('setSourceURL:'), args: [sourceURL]);
+
   CMPersistentTrackID get sourceTrackID {
-Pointer<Void> result = perform(SEL('sourceTrackID'), decodeRetVal: false);
+    Pointer<Void> result = perform(SEL('sourceTrackID'), decodeRetVal: false);
     return CMPersistentTrackID.fromPointer(result);
+  }
 
-}
-  
-  set sourceTrackID(CMPersistentTrackID sourceTrackID) => perform(SEL('setSourceTrackID:'), args: [sourceTrackID]);
-  
-  static AVCompositionTrackSegment compositionTrackSegmentWithURLTrackIDSourceTimeRangeTargetTimeRange(NSURL URL, CMPersistentTrackID trackID, CMTimeRange sourceTimeRange, CMTimeRange targetTimeRange) {
-    Pointer<Void> result = Class('AVCompositionTrackSegment').perform(SEL('compositionTrackSegmentWithURL:trackID:sourceTimeRange:targetTimeRange:'), args: [URL,trackID,sourceTimeRange,targetTimeRange], decodeRetVal: false);
+  set sourceTrackID(CMPersistentTrackID sourceTrackID) =>
+      perform(SEL('setSourceTrackID:'), args: [sourceTrackID]);
+
+  static AVCompositionTrackSegment
+      compositionTrackSegmentWithURLTrackIDSourceTimeRangeTargetTimeRange(
+          NSURL URL,
+          CMPersistentTrackID trackID,
+          CMTimeRange sourceTimeRange,
+          CMTimeRange targetTimeRange) {
+    Pointer<Void> result = Class('AVCompositionTrackSegment').perform(
+        SEL('compositionTrackSegmentWithURL:trackID:sourceTimeRange:targetTimeRange:'),
+        args: [URL, trackID, sourceTimeRange, targetTimeRange],
+        decodeRetVal: false);
     return AVCompositionTrackSegment.fromPointer(result);
   }
-  
-  static AVCompositionTrackSegment compositionTrackSegmentWithTimeRange(CMTimeRange timeRange) {
-    Pointer<Void> result = Class('AVCompositionTrackSegment').perform(SEL('compositionTrackSegmentWithTimeRange:'), args: [timeRange], decodeRetVal: false);
+
+  static AVCompositionTrackSegment compositionTrackSegmentWithTimeRange(
+      CMTimeRange timeRange) {
+    Pointer<Void> result = Class('AVCompositionTrackSegment').perform(
+        SEL('compositionTrackSegmentWithTimeRange:'),
+        args: [timeRange],
+        decodeRetVal: false);
     return AVCompositionTrackSegment.fromPointer(result);
   }
-  AVCompositionTrackSegment.initWithURLTrackIDSourceTimeRangeTargetTimeRange(NSURL URL, CMPersistentTrackID trackID, CMTimeRange sourceTimeRange, CMTimeRange targetTimeRange)
-     : super.fromPointer(_initWithURLTrackIDSourceTimeRangeTargetTimeRange(URL,trackID,sourceTimeRange,targetTimeRange));
 
-  static Pointer<Void> _initWithURLTrackIDSourceTimeRangeTargetTimeRange(NSURL URL, CMPersistentTrackID trackID, CMTimeRange sourceTimeRange, CMTimeRange targetTimeRange) {
+  AVCompositionTrackSegment.initWithURLTrackIDSourceTimeRangeTargetTimeRange(
+      NSURL URL,
+      CMPersistentTrackID trackID,
+      CMTimeRange sourceTimeRange,
+      CMTimeRange targetTimeRange)
+      : super.fromPointer(_initWithURLTrackIDSourceTimeRangeTargetTimeRange(
+            URL, trackID, sourceTimeRange, targetTimeRange));
+
+  static Pointer<Void> _initWithURLTrackIDSourceTimeRangeTargetTimeRange(
+      NSURL URL,
+      CMPersistentTrackID trackID,
+      CMTimeRange sourceTimeRange,
+      CMTimeRange targetTimeRange) {
     Pointer<Void> target = alloc(Class('AVCompositionTrackSegment'));
     SEL sel = SEL('initWithURL:trackID:sourceTimeRange:targetTimeRange:');
-    return msgSend(target, sel, args: [URL,trackID,sourceTimeRange,targetTimeRange], decodeRetVal: false);
+    return msgSend(target, sel,
+        args: [URL, trackID, sourceTimeRange, targetTimeRange],
+        decodeRetVal: false);
   }
 
   AVCompositionTrackSegment.initWithTimeRange(CMTimeRange timeRange)
-     : super.fromPointer(_initWithTimeRange(timeRange));
+      : super.fromPointer(_initWithTimeRange(timeRange));
 
   static Pointer<Void> _initWithTimeRange(CMTimeRange timeRange) {
     Pointer<Void> target = alloc(Class('AVCompositionTrackSegment'));
     SEL sel = SEL('initWithTimeRange:');
     return msgSend(target, sel, args: [timeRange], decodeRetVal: false);
   }
-
-
 }
 // You can uncomment this line when this package is ready.
 // import 'package:avfcore/avcompositiontracksegment.dart';

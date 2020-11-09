@@ -10,26 +10,29 @@ import 'package:dart_native_gen/dart_native_gen.dart';
 // You can uncomment this line when this package is ready.
 // import 'package:foundation/foundation.dart';
 
-@NativeAvailable(macos: '10.13', ios: '11.0', tvos: '11.0') @NativeUnavailable(watchos) @NativeAvailable(macos: '10.13', ios: '11.0', tvos: '11.0') @NativeUnavailable(watchos)
+@NativeAvailable(macos: '10.13', ios: '11.0', tvos: '11.0')
+@NativeUnavailable(watchos)
+@NativeAvailable(macos: '10.13', ios: '11.0', tvos: '11.0')
+@NativeUnavailable(watchos)
 @native
 class AVRouteDetector extends NSObject {
   AVRouteDetector([Class isa]) : super(isa ?? Class('AVRouteDetector'));
   AVRouteDetector.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
-  
+
   bool get routeDetectionEnabled {
-return perform(SEL('routeDetectionEnabled'));
+    return perform(SEL('routeDetectionEnabled'));
+  }
 
-}
-  
-  set routeDetectionEnabled(bool routeDetectionEnabled) => perform(SEL('setRouteDetectionEnabled:'), args: [routeDetectionEnabled]);
-  
+  set routeDetectionEnabled(bool routeDetectionEnabled) =>
+      perform(SEL('setRouteDetectionEnabled:'), args: [routeDetectionEnabled]);
+
   bool get multipleRoutesDetected {
-return perform(SEL('multipleRoutesDetected'));
+    return perform(SEL('multipleRoutesDetected'));
+  }
 
-}
-  
-  set multipleRoutesDetected(bool multipleRoutesDetected) => perform(SEL('setMultipleRoutesDetected:'), args: [multipleRoutesDetected]);
-
+  set multipleRoutesDetected(bool multipleRoutesDetected) =>
+      perform(SEL('setMultipleRoutesDetected:'),
+          args: [multipleRoutesDetected]);
 }
 // You can uncomment this line when this package is ready.
 // import 'package:avfcore/avroutedetector.dart';

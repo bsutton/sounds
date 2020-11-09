@@ -10,15 +10,18 @@ import 'package:dart_native_gen/dart_native_gen.dart';
 // You can uncomment this line when this package is ready.
 // import 'package:avfaudio/avaudiomixing.dart';
 
-typedef OSStatus AVAudioSourceNodeRenderBlock(BOOL isSilence, AudioTimeStamp timestamp, AVAudioFrameCount frameCount, AudioBufferList outputData);
+typedef OSStatus AVAudioSourceNodeRenderBlock(
+    BOOL isSilence,
+    AudioTimeStamp timestamp,
+    AVAudioFrameCount frameCount,
+    AudioBufferList outputData);
 
 @NativeAvailable(macos: '10.15', ios: '13.0', tvos: '13.0', watchos: '6.0')
 @native
 class AVAudioSourceNode extends AVAudioNode with AVAudioMixing {
   AVAudioSourceNode([Class isa]) : super(isa ?? Class('AVAudioSourceNode'));
   AVAudioSourceNode.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
-  AVAudioSourceNode.init()
-     : super.fromPointer(_init());
+  AVAudioSourceNode.init() : super.fromPointer(_init());
 
   static Pointer<Void> _init() {
     Pointer<Void> target = alloc(Class('AVAudioSourceNode'));
@@ -27,22 +30,23 @@ class AVAudioSourceNode extends AVAudioNode with AVAudioMixing {
   }
 
   AVAudioSourceNode.initWithRenderBlock(AVAudioSourceNodeRenderBlock block)
-     : super.fromPointer(_initWithRenderBlock(block));
+      : super.fromPointer(_initWithRenderBlock(block));
 
-  static Pointer<Void> _initWithRenderBlock(AVAudioSourceNodeRenderBlock block) {
+  static Pointer<Void> _initWithRenderBlock(
+      AVAudioSourceNodeRenderBlock block) {
     Pointer<Void> target = alloc(Class('AVAudioSourceNode'));
     SEL sel = SEL('initWithRenderBlock:');
     return msgSend(target, sel, args: [block], decodeRetVal: false);
   }
 
-  AVAudioSourceNode.initWithFormatRenderBlock(AVAudioFormat format, AVAudioSourceNodeRenderBlock block)
-     : super.fromPointer(_initWithFormatRenderBlock(format,block));
+  AVAudioSourceNode.initWithFormatRenderBlock(
+      AVAudioFormat format, AVAudioSourceNodeRenderBlock block)
+      : super.fromPointer(_initWithFormatRenderBlock(format, block));
 
-  static Pointer<Void> _initWithFormatRenderBlock(AVAudioFormat format, AVAudioSourceNodeRenderBlock block) {
+  static Pointer<Void> _initWithFormatRenderBlock(
+      AVAudioFormat format, AVAudioSourceNodeRenderBlock block) {
     Pointer<Void> target = alloc(Class('AVAudioSourceNode'));
     SEL sel = SEL('initWithFormat:renderBlock:');
-    return msgSend(target, sel, args: [format,block], decodeRetVal: false);
+    return msgSend(target, sel, args: [format, block], decodeRetVal: false);
   }
-
-
 }

@@ -12,161 +12,195 @@ import 'package:dart_native_gen/dart_native_gen.dart';
 // You can uncomment this line when this package is ready.
 // import 'package:avfaudio/avaudiosession.dart';
 
-@NativeAvailable(macos: '10.7', ios: '3.0', watchos: '4.0') @NativeUnavailable(tvos)
+@NativeAvailable(macos: '10.7', ios: '3.0', watchos: '4.0')
+@NativeUnavailable(tvos)
 @native
 class AVAudioRecorder extends NSObject {
   AVAudioRecorder([Class isa]) : super(isa ?? Class('AVAudioRecorder'));
   AVAudioRecorder.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
-  
+
   bool get recording {
-return perform(SEL('recording'));
+    return perform(SEL('recording'));
+  }
 
-}
-  
-  set recording(bool recording) => perform(SEL('setRecording:'), args: [recording]);
-  
+  set recording(bool recording) =>
+      perform(SEL('setRecording:'), args: [recording]);
+
   NSURL get url {
-Pointer<Void> result = perform(SEL('url'), decodeRetVal: false);
+    Pointer<Void> result = perform(SEL('url'), decodeRetVal: false);
     return NSURL.fromPointer(result);
+  }
 
-}
-  
   set url(NSURL url) => perform(SEL('setUrl:'), args: [url]);
-  
+
   id get settings {
-Pointer<Void> result = perform(SEL('settings'), decodeRetVal: false);
+    Pointer<Void> result = perform(SEL('settings'), decodeRetVal: false);
     return id.fromPointer(result);
+  }
 
-}
-  
   set settings(id settings) => perform(SEL('setSettings:'), args: [settings]);
-  @NativeAvailable(macos: '10.12', ios: '10.0', watchos: '4.0') @NativeUnavailable(tvos)
+  @NativeAvailable(macos: '10.12', ios: '10.0', watchos: '4.0')
+  @NativeUnavailable(tvos)
   AVAudioFormat get format {
-Pointer<Void> result = perform(SEL('format'), decodeRetVal: false);
+    Pointer<Void> result = perform(SEL('format'), decodeRetVal: false);
     return AVAudioFormat.fromPointer(result);
+  }
 
-}
-  @NativeAvailable(macos: '10.12', ios: '10.0', watchos: '4.0') @NativeUnavailable(tvos)
-  set format(AVAudioFormat format) => perform(SEL('setFormat:'), args: [format]);
-  
+  @NativeAvailable(macos: '10.12', ios: '10.0', watchos: '4.0')
+  @NativeUnavailable(tvos)
+  set format(AVAudioFormat format) =>
+      perform(SEL('setFormat:'), args: [format]);
+
   AVAudioRecorderDelegate get delegate {
-Pointer<Void> result = perform(SEL('delegate'), decodeRetVal: false);
+    Pointer<Void> result = perform(SEL('delegate'), decodeRetVal: false);
     return AVAudioRecorderDelegate.fromPointer(result);
+  }
 
-}
-  
-  set delegate(AVAudioRecorderDelegate delegate) => perform(SEL('setDelegate:'), args: [delegate]);
-  
+  set delegate(AVAudioRecorderDelegate delegate) =>
+      perform(SEL('setDelegate:'), args: [delegate]);
+
   NSTimeInterval get currentTime {
-Pointer<Void> result = perform(SEL('currentTime'), decodeRetVal: false);
+    Pointer<Void> result = perform(SEL('currentTime'), decodeRetVal: false);
     return NSTimeInterval.fromPointer(result);
+  }
 
-}
-  
-  set currentTime(NSTimeInterval currentTime) => perform(SEL('setCurrentTime:'), args: [currentTime]);
-  @NativeAvailable(macos: '10.9', ios: '6.0', watchos: '4.0') @NativeUnavailable(tvos)
+  set currentTime(NSTimeInterval currentTime) =>
+      perform(SEL('setCurrentTime:'), args: [currentTime]);
+  @NativeAvailable(macos: '10.9', ios: '6.0', watchos: '4.0')
+  @NativeUnavailable(tvos)
   NSTimeInterval get deviceCurrentTime {
-Pointer<Void> result = perform(SEL('deviceCurrentTime'), decodeRetVal: false);
+    Pointer<Void> result =
+        perform(SEL('deviceCurrentTime'), decodeRetVal: false);
     return NSTimeInterval.fromPointer(result);
+  }
 
-}
-  @NativeAvailable(macos: '10.9', ios: '6.0', watchos: '4.0') @NativeUnavailable(tvos)
-  set deviceCurrentTime(NSTimeInterval deviceCurrentTime) => perform(SEL('setDeviceCurrentTime:'), args: [deviceCurrentTime]);
-  
+  @NativeAvailable(macos: '10.9', ios: '6.0', watchos: '4.0')
+  @NativeUnavailable(tvos)
+  set deviceCurrentTime(NSTimeInterval deviceCurrentTime) =>
+      perform(SEL('setDeviceCurrentTime:'), args: [deviceCurrentTime]);
+
   bool get meteringEnabled {
-return perform(SEL('meteringEnabled'));
+    return perform(SEL('meteringEnabled'));
+  }
 
-}
-  
-  set meteringEnabled(bool meteringEnabled) => perform(SEL('setMeteringEnabled:'), args: [meteringEnabled]);
-  @NativeAvailable(ios: '7.0', watchos: '4.0') @NativeUnavailable(macos) @NativeUnavailable(tvos)
+  set meteringEnabled(bool meteringEnabled) =>
+      perform(SEL('setMeteringEnabled:'), args: [meteringEnabled]);
+  @NativeAvailable(ios: '7.0', watchos: '4.0')
+  @NativeUnavailable(macos)
+  @NativeUnavailable(tvos)
   AVAudioSessionChannelDescription get channelAssignments {
-Pointer<Void> result = perform(SEL('channelAssignments'), decodeRetVal: false);
+    Pointer<Void> result =
+        perform(SEL('channelAssignments'), decodeRetVal: false);
     return AVAudioSessionChannelDescription.fromPointer(result);
+  }
 
-}
-  @NativeAvailable(ios: '7.0', watchos: '4.0') @NativeUnavailable(macos) @NativeUnavailable(tvos)
-  set channelAssignments(AVAudioSessionChannelDescription channelAssignments) => perform(SEL('setChannelAssignments:'), args: [channelAssignments]);
-  AVAudioRecorder.initWithURLSettingsError(NSURL url, NSObject settings, NSObjectRef<NSError> outError)
-     : super.fromPointer(_initWithURLSettingsError(url,settings,outError));
+  @NativeAvailable(ios: '7.0', watchos: '4.0')
+  @NativeUnavailable(macos)
+  @NativeUnavailable(tvos)
+  set channelAssignments(AVAudioSessionChannelDescription channelAssignments) =>
+      perform(SEL('setChannelAssignments:'), args: [channelAssignments]);
+  AVAudioRecorder.initWithURLSettingsError(
+      NSURL url, NSObject settings, NSObjectRef<NSError> outError)
+      : super.fromPointer(_initWithURLSettingsError(url, settings, outError));
 
-  static Pointer<Void> _initWithURLSettingsError(NSURL url, NSObject settings, NSObjectRef<NSError> outError) {
+  static Pointer<Void> _initWithURLSettingsError(
+      NSURL url, NSObject settings, NSObjectRef<NSError> outError) {
     Pointer<Void> target = alloc(Class('AVAudioRecorder'));
     SEL sel = SEL('initWithURL:settings:error:');
-    return msgSend(target, sel, args: [url,settings,outError], decodeRetVal: false);
+    return msgSend(target, sel,
+        args: [url, settings, outError], decodeRetVal: false);
   }
 
-  AVAudioRecorder.initWithURLFormatError(NSURL url, AVAudioFormat format, NSObjectRef<NSError> outError)
-     : super.fromPointer(_initWithURLFormatError(url,format,outError));
+  AVAudioRecorder.initWithURLFormatError(
+      NSURL url, AVAudioFormat format, NSObjectRef<NSError> outError)
+      : super.fromPointer(_initWithURLFormatError(url, format, outError));
 
-  static Pointer<Void> _initWithURLFormatError(NSURL url, AVAudioFormat format, NSObjectRef<NSError> outError) {
+  static Pointer<Void> _initWithURLFormatError(
+      NSURL url, AVAudioFormat format, NSObjectRef<NSError> outError) {
     Pointer<Void> target = alloc(Class('AVAudioRecorder'));
     SEL sel = SEL('initWithURL:format:error:');
-    return msgSend(target, sel, args: [url,format,outError], decodeRetVal: false);
+    return msgSend(target, sel,
+        args: [url, format, outError], decodeRetVal: false);
   }
 
-  
   bool prepareToRecord() {
     return perform(SEL('prepareToRecord'));
   }
-  
+
   bool record() {
     return perform(SEL('record'));
   }
-  @NativeAvailable(macos: '10.9', ios: '6.0', watchos: '4.0') @NativeUnavailable(tvos)
+
+  @NativeAvailable(macos: '10.9', ios: '6.0', watchos: '4.0')
+  @NativeUnavailable(tvos)
   bool recordAtTime(NSTimeInterval time) {
     return perform(SEL('recordAtTime:'), args: [time]);
   }
-  
+
   bool recordForDuration(NSTimeInterval duration) {
     return perform(SEL('recordForDuration:'), args: [duration]);
   }
-  @NativeAvailable(macos: '10.9', ios: '6.0', watchos: '4.0') @NativeUnavailable(tvos)
+
+  @NativeAvailable(macos: '10.9', ios: '6.0', watchos: '4.0')
+  @NativeUnavailable(tvos)
   bool recordAtTimeForDuration(NSTimeInterval time, NSTimeInterval duration) {
-    return perform(SEL('recordAtTime:forDuration:'), args: [time,duration]);
+    return perform(SEL('recordAtTime:forDuration:'), args: [time, duration]);
   }
-  
+
   void pause() {
-     perform(SEL('pause'));
+    perform(SEL('pause'));
   }
-  
+
   void stop() {
-     perform(SEL('stop'));
+    perform(SEL('stop'));
   }
-  
+
   bool deleteRecording() {
     return perform(SEL('deleteRecording'));
   }
-  
+
   void updateMeters() {
-     perform(SEL('updateMeters'));
+    perform(SEL('updateMeters'));
   }
-  
+
   double peakPowerForChannel(NSUInteger channelNumber) {
     return perform(SEL('peakPowerForChannel:'), args: [channelNumber]);
   }
-  
+
   double averagePowerForChannel(NSUInteger channelNumber) {
     return perform(SEL('averagePowerForChannel:'), args: [channelNumber]);
   }
-
 }
 
-@NativeAvailable(macos: '10.7', ios: '3.0', watchos: '4.0') @NativeUnavailable(tvos)
+@NativeAvailable(macos: '10.7', ios: '3.0', watchos: '4.0')
+@NativeUnavailable(tvos)
 abstract class AVAudioRecorderDelegate {
   registerAVAudioRecorderDelegate() {
-    registerProtocolCallback(this, audioRecorderDidFinishRecordingSuccessfully, 'audioRecorderDidFinishRecording:successfully:', AVAudioRecorderDelegate);
-    registerProtocolCallback(this, audioRecorderEncodeErrorDidOccurError, 'audioRecorderEncodeErrorDidOccur:error:', AVAudioRecorderDelegate);
-    registerProtocolCallback(this, audioRecorderBeginInterruption, 'audioRecorderBeginInterruption:', AVAudioRecorderDelegate);
-    registerProtocolCallback(this, audioRecorderEndInterruptionWithOptions, 'audioRecorderEndInterruption:withOptions:', AVAudioRecorderDelegate);
-    registerProtocolCallback(this, audioRecorderEndInterruptionWithFlags, 'audioRecorderEndInterruption:withFlags:', AVAudioRecorderDelegate);
-    registerProtocolCallback(this, audioRecorderEndInterruption, 'audioRecorderEndInterruption:', AVAudioRecorderDelegate);
+    registerProtocolCallback(
+        this,
+        audioRecorderDidFinishRecordingSuccessfully,
+        'audioRecorderDidFinishRecording:successfully:',
+        AVAudioRecorderDelegate);
+    registerProtocolCallback(this, audioRecorderEncodeErrorDidOccurError,
+        'audioRecorderEncodeErrorDidOccur:error:', AVAudioRecorderDelegate);
+    registerProtocolCallback(this, audioRecorderBeginInterruption,
+        'audioRecorderBeginInterruption:', AVAudioRecorderDelegate);
+    registerProtocolCallback(this, audioRecorderEndInterruptionWithOptions,
+        'audioRecorderEndInterruption:withOptions:', AVAudioRecorderDelegate);
+    registerProtocolCallback(this, audioRecorderEndInterruptionWithFlags,
+        'audioRecorderEndInterruption:withFlags:', AVAudioRecorderDelegate);
+    registerProtocolCallback(this, audioRecorderEndInterruption,
+        'audioRecorderEndInterruption:', AVAudioRecorderDelegate);
   }
-  
-  void audioRecorderDidFinishRecordingSuccessfully(AVAudioRecorder recorder, bool flag);  
-  void audioRecorderEncodeErrorDidOccurError(AVAudioRecorder recorder, {NSError error});  
-  void audioRecorderBeginInterruption(AVAudioRecorder recorder);  
-  void audioRecorderEndInterruptionWithOptions(AVAudioRecorder recorder, NSUInteger flags);  
-  void audioRecorderEndInterruptionWithFlags(AVAudioRecorder recorder, NSUInteger flags);  
+
+  void audioRecorderDidFinishRecordingSuccessfully(
+      AVAudioRecorder recorder, bool flag);
+  void audioRecorderEncodeErrorDidOccurError(AVAudioRecorder recorder,
+      {NSError error});
+  void audioRecorderBeginInterruption(AVAudioRecorder recorder);
+  void audioRecorderEndInterruptionWithOptions(
+      AVAudioRecorder recorder, NSUInteger flags);
+  void audioRecorderEndInterruptionWithFlags(
+      AVAudioRecorder recorder, NSUInteger flags);
   void audioRecorderEndInterruption(AVAudioRecorder recorder);
 }

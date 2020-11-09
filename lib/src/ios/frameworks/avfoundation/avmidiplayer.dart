@@ -10,70 +10,77 @@ import 'package:dart_native_gen/dart_native_gen.dart';
 
 typedef void AVMIDIPlayerCompletionHandler();
 
-@NativeAvailable(macos: '10.10', ios: '8.0', tvos: '9.0') @NativeUnavailable(watchos)
+@NativeAvailable(macos: '10.10', ios: '8.0', tvos: '9.0')
+@NativeUnavailable(watchos)
 @native
 class AVMIDIPlayer extends NSObject {
   AVMIDIPlayer([Class isa]) : super(isa ?? Class('AVMIDIPlayer'));
   AVMIDIPlayer.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
-  
+
   NSTimeInterval get duration {
-Pointer<Void> result = perform(SEL('duration'), decodeRetVal: false);
+    Pointer<Void> result = perform(SEL('duration'), decodeRetVal: false);
     return NSTimeInterval.fromPointer(result);
+  }
 
-}
-  
-  set duration(NSTimeInterval duration) => perform(SEL('setDuration:'), args: [duration]);
-  
+  set duration(NSTimeInterval duration) =>
+      perform(SEL('setDuration:'), args: [duration]);
+
   bool get playing {
-return perform(SEL('playing'));
+    return perform(SEL('playing'));
+  }
 
-}
-  
   set playing(bool playing) => perform(SEL('setPlaying:'), args: [playing]);
-  
+
   double get rate {
-return perform(SEL('rate'));
+    return perform(SEL('rate'));
+  }
 
-}
-  
   set rate(double rate) => perform(SEL('setRate:'), args: [rate]);
-  
+
   NSTimeInterval get currentPosition {
-Pointer<Void> result = perform(SEL('currentPosition'), decodeRetVal: false);
+    Pointer<Void> result = perform(SEL('currentPosition'), decodeRetVal: false);
     return NSTimeInterval.fromPointer(result);
+  }
 
-}
-  
-  set currentPosition(NSTimeInterval currentPosition) => perform(SEL('setCurrentPosition:'), args: [currentPosition]);
-  AVMIDIPlayer.initWithContentsOfURLSoundBankURLError(NSURL inURL, NSObjectRef<NSError> outError, {NSURL bankURL})
-     : super.fromPointer(_initWithContentsOfURLSoundBankURLError(inURL,bankURL,outError));
+  set currentPosition(NSTimeInterval currentPosition) =>
+      perform(SEL('setCurrentPosition:'), args: [currentPosition]);
+  AVMIDIPlayer.initWithContentsOfURLSoundBankURLError(
+      NSURL inURL, NSObjectRef<NSError> outError, {NSURL bankURL})
+      : super.fromPointer(
+            _initWithContentsOfURLSoundBankURLError(inURL, bankURL, outError));
 
-  static Pointer<Void> _initWithContentsOfURLSoundBankURLError(NSURL inURL, NSObjectRef<NSError> outError, {NSURL bankURL}) {
+  static Pointer<Void> _initWithContentsOfURLSoundBankURLError(
+      NSURL inURL, NSObjectRef<NSError> outError,
+      {NSURL bankURL}) {
     Pointer<Void> target = alloc(Class('AVMIDIPlayer'));
     SEL sel = SEL('initWithContentsOfURL:soundBankURL:error:');
-    return msgSend(target, sel, args: [inURL,bankURL,outError], decodeRetVal: false);
+    return msgSend(target, sel,
+        args: [inURL, bankURL, outError], decodeRetVal: false);
   }
 
-  AVMIDIPlayer.initWithDataSoundBankURLError(NSData data, NSObjectRef<NSError> outError, {NSURL bankURL})
-     : super.fromPointer(_initWithDataSoundBankURLError(data,bankURL,outError));
+  AVMIDIPlayer.initWithDataSoundBankURLError(
+      NSData data, NSObjectRef<NSError> outError, {NSURL bankURL})
+      : super.fromPointer(
+            _initWithDataSoundBankURLError(data, bankURL, outError));
 
-  static Pointer<Void> _initWithDataSoundBankURLError(NSData data, NSObjectRef<NSError> outError, {NSURL bankURL}) {
+  static Pointer<Void> _initWithDataSoundBankURLError(
+      NSData data, NSObjectRef<NSError> outError,
+      {NSURL bankURL}) {
     Pointer<Void> target = alloc(Class('AVMIDIPlayer'));
     SEL sel = SEL('initWithData:soundBankURL:error:');
-    return msgSend(target, sel, args: [data,bankURL,outError], decodeRetVal: false);
+    return msgSend(target, sel,
+        args: [data, bankURL, outError], decodeRetVal: false);
   }
 
-  
   void prepareToPlay() {
-     perform(SEL('prepareToPlay'));
-  }
-  
-  void play({AVMIDIPlayerCompletionHandler completionHandler}) {
-     perform(SEL('play:'), args: [completionHandler]);
-  }
-  
-  void stop() {
-     perform(SEL('stop'));
+    perform(SEL('prepareToPlay'));
   }
 
+  void play({AVMIDIPlayerCompletionHandler completionHandler}) {
+    perform(SEL('play:'), args: [completionHandler]);
+  }
+
+  void stop() {
+    perform(SEL('stop'));
+  }
 }

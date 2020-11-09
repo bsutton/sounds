@@ -11,34 +11,34 @@ import 'package:dart_native_gen/dart_native_gen.dart';
 @NativeAvailable(macos: '10.10', ios: '8.0', watchos: '2.0', tvos: '9.0')
 @native
 class AVAudioChannelLayout extends NSObject with NSSecureCoding {
-  AVAudioChannelLayout([Class isa]) : super(isa ?? Class('AVAudioChannelLayout'));
+  AVAudioChannelLayout([Class isa])
+      : super(isa ?? Class('AVAudioChannelLayout'));
   AVAudioChannelLayout.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
-  
+
   AudioChannelLayoutTag get layoutTag {
-Pointer<Void> result = perform(SEL('layoutTag'), decodeRetVal: false);
+    Pointer<Void> result = perform(SEL('layoutTag'), decodeRetVal: false);
     return AudioChannelLayoutTag.fromPointer(result);
+  }
 
-}
-  
-  set layoutTag(AudioChannelLayoutTag layoutTag) => perform(SEL('setLayoutTag:'), args: [layoutTag]);
-  
+  set layoutTag(AudioChannelLayoutTag layoutTag) =>
+      perform(SEL('setLayoutTag:'), args: [layoutTag]);
+
   AudioChannelLayout get layout {
-Pointer<Void> result = perform(SEL('layout'), decodeRetVal: false);
+    Pointer<Void> result = perform(SEL('layout'), decodeRetVal: false);
     return AudioChannelLayout.fromPointer(result);
+  }
 
-}
-  
-  set layout(AudioChannelLayout layout) => perform(SEL('setLayout:'), args: [layout]);
-  
+  set layout(AudioChannelLayout layout) =>
+      perform(SEL('setLayout:'), args: [layout]);
+
   AVAudioChannelCount get channelCount {
-Pointer<Void> result = perform(SEL('channelCount'), decodeRetVal: false);
+    Pointer<Void> result = perform(SEL('channelCount'), decodeRetVal: false);
     return AVAudioChannelCount.fromPointer(result);
+  }
 
-}
-  
-  set channelCount(AVAudioChannelCount channelCount) => perform(SEL('setChannelCount:'), args: [channelCount]);
-  AVAudioChannelLayout.init()
-     : super.fromPointer(_init());
+  set channelCount(AVAudioChannelCount channelCount) =>
+      perform(SEL('setChannelCount:'), args: [channelCount]);
+  AVAudioChannelLayout.init() : super.fromPointer(_init());
 
   static Pointer<Void> _init() {
     Pointer<Void> target = alloc(Class('AVAudioChannelLayout'));
@@ -47,7 +47,7 @@ Pointer<Void> result = perform(SEL('channelCount'), decodeRetVal: false);
   }
 
   AVAudioChannelLayout.initWithLayoutTag(AudioChannelLayoutTag layoutTag)
-     : super.fromPointer(_initWithLayoutTag(layoutTag));
+      : super.fromPointer(_initWithLayoutTag(layoutTag));
 
   static Pointer<Void> _initWithLayoutTag(AudioChannelLayoutTag layoutTag) {
     Pointer<Void> target = alloc(Class('AVAudioChannelLayout'));
@@ -56,7 +56,7 @@ Pointer<Void> result = perform(SEL('channelCount'), decodeRetVal: false);
   }
 
   AVAudioChannelLayout.initWithLayout(AudioChannelLayout layout)
-     : super.fromPointer(_initWithLayout(layout));
+      : super.fromPointer(_initWithLayout(layout));
 
   static Pointer<Void> _initWithLayout(AudioChannelLayout layout) {
     Pointer<Void> target = alloc(Class('AVAudioChannelLayout'));
@@ -64,19 +64,22 @@ Pointer<Void> result = perform(SEL('channelCount'), decodeRetVal: false);
     return msgSend(target, sel, args: [layout], decodeRetVal: false);
   }
 
-  
   bool isEqual(NSObject object) {
     return perform(SEL('isEqual:'), args: [object]);
   }
-  
-  static AVAudioChannelLayout layoutWithLayoutTag(AudioChannelLayoutTag layoutTag) {
-    Pointer<Void> result = Class('AVAudioChannelLayout').perform(SEL('layoutWithLayoutTag:'), args: [layoutTag], decodeRetVal: false);
-    return AVAudioChannelLayout.fromPointer(result);
-  }
-  
-  static AVAudioChannelLayout layoutWithLayout(AudioChannelLayout layout) {
-    Pointer<Void> result = Class('AVAudioChannelLayout').perform(SEL('layoutWithLayout:'), args: [layout], decodeRetVal: false);
+
+  static AVAudioChannelLayout layoutWithLayoutTag(
+      AudioChannelLayoutTag layoutTag) {
+    Pointer<Void> result = Class('AVAudioChannelLayout').perform(
+        SEL('layoutWithLayoutTag:'),
+        args: [layoutTag],
+        decodeRetVal: false);
     return AVAudioChannelLayout.fromPointer(result);
   }
 
+  static AVAudioChannelLayout layoutWithLayout(AudioChannelLayout layout) {
+    Pointer<Void> result = Class('AVAudioChannelLayout')
+        .perform(SEL('layoutWithLayout:'), args: [layout], decodeRetVal: false);
+    return AVAudioChannelLayout.fromPointer(result);
+  }
 }

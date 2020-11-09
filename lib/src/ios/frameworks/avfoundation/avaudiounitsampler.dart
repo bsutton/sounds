@@ -8,43 +8,50 @@ import 'package:dart_native_gen/dart_native_gen.dart';
 // You can uncomment this line when this package is ready.
 // import 'package:avfaudio/avaudiounitmidiinstrument.dart';
 
-@NativeAvailable(macos: '10.10', ios: '8.0', tvos: '9.0') @NativeUnavailable(watchos)
+@NativeAvailable(macos: '10.10', ios: '8.0', tvos: '9.0')
+@NativeUnavailable(watchos)
 @native
 class AVAudioUnitSampler extends AVAudioUnitMIDIInstrument {
   AVAudioUnitSampler([Class isa]) : super(isa ?? Class('AVAudioUnitSampler'));
   AVAudioUnitSampler.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
-  
+
   double get stereoPan {
-return perform(SEL('stereoPan'));
+    return perform(SEL('stereoPan'));
+  }
 
-}
-  
-  set stereoPan(double stereoPan) => perform(SEL('setStereoPan:'), args: [stereoPan]);
-  
+  set stereoPan(double stereoPan) =>
+      perform(SEL('setStereoPan:'), args: [stereoPan]);
+
   double get masterGain {
-return perform(SEL('masterGain'));
+    return perform(SEL('masterGain'));
+  }
 
-}
-  
-  set masterGain(double masterGain) => perform(SEL('setMasterGain:'), args: [masterGain]);
-  
+  set masterGain(double masterGain) =>
+      perform(SEL('setMasterGain:'), args: [masterGain]);
+
   double get globalTuning {
-return perform(SEL('globalTuning'));
-
-}
-  
-  set globalTuning(double globalTuning) => perform(SEL('setGlobalTuning:'), args: [globalTuning]);
-  
-  bool loadSoundBankInstrumentAtURLProgramBankMSBBankLSBError(NSURL bankURL, int program, int bankMSB, int bankLSB, NSObjectRef<NSError> outError) {
-    return perform(SEL('loadSoundBankInstrumentAtURL:program:bankMSB:bankLSB:error:'), args: [bankURL,program,bankMSB,bankLSB,outError]);
-  }
-  
-  bool loadInstrumentAtURLError(NSURL instrumentURL, NSObjectRef<NSError> outError) {
-    return perform(SEL('loadInstrumentAtURL:error:'), args: [instrumentURL,outError]);
-  }
-  
-  bool loadAudioFilesAtURLsError(NSURL audioFiles, NSObjectRef<NSError> outError) {
-    return perform(SEL('loadAudioFilesAtURLs:error:'), args: [audioFiles,outError]);
+    return perform(SEL('globalTuning'));
   }
 
+  set globalTuning(double globalTuning) =>
+      perform(SEL('setGlobalTuning:'), args: [globalTuning]);
+
+  bool loadSoundBankInstrumentAtURLProgramBankMSBBankLSBError(NSURL bankURL,
+      int program, int bankMSB, int bankLSB, NSObjectRef<NSError> outError) {
+    return perform(
+        SEL('loadSoundBankInstrumentAtURL:program:bankMSB:bankLSB:error:'),
+        args: [bankURL, program, bankMSB, bankLSB, outError]);
+  }
+
+  bool loadInstrumentAtURLError(
+      NSURL instrumentURL, NSObjectRef<NSError> outError) {
+    return perform(SEL('loadInstrumentAtURL:error:'),
+        args: [instrumentURL, outError]);
+  }
+
+  bool loadAudioFilesAtURLsError(
+      NSURL audioFiles, NSObjectRef<NSError> outError) {
+    return perform(SEL('loadAudioFilesAtURLs:error:'),
+        args: [audioFiles, outError]);
+  }
 }

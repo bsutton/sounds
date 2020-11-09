@@ -15,51 +15,85 @@ import 'package:dart_native_gen/dart_native_gen.dart';
 @NativeAvailable(macos: '10.9', ios: '7.0', tvos: '9.0', watchos: '1.0')
 @native
 class AVPlayerMediaSelectionCriteria extends NSObject {
-  AVPlayerMediaSelectionCriteria([Class isa]) : super(isa ?? Class('AVPlayerMediaSelectionCriteria'));
-  AVPlayerMediaSelectionCriteria.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
-  
+  AVPlayerMediaSelectionCriteria([Class isa])
+      : super(isa ?? Class('AVPlayerMediaSelectionCriteria'));
+  AVPlayerMediaSelectionCriteria.fromPointer(Pointer<Void> ptr)
+      : super.fromPointer(ptr);
+
   NSString get preferredLanguages {
-Pointer<Void> result = perform(SEL('preferredLanguages'), decodeRetVal: false);
+    Pointer<Void> result =
+        perform(SEL('preferredLanguages'), decodeRetVal: false);
     return NSString.fromPointer(result);
+  }
 
-}
-  
-  set preferredLanguages(NSString preferredLanguages) => perform(SEL('setPreferredLanguages:'), args: [preferredLanguages]);
-  
+  set preferredLanguages(NSString preferredLanguages) =>
+      perform(SEL('setPreferredLanguages:'), args: [preferredLanguages]);
+
   AVMediaCharacteristic get preferredMediaCharacteristics {
-Pointer<Void> result = perform(SEL('preferredMediaCharacteristics'), decodeRetVal: false);
+    Pointer<Void> result =
+        perform(SEL('preferredMediaCharacteristics'), decodeRetVal: false);
     return AVMediaCharacteristic.fromPointer(result);
+  }
 
-}
-  
-  set preferredMediaCharacteristics(AVMediaCharacteristic preferredMediaCharacteristics) => perform(SEL('setPreferredMediaCharacteristics:'), args: [preferredMediaCharacteristics]);
+  set preferredMediaCharacteristics(
+          AVMediaCharacteristic preferredMediaCharacteristics) =>
+      perform(SEL('setPreferredMediaCharacteristics:'),
+          args: [preferredMediaCharacteristics]);
   @NativeAvailable(macos: '10.14', ios: '12.0', tvos: '12.0', watchos: '5.0')
   AVMediaCharacteristic get principalMediaCharacteristics {
-Pointer<Void> result = perform(SEL('principalMediaCharacteristics'), decodeRetVal: false);
+    Pointer<Void> result =
+        perform(SEL('principalMediaCharacteristics'), decodeRetVal: false);
     return AVMediaCharacteristic.fromPointer(result);
+  }
 
-}
   @NativeAvailable(macos: '10.14', ios: '12.0', tvos: '12.0', watchos: '5.0')
-  set principalMediaCharacteristics(AVMediaCharacteristic principalMediaCharacteristics) => perform(SEL('setPrincipalMediaCharacteristics:'), args: [principalMediaCharacteristics]);
-  AVPlayerMediaSelectionCriteria.initWithPreferredLanguagesPreferredMediaCharacteristics({String preferredLanguages, AVMediaCharacteristic preferredMediaCharacteristics})
-     : super.fromPointer(_initWithPreferredLanguagesPreferredMediaCharacteristics(preferredLanguages,preferredMediaCharacteristics));
+  set principalMediaCharacteristics(
+          AVMediaCharacteristic principalMediaCharacteristics) =>
+      perform(SEL('setPrincipalMediaCharacteristics:'),
+          args: [principalMediaCharacteristics]);
+  AVPlayerMediaSelectionCriteria.initWithPreferredLanguagesPreferredMediaCharacteristics(
+      {String preferredLanguages,
+      AVMediaCharacteristic preferredMediaCharacteristics})
+      : super.fromPointer(
+            _initWithPreferredLanguagesPreferredMediaCharacteristics(
+                preferredLanguages, preferredMediaCharacteristics));
 
-  static Pointer<Void> _initWithPreferredLanguagesPreferredMediaCharacteristics({String preferredLanguages, AVMediaCharacteristic preferredMediaCharacteristics}) {
+  static Pointer<Void> _initWithPreferredLanguagesPreferredMediaCharacteristics(
+      {String preferredLanguages,
+      AVMediaCharacteristic preferredMediaCharacteristics}) {
     Pointer<Void> target = alloc(Class('AVPlayerMediaSelectionCriteria'));
     SEL sel = SEL('initWithPreferredLanguages:preferredMediaCharacteristics:');
-    return msgSend(target, sel, args: [preferredLanguages,preferredMediaCharacteristics], decodeRetVal: false);
+    return msgSend(target, sel,
+        args: [preferredLanguages, preferredMediaCharacteristics],
+        decodeRetVal: false);
   }
 
-  AVPlayerMediaSelectionCriteria.initWithPrincipalMediaCharacteristicsPreferredLanguagesPreferredMediaCharacteristics({AVMediaCharacteristic principalMediaCharacteristics, String preferredLanguages, AVMediaCharacteristic preferredMediaCharacteristics})
-     : super.fromPointer(_initWithPrincipalMediaCharacteristicsPreferredLanguagesPreferredMediaCharacteristics(principalMediaCharacteristics,preferredLanguages,preferredMediaCharacteristics));
+  AVPlayerMediaSelectionCriteria.initWithPrincipalMediaCharacteristicsPreferredLanguagesPreferredMediaCharacteristics(
+      {AVMediaCharacteristic principalMediaCharacteristics,
+      String preferredLanguages,
+      AVMediaCharacteristic preferredMediaCharacteristics})
+      : super.fromPointer(
+            _initWithPrincipalMediaCharacteristicsPreferredLanguagesPreferredMediaCharacteristics(
+                principalMediaCharacteristics,
+                preferredLanguages,
+                preferredMediaCharacteristics));
 
-  static Pointer<Void> _initWithPrincipalMediaCharacteristicsPreferredLanguagesPreferredMediaCharacteristics({AVMediaCharacteristic principalMediaCharacteristics, String preferredLanguages, AVMediaCharacteristic preferredMediaCharacteristics}) {
+  static Pointer<Void>
+      _initWithPrincipalMediaCharacteristicsPreferredLanguagesPreferredMediaCharacteristics(
+          {AVMediaCharacteristic principalMediaCharacteristics,
+          String preferredLanguages,
+          AVMediaCharacteristic preferredMediaCharacteristics}) {
     Pointer<Void> target = alloc(Class('AVPlayerMediaSelectionCriteria'));
-    SEL sel = SEL('initWithPrincipalMediaCharacteristics:preferredLanguages:preferredMediaCharacteristics:');
-    return msgSend(target, sel, args: [principalMediaCharacteristics,preferredLanguages,preferredMediaCharacteristics], decodeRetVal: false);
+    SEL sel = SEL(
+        'initWithPrincipalMediaCharacteristics:preferredLanguages:preferredMediaCharacteristics:');
+    return msgSend(target, sel,
+        args: [
+          principalMediaCharacteristics,
+          preferredLanguages,
+          preferredMediaCharacteristics
+        ],
+        decodeRetVal: false);
   }
-
-
 }
 // You can uncomment this line when this package is ready.
 // import 'package:avfcore/avplayermediaselectioncriteria.dart';

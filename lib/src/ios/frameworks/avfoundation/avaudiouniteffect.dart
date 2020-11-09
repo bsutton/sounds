@@ -8,26 +8,27 @@ import 'package:dart_native_gen/dart_native_gen.dart';
 // You can uncomment this line when this package is ready.
 // import 'package:avfaudio/avaudiounit.dart';
 
-@NativeAvailable(macos: '10.10', ios: '8.0', tvos: '9.0') @NativeUnavailable(watchos)
+@NativeAvailable(macos: '10.10', ios: '8.0', tvos: '9.0')
+@NativeUnavailable(watchos)
 @native
 class AVAudioUnitEffect extends AVAudioUnit {
   AVAudioUnitEffect([Class isa]) : super(isa ?? Class('AVAudioUnitEffect'));
   AVAudioUnitEffect.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
-  
+
   bool get bypass {
-return perform(SEL('bypass'));
-
-}
-  
-  set bypass(bool bypass) => perform(SEL('setBypass:'), args: [bypass]);
-  AVAudioUnitEffect(AudioComponentDescription audioComponentDescription)
-     : super.fromPointer(_initWithAudioComponentDescription(audioComponentDescription));
-
-  static Pointer<Void> _initWithAudioComponentDescription(AudioComponentDescription audioComponentDescription) {
-    Pointer<Void> target = alloc(Class('AVAudioUnitEffect'));
-    SEL sel = SEL('initWithAudioComponentDescription:');
-    return msgSend(target, sel, args: [audioComponentDescription], decodeRetVal: false);
+    return perform(SEL('bypass'));
   }
 
+  set bypass(bool bypass) => perform(SEL('setBypass:'), args: [bypass]);
+  AVAudioUnitEffect(AudioComponentDescription audioComponentDescription)
+      : super.fromPointer(
+            _initWithAudioComponentDescription(audioComponentDescription));
 
+  static Pointer<Void> _initWithAudioComponentDescription(
+      AudioComponentDescription audioComponentDescription) {
+    Pointer<Void> target = alloc(Class('AVAudioUnitEffect'));
+    SEL sel = SEL('initWithAudioComponentDescription:');
+    return msgSend(target, sel,
+        args: [audioComponentDescription], decodeRetVal: false);
+  }
 }

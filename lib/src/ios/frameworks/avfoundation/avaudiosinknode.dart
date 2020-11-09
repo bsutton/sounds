@@ -8,15 +8,15 @@ import 'package:dart_native_gen/dart_native_gen.dart';
 // You can uncomment this line when this package is ready.
 // import 'package:avfaudio/avaudionode.dart';
 
-typedef OSStatus AVAudioSinkNodeReceiverBlock(AudioTimeStamp timestamp, AVAudioFrameCount frameCount, AudioBufferList inputData);
+typedef OSStatus AVAudioSinkNodeReceiverBlock(AudioTimeStamp timestamp,
+    AVAudioFrameCount frameCount, AudioBufferList inputData);
 
 @NativeAvailable(macos: '10.15', ios: '13.0', tvos: '13.0', watchos: '6.0')
 @native
 class AVAudioSinkNode extends AVAudioNode {
   AVAudioSinkNode([Class isa]) : super(isa ?? Class('AVAudioSinkNode'));
   AVAudioSinkNode.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
-  AVAudioSinkNode.init()
-     : super.fromPointer(_init());
+  AVAudioSinkNode.init() : super.fromPointer(_init());
 
   static Pointer<Void> _init() {
     Pointer<Void> target = alloc(Class('AVAudioSinkNode'));
@@ -25,13 +25,12 @@ class AVAudioSinkNode extends AVAudioNode {
   }
 
   AVAudioSinkNode.initWithReceiverBlock(AVAudioSinkNodeReceiverBlock block)
-     : super.fromPointer(_initWithReceiverBlock(block));
+      : super.fromPointer(_initWithReceiverBlock(block));
 
-  static Pointer<Void> _initWithReceiverBlock(AVAudioSinkNodeReceiverBlock block) {
+  static Pointer<Void> _initWithReceiverBlock(
+      AVAudioSinkNodeReceiverBlock block) {
     Pointer<Void> target = alloc(Class('AVAudioSinkNode'));
     SEL sel = SEL('initWithReceiverBlock:');
     return msgSend(target, sel, args: [block], decodeRetVal: false);
   }
-
-
 }

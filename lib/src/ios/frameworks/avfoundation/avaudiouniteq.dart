@@ -11,84 +11,80 @@ import 'package:dart_native_gen/dart_native_gen.dart';
 @NativeAvailable(macos: '10.10', ios: '8.0', watchos: '2.0', tvos: '9.0')
 @native
 class AVAudioUnitEQFilterParameters extends NSObject {
-  AVAudioUnitEQFilterParameters([Class isa]) : super(isa ?? Class('AVAudioUnitEQFilterParameters'));
-  AVAudioUnitEQFilterParameters.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
-  
+  AVAudioUnitEQFilterParameters([Class isa])
+      : super(isa ?? Class('AVAudioUnitEQFilterParameters'));
+  AVAudioUnitEQFilterParameters.fromPointer(Pointer<Void> ptr)
+      : super.fromPointer(ptr);
+
   AVAudioUnitEQFilterType get filterType {
-Pointer<Void> result = perform(SEL('filterType'), decodeRetVal: false);
+    Pointer<Void> result = perform(SEL('filterType'), decodeRetVal: false);
     return AVAudioUnitEQFilterType.fromPointer(result);
+  }
 
-}
-  
-  set filterType(AVAudioUnitEQFilterType filterType) => perform(SEL('setFilterType:'), args: [filterType]);
-  
+  set filterType(AVAudioUnitEQFilterType filterType) =>
+      perform(SEL('setFilterType:'), args: [filterType]);
+
   double get frequency {
-return perform(SEL('frequency'));
+    return perform(SEL('frequency'));
+  }
 
-}
-  
-  set frequency(double frequency) => perform(SEL('setFrequency:'), args: [frequency]);
-  
+  set frequency(double frequency) =>
+      perform(SEL('setFrequency:'), args: [frequency]);
+
   double get bandwidth {
-return perform(SEL('bandwidth'));
+    return perform(SEL('bandwidth'));
+  }
 
-}
-  
-  set bandwidth(double bandwidth) => perform(SEL('setBandwidth:'), args: [bandwidth]);
-  
+  set bandwidth(double bandwidth) =>
+      perform(SEL('setBandwidth:'), args: [bandwidth]);
+
   double get gain {
-return perform(SEL('gain'));
+    return perform(SEL('gain'));
+  }
 
-}
-  
   set gain(double gain) => perform(SEL('setGain:'), args: [gain]);
-  
-  bool get bypass {
-return perform(SEL('bypass'));
 
-}
-  
+  bool get bypass {
+    return perform(SEL('bypass'));
+  }
+
   set bypass(bool bypass) => perform(SEL('setBypass:'), args: [bypass]);
-  AVAudioUnitEQFilterParameters()
-     : super.fromPointer(_init());
+  AVAudioUnitEQFilterParameters() : super.fromPointer(_init());
 
   static Pointer<Void> _init() {
     Pointer<Void> target = alloc(Class('AVAudioUnitEQFilterParameters'));
     SEL sel = SEL('init');
     return msgSend(target, sel, args: [], decodeRetVal: false);
   }
-
-
 }
 
-@NativeAvailable(macos: '10.10', ios: '8.0', tvos: '9.0') @NativeUnavailable(watchos)
+@NativeAvailable(macos: '10.10', ios: '8.0', tvos: '9.0')
+@NativeUnavailable(watchos)
 @native
 class AVAudioUnitEQ extends AVAudioUnitEffect {
   AVAudioUnitEQ([Class isa]) : super(isa ?? Class('AVAudioUnitEQ'));
   AVAudioUnitEQ.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
-  
+
   AVAudioUnitEQFilterParameters get bands {
-Pointer<Void> result = perform(SEL('bands'), decodeRetVal: false);
+    Pointer<Void> result = perform(SEL('bands'), decodeRetVal: false);
     return AVAudioUnitEQFilterParameters.fromPointer(result);
+  }
 
-}
-  
-  set bands(AVAudioUnitEQFilterParameters bands) => perform(SEL('setBands:'), args: [bands]);
-  
+  set bands(AVAudioUnitEQFilterParameters bands) =>
+      perform(SEL('setBands:'), args: [bands]);
+
   double get globalGain {
-return perform(SEL('globalGain'));
+    return perform(SEL('globalGain'));
+  }
 
-}
-  
-  set globalGain(double globalGain) => perform(SEL('setGlobalGain:'), args: [globalGain]);
+  set globalGain(double globalGain) =>
+      perform(SEL('setGlobalGain:'), args: [globalGain]);
   AVAudioUnitEQ(NSUInteger numberOfBands)
-     : super.fromPointer(_initWithNumberOfBands(numberOfBands));
+      : super.fromPointer(_initWithNumberOfBands(numberOfBands));
 
   static Pointer<Void> _initWithNumberOfBands(NSUInteger numberOfBands) {
     Pointer<Void> target = alloc(Class('AVAudioUnitEQ'));
     SEL sel = SEL('initWithNumberOfBands:');
     return msgSend(target, sel, args: [numberOfBands], decodeRetVal: false);
   }
-
-
 }

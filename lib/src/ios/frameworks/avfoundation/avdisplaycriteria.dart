@@ -10,12 +10,13 @@ import 'package:dart_native_gen/dart_native_gen.dart';
 // You can uncomment this line when this package is ready.
 // import 'package:foundation/foundation.dart';
 
-@NativeAvailable(tvos: '11.2') @NativeUnavailable(ios) @NativeUnavailable(macos, watchos)
+@NativeAvailable(tvos: '11.2')
+@NativeUnavailable(ios)
+@NativeUnavailable(macos, watchos)
 @native
 class AVDisplayCriteria extends NSObject with NSCopying {
   AVDisplayCriteria([Class isa]) : super(isa ?? Class('AVDisplayCriteria'));
   AVDisplayCriteria.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
-
 }
 // You can uncomment this line when this package is ready.
 // import 'package:avfcore/avdisplaycriteria.dart';

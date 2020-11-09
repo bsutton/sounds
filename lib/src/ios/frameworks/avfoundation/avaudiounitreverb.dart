@@ -8,21 +8,21 @@ import 'package:dart_native_gen/dart_native_gen.dart';
 // You can uncomment this line when this package is ready.
 // import 'package:avfaudio/avaudiouniteffect.dart';
 
-@NativeAvailable(macos: '10.10', ios: '8.0', tvos: '9.0') @NativeUnavailable(watchos)
+@NativeAvailable(macos: '10.10', ios: '8.0', tvos: '9.0')
+@NativeUnavailable(watchos)
 @native
 class AVAudioUnitReverb extends AVAudioUnitEffect {
   AVAudioUnitReverb([Class isa]) : super(isa ?? Class('AVAudioUnitReverb'));
   AVAudioUnitReverb.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
-  
-  double get wetDryMix {
-return perform(SEL('wetDryMix'));
 
-}
-  
-  set wetDryMix(double wetDryMix) => perform(SEL('setWetDryMix:'), args: [wetDryMix]);
-  
-  void loadFactoryPreset(AVAudioUnitReverbPreset preset) {
-     perform(SEL('loadFactoryPreset:'), args: [preset]);
+  double get wetDryMix {
+    return perform(SEL('wetDryMix'));
   }
 
+  set wetDryMix(double wetDryMix) =>
+      perform(SEL('setWetDryMix:'), args: [wetDryMix]);
+
+  void loadFactoryPreset(AVAudioUnitReverbPreset preset) {
+    perform(SEL('loadFactoryPreset:'), args: [preset]);
+  }
 }

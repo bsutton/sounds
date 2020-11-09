@@ -45,3 +45,9 @@ class NSTimeInterval {
 class AVAudioNodeBus {}
 
 class NSCopying {}
+
+class NSCharacterSet {
+  static NSCharacterSet fromPointer(Pointer<Void> result) {}
+}
+
+class NSCoder {}

@@ -13,55 +13,69 @@ import 'package:dart_native_gen/dart_native_gen.dart';
 @NativeAvailable(macos: '10.11.3', ios: '9.3', tvos: '9.3', watchos: '2.3')
 @native
 class AVPlayerItemMediaDataCollector extends NSObject {
-  AVPlayerItemMediaDataCollector([Class isa]) : super(isa ?? Class('AVPlayerItemMediaDataCollector'));
-  AVPlayerItemMediaDataCollector.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
-
+  AVPlayerItemMediaDataCollector([Class isa])
+      : super(isa ?? Class('AVPlayerItemMediaDataCollector'));
+  AVPlayerItemMediaDataCollector.fromPointer(Pointer<Void> ptr)
+      : super.fromPointer(ptr);
 }
 
 @NativeAvailable(macos: '10.11.3', ios: '9.3', tvos: '9.3', watchos: '2.3')
 @native
 class AVPlayerItemMetadataCollector extends AVPlayerItemMediaDataCollector {
-  AVPlayerItemMetadataCollector([Class isa]) : super(isa ?? Class('AVPlayerItemMetadataCollector'));
-  AVPlayerItemMetadataCollector.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
-  
+  AVPlayerItemMetadataCollector([Class isa])
+      : super(isa ?? Class('AVPlayerItemMetadataCollector'));
+  AVPlayerItemMetadataCollector.fromPointer(Pointer<Void> ptr)
+      : super.fromPointer(ptr);
+
   AVPlayerItemMetadataCollectorPushDelegate get delegate {
-Pointer<Void> result = perform(SEL('delegate'), decodeRetVal: false);
+    Pointer<Void> result = perform(SEL('delegate'), decodeRetVal: false);
     return AVPlayerItemMetadataCollectorPushDelegate.fromPointer(result);
+  }
 
-}
-  
-  set delegate(AVPlayerItemMetadataCollectorPushDelegate delegate) => perform(SEL('setDelegate:'), args: [delegate]);
-  
+  set delegate(AVPlayerItemMetadataCollectorPushDelegate delegate) =>
+      perform(SEL('setDelegate:'), args: [delegate]);
+
   dispatch_queue_t get delegateQueue {
-Pointer<Void> result = perform(SEL('delegateQueue'), decodeRetVal: false);
+    Pointer<Void> result = perform(SEL('delegateQueue'), decodeRetVal: false);
     return dispatch_queue_t.fromPointer(result);
+  }
 
-}
-  
-  set delegateQueue(dispatch_queue_t delegateQueue) => perform(SEL('setDelegateQueue:'), args: [delegateQueue]);
+  set delegateQueue(dispatch_queue_t delegateQueue) =>
+      perform(SEL('setDelegateQueue:'), args: [delegateQueue]);
   AVPlayerItemMetadataCollector({String identifiers, String classifyingLabels})
-     : super.fromPointer(_initWithIdentifiersClassifyingLabels(identifiers,classifyingLabels));
+      : super.fromPointer(_initWithIdentifiersClassifyingLabels(
+            identifiers, classifyingLabels));
 
-  static Pointer<Void> _initWithIdentifiersClassifyingLabels({String identifiers, String classifyingLabels}) {
+  static Pointer<Void> _initWithIdentifiersClassifyingLabels(
+      {String identifiers, String classifyingLabels}) {
     Pointer<Void> target = alloc(Class('AVPlayerItemMetadataCollector'));
     SEL sel = SEL('initWithIdentifiers:classifyingLabels:');
-    return msgSend(target, sel, args: [identifiers,classifyingLabels], decodeRetVal: false);
+    return msgSend(target, sel,
+        args: [identifiers, classifyingLabels], decodeRetVal: false);
   }
 
-  
-  void setDelegateQueue({AVPlayerItemMetadataCollectorPushDelegate delegate, dispatch_queue_t delegateQueue}) {
-     perform(SEL('setDelegate:queue:'), args: [delegate,delegateQueue]);
+  void setDelegateQueue(
+      {AVPlayerItemMetadataCollectorPushDelegate delegate,
+      dispatch_queue_t delegateQueue}) {
+    perform(SEL('setDelegate:queue:'), args: [delegate, delegateQueue]);
   }
-
 }
-
 
 abstract class AVPlayerItemMetadataCollectorPushDelegate {
   registerAVPlayerItemMetadataCollectorPushDelegate() {
-    registerProtocolCallback(this, metadataCollectorDidCollectDateRangeMetadataGroupsIndexesOfNewGroupsIndexesOfModifiedGroups, 'metadataCollector:didCollectDateRangeMetadataGroups:indexesOfNewGroups:indexesOfModifiedGroups:', AVPlayerItemMetadataCollectorPushDelegate);
+    registerProtocolCallback(
+        this,
+        metadataCollectorDidCollectDateRangeMetadataGroupsIndexesOfNewGroupsIndexesOfModifiedGroups,
+        'metadataCollector:didCollectDateRangeMetadataGroups:indexesOfNewGroups:indexesOfModifiedGroups:',
+        AVPlayerItemMetadataCollectorPushDelegate);
   }
-  
-  void metadataCollectorDidCollectDateRangeMetadataGroupsIndexesOfNewGroupsIndexesOfModifiedGroups(AVPlayerItemMetadataCollector metadataCollector, AVDateRangeMetadataGroup metadataGroups, NSIndexSet indexesOfNewGroups, NSIndexSet indexesOfModifiedGroups);
+
+  void
+      metadataCollectorDidCollectDateRangeMetadataGroupsIndexesOfNewGroupsIndexesOfModifiedGroups(
+          AVPlayerItemMetadataCollector metadataCollector,
+          AVDateRangeMetadataGroup metadataGroups,
+          NSIndexSet indexesOfNewGroups,
+          NSIndexSet indexesOfModifiedGroups);
 }
 // You can uncomment this line when this package is ready.
 // import 'package:avfcore/avplayeritemmediadatacollector.dart';

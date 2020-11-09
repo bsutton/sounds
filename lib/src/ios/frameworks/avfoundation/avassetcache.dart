@@ -28,11 +28,15 @@ class AVAssetCache extends NSObject {
   }
 
   ///
-  set playableOffline(bool playableOffline) => perform(SEL('setPlayableOffline:'), args: <bool>[playableOffline]);
+  set playableOffline(bool playableOffline) =>
+      perform(SEL('setPlayableOffline:'), args: <bool>[playableOffline]);
 
-  AVMediaSelectionOption mediaSelectionOptionsInMediaSelectionGroup(AVMediaSelectionGroup mediaSelectionGroup) {
-    Pointer<Void> result = perform(SEL('mediaSelectionOptionsInMediaSelectionGroup:'),
-        args: <AVMediaSelectionGroup>[mediaSelectionGroup], decodeRetVal: false) as Pointer<Void>;
+  AVMediaSelectionOption mediaSelectionOptionsInMediaSelectionGroup(
+      AVMediaSelectionGroup mediaSelectionGroup) {
+    Pointer<Void> result = perform(
+        SEL('mediaSelectionOptionsInMediaSelectionGroup:'),
+        args: <AVMediaSelectionGroup>[mediaSelectionGroup],
+        decodeRetVal: false) as Pointer<Void>;
     return AVMediaSelectionOption.fromPointer(result);
   }
 }

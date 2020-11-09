@@ -8,39 +8,39 @@ import 'package:dart_native_gen/dart_native_gen.dart';
 // You can uncomment this line when this package is ready.
 // import 'package:avfaudio/avaudiouniteffect.dart';
 
-@NativeAvailable(macos: '10.10', ios: '8.0', tvos: '9.0') @NativeUnavailable(watchos)
+@NativeAvailable(macos: '10.10', ios: '8.0', tvos: '9.0')
+@NativeUnavailable(watchos)
 @native
 class AVAudioUnitDelay extends AVAudioUnitEffect {
   AVAudioUnitDelay([Class isa]) : super(isa ?? Class('AVAudioUnitDelay'));
   AVAudioUnitDelay.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
-  
+
   NSTimeInterval get delayTime {
-Pointer<Void> result = perform(SEL('delayTime'), decodeRetVal: false);
+    Pointer<Void> result = perform(SEL('delayTime'), decodeRetVal: false);
     return NSTimeInterval.fromPointer(result);
+  }
 
-}
-  
-  set delayTime(NSTimeInterval delayTime) => perform(SEL('setDelayTime:'), args: [delayTime]);
-  
+  set delayTime(NSTimeInterval delayTime) =>
+      perform(SEL('setDelayTime:'), args: [delayTime]);
+
   double get feedback {
-return perform(SEL('feedback'));
+    return perform(SEL('feedback'));
+  }
 
-}
-  
-  set feedback(double feedback) => perform(SEL('setFeedback:'), args: [feedback]);
-  
+  set feedback(double feedback) =>
+      perform(SEL('setFeedback:'), args: [feedback]);
+
   double get lowPassCutoff {
-return perform(SEL('lowPassCutoff'));
+    return perform(SEL('lowPassCutoff'));
+  }
 
-}
-  
-  set lowPassCutoff(double lowPassCutoff) => perform(SEL('setLowPassCutoff:'), args: [lowPassCutoff]);
-  
+  set lowPassCutoff(double lowPassCutoff) =>
+      perform(SEL('setLowPassCutoff:'), args: [lowPassCutoff]);
+
   double get wetDryMix {
-return perform(SEL('wetDryMix'));
+    return perform(SEL('wetDryMix'));
+  }
 
-}
-  
-  set wetDryMix(double wetDryMix) => perform(SEL('setWetDryMix:'), args: [wetDryMix]);
-
+  set wetDryMix(double wetDryMix) =>
+      perform(SEL('setWetDryMix:'), args: [wetDryMix]);
 }
