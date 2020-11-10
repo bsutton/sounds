@@ -17,7 +17,13 @@
 
 
 
-import 'package:sounds/src/ios/track.dart';
+import 'dart:io';
+
+import 'package:dart_native/dart_native.dart';
+import 'package:sounds/src/ios/frameworks/avfoundation/avaudiosessiondeprecated.dart';
+import 'package:sounds/src/ios/frameworks/avfoundation/avaudiosessiontypes.dart';
+import 'package:sounds/src/ios/sound_player_ios.dart';
+import 'package:sounds/src/ios/sounds.dart';
 
 import '../../sounds.dart';
 import 'frameworks/avfoundation/avaudiosession.dart';
@@ -39,19 +45,35 @@ class FlutterError {
   ///
   FlutterError({this.code, this.message, this.details});
 }
-
+class URLSessionDataTask {
+}
 class URL
 {
-  URL(String s);
+  URL(String s, {String fileURLWithPath});
 
-  get scheme => null;
+  int get scheme => 0;
 
-  get host => null;
+  int get host => 0;
+}
+
+class NSURLSession{
+  URLSessionDataTask dataTask({URL url, Set<dynamic> compvarionHandler}){
+
+  }
+}
+
+class URLSession{
+  //was originally but according to doco i think it should be this
+  //https://developer.apple.com/documentation/foundation/nsurlsession/1409000-sharedsession?language=objc
+  static NSURLSession sharedSession;
 }
 
 /// 
-class ShadePlayer  //extends SoundPlayer
+class ShadePlayer extends SoundPlayerIOS
  {
+   //Hacked props
+
+    //Real props
     URL audioFileURL;
     Track track;
     Function forwardTarget;
@@ -62,29 +84,31 @@ class ShadePlayer  //extends SoundPlayer
        /// super.init();
       }
     
-    void start(Track track, bool canPause, bool canSkipForward, bool canSkipBackwards) {
-
-
+    // ignore: avoid_positional_boolean_parameters
+    void start(Track track, bool canPause, bool canSkipForward
+    , bool canSkipBackwards) {
         if (track == null) {
-            throw
-                FlutterError(
-                                code: "UNAVAILABLE",
-                                message: "The track passed to startPlayer is not valid.",
-                                details: null);
+          throw( 
+            FlutterError(
+              code: "UNAVAILABLE",
+              message: "The track passed to startPlayer is not valid.",
+              details: null));
         }
 
 
         // Check whether the audio file is stored as a path to a file or a buffer
-        if (track.isUsingPath ) {
+        if (track.path != null) {
             // The audio file is stored as a path to a file
 
-            var path = track.path
+            var path = track.path;
 
             var isRemote = false;
             // Check whether a path was given
-            if (track.hasPath()) {
+            if (track.path != null) {
                 // No path was given, get the path to a default sound
-                audioFileURL = URL(fileURLWithPath: (GetDirectoryOfType_Sounds(.cachesDirectory) ?? "") + "sound.aac")
+                // (cachesDirectory) ?? "" + 
+                audioFileURL = URL('const dir with fallback sounds',
+                 fileURLWithPath: "sound.aac");
                 // This file name is not good. Perhaps the MediaFormat is not AAC. !
             } else {
                 // A path was given, then create a NSURL with it
@@ -101,35 +125,49 @@ class ShadePlayer  //extends SoundPlayer
             }
 
             // Able to play in silent mode
-            if (_setCategoryDone == not_SET) {
+            if (t_SET_CATEGORY_DONE == t_SET_CATEGORY_DONE.not_SET) {
                 
                     try{
-                       AVAudioSession.sharedInstance().setCategory(
-                        .playback);
-                } catch {
+                      //https://developer.apple.com/documentation/avfoundation/avaudiosessioncategoryoptions/avaudiosessioncategoryoptionduckothers?language=objc
+                      //AVAudioSessionCategoryOptionDuckOthers = 0x2
+                       AVAudioSession.sharedInstance().category = AVAudioSessionCategoryOptions.DuckOthers;
+                }catch(e){
                 }
-                _setCategoryDone = for_PLAYING;
+                t_SET_CATEGORY_DONE.for_PLAYING;
             }
 
             // Able to play in background
-            if (_setActiveDone == not_SET) {
-                
+            //_setActiveDone set category done is an enum already exposed so im
+            //using that one we may need to a create another enum.
+            if (_setActiveDone == t_SET_CATEGORY_DONE.not_SET) {
+            
                     try{
-                       AVAudioSession.sharedInstance()._setActive(true)
-                } catch {
-                }
-                _setActiveDone = for_PLAYING;
+                      // originally ._setActive(true) but this prop does not exist
+                      //on AVAudioSession.
+                       AVAudioSession.sharedInstance().setActive(active: true);
+                }catch(e){}
+                
+                _setActiveDone = t_SET_CATEGORY_DONE.for_PLAYING;
             }
-
-            _isPaused = false;
+            //isPaused does not exists so this is a placeholder for now.
+            //for_playing is set in every circumstance so wil need to be changed
+            isPaused = false;
 
             // Check whether the file path points to a remote or local file
             if (isRemote){
                 URLSessionDataTask downloadTask;
-                if var audioFileURL = audioFileURL {
-                    downloadTask = URLSession.shared.dataTask(
-                        with: audioFileURL,
-                        compvarionHandler: { data, response, error in
+                //if var audioFileURL = audioFileURL {
+                  if(audioFileURL != null){
+                     //hack to get past this syntax error. Need to figure out
+                     //what these values actually should be
+                     var data = 0;
+                     var response = 0;
+                     var error = 0;
+                    downloadTask = URLSession.sharedSession.dataTask(
+                        //with: audioFileURL,
+                        url: audioFileURL,
+                       
+                        compvarionHandler: <dynamic>{ data, response, error}
                             // The file to play has been downloaded, then initialize the audio player
                             // and start playing.
 
@@ -146,8 +184,11 @@ class ShadePlayer  //extends SoundPlayer
                                 UIApplication.shared.beginReceivingRemoteControlEvents()
                             })
 
-                            self.audioPlayer?.play()
-                        })
+                            self.audioPlayer.play()
+
+                            //another hack
+                            return 0;
+                        );
                 }
 
                 downloadTask?.resume();
@@ -171,7 +212,7 @@ class ShadePlayer  //extends SoundPlayer
                 // Able to play in silent mode
                 DispatchQueue.main.async(
                     execute: {
-                        UIApplication.shared.beginReceivingRemoteControlEvents()
+                        UIApplication.sharedSession.beginReceivingRemoteControlEvents()
                     })
 
                 audioPlayer?.play()
@@ -194,7 +235,7 @@ class ShadePlayer  //extends SoundPlayer
             audioPlayer?.delegate = self
             DispatchQueue.main.async(
                 execute: {
-                    UIApplication.shared.beginReceivingRemoteControlEvents()
+                    UIApplication.sharedSession.beginReceivingRemoteControlEvents()
                 })
             audioPlayer?.play()
             startProgressTimer()
@@ -219,7 +260,7 @@ class ShadePlayer  //extends SoundPlayer
         // to stop the media playback. Then, use that one.
         // [self stopRecorder:result];
         stop()
-        var commandCenter = MPRemoteCommandCenter.shared()
+        var commandCenter = MPRemoteCommandCenter.sharedSession()
         if pauseTarget != null {
             if var pauseTarget = pauseTarget {
                 commandCenter.togglePlayPauseCommand.removeTarget(pauseTarget, action: null)
@@ -359,7 +400,7 @@ class ShadePlayer  //extends SoundPlayer
         //       [self pausePlayer:result];
         //       return MPRemoteCommandHandlerStatusSuccess;
         //   }];
-        var commandCenter = MPRemoteCommandCenter.shared()
+        var commandCenter = MPRemoteCommandCenter.sharedSession()
 
         if pauseTarget != null {
             if var pauseTarget = pauseTarget {
@@ -425,7 +466,7 @@ class ShadePlayer  //extends SoundPlayer
 
     override func stop() {
         stopProgressTimer()
-        _isPaused = false
+        isPaused = false
         if audioPlayer != null {
             audioPlayer?.stop()
             //audioPlayer = null;

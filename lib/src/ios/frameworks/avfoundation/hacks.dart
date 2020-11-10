@@ -39,6 +39,8 @@ class AUAudioUnit {
 }
 
 class NSTimeInterval {
+  double value;
+  NSTimeInterval(this.value);
   static NSTimeInterval fromPointer(Pointer<Void> result) {}
 }
 

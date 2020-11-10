@@ -11,7 +11,7 @@
 // }
 
 
-import 'package:sounds/src/ios/sound_player.dart';
+import 'package:sounds/src/ios/sound_player_ios.dart';
 import 'package:sounds/src/ios/sound_recorder.dart';
 import 'package:sounds/src/platform/sounds_platform_api.dart';
 
@@ -21,7 +21,7 @@ class SoundPlayerManager   extends  SoundsToPlatformApi
 // Slots to track method calls from the dart into ios code.
 // These slots are shared by the SoundPlayer and the ShadePlayer.
 /// private var _channel: FlutterMethodChannel?
-var  playerSlots = <String, SoundPlayer>{};
+var  playerSlots = <String, SoundPlayerIOS>{};
 
 var recorderSlots = <String, SoundRecorder>{};
     
@@ -46,7 +46,7 @@ factory SoundPlayerManager() => soundPlayerManager;
  SoundPlayerManager._internal();
 
 
- SoundPlayer _getPlayer(SoundPlayerProxy playerProxy) {
+ SoundPlayerIOS _getPlayer(SoundPlayerProxy playerProxy) {
 
     var player = playerSlots[playerProxy.uuid];
 
@@ -109,7 +109,7 @@ factory SoundPlayerManager() => soundPlayerManager;
     }
     else{
       /// TODO: pass play in background down.
-        playerSlots[uuid] =  SoundPlayer();
+        playerSlots[uuid] =  SoundPlayerIOS();
        response.success = true;
     }
     return response;

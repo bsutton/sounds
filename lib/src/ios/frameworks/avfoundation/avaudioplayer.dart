@@ -5,50 +5,53 @@ import 'dart:ffi';
 
 import 'package:dart_native/dart_native.dart';
 import 'package:dart_native_gen/dart_native_gen.dart';
-// You can uncomment this line when this package is ready.
-// import 'package:avfaudio/avaudioformat.dart';
-// You can uncomment this line when this package is ready.
-// import 'package:avfaudio/avaudiosettings.dart';
-// You can uncomment this line when this package is ready.
-// import 'package:avfaudio/avaudiosession.dart';
 
-@NativeAvailable(macos: '10.7', ios: '2.2', watchos: '3.0', tvos: '9.0')
+import '../../shade_player.dart';
+import 'hacks.dart';
+// ignore_for_file: public_member_api_docs
+
 @native
 class AVAudioPlayer extends NSObject {
   AVAudioPlayer([Class isa]) : super(isa ?? Class('AVAudioPlayer'));
   AVAudioPlayer.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
 
   bool get playing {
-    return perform(SEL('playing'));
+    return perform(SEL('playing')) as bool;
   }
 
-  set playing(bool playing) => perform(SEL('setPlaying:'), args: [playing]);
+  set playing(bool playing) =>
+      perform(SEL('setPlaying:'), args: <dynamic>[playing]);
 
-  NSUInteger get numberOfChannels {
-    return perform(SEL('numberOfChannels'));
+  int get numberOfChannels {
+    var channelsNSU = perform(SEL('numberOfChannels')) as NSUInteger;
+    return channelsNSU.raw;
   }
 
-  set numberOfChannels(NSUInteger numberOfChannels) =>
-      perform(SEL('setNumberOfChannels:'), args: [numberOfChannels]);
-
-  NSTimeInterval get duration {
-    Pointer<Void> result = perform(SEL('duration'), decodeRetVal: false);
-    return NSTimeInterval.fromPointer(result);
+  set numberOfChannels(int numberOfChannels) {
+    var nsu = NSUInteger(numberOfChannels);
+    perform(SEL('setNumberOfChannels:'), args: <dynamic>[nsu]);
   }
 
-  set duration(NSTimeInterval duration) =>
-      perform(SEL('setDuration:'), args: [duration]);
-  @NativeAvailable(macos: '10.13')
-  @NativeUnavailable(ios, watchos, tvos)
+  Duration get duration {
+    var result = perform(SEL('duration'), decodeRetVal: false) as Pointer<Void>;
+    var time = NSTimeInterval.fromPointer(result);
+    return Duration(milliseconds: time.value ~/ 1000.0);
+  }
+
+  set duration(Duration duration) {
+    var interval = NSTimeInterval(duration.inMilliseconds * 1000.0);
+    return perform(SEL('setDuration:'), args: <dynamic>[interval]);
+  }
+
+/*
   String get currentDevice {
     Pointer<Void> result = perform(SEL('currentDevice'), decodeRetVal: false);
     return NSString.fromPointer(result).raw;
   }
-
   @NativeAvailable(macos: '10.13')
   @NativeUnavailable(ios, watchos, tvos)
   set currentDevice(String currentDevice) =>
-      perform(SEL('setCurrentDevice:'), args: [currentDevice]);
+      perform(SEL('setCurrentDevice:'), args: <dynamic>[currentDevice]);
 
   AVAudioPlayerDelegate get delegate {
     Pointer<Void> result = perform(SEL('delegate'), decodeRetVal: false);
@@ -56,74 +59,84 @@ class AVAudioPlayer extends NSObject {
   }
 
   set delegate(AVAudioPlayerDelegate delegate) =>
-      perform(SEL('setDelegate:'), args: [delegate]);
+      perform(SEL('setDelegate:'), args: <dynamic>[delegate]);
 
   NSURL get url {
     Pointer<Void> result = perform(SEL('url'), decodeRetVal: false);
     return NSURL.fromPointer(result);
   }
 
-  set url(NSURL url) => perform(SEL('setUrl:'), args: [url]);
+  set url(NSURL url) => perform(SEL('setUrl:'), args: <dynamic>[url]);
 
   NSData get data {
     Pointer<Void> result = perform(SEL('data'), decodeRetVal: false);
     return NSData.fromPointer(result);
   }
 
-  set data(NSData data) => perform(SEL('setData:'), args: [data]);
+  set data(NSData data) => perform(SEL('setData:'), args: <dynamic>[data]);
   @NativeAvailable(macos: '10.7', ios: '4.0', watchos: '2.0', tvos: '9.0')
   double get pan {
     return perform(SEL('pan'));
   }
 
   @NativeAvailable(macos: '10.7', ios: '4.0', watchos: '2.0', tvos: '9.0')
-  set pan(double pan) => perform(SEL('setPan:'), args: [pan]);
-
+  set pan(double pan) => perform(SEL('setPan:'), args: <dynamic>[pan]);
+  */
   double get volume {
-    return perform(SEL('volume'));
+    return perform(SEL('volume')) as double;
   }
 
-  set volume(double volume) => perform(SEL('setVolume:'), args: [volume]);
-  @NativeAvailable(macos: '10.8', ios: '5.0', watchos: '2.0', tvos: '9.0')
+  set volume(double volume) =>
+      perform(SEL('setVolume:'), args: <dynamic>[volume]);
+
   bool get enableRate {
-    return perform(SEL('enableRate'));
+    return perform(SEL('enableRate')) as bool;
   }
 
+/*
   @NativeAvailable(macos: '10.8', ios: '5.0', watchos: '2.0', tvos: '9.0')
   set enableRate(bool enableRate) =>
-      perform(SEL('setEnableRate:'), args: [enableRate]);
+      perform(SEL('setEnableRate:'), args: <dynamic>[enableRate]);
   @NativeAvailable(macos: '10.8', ios: '5.0', watchos: '2.0', tvos: '9.0')
   double get rate {
     return perform(SEL('rate'));
   }
 
   @NativeAvailable(macos: '10.8', ios: '5.0', watchos: '2.0', tvos: '9.0')
-  set rate(double rate) => perform(SEL('setRate:'), args: [rate]);
+  set rate(double rate) => perform(SEL('setRate:'), args: <dynamic>[rate]);
 
-  NSTimeInterval get currentTime {
-    Pointer<Void> result = perform(SEL('currentTime'), decodeRetVal: false);
-    return NSTimeInterval.fromPointer(result);
+*/
+  Duration get currentTime {
+    var result =
+        perform(SEL('currentTime'), decodeRetVal: false) as Pointer<Void>;
+    var interval = NSTimeInterval.fromPointer(result);
+
+    return Duration(milliseconds: interval.value ~/ 1000.0);
   }
 
-  set currentTime(NSTimeInterval currentTime) =>
-      perform(SEL('setCurrentTime:'), args: [currentTime]);
-  @NativeAvailable(macos: '10.7', ios: '4.0', watchos: '2.0', tvos: '9.0')
+  /// sets the playback position to the given offset
+  set currentTime(Duration offset) {
+    var interval = NSTimeInterval(offset.inMilliseconds * 1000.0);
+    return perform(SEL('setCurrentTime:'), args: <dynamic>[interval]);
+  }
+
   NSTimeInterval get deviceCurrentTime {
-    Pointer<Void> result =
-        perform(SEL('deviceCurrentTime'), decodeRetVal: false);
+    var result =
+        perform(SEL('deviceCurrentTime'), decodeRetVal: false) as Pointer<Void>;
     return NSTimeInterval.fromPointer(result);
   }
 
+/*
   @NativeAvailable(macos: '10.7', ios: '4.0', watchos: '2.0', tvos: '9.0')
   set deviceCurrentTime(NSTimeInterval deviceCurrentTime) =>
-      perform(SEL('setDeviceCurrentTime:'), args: [deviceCurrentTime]);
+      perform(SEL('setDeviceCurrentTime:'), args: <dynamic>[deviceCurrentTime]);
 
   NSInteger get numberOfLoops {
     return perform(SEL('numberOfLoops'));
   }
 
   set numberOfLoops(NSInteger numberOfLoops) =>
-      perform(SEL('setNumberOfLoops:'), args: [numberOfLoops]);
+      perform(SEL('setNumberOfLoops:'), args: <dynamic>[numberOfLoops]);
   @NativeAvailable(macos: '10.7', ios: '4.0', watchos: '2.0', tvos: '9.0')
   id get settings {
     Pointer<Void> result = perform(SEL('settings'), decodeRetVal: false);
@@ -131,7 +144,7 @@ class AVAudioPlayer extends NSObject {
   }
 
   @NativeAvailable(macos: '10.7', ios: '4.0', watchos: '2.0', tvos: '9.0')
-  set settings(id settings) => perform(SEL('setSettings:'), args: [settings]);
+  set settings(id settings) => perform(SEL('setSettings:'), args: <dynamic>[settings]);
   @NativeAvailable(macos: '10.12', ios: '10.0', watchos: '3.0', tvos: '10.0')
   AVAudioFormat get format {
     Pointer<Void> result = perform(SEL('format'), decodeRetVal: false);
@@ -140,14 +153,14 @@ class AVAudioPlayer extends NSObject {
 
   @NativeAvailable(macos: '10.12', ios: '10.0', watchos: '3.0', tvos: '10.0')
   set format(AVAudioFormat format) =>
-      perform(SEL('setFormat:'), args: [format]);
+      perform(SEL('setFormat:'), args: <dynamic>[format]);
 
   bool get meteringEnabled {
     return perform(SEL('meteringEnabled'));
   }
 
   set meteringEnabled(bool meteringEnabled) =>
-      perform(SEL('setMeteringEnabled:'), args: [meteringEnabled]);
+      perform(SEL('setMeteringEnabled:'), args: <dynamic>[meteringEnabled]);
   @NativeAvailable(ios: '7.0', watchos: '2.0', tvos: '9.0')
   @NativeUnavailable(macos)
   AVAudioSessionChannelDescription get channelAssignments {
@@ -159,18 +172,25 @@ class AVAudioPlayer extends NSObject {
   @NativeAvailable(ios: '7.0', watchos: '2.0', tvos: '9.0')
   @NativeUnavailable(macos)
   set channelAssignments(AVAudioSessionChannelDescription channelAssignments) =>
-      perform(SEL('setChannelAssignments:'), args: [channelAssignments]);
-  AVAudioPlayer.initWithContentsOfURLError(
-      NSURL url, NSObjectRef<NSError> outError)
+      perform(SEL('setChannelAssignments:'), args: <dynamic>[channelAssignments]);
+
+      */
+
+  AVAudioPlayer.init(URL url) : this.initWithContentsOfURLError(NSURL(url));
+
+  AVAudioPlayer.initWithContentsOfURLError(NSURL url,
+      {NSObjectRef<NSError> outError})
       : super.fromPointer(_initWithContentsOfURLError(url, outError));
 
   static Pointer<Void> _initWithContentsOfURLError(
       NSURL url, NSObjectRef<NSError> outError) {
-    Pointer<Void> target = alloc(Class('AVAudioPlayer'));
-    SEL sel = SEL('initWithContentsOfURL:error:');
-    return msgSend(target, sel, args: [url, outError], decodeRetVal: false);
+    var target = alloc(Class('AVAudioPlayer'));
+    var sel = SEL('initWithContentsOfURL:error:');
+    return msgSend(target, sel,
+        args: <dynamic>[url, outError], decodeRetVal: false) as Pointer<Void>;
   }
 
+/*
   AVAudioPlayer.initWithDataError(NSData data, NSObjectRef<NSError> outError)
       : super.fromPointer(_initWithDataError(data, outError));
 
@@ -178,7 +198,7 @@ class AVAudioPlayer extends NSObject {
       NSData data, NSObjectRef<NSError> outError) {
     Pointer<Void> target = alloc(Class('AVAudioPlayer'));
     SEL sel = SEL('initWithData:error:');
-    return msgSend(target, sel, args: [data, outError], decodeRetVal: false);
+    return msgSend(target, sel, args: <dynamic>[data, outError], decodeRetVal: false);
   }
 
   AVAudioPlayer.initWithContentsOfURLFileTypeHintError(
@@ -192,7 +212,7 @@ class AVAudioPlayer extends NSObject {
     Pointer<Void> target = alloc(Class('AVAudioPlayer'));
     SEL sel = SEL('initWithContentsOfURL:fileTypeHint:error:');
     return msgSend(target, sel,
-        args: [url, utiString, outError], decodeRetVal: false);
+        args: <dynamic>[url, utiString, outError], decodeRetVal: false);
   }
 
   AVAudioPlayer.initWithDataFileTypeHintError(
@@ -206,20 +226,19 @@ class AVAudioPlayer extends NSObject {
     Pointer<Void> target = alloc(Class('AVAudioPlayer'));
     SEL sel = SEL('initWithData:fileTypeHint:error:');
     return msgSend(target, sel,
-        args: [data, utiString, outError], decodeRetVal: false);
+        args: <dynamic>[data, utiString, outError], decodeRetVal: false);
   }
-
+  */
   bool prepareToPlay() {
-    return perform(SEL('prepareToPlay'));
+    return perform(SEL('prepareToPlay')) as bool;
   }
 
   bool play() {
-    return perform(SEL('play'));
+    return perform(SEL('play')) as bool;
   }
 
-  @NativeAvailable(macos: '10.7', ios: '4.0', watchos: '2.0', tvos: '9.0')
   bool playAtTime(NSTimeInterval time) {
-    return perform(SEL('playAtTime:'), args: [time]);
+    return perform(SEL('playAtTime:'), args: <dynamic>[time]) as bool;
   }
 
   void pause() {
@@ -230,9 +249,10 @@ class AVAudioPlayer extends NSObject {
     perform(SEL('stop'));
   }
 
+  /*
   @NativeAvailable(macos: '10.12', ios: '10.0', watchos: '3.0', tvos: '10.0')
   void setVolumeFadeDuration(double volume, NSTimeInterval duration) {
-    perform(SEL('setVolume:fadeDuration:'), args: [volume, duration]);
+    perform(SEL('setVolume:fadeDuration:'), args: <dynamic>[volume, duration]);
   }
 
   void updateMeters() {
@@ -240,11 +260,11 @@ class AVAudioPlayer extends NSObject {
   }
 
   double peakPowerForChannel(NSUInteger channelNumber) {
-    return perform(SEL('peakPowerForChannel:'), args: [channelNumber]);
+    return perform(SEL('peakPowerForChannel:'), args: <dynamic>[channelNumber]);
   }
 
   double averagePowerForChannel(NSUInteger channelNumber) {
-    return perform(SEL('averagePowerForChannel:'), args: [channelNumber]);
+    return perform(SEL('averagePowerForChannel:'), args: <dynamic>[channelNumber]);
   }
 }
 
@@ -273,4 +293,5 @@ abstract class AVAudioPlayerDelegate {
   void audioPlayerEndInterruptionWithFlags(
       AVAudioPlayer player, NSUInteger flags);
   void audioPlayerEndInterruption(AVAudioPlayer player);
+  */
 }

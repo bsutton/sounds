@@ -3,6 +3,8 @@
 ///
 import 'package:pigeon/pigeon.dart';
 
+import '../../sounds.dart';
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///
 /// HostApi - calls from flutter to the platform.
@@ -23,12 +25,12 @@ abstract class SoundsToPlatformApi {
   static const errnoUnknownPlayer = 3;
 
   /// Indicates that Sounds has attempted to start playing or
-  /// resume playing audio on a [SoundPlayerProxy] when it's already
+  /// resume playing audio on a [SoundPlayer] when it's already
   /// playing.
   static const errnoAlreadyPlaying = 4;
 
   /// Indicates that Sounds attempted to stop playing or pause playing
-  /// audio on a [SoundPlayerProxy] when the proxy was not currently playing.
+  /// audio on a [SoundPlayer] when the  was not currently playing.
   static const errnoNotPlaying = 5;
 
   /// Indicates that Sounds attempted to play audio in the background
@@ -76,10 +78,10 @@ abstract class SoundsToPlatformApi {
   /// platform. The description will contain further details.
   static const errnoNotSupported = 16;
 
-  /// Each [SoundPlayerProxy] MUST be initialized before
-  /// any other calls can be made for the [SoundPlayerProxy].
+  /// Each [SoundPlayer] MUST be initialized before
+  /// any other calls can be made for the [SoundPlayer].
   ///
-  /// Once Sounds has finished with the [SoundPlayerProxy] it will call
+  /// Once Sounds has finished with the [SoundPlayer] it will call
   /// [releasePlayer].
   ///
   /// The [playInBackground] flag instructs the Platform to continue playing
@@ -96,10 +98,10 @@ abstract class SoundsToPlatformApi {
   /// fully initialised.
   Response initializePlayer(InitializePlayer initializePlayer);
 
-  /// Each [SoundPlayerProxy] MUST be initialized before
-  /// any other calls can be made for the [SoundPlayerProxy].
+  /// Each [SoundPlayer] MUST be initialized before
+  /// any other calls can be made for the [SoundPlayer].
   ///
-  /// Once Sounds has finished with the [SoundPlayerProxy] it will call
+  /// Once Sounds has finished with the [SoundPlayer] it will call
   /// [releasePlayer].
   ///
   /// The [playInBackground] flag instructs the Platform to continue playing
@@ -116,7 +118,7 @@ abstract class SoundsToPlatformApi {
   /// fully initialised.
   ///
   /// This form of the initializePlayer Instructs the Platform to
-  /// use the OS's Shade to display the [TrackProxy] details
+  /// use the OS's Shade to display the [Track] details
   /// in the OS's shade (notification area).
   ///
   /// If the Platform does not support a shade then [errnoShadeNotSupported]
@@ -133,7 +135,7 @@ abstract class SoundsToPlatformApi {
   Response initializePlayerWithShade(
       InitializePlayerWithShade initializePlayerWithShade);
 
-  /// Once Sounds has finished with a [SoundPlayerProxy] it will call
+  /// Once Sounds has finished with a [SoundPlayer] it will call
   /// [releasePlayer] indicating that all resources associated with the
   /// player may be released.
   ///
@@ -141,22 +143,22 @@ abstract class SoundsToPlatformApi {
   /// called MUST result in the error [errnoUnknownPlayer].
   ///
   /// The platform MUST not return until all resources are released.
-  Response releasePlayer(SoundPlayerProxy player);
+  Response releasePlayer(SoundPlayer player);
 
-  /// Instructs the Platform to start playing the [TrackProxy] on
-  /// the given [SoundPlayerProxy].
+  /// Instructs the Platform to start playing the [Track] on
+  /// the given [SoundPlayer].
   ///
   /// The Platform MUST only return once the media has successfully
   /// started playing.
   ///
-  /// If the [SoundPlayerProxy] is already playing then the Platform
+  /// If the [SoundPlayer] is already playing then the Platform
   /// MUST return an [errnoAlreadyPlaying] error.
   ///
   /// If an error occurs after this method returns then the
   /// Platform must stop the audio and the error MUST be
   /// passed back by calling [onStopped] with an appropriate error code.
   ///
-  /// If a  [TrackProxy] with an unsupported media format is passed then an
+  /// If a  [Track] with an unsupported media format is passed then an
   /// [errnoUnsupportedMediaFormat] error SHOULD be returned.
   ///
   /// The [startAt] argument provides an initial seek offset in millseconds
@@ -164,37 +166,37 @@ abstract class SoundsToPlatformApi {
   /// value then the player should start playing the track from that position.
   Response startPlayer(StartPlayer startPlayer);
 
-  /// Instructs the Platform to stop the [SoundPlayerProxy] playing.
+  /// Instructs the Platform to stop the [SoundPlayer] playing.
   ///
   /// The call MUST only return once the audio has stopped playing.
   ///
-  /// If the [SoundPlayerProxy] is not currently playing then the Platform
+  /// If the [SoundPlayer] is not currently playing then the Platform
   /// MUST return  [errnoNotPlaying].
   ///
   /// If an error is returned Sounds will assume that the audio has stopped
   /// as such the Platform should take all reasonable stepts to ensure the
   /// audio has stopped.
   ///
-  Response stopPlayer(SoundPlayerProxy player);
+  Response stopPlayer(SoundPlayer player);
 
-  /// Instructs the Platform to pause the [SoundPlayerProxy].
+  /// Instructs the Platform to pause the [SoundPlayer].
   ///
   /// The Platform MUST not return until the audio has paused.
   ///
-  /// If the [SoundPlayerProxy] is not currently playing then the Platform
+  /// If the [SoundPlayer] is not currently playing then the Platform
   /// MUST return  [errnoNotPlaying].
-  Response pausePlayer(SoundPlayerProxy player);
+  Response pausePlayer(SoundPlayer player);
 
-  /// Instructs the Platform to resume the [SoundPlayerProxy].
+  /// Instructs the Platform to resume the [SoundPlayer].
   ///
   /// The Platform MUST not return until the audio has resumed.
-  Response resumePlayer(SoundPlayerProxy player);
+  Response resumePlayer(SoundPlayer player);
 
   /// Instructs the Platform to update the current playback position for the
-  /// [SoundPlayerProxy] to [milliseconds] from the start of the [TrackProxy]
+  /// [SoundPlayer] to [milliseconds] from the start of the [Track]
   /// currently playing.
   ///
-  /// If the [SoundPlayerProxy] is not currently playing then the Platform
+  /// If the [SoundPlayer] is not currently playing then the Platform
   /// MUST return a [errnoNotPlaying].
   ///
   ///
@@ -265,7 +267,7 @@ abstract class SoundsToPlatformApi {
   /// The affect on other media players will a result of a prior
   /// call to [requestAudioFocus] and the [AudioFocus] mode that was passed.
   /// was setActive(false)
-  Response releaseAudioFocus(SoundPlayerProxy player);
+  Response releaseAudioFocus(SoundPlayer player);
 
   /// Return true if the Platform supports a shade/notification area.
   BoolResponse isShadeSupported();
@@ -296,25 +298,25 @@ abstract class SoundsToPlatformApi {
   ///
   /// /////////////////////////////////////////////////////////////
 
-  Response initializeRecorder(SoundRecorderProxy recorder);
+  Response initializeRecorder(SoundRecorder recorder);
 
-  Response releaseRecorder(SoundRecorderProxy recorder);
+  Response releaseRecorder(SoundRecorder recorder);
 
   Response startRecording(StartRecording startRecording);
 
-  Response stopRecording(SoundRecorderProxy recorder);
+  Response stopRecording(SoundRecorder recorder);
 
-  Response pauseRecording(SoundRecorderProxy recorder);
+  Response pauseRecording(SoundRecorder recorder);
 
-  Response resumeRecording(SoundRecorderProxy recorder);
+  Response resumeRecording(SoundRecorder recorder);
 
   /// Returns the list of native media formats the platform
   /// can encode (record) to.
-  /// We pass a MediaFormatProxy as a hack until pigeon supports
+  /// We pass a MediaFormat as a hack until pigeon supports
   /// enum/consts. The proxy contains a list of well known
   /// media formats that the OS can use to indicate
   /// that they are supported.
-  MediaFormatResponse getNativeEncoderFormats(MediaFormatProxy proxy);
+  MediaFormatResponse getNativeEncoderFormats(MediaFormat proxy);
 
   /// Returns the list of native media formats the platform
   /// can decode (playback) from.
@@ -322,7 +324,7 @@ abstract class SoundsToPlatformApi {
   /// enum/consts. The proxy contains a list of well known
   /// media formats that the OS can use to indicate
   /// that they are supported.
-  MediaFormatResponse getNativeDecoderFormats(MediaFormatProxy proxy);
+  MediaFormatResponse getNativeDecoderFormats(MediaFormat proxy);
 
   /// Sets the interval between progress messages being generated from
   /// the platform code when the passed recorder is recording.
@@ -535,12 +537,12 @@ class MediaFormatResponse {
 }
 
 class InitializePlayer {
-  SoundPlayerProxy player;
+  SoundPlayer player;
   bool playInBackground;
 }
 
 class InitializePlayerWithShade {
-  SoundPlayerProxy player;
+  SoundPlayer player;
   bool playInBackground;
   bool canPause;
   bool canSkipBackward;
@@ -548,13 +550,13 @@ class InitializePlayerWithShade {
 }
 
 class StartPlayer {
-  SoundPlayerProxy player;
-  TrackProxy track;
+  SoundPlayer player;
+  Track track;
   int startAt;
 }
 
 class SeekToPlayer {
-  SoundPlayerProxy player;
+  SoundPlayer player;
   int milliseconds;
 }
 
@@ -564,12 +566,12 @@ class GetDuration {
 }
 
 class SetVolume {
-  SoundPlayerProxy player;
+  SoundPlayer player;
   int volume;
 }
 
 class SetPlaybackProgressInterval {
-  SoundPlayerProxy player;
+  SoundPlayer player;
   int interval;
 }
 
@@ -628,8 +630,8 @@ class AudioSourceProxy {
 }
 
 class RequestAudioFocus {
-  SoundPlayerProxy player;
-  AudioFocusProxy audioFocus;
+  SoundPlayer player;
+  AudioFocus audioFocus;
 }
 
 class AudioFocusProxy {
@@ -654,52 +656,52 @@ class AudioFocusProxy {
 }
 
 class StartRecording {
-  SoundRecorderProxy recorder;
-  TrackProxy track;
-  AudioSourceProxy audioSource;
-  QualityProxy quality;
+  SoundRecorder recorder;
+  Track track;
+  AudioSource audioSource;
+  Quality quality;
 }
 
 class SetRecordingProgressInterval {
-  SoundRecorderProxy recorder;
+  SoundRecorder recorder;
   int interval;
 }
 
 class OnPlaybackProgress {
-  SoundPlayerProxy player;
-  TrackProxy track;
+  SoundPlayer player;
+  Track track;
   int duration;
   int position;
 }
 
 class OnRecordingProgress {
-  SoundRecorderProxy recorder;
-  TrackProxy track;
+  SoundRecorder recorder;
+  Track track;
   double decibels;
   int duration;
 }
 
 class OnPlaybackFinished {
-  SoundPlayerProxy player;
-  TrackProxy track;
+  SoundPlayer player;
+  Track track;
 }
 
 class OnShadeSkipForward {
-  SoundPlayerProxy player;
-  TrackProxy track;
+  SoundPlayer player;
+  Track track;
 }
 
 class OnShadeSkipBackward {
-  SoundPlayerProxy player;
-  TrackProxy track;
+  SoundPlayer player;
+  Track track;
 }
 
 class OnShadePaused {
-  SoundPlayerProxy player;
-  TrackProxy track;
+  SoundPlayer player;
+  Track track;
 }
 
 class OnShadeResumed {
-  SoundPlayerProxy player;
-  TrackProxy track;
+  SoundPlayer player;
+  Track track;
 }
