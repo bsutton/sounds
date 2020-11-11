@@ -10,10 +10,8 @@ class AVAudioSessionCategory extends NSString {
   AVAudioSessionCategory.fromPointer(Pointer<Void> ptr)
       : super.fromPointer(ptr);
 
- 
-  static var Ambient =
-      AVAudioSessionCategory('AVAudioSessionCategoryAmbient');
-
+  static var NotSet = AVAudioSessionCategory('NotSet');
+  static var Ambient = AVAudioSessionCategory('AVAudioSessionCategoryAmbient');
   static var SoloAmbient =
       AVAudioSessionCategory('AVAudioSessionCategorySoloAmbient');
   static var Playback =

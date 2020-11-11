@@ -28,269 +28,271 @@
  *   along with Sounds .  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 // func SoundRecorderReg(_ registrar: (NSObjectProtocol & FlutterPluginRegistrar)?) {
 //     SoundRecorderManager.register(with: registrar!)
 // }
 
 // var soundRecorderManager: SoundRecorderManager? // Singvaron
 
+import 'dart:ffi';
 
-
+import 'package:dart_native/dart_native.dart';
+import 'package:dart_native/src/ios/foundation/objc_basic_type.dart';
+import 'package:dart_native/src/ios/foundation/nserror.dart';
 import 'package:dart_numerics/dart_numerics.dart';
+import 'package:sounds/src/ios/frameworks/avfoundation/avaudiosessioncategory.dart';
+import 'package:sounds/src/ios/frameworks/avfoundation/avaudiosessiontypes.dart';
 import 'package:sounds/src/ios/sounds.dart';
 import 'package:sounds/src/platform/sounds_platform_api.dart';
+import 'package:sounds_common/sounds_common.dart';
 
 import 'frameworks/avfoundation/avaudiorecorder.dart';
+import 'frameworks/avfoundation/avaudiosession.dart';
+import 'frameworks/avfoundation/avaudiosessionportoverride.dart';
+import 'frameworks/avfoundation/hacks.dart';
 import 'response_extension.dart';
 
-
 class SoundRecorder implements AVAudioRecorderDelegate {
-     Uri audioFileURL;
-     AVAudioRecorder audioRecorder;
-     
-     
-     t_SET_CATEGORY_DONE setCategoryDone;
-     t_SET_CATEGORY_DONE  setActiveDone;
-     
+  Uri audioFileURL;
+  AVAudioRecorder audioRecorder;
 
+  t_SET_CATEGORY_DONE setCategoryDone;
+  t_SET_CATEGORY_DONE setActiveDone;
 
-    Duration _recordingProgressInterval = Duration(milliseconds: 100);
+  Duration _recordingProgressInterval = Duration(milliseconds: 100);
 
   @override
-  Response setRecordingProgressInterval(SetRecordingProgressInterval 
-    setRecordingProgressInterval) {
+  Response setRecordingProgressInterval(
+      SetRecordingProgressInterval setRecordingProgressInterval) {
+    _recordingProgressInterval =
+        Duration(milliseconds: setRecordingProgressInterval.interval);
 
-     _recordingProgressInterval 
-     = Duration(milliseconds: setRecordingProgressInterval.interval);
-
-     return Responses.success();
+    return Responses.success();
   }
 
-
-
-    void initializeSoundRecorder() {
-    }
-
+  void initializeSoundRecorder() {}
 
   @override
-  Response releaseRecorder(SoundRecorderProxy recorder) {
-  
-  }
-
-
+  Response releaseRecorder(SoundRecorderProxy recorder) {}
 
   @override
   Response startRecording(StartRecording startRecording) {
-        //var args = call.arguments as! Dictionary<String, Any>
-        var path = startRecording.track.path;
-        var sampleRateArgs = startRecording.track.mediaFormat.sampleRate;
-        var numChannelsArgs = startRecording.track.mediaFormat.numChannels;
-        var iosQuality = startRecording.quality;
-        var bitRate = startRecording.track.mediaFormat.bitRate;
-        var formatArg = startRecording.track.mediaFormat.name;
+    //var args = call.arguments as! Dictionary<String, Any>
+    var path = startRecording.track.path;
+    var sampleRateArgs = startRecording.track.mediaFormat.sampleRate;
+    var numChannelsArgs = startRecording.track.mediaFormat.numChannels;
+    var iosQuality = startRecording.quality;
+    var bitRate = startRecording.track.mediaFormat.bitRate;
+    var formatArg = startRecording.track.mediaFormat.name;
+    var sampleRate = 44100;
+    var numChannels = 2;
 
-        // var sampleRate: Float = 44100
+    /// TODO: map mediaFormat name to format id.
+    var format = formatArg;
+    audioFileURL = Uri(path: path);
 
-        // var numChannels = 2
+    var audioSettings = <dynamic, NSNumber>{
+      AVSampleRateKey: NSNumber(sampleRate),
+      AVFormatIDKey: NSNumber(/*Int32*/ (format)),
+      AVNumberOfChannelsKey: NSNumber(numChannels),
+      AVEncoderAudioQualityKey: NSNumber(iosQuality ?? 0x40)
+    };
 
-      /// TODO: map mediaFormat name to format id.
-        var format = formatArg?.intValue ?? 0
-
-
-
-
-        audioFileURL = Uri(fileURLWithPath: path ?? "")
-
-        var audioSettings = [
-            AVSampleRateKey : NSNumber(value: sampleRate),
-            AVFormatIDKey : NSNumber(value: Int32(format)),
-            AVNumberOfChannelsKey : NSNumber(value: Int32(numChannels)),
-            AVEncoderAudioQualityKey : NSNumber(value: Int32(iosQuality?.intValue ?? 0))
-        ]
-
-        // If bitrate is defined, the use it, otherwise use the OS default
-        if (bitRate != null) {
-            audioSettings[AVEncoderBitRateKey] = NSNumber(value: Int32(bitRate?.intValue ?? 0))
-        }
-
-
-
-        // Setup audio session the first time the user starts recording with this SoundRecorder instance.
-        if ((setCategoryDone == t_SET_CATEGORY_DONE.not_SET) 
-          || (setCategoryDone == t_SET_CATEGORY_DONE.for_PLAYING)) {
-            var audioSession = AVAudioSession.sharedInstance();
-            try {
-                audioSession.setCategory(    t_SET_CATEGORY_DONE.for_RECORDING ,//         .playAndRecord,
-                    options: .allowBluetooth);
-            } catch {
-            }
-            setCategoryDone = t_SET_CATEGORY_DONE.for_RECORDING;
-            Error error;
-
-            // set volume default to speaker
-            var success = false;
-            try {
-                //preffered method
-               // try //audioSession.overrideOutputAudioPort(AVAudioSessionPortOverrideSpeaker)
-
-                // tristans go at compiling.
-                _ = audioSession.preferredInput
-                 try audioSession.overrideOutputAudioPort(AVAudioSession.PortOverride(rawValue: AVAudioSession.PortOverride.RawValue(kAudioSessionOverrideAudioRoute_Speaker))!);
-                success = true;
-            } catch {
-                print("error doing outputaudioportoverride - \(error.localizedDescription)");
-            }
-        }
-
-
-        try {
-          
-          var audioSettings = audioSettings as String;
-            if (audioFileURL != null)  {
-                audioRecorder = AVAudioRecorder(
-                    url: audioFileURL,
-                    settings: audioSettings);
-            }
-        // ignore: avoid_catches_without_on_clauses
-        } catch(e) {
-        }
-
-        audioRecorder?.delegate = this;
-        audioRecorder?.record();
-
-        audioRecorder?.isMeteringEnabled = true;
-        startProgressTimer();
-
-        var filePath = audioFileURL?.path;
-        Responses.success();
+    // If bitrate is defined, the use it, otherwise use the OS default
+    if (bitRate != null) {
+      audioSettings[AVEncoderBitRateKey] = NSNumber(bitRate ?? 0);
     }
 
+    // Setup audio session the first time the user starts recording with this SoundRecorder instance.
+    if ((setCategoryDone == t_SET_CATEGORY_DONE.not_SET) ||
+        (setCategoryDone == t_SET_CATEGORY_DONE.for_PLAYING)) {
+      var audioSession = AVAudioSession.sharedInstance();
+      try {
+        audioSession.setCategory(
+            category: AVAudioSessionCategory.PlayAndRecord,
+            options: AVAudioSessionCategoryOptions.AllowBluetooth
+                as AVAudioSessionCategoryOptions);
+      } on Exception catch (e) {
+        Log.d(e.toString());
+      }
+      setCategoryDone = t_SET_CATEGORY_DONE.for_RECORDING;
+      Error error;
 
+      // set volume default to speaker
+      var success = false;
+      try {
+        //preffered method
+        // try //audioSession.overrideOutputAudioPort(AVAudioSessionPortOverrideSpeaker)
+
+        audioSession
+            .overrideOutputAudioPort(AVAudioSessionPortOverride.Speaker);
+        success = true;
+      } on Exception catch (e) {
+        Log.d(e.toString());
+      }
+    }
+
+    try {
+      //if let audioFileURL = audioFileURL, let audioSettings =
+      //audioSettings as? [String : Any] {
+      //      audioRecorder = try AVAudioRecorder(
+      //         url: audioFileURL,
+      //         settings: audioSettings) I dont even understand
+      //It looks like hes just trying to give the current audioRecorder a URL.
+      //I dont get why he thought all that was neccesary.
+      if (audioFileURL != null) {
+        audioRecorder.url = audioFileURL;
+      }
+      // ignore: avoid_catches_without_on_clauses
+    } catch (e) {}
+
+    audioRecorder.delegate = this;
+    audioRecorder.record();
+
+    audioRecorder.meteringEnabled = true;
+    startProgressTimer();
+
+    //var filePath = audioFileURL.path; never used
+    Responses.success();
+  }
 
   @override
   Response stopRecording(SoundRecorderProxy recorder) {
-   
-        audioRecorder?.stop();
+    audioRecorder?.stop();
 
-        stopProgressTimer();
-        
-        return Responses.success();
-    }
+    stopProgressTimer();
 
+    return Responses.success();
+  }
 
-
-///
+  ///
   Response pauseRecording(SoundRecorderProxy recorder) {
-    
-        audioRecorder?.pause();
+    audioRecorder?.pause();
 
-        stopProgressTimer();
-        return Responses.success();
-    }
-
+    stopProgressTimer();
+    return Responses.success();
+  }
 
   @override
   Response resumeRecording(SoundRecorderProxy recorder) {
-   
-        var b = audioRecorder?.record() ?? false;
-        startProgressTimer();
-        if (b)
-        {
-          return Responses.success();
-        }
-        else
-        {
-          return Responses.onError(SoundsToPlatformApi.errnoGeneral
-              , "Failed to resume recording");
-        }
+    var b = audioRecorder?.record() ?? false;
+    startProgressTimer();
+    if (b) {
+      return Responses.success();
+    } else {
+      return Responses.onError(
+          SoundsToPlatformApi.errnoGeneral, "Failed to resume recording");
     }
+  }
 
   bool recordingTimerRunning = false;
   void startProgressTimer() {
-        stopProgressTimer();
-        print("Starting Recording ProgressTimer interval: $_recorderProgressInterval");
+    stopProgressTimer();
+    print(
+        "Starting Recording ProgressTimer interval: $_recorderProgressInterval");
 
-        recordingTimerRunning = true;
+    recordingTimerRunning = true;
 
+    Future.delayed(_recorderProgressInterval, () {
+      updateProgress();
+    });
 
-        Future.delayed(_recorderProgressInterval, () {
-          
-
-           updateProgress();
-
-        });
-      
-        print("started ProgressTimer");
-    }
+    print("started ProgressTimer");
+  }
 
   void stopProgressTimer() {
-
     recordingTimerRunning = true;
     print("stopping RecordingProgressTimer");
   }
 
-
-
-    Duration _recorderProgressInterval = Duration(milliseconds: 100);
+  Duration _recorderProgressInterval = Duration(milliseconds: 100);
   @override
   Response setPlaybackProgressInterval(Duration interval) {
-    
     _recorderProgressInterval = interval;
   }
 
+  void updateProgress() {
+    print("entered updateProgress");
 
+    var decibels = getDbLevel();
+    var currentTime = audioRecorder.currentTime.value * 1000;
 
-    void updateProgress() {
-        print("entered updateProgress");
-
-      
-         var decibels = getDbLevel();
-        var currentTime = audioPlayer?.currentTime! * 1000;
-                
-
-        print("""
+    print("""
 sending updateProgress: decibels: $decibels, position: $currentTime""");
 
-        // TODO: call dart updateProgress
+    // TODO: call dart updateProgress
 
-        if (recordingTimerRunning)
-        {
-         Future.delayed(_recorderProgressInterval, () {
-          
+    if (recordingTimerRunning) {
+      Future.delayed(_recorderProgressInterval, () {
+        /// TODO call back to dart
+        updateProgress();
+      });
+    }
+  }
 
-          /// TODO call back to dart
-           updateProgress();
+  double getDbLevel() {
+    // NSNumber *normalizedPeakLevel = [NSNumber numberWithDouble:MIN(pow(10.0, [audioRecorder peakPowerForChannel:0] / 20.0) * 160.0, 160.0)];
+    audioRecorder?.updateMeters();
+    // silence is -160. max volume is 0. 
+    //therefore, +160 as below to calculate. only worksfor +ve no.s
+    var maxAmplitude = 
+    (audioRecorder.peakPowerForChannel(NSUInteger(0)) ?? 0.0) + 160;
 
-        });
-        }
+    var db = 0.0;
+
+    if (maxAmplitude != 0) {
+      // Calculate db based on the following article.
+      // https://stackoverflow.com/questions/10655703/what-does-androids-getmaxamplitude-function-for-the-mediarecorder-actually-gi
+      //
+      var ref_pressure = 51805.5336;
+      var p = maxAmplitude / ref_pressure;
+      var p0 = 0.0002;
+
+      db = 20.0 * log10(p / p0);
     }
 
+    return db;
+  }
 
-    double getDbLevel() {
-        // NSNumber *normalizedPeakLevel = [NSNumber numberWithDouble:MIN(pow(10.0, [audioRecorder peakPowerForChannel:0] / 20.0) * 160.0, 160.0)];
-        audioRecorder?.updateMeters();
-        // silence is -160 max volume is 0 hence +160 as below calc only worksfor +ve no.s
-        var maxAmplitude = (audioRecorder?.peakPower(forChannel: 0) ?? 0.0) + 160;
+  @override
+  void audioRecorderBeginInterruption(AVAudioRecorder recorder) {
+    // TODO: implement audioRecorderBeginInterruption
+  }
 
-        var db = 0.0;
+  @override
+  void audioRecorderDidFinishRecordingSuccessfully(
+      AVAudioRecorder recorder, bool flag) {
+    // TODO: implement audioRecorderDidFinishRecordingSuccessfully
+  }
 
-        if (maxAmplitude != 0) {
-            // Calculate db based on the following article.
-            // https://stackoverflow.com/questions/10655703/what-does-androids-getmaxamplitude-function-for-the-mediarecorder-actually-gi
-            //
-            var ref_pressure = 51805.5336;
-            var p = maxAmplitude / ref_pressure;
-            var p0 = 0.0002;
+  @override
+  void audioRecorderEncodeErrorDidOccurError(AVAudioRecorder recorder,
+      {NSError error}) {
+    // TODO: implement audioRecorderEncodeErrorDidOccurError
+  }
 
-            db = 20.0 * log10(p / p0);
-        }
+  @override
+  void audioRecorderEndInterruption(AVAudioRecorder recorder) {
+    // TODO: implement audioRecorderEndInterruption
+  }
 
-        return db;
-    }
+  @override
+  void audioRecorderEndInterruptionWithFlags(
+      AVAudioRecorder recorder, NSUInteger flags) {
+    // TODO: implement audioRecorderEndInterruptionWithFlags
+  }
 
+  @override
+  void audioRecorderEndInterruptionWithOptions(
+      AVAudioRecorder recorder, NSUInteger flags) {
+    // TODO: implement audioRecorderEndInterruptionWithOptions
+  }
+
+  @override
+  void registerAVAudioRecorderDelegate() {
+    // TODO: implement registerAVAudioRecorderDelegate
+    throw UnimplementedError();
+  }
 }
 
 //---------------------------------------------------------------------------------------------
-
-

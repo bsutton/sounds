@@ -5,6 +5,9 @@ import 'dart:ffi';
 
 import 'package:dart_native/dart_native.dart';
 import 'package:dart_native_gen/dart_native_gen.dart';
+
+import 'avaudiosessionroute.dart';
+import 'hacks.dart';
 // You can uncomment this line when this package is ready.
 // import 'package:avfaudio/avaudioformat.dart';
 // You can uncomment this line when this package is ready.
@@ -20,11 +23,11 @@ class AVAudioRecorder extends NSObject {
   AVAudioRecorder.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
 
   bool get recording {
-    return perform(SEL('recording'));
+    return perform(SEL('recording')) as bool;
   }
 
   set recording(bool recording) =>
-      perform(SEL('setRecording:'), args: [recording]);
+      perform(SEL('setRecording:'), args: <dynamic>[recording]);
 
   NSURL get url {
     Pointer<Void> result = perform(SEL('url'), decodeRetVal: false);
@@ -60,17 +63,16 @@ class AVAudioRecorder extends NSObject {
       perform(SEL('setDelegate:'), args: [delegate]);
 
   NSTimeInterval get currentTime {
-    Pointer<Void> result = perform(SEL('currentTime'), decodeRetVal: false);
+    var result =
+        perform(SEL('currentTime'), decodeRetVal: false) as Pointer<Void>;
     return NSTimeInterval.fromPointer(result);
   }
 
   set currentTime(NSTimeInterval currentTime) =>
-      perform(SEL('setCurrentTime:'), args: [currentTime]);
-  @NativeAvailable(macos: '10.9', ios: '6.0', watchos: '4.0')
-  @NativeUnavailable(tvos)
+      perform(SEL('setCurrentTime:'), args: <dynamic>[currentTime]);
   NSTimeInterval get deviceCurrentTime {
-    Pointer<Void> result =
-        perform(SEL('deviceCurrentTime'), decodeRetVal: false);
+    var result =
+        perform(SEL('deviceCurrentTime'), decodeRetVal: false) as Pointer<Void>;
     return NSTimeInterval.fromPointer(result);
   }
 
@@ -80,17 +82,15 @@ class AVAudioRecorder extends NSObject {
       perform(SEL('setDeviceCurrentTime:'), args: [deviceCurrentTime]);
 
   bool get meteringEnabled {
-    return perform(SEL('meteringEnabled'));
+    return perform(SEL('meteringEnabled')) as bool;
   }
 
   set meteringEnabled(bool meteringEnabled) =>
-      perform(SEL('setMeteringEnabled:'), args: [meteringEnabled]);
-  @NativeAvailable(ios: '7.0', watchos: '4.0')
-  @NativeUnavailable(macos)
-  @NativeUnavailable(tvos)
+      perform(SEL('setMeteringEnabled:'), args: <dynamic>[meteringEnabled]);
   AVAudioSessionChannelDescription get channelAssignments {
     Pointer<Void> result =
-        perform(SEL('channelAssignments'), decodeRetVal: false);
+        perform(SEL('channelAssignments'), decodeRetVal: false)
+            as Pointer<Void>;
     return AVAudioSessionChannelDescription.fromPointer(result);
   }
 
@@ -164,7 +164,8 @@ class AVAudioRecorder extends NSObject {
   }
 
   double peakPowerForChannel(NSUInteger channelNumber) {
-    return perform(SEL('peakPowerForChannel:'), args: [channelNumber]);
+    return perform(SEL('peakPowerForChannel:'), args: <dynamic>[channelNumber])
+        as double;
   }
 
   double averagePowerForChannel(NSUInteger channelNumber) {

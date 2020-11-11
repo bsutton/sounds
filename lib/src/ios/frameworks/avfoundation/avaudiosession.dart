@@ -7,6 +7,8 @@ import 'package:dart_native/dart_native.dart';
 import 'package:dart_native_gen/dart_native_gen.dart';
 
 import 'avaudiosessioncategory.dart';
+import 'avaudiosessionmode.dart';
+import 'avaudiosessionportoverride.dart';
 import 'avaudiosessiontypes.dart';
 // You can uncomment this line when this package is ready.
 // import 'package:os/availability.dart';
@@ -22,6 +24,18 @@ import 'avaudiosessiontypes.dart';
 class AVAudioSession extends NSObject {
   AVAudioSession([Class isa]) : super(isa ?? Class('AVAudioSession'));
   AVAudioSession.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
+
+  /// Couldn't find this in the commented code so implemented it according
+  /// to apple doco. https://developer.apple.com/documentation/avfoundation/avaudiosessioncategory?language=objc
+  AVAudioSession.Category(
+      {AVAudioSessionCategory rawValue,
+      AVAudioSessionMode mode,
+      AVAudioSessionCategoryOptions options}) {
+    var result = Class('AVAudioSession')
+        .perform(SEL('sharedInstance'), decodeRetVal: false) as Pointer<Void>;
+    var session = AVAudioSession.fromPointer(result);
+    session.setCategory(category: category);
+  }
 
   ///
   AVAudioSessionCategory get availableCategories {
@@ -131,33 +145,31 @@ class AVAudioSession extends NSObject {
     return AVAudioSession.fromPointer(result);
   }
 
-  bool setCategory(AVAudioSessionCategory category) {
-    return setCategoryError(category);
-  }
+  // bool setCategory(AVAudioSessionCategory category) {
+  //   return setCategoryError(category);
+  // }
 
-  bool setCategoryError(AVAudioSessionCategory category,
-      {NSObjectRef<NSError> outError}) {
-    return perform(SEL('setCategory:error:'),
-        args: <dynamic>[category, outError]) as bool;
-  }
+  // bool setCategoryError(AVAudioSessionCategory category,
+  //     {NSObjectRef<NSError> outError}) {
+  //   return perform(SEL('setCategory:error:'),
+  //       args: <dynamic>[category, outError]) as bool;
+  // }
 
-  bool setCategoryWithOptionsError(AVAudioSessionCategory category,
-      AVAudioSessionCategoryOptions options, NSObjectRef<NSError> outError) {
-    return perform(SEL('setCategory:withOptions:error:'),
-        args: <dynamic>[category, options, outError]) as bool;
-  }
-/*
-  @NativeAvailable(ios: '10.0', watchos: '3.0', tvos: '10.0')
-  @NativeUnavailable(macos)
-  bool setCategoryModeOptionsError(
-      AVAudioSessionCategory category,
+  // bool setCategoryWithOptionsError(AVAudioSessionCategory category,
+  //     AVAudioSessionCategoryOptions options, NSObjectRef<NSError> outError) {
+  //   return perform(SEL('setCategory:withOptions:error:'),
+  //       args: <dynamic>[category, options, outError]) as bool;
+  // }
+
+  bool setCategory(
+      {AVAudioSessionCategory category,
       AVAudioSessionMode mode,
       AVAudioSessionCategoryOptions options,
-      NSObjectRef<NSError> outError) {
+      NSObjectRef<NSError> outError}) {
     return perform(SEL('setCategory:mode:options:error:'),
-        args: <dynamic>[category, mode, options, outError]);
+        args: <dynamic>[category, mode, options, outError]) as bool;
   }
-
+/*
   @NativeAvailable(ios: '11.0', tvos: '11.0', watchos: '5.0')
   @NativeUnavailable(macos)
   bool setCategoryModeRouteSharingPolicyOptionsError(
@@ -189,15 +201,19 @@ class AVAudioSession extends NSObject {
   void requestRecordPermission(void response(BOOL granted)) {
     perform(SEL('requestRecordPermission:'), args: <dynamic>[response]);
   }
+*/
+    bool overrideOutputAudioPort(
+      AVAudioSessionPortOverride portOverride) {
+    return perform(SEL('overrideOutputAudioPort:error:'),
+        args: <dynamic>[portOverride]) as bool;
+  }
 
-  @NativeAvailable(ios: '6.0', watchos: '2.0', tvos: '9.0')
-  @NativeUnavailable(macos)
   bool overrideOutputAudioPortError(
       AVAudioSessionPortOverride portOverride, NSObjectRef<NSError> outError) {
     return perform(SEL('overrideOutputAudioPort:error:'),
-        args: <dynamic>[portOverride, outError]);
+        args: <dynamic>[portOverride, outError]) as bool;
   }
-
+/*
   @NativeAvailable(ios: '7.0', tvos: '9.0')
   @NativeUnavailable(watchos, macos)
   bool setPreferredInputError(NSObjectRef<NSError> outError,

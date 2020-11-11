@@ -1,4 +1,3 @@
-//  Converted to Swift 5.2 by Swiftify v5.2.19227 - https://swiftify.com/
 /*
  * This file is part of Sounds .
  *
@@ -15,21 +14,20 @@
  *   along with Sounds .  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import 'dart:typed_data';
-
-import 'package:dart_native/src/ios/foundation/objc_basic_type.dart';
+// ignore_for_file: implementation_imports
 import 'package:dart_native/src/ios/foundation/nserror.dart';
-import 'package:sounds/sounds.dart';
-import 'package:sounds/src/ios/frameworks/avfoundation/avaudiosessioncategory.dart';
-import 'package:sounds/src/ios/shade_player.dart';
-import 'package:sounds/src/ios/sounds.dart';
-import 'package:sounds/src/platform/sounds_platform_api.dart';
-// import 'package:sounds_platform_interface/sounds_platform_interface.dart';
+import 'package:dart_native/src/ios/foundation/objc_basic_type.dart';
 
+import '../../sounds.dart';
 import '../platform/sounds_platform_api.dart';
 import 'frameworks/avfoundation/avaudioplayer.dart';
 import 'frameworks/avfoundation/avaudiosession.dart';
-import 'frameworks/avfoundation/avfoundation.dart';
+import 'frameworks/avfoundation/avaudiosessioncategory.dart';
+import 'frameworks/avfoundation/avaudiosessionmode.dart';
+import 'frameworks/avfoundation/avaudiosessiontypes.dart';
+import 'frameworks/avfoundation/hacks.dart';
+import 'shade_player.dart';
+import 'sounds.dart';
 
 class SoundPlayerIOS implements AVAudioPlayerDelegate {
   SoundPlayer _player;
@@ -132,7 +130,7 @@ class SoundPlayerIOS implements AVAudioPlayerDelegate {
     stopProgressTimer();
     if (setActiveDone !=
             t_SET_CATEGORY_DONE
-                .by_USER /* The caller did it himself : Sounds must not change that) */
+                .by_USER 
         &&
         (setActiveDone != t_SET_CATEGORY_DONE.not_SET)) {
       try {
@@ -264,8 +262,8 @@ class SoundPlayerIOS implements AVAudioPlayerDelegate {
 
     if (setCategoryDone == t_SET_CATEGORY_DONE.not_SET) {
       try {
-        AVAudioSession.sharedInstance()
-            .setCategory(AVAudioSessionCategory.Playback); // was forPlaying
+        AVAudioSession.sharedInstance().setCategory(
+            category: AVAudioSessionCategory.Playback); // was forPlaying
         // ignore: avoid_catches_without_on_clauses
       } catch (_) {}
       setCategoryDone = t_SET_CATEGORY_DONE.for_PLAYING;
@@ -283,17 +281,19 @@ class SoundPlayerIOS implements AVAudioPlayerDelegate {
 
     // if (!audioPlayer) { // Fix sound distoring when playing recorded audio again.
     try {
-      audioPlayer = AVAudioPlayer(contentsOf: audioFileURL);
+      audioPlayer = AVAudioPlayer.init(audioFileURL);
 
       seekToPlayer(startAt);
 
       // ignore: avoid_catches_without_on_clauses
     } catch (_) {}
-    audioPlayer?.delegate = this;
+    audioPlayer.delegate = this;
     // }
     var b = audioPlayer?.play() ?? false;
     if (!b) {
-      stop();
+      //originally stop() I think thiis is the same as "This" is the audioPlayer
+      //delegate and audioPlayer is the only  AVAudioPlayer in the class
+      audioPlayer.stop();
       response.success = false;
       response.error = "AudioPlayer Play failure";
       response.errorCode = SoundsToPlatformApi.errnoGeneral;
@@ -389,8 +389,8 @@ class SoundPlayerIOS implements AVAudioPlayerDelegate {
 
   void updateProgress() {
     print("entered updateProgress");
-    var duration = audioPlayer!.duration * 1000;
-    var currentTime = audioPlayer?.currentTime! * 1000;
+    var duration = audioPlayer.duration * 1000;
+    var currentTime = audioPlayer.currentTime * 1000;
 
     print("""
 sending updateProgress: duration: $duration, position: $currentTime""");
@@ -430,16 +430,14 @@ sending updateProgress: duration: $duration, position: $currentTime""");
     stopProgressTimer();
   }
 
-  void _setCategory(String categ, String mode, int options) {
+  void _setCategory(AVAudioSessionCategory category, AVAudioSessionMode mode,
+      AVAudioSessionCategoryOptions options) {
     // Able to play in silent mode
     var b = false;
 
     try {
-      AVAudioSession.sharedInstance().setCategory(
-          AVAudioSession.Category(
-              rawValue: categ! /* AVAudioSessionCategoryPlayback */),
-          mode: AVAudioSession.Mode(rawValue: mode),
-          options: AVAudioSession.CategoryOptions(rawValue: UInt(options)));
+      AVAudioSession.sharedInstance()
+          .setCategory(category: category, mode: mode, options: options);
       b = true;
       // ignore: avoid_catches_without_on_clauses
     } catch (_) {}
@@ -469,7 +467,7 @@ sending updateProgress: duration: $duration, position: $currentTime""");
     }
     var b = false;
     try {
-      AVAudioSession.sharedInstance().setActive(enabled);
+      AVAudioSession.sharedInstance().setActive(active: enabled);
       b = true;
       // ignore: avoid_catches_without_on_clauses
     } catch (_) {}
@@ -511,9 +509,9 @@ sending updateProgress: duration: $duration, position: $currentTime""");
     // TODO: implement audioPlayerEndInterruptionWithOptions
   }
 
-  @override
-  registerAVAudioPlayerDelegate() {
-    // TODO: implement registerAVAudioPlayerDelegate
-    throw UnimplementedError();
-  }
+  // @override
+  // registerAVAudioPlayerDelegate() {
+  //   // TODO: implement registerAVAudioPlayerDelegate
+  //   throw UnimplementedError();
+  // }
 }

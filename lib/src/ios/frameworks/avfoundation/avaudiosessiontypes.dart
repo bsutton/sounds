@@ -2,9 +2,11 @@
 //ignore_for_file: constant_identifier_names
 typedef AVAudioSessionPort = Function();
 
-typedef AVAudioSessionMode = Function();
-
 class AVAudioSessionCategoryOptions {
+  int rawValue;
+  AVAudioSessionCategoryOptions({this.rawValue});
+
+  
   static const MixWithOthers = 0x1;
   static const DuckOthers = 0x2;
   static const AllowBluetooth = 0x4;
