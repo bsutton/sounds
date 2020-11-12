@@ -6,7 +6,6 @@ class AVAudioSessionCategoryOptions {
   int rawValue;
   AVAudioSessionCategoryOptions({this.rawValue});
 
-  
   static const MixWithOthers = 0x1;
   static const DuckOthers = 0x2;
   static const AllowBluetooth = 0x4;

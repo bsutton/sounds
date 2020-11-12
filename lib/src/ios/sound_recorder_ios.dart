@@ -52,7 +52,7 @@ import 'frameworks/avfoundation/avaudiosessionportoverride.dart';
 import 'frameworks/avfoundation/hacks.dart';
 import 'response_extension.dart';
 
-class SoundRecorder implements AVAudioRecorderDelegate {
+class SoundRecorderIOS implements AVAudioRecorderDelegate {
   Uri audioFileURL;
   AVAudioRecorder audioRecorder;
 
@@ -73,6 +73,7 @@ class SoundRecorder implements AVAudioRecorderDelegate {
   void initializeSoundRecorder() {}
 
   @override
+  // Originally took SoundRecorderProxy
   Response releaseRecorder(SoundRecorderProxy recorder) {}
 
   @override
@@ -233,10 +234,10 @@ sending updateProgress: decibels: $decibels, position: $currentTime""");
   double getDbLevel() {
     // NSNumber *normalizedPeakLevel = [NSNumber numberWithDouble:MIN(pow(10.0, [audioRecorder peakPowerForChannel:0] / 20.0) * 160.0, 160.0)];
     audioRecorder?.updateMeters();
-    // silence is -160. max volume is 0. 
+    // silence is -160. max volume is 0.
     //therefore, +160 as below to calculate. only worksfor +ve no.s
-    var maxAmplitude = 
-    (audioRecorder.peakPowerForChannel(NSUInteger(0)) ?? 0.0) + 160;
+    var maxAmplitude =
+        (audioRecorder.peakPowerForChannel(NSUInteger(0)) ?? 0.0) + 160;
 
     var db = 0.0;
 

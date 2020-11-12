@@ -74,7 +74,7 @@ class URLSession{
 }
 
 /// 
-class ShadePlayer extends SoundPlayerIOS
+class ShadePlayerIOS extends SoundPlayerIOS
  {
    //Hacked props
 

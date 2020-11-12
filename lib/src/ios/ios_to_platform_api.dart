@@ -11,11 +11,18 @@
 // }
 
 
+import 'dart:ffi';
+
+import 'package:sounds/src/ios/frameworks/avfoundation/avaudiofile.dart';
 import 'package:sounds/src/ios/sound_player_ios.dart';
-import 'package:sounds/src/ios/sound_recorder.dart';
+import 'package:sounds/src/ios/sound_recorder_ios.dart';
 import 'package:sounds/src/platform/sounds_platform_api.dart';
 
-class SoundPlayerManager   extends  SoundsToPlatformApi
+import 'frameworks/avfoundation/audiofile.dart';
+import 'frameworks/avfoundation/cfurl.dart';
+import 'frameworks/avfoundation/audiofile.dart';
+
+class IOSToPlatformAPI   extends  SoundsToPlatformApi
 {
 
 // Slots to track method calls from the dart into ios code.
@@ -23,12 +30,12 @@ class SoundPlayerManager   extends  SoundsToPlatformApi
 /// private var _channel: FlutterMethodChannel?
 var  playerSlots = <String, SoundPlayerIOS>{};
 
-var recorderSlots = <String, SoundRecorder>{};
+var recorderSlots = <String, SoundRecorderIOS>{};
     
 
   /// 
-    static   SoundPlayerManager soundPlayerManager = 
-      SoundPlayerManager._internal(); // Singleton
+    static   IOSToPlatformAPI soundPlayerManager = 
+      IOSToPlatformAPI._internal(); // Singleton
     // class func register(with registrar: FlutterPluginRegistrar) {
     //    var channel = FlutterMethodChannel(
     //      name: "com.bsutton.sounds.sound_player",
@@ -41,9 +48,9 @@ var recorderSlots = <String, SoundRecorder>{};
     // }
 
 /// 
-factory SoundPlayerManager() => soundPlayerManager;
+factory IOSToPlatformAPI() => soundPlayerManager;
 
- SoundPlayerManager._internal();
+ IOSToPlatformAPI._internal();
 
 
  SoundPlayerIOS _getPlayer(SoundPlayerProxy playerProxy) {
@@ -64,7 +71,7 @@ factory SoundPlayerManager() => soundPlayerManager;
 
 
 
-  SoundRecorder  _getRecorder(SoundRecorderProxy recorderProxy) {
+  SoundRecorderIOS  _getRecorder(SoundRecorderProxy recorderProxy) {
 
     var recorder = recorderSlots[recorderProxy.uuid];
 
@@ -135,7 +142,7 @@ factory SoundPlayerManager() => soundPlayerManager;
       response.error = "SoundRecorder with $uuid already initialised";
     }
     else{
-        recorderSlots[uuid] =  SoundRecorder();
+        recorderSlots[uuid] =  SoundRecorderIOS();
        response.success = true;
     }
     return response;
@@ -193,7 +200,7 @@ factory SoundPlayerManager() => soundPlayerManager;
     {
     var recorder  = _getRecorder(recorderProxy);
     
-    return recorder.pauseRecording();
+    return recorder.pauseRecording(recorderProxy);
     }
     on Response catch(r)
     {
@@ -237,7 +244,7 @@ factory SoundPlayerManager() => soundPlayerManager;
     {
     var recorder  = _getRecorder(recorderProxy);
     
-    return recorder.releaseRecording();
+    return recorder.releaseRecorder(recorderProxy);
     }
     on Response catch(r)
     {
@@ -250,7 +257,6 @@ factory SoundPlayerManager() => soundPlayerManager;
       try
     {
     var player  = _getPlayer(requestAudioFocus.player);
-    
     return player.requestAudioFocus(requestAudioFocus.audioFocus);
     }
     on Response catch(r)
@@ -280,7 +286,7 @@ factory SoundPlayerManager() => soundPlayerManager;
     {
     var recorder  = _getRecorder(recorderProxy);
     
-    return recorder.resumeRecording();
+    return recorder.resumeRecording(recorderProxy);
     }
     on Response catch(r)
     {
@@ -322,7 +328,7 @@ factory SoundPlayerManager() => soundPlayerManager;
     {
     var recorder  = _getRecorder(setRecordingProgressInterval.recorder);
     
-    return recorder.setRecordingProgressInterval(Duration(milliseconds: setRecordingProgressInterval.interval));
+    return recorder.setRecordingProgressInterval(setRecordingProgressInterval);
     }
     on Response catch(r)
     {
@@ -367,7 +373,7 @@ factory SoundPlayerManager() => soundPlayerManager;
     {
     var recorder  = _getRecorder(startRecording.recorder);
     
-    return recorder.startRecording();
+    return recorder.startRecording(startRecording);
     }
     on Response catch(r)
     {
@@ -396,7 +402,7 @@ factory SoundPlayerManager() => soundPlayerManager;
     {
     var recorder  = _getRecorder(recorderProxy);
     
-    return recorder.stopRecording();
+    return recorder.stopRecording(recorderProxy);
     }
     on Response catch(r)
     {
@@ -407,20 +413,28 @@ factory SoundPlayerManager() => soundPlayerManager;
   @override
   DurationResponse getDuration(GetDuration getDuration) {
     
-    
+      var methods = AudioFileMethods();
       var response = DurationResponse();
         /// let the dart code resume whilst we calculate the duration.
+        var path = getDuration.path;
+        var afUrl = 
+          CFURL.fromFileSystemPath(path, CFURLPathStyle.cfurlposixPathStyle);
+        var fileID = AudioFileID();
 
-        var afUrl = Uri(fileURLWithPath: path ?? "");
-        AudioFileID fileID ;
-        var status = AudioFileOpenURL(afUrl as CFURL, .readPermission, AudioFileTypeID(0), &fileID);
+        var status = methods.AudioFileOpenURL(
+          afUrl.addressOf as CFURLRef, 
+          AudioFilePermissions.kAudioFileReadPermission, 
+          AudioFileTypeID(0 as Uint32), fileID);
+
+
         var outDataSize = Float64(0);
         var thePropSize = UInt32(MemoryLayout<Float64>.size);
 
         /// this call was a 'let' which creates a wrapper for fileID.
         var wfileID = fileID;
         if  (wfileID != null) {
-        status = AudioFileGetProperty(wfileID, kAudioFilePropertyEstimatedDuration, UnsafeMutablePointer<UInt32>(mutating: &thePropSize), UnsafeMutableRawPointer(mutating: &outDataSize));
+        status = AudioFileGetProperty(wfileID, kAudioFilePropertyEstimatedDuration, UnsafeMutablePointer<UInt32>(mutating: &thePropSize)
+        , UnsafeMutableRawPointer(mutating: &outDataSize));
             AudioFileClose(wfileID);
         }
         print("getDuration status $status");

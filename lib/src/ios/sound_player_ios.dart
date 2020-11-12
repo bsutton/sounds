@@ -20,13 +20,14 @@ import 'package:dart_native/src/ios/foundation/objc_basic_type.dart';
 
 import '../../sounds.dart';
 import '../platform/sounds_platform_api.dart';
+import '../sound_player.dart';
 import 'frameworks/avfoundation/avaudioplayer.dart';
 import 'frameworks/avfoundation/avaudiosession.dart';
 import 'frameworks/avfoundation/avaudiosessioncategory.dart';
 import 'frameworks/avfoundation/avaudiosessionmode.dart';
 import 'frameworks/avfoundation/avaudiosessiontypes.dart';
 import 'frameworks/avfoundation/hacks.dart';
-import 'shade_player.dart';
+import 'shade_player_ios.dart';
 import 'sounds.dart';
 
 class SoundPlayerIOS implements AVAudioPlayerDelegate {
@@ -128,10 +129,7 @@ class SoundPlayerIOS implements AVAudioPlayerDelegate {
     audioPlayer.pause();
     isPaused = true;
     stopProgressTimer();
-    if (setActiveDone !=
-            t_SET_CATEGORY_DONE
-                .by_USER 
-        &&
+    if (setActiveDone != t_SET_CATEGORY_DONE.by_USER &&
         (setActiveDone != t_SET_CATEGORY_DONE.not_SET)) {
       try {
         AVAudioSession.sharedInstance().setActive(active: false);
@@ -150,7 +148,7 @@ class SoundPlayerIOS implements AVAudioPlayerDelegate {
   Response releasePlayer() {}
 
   @override
-  Response requestAudioFocus(AudioFocus requestAudioFocus) {
+  Response requestAudioFocus(AudioFocusProxy requestAudioFocus) {
     // TODO: implement requestAudioFocus
     throw UnimplementedError();
   }
@@ -250,7 +248,7 @@ class SoundPlayerIOS implements AVAudioPlayerDelegate {
   }
 
   @override
-  Response startPlayer(Track track,
+  Response startPlayer(TrackProxy track, Duration duration,
       {Duration startAt,
       bool canPause,
       bool canSkipForward,

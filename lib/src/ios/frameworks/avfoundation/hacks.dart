@@ -8,6 +8,7 @@ class AVAudioPlayerDelegate {
   static AVAudioPlayerDelegate fromPointer(Pointer<Void> result) {}
 }
 
+
 class UIApplication {}
 
 class AVSampleRateKey {}

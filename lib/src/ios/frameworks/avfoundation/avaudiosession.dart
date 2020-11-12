@@ -169,6 +169,7 @@ class AVAudioSession extends NSObject {
     return perform(SEL('setCategory:mode:options:error:'),
         args: <dynamic>[category, mode, options, outError]) as bool;
   }
+
 /*
   @NativeAvailable(ios: '11.0', tvos: '11.0', watchos: '5.0')
   @NativeUnavailable(macos)
@@ -202,8 +203,7 @@ class AVAudioSession extends NSObject {
     perform(SEL('requestRecordPermission:'), args: <dynamic>[response]);
   }
 */
-    bool overrideOutputAudioPort(
-      AVAudioSessionPortOverride portOverride) {
+  bool overrideOutputAudioPort(AVAudioSessionPortOverride portOverride) {
     return perform(SEL('overrideOutputAudioPort:error:'),
         args: <dynamic>[portOverride]) as bool;
   }
