@@ -2,6 +2,8 @@ import 'dart:ffi';
 
 import 'package:dart_native/dart_native.dart';
 
+import 'avaudiosession.dart';
+
 ///Apple has deprecated this class. They suggest "Instead you should register for notifications".
 ///https://developer.apple.com/documentation/avfoundation/avaudiosessiondelegate?language=objc
 class AVAudioPlayerDelegate {
@@ -9,7 +11,9 @@ class AVAudioPlayerDelegate {
 }
 
 
-class UIApplication {}
+class UIApplication {
+  static AVAudioSession sharedSession;
+}
 
 class AVSampleRateKey {}
 
@@ -43,6 +47,7 @@ class AudioStreamBasicDescription {
 
 class NSData {
   static NSData fromPointer(Pointer<Void> result) {}
+  void add(Object object){}
 }
 
 class CMAudioFormatDescriptionRef {

@@ -68,17 +68,20 @@ class AVAudioPlayer extends NSObject {
   }
 
   set url(NSURL url) => perform(SEL('setUrl:'), args: <dynamic>[url]);
-
+*/
   NSData get data {
-    Pointer<Void> result = perform(SEL('data'), decodeRetVal: false);
+    Pointer<Void> result =
+        perform(SEL('data'), decodeRetVal: false) as Pointer<Void>;
     return NSData.fromPointer(result);
   }
 
   set data(NSData data) => perform(SEL('setData:'), args: <dynamic>[data]);
   @NativeAvailable(macos: '10.7', ios: '4.0', watchos: '2.0', tvos: '9.0')
   double get pan {
-    return perform(SEL('pan'));
+    return perform(SEL('pan')) as double;
   }
+
+  /*
 
   @NativeAvailable(macos: '10.7', ios: '4.0', watchos: '2.0', tvos: '9.0')
   set pan(double pan) => perform(SEL('setPan:'), args: <dynamic>[pan]);
@@ -186,7 +189,9 @@ class AVAudioPlayer extends NSObject {
         args: <dynamic>[url, outError], decodeRetVal: false) as Pointer<Void>;
   }
 
-/*
+  AVAudioPlayer.initWithData(NSData data)
+      : super.fromPointer(_initWithDataError(data, null));
+
   AVAudioPlayer.initWithDataError(NSData data, NSObjectRef<NSError> outError)
       : super.fromPointer(_initWithDataError(data, outError));
 
@@ -194,9 +199,11 @@ class AVAudioPlayer extends NSObject {
       NSData data, NSObjectRef<NSError> outError) {
     Pointer<Void> target = alloc(Class('AVAudioPlayer'));
     SEL sel = SEL('initWithData:error:');
-    return msgSend(target, sel, args: <dynamic>[data, outError], decodeRetVal: false);
+    return msgSend(target, sel,
+        args: <dynamic>[data, outError], decodeRetVal: false) as Pointer<Void>;
   }
 
+/*
   AVAudioPlayer.initWithContentsOfURLFileTypeHintError(
       NSURL url, NSObjectRef<NSError> outError, {String utiString})
       : super.fromPointer(

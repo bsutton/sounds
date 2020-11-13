@@ -6,7 +6,7 @@ import 'dart:ffi';
 import 'package:dart_native/dart_native.dart';
 import 'package:dart_native_gen/dart_native_gen.dart';
 
-import 'avaudiochannellayout.dart';
+import 'unused/avaudiochannellayout.dart';
 import 'hacks.dart';
 // You can uncomment this line when this package is ready.
 // import 'package:avfaudio/avaudiochannellayout.dart';

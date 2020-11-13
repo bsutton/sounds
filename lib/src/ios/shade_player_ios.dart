@@ -84,16 +84,15 @@ class ShadePlayerIOS extends SoundPlayerIOS
     Function forwardTarget;
     Function backwardTarget;
     Function pauseTarget;
-    AVAudioSessionCategory _setActiveDone = AVAudioSessionCategory.NotSet;
-    AVAudioSessionCategory _setCategoryDone = AVAudioSessionCategory.NotSet;
+    AVAudioSessionCategory _setActiveDone;
+    AVAudioSessionCategory _setCategoryDone;
     ///
       void init() {
        /// super.init();
       }
     
     // ignore: avoid_positional_boolean_parameters
-    void start(Track track, bool canPause, bool canSkipForward
-    , bool canSkipBackwards) {
+    void start(Track track, bool canPause, bool canSkipForward ,bool canSkipBackward) {
         if (track == null) {
           throw( 
             FlutterError(
@@ -108,7 +107,7 @@ class ShadePlayerIOS extends SoundPlayerIOS
             audioFileURL = URL(track.path ?? "");
                
             // Able to play in silent mode
-            if (_setCategoryDone == AVAudioSessionCategoryOptions.NotSet) {
+            if (_setCategoryDone == null) {
                 
                     try{
                       //https://developer.apple.com/documentation/avfoundation/avaudiosessioncategoryoptions/avaudiosessioncategoryoptionduckothers?language=objc
@@ -119,14 +118,14 @@ class ShadePlayerIOS extends SoundPlayerIOS
                     } on Exception catch (e){
                   Log.d(e.toString());
                 }
-                _setCategoryDone = t_SET_CATEGORY_DONE.for_PLAYING as String;
+                _setCategoryDone = AVAudioSessionCategory.Playback;
                 //t_SET_CATEGORY_DONE.for_PLAYING;
             }
 
             // Able to play in background
             //_setActiveDone set category done is an enum already exposed so im
             //using that one we may need to a create another enum.
-            if (_setActiveDone == AVAudioSessionCategory.NotSet) {
+            if (_setActiveDone == null) {
             
                     try{
                       // originally ._setActive(true) but this prop does not exist
@@ -135,71 +134,81 @@ class ShadePlayerIOS extends SoundPlayerIOS
                 }on Exception catch(e){
                   Log.d(e.toString());
                 }
-                _setActiveDone = t_SET_CATEGORY_DONE.for_PLAYING as String;
+               // t_SET_CATEGORY_DONE.for_PLAYING as String
+                _setActiveDone = AVAudioSessionCategory.Playback;
                 //_setActiveDone = t_SET_CATEGORY_DONE.for_PLAYING;
             }
             //isPaused does not exists so this is a placeholder for now.
             //for_playing is set in every circumstance so wil need to be changed
-            isPaused = false;
 
 
 
             // Check whether the file path points to a remote or local file
-            if (!isRemote){
+            if (track.path != null){
                 // Initialize the audio player with the file that the given path points to,
                 // and start playing.
 
                 // if (!audioPlayer) { // Fix sound distoring when playing recorded audio again.
-                do {
-                    if var audioFileURL = audioFileURL {
-                        audioPlayer = try AVAudioPlayer(contentsOf: audioFileURL)
+                try {
+                    if (audioFileURL != null) {
+                        audioPlayer = AVAudioPlayer.init(audioFileURL);
                     }
-                } catch {
+                } on Exception catch(e) 
+                {
+                  Log.d(e.toString());
                 }
-                audioPlayer?.delegate = self
+                audioPlayer.delegate = this;
                 // }
 
                 // Able to play in silent mode
-                DispatchQueue.main.async(
-                    execute: {
-                        UIApplication.sharedSession.beginReceivingRemoteControlEvents()
-                    })
+                //I would argue we should never be able play when 
+                //a phone is set to silent mode. I don't know of any
+                //apps which breach that contract.
+                // DispatchQueue.main.async(
+                //     execute: {
+                //         UIApplication.sharedSession.beginReceivingRemoteControlEvents()
+                //     });
 
-                audioPlayer?.play()
-                startProgressTimer()
-                var filePath = audioFileURL?.absoluteString
-                result(filePath)
+                audioPlayer?.play();
+                startProgressTimer();
+                //orginally audioFileURL?.absoluteString but I beleive this
+                //achieves the same thing.
+                var filePath = audioFileURL.fileURLWithPath;
             }
         } else {
             // The audio file is stored as a buffer
-            var dataBuffer = track?.dataBuffer
-            var bufferData = dataBuffer?.data
-            do {
-                if var bufferData = bufferData {
-                    audioPlayer = try AVAudioPlayer(data: bufferData)
+            var dataBuffer = track.buffer;
+            //var bufferData = dataBuffer.data;
+            NSData bufferData;
+            for(var d in dataBuffer){
+              bufferData.add(d);
+            }
+            try {
+                if(bufferData != null) {
+                    audioPlayer = AVAudioPlayer.initWithData(bufferData);
                 }
             }
-            catch{
-                
+            on Exception catch(e){
+                Log.d(e.toString());
             }
-            audioPlayer?.delegate = self
-            DispatchQueue.main.async(
-                execute: {
-                    UIApplication.sharedSession.beginReceivingRemoteControlEvents()
-                })
-            audioPlayer?.play()
-            startProgressTimer()
-            result("Playing from buffer")
+            audioPlayer.delegate = this;
+            //TODO this line allows external devices such as headsets to control
+            //playback.
+           // UIApplication.sharedSession.beginReceivingRemoteControlEvents();
+             
+            audioPlayer.play();
+            startProgressTimer();
         }
         //[ self invokeCallback:@"updatePlaybackState" arguments:playingState];
+                    isPaused = false;
 
         // Display the notification with the media controls
-        setupRemoteCommandCenter(canPause, canSkipForward: canSkipForward, canSkipBackward: canSkipBackward, result: result)
-        setupNowPlaying()
+        setupRemoteCommandCenter(canPause, canSkipForward: canSkipForward, canSkipBackward: canSkipBackward);
+        setupNowPlaying();
 
     }
 
-    func initializeShadePlayer(_ call: FlutterMethodCall?, result: FlutterResult) {
+    void initializeShadePlayer(call: FlutterMethodCall, result: FlutterResult) {
         _setCategoryDone = .not_SET
         _setActiveDone = .not_SET
         result(NSNumber(value: true))
@@ -209,13 +218,11 @@ class ShadePlayerIOS extends SoundPlayerIOS
         // The code used to release all the media player resources is the same of the one needed
         // to stop the media playback. Then, use that one.
         // [self stopRecorder:result];
-        stop()
-        var commandCenter = MPRemoteCommandCenter.sharedSession()
-        if pauseTarget != null {
-            if var pauseTarget = pauseTarget {
-                commandCenter.togglePlayPauseCommand.removeTarget(pauseTarget, action: null)
-            }
-            pauseTarget = null
+        stop();
+        var commandCenter = MPRemoteCommandCenter.sharedSession();
+        if (pauseTarget != null) {
+                commandCenter.togglePlayPauseCommand.removeTarget(pauseTarget, action: null);
+            pauseTarget = null;
         }
         if forwardTarget != null {
             if var forwardTarget = forwardTarget {
@@ -336,7 +343,7 @@ class ShadePlayerIOS extends SoundPlayerIOS
         playingInfoCenter.nowPlayingInfo = songInfo as? [String : Any]
     }
 
-    func cleanTarget(_ canPause: Bool, canSkipForward: Bool, canSkipBackward: Bool) {
+    void cleanTarget(bool canPause, {bool canSkipForward, bool canSkipBackward}) {
         // [commandCenter.playCommand setEnabled:YES];
         // [commandCenter.pauseCommand setEnabled:YES];
         //   [commandCenter.playCommand addTargetWithHandler: ^MPRemoteCommandHandlerStatus(MPRemoteCommandEvent * _Nonnull event) {
@@ -434,8 +441,8 @@ class ShadePlayerIOS extends SoundPlayerIOS
 
     // Give the system information about what to do when the notification
     // control buttons are pressed.
-    func setupRemoteCommandCenter(_ canPause: Bool, canSkipForward: Bool, canSkipBackward: Bool, result: FlutterResult) {
-        cleanTarget(canPause, canSkipForward: canSkipForward, canSkipBackward: canSkipBackward)
+    void setupRemoteCommandCenter(bool canPause, {bool canSkipForward, bool canSkipBackward}) {
+        cleanTarget(canPause, canSkipForward: canSkipForward, canSkipBackward: canSkipBackward);
     }
 }
 

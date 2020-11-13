@@ -9,6 +9,13 @@ class AudioFileTypeID extends Struct {
   AudioFileTypeID(this.id);
 }
 
+class AudioFilePropertyID {
+  final String value;
+  AudioFilePropertyID(this.value);
+  static AudioFilePropertyID kAudioFilePropertyEstimatedDuration =
+      AudioFilePropertyID('edur');
+}
+
 class AudioFileID extends Struct {}
 
 class AudioFilePermissions {
@@ -24,19 +31,19 @@ class AudioFilePermissions {
 }
 
 //Dont like that this is extending NSObject
-class AudioFileMethods extends NSObject {
-  ///Returns an OSStatus which is just an error code hence the cast to an int
-  
-  int AudioFileOpenURL(CFURLRef inFileRef, AudioFilePermissions inPermissions,
-      AudioFileTypeID inFileTypeHint, AudioFileID outAudioFileDef) {
-    return perform(SEL('AudioFileOpenURL'), args: <dynamic>[
-      inFileRef,
-      inPermissions,
-      inFileTypeHint,
-      outAudioFileDef.addressOf
-    ]) as int;
-  }
-}
+// class AudioFileMethods extends NSObject {
+//   ///Returns an OSStatus which is just an error code hence the cast to an int
+
+//   int AudioFileOpenURL(CFURLRef inFileRef, AudioFilePermissions inPermissions,
+//       AudioFileTypeID inFileTypeHint, AudioFileID outAudioFileDef) {
+//     return perform(SEL('AudioFileOpenURL'), args: <dynamic>[
+//       inFileRef,
+//       inPermissions,
+//       inFileTypeHint,
+//       outAudioFileDef.addressOf
+//     ]) as int;
+//   }
+// }
 
 // AudioFileOpenURL (	CFURLRef							inFileRef,
 // 					AudioFilePermissions				inPermissions,
