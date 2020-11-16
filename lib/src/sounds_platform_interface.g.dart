@@ -18,9 +18,10 @@ class Response {
     pigeonMap['error'] = error;
     return pigeonMap;
   }
+
   // ignore: unused_element
   static Response _fromMap(Map<dynamic, dynamic> pigeonMap) {
-    if (pigeonMap == null){
+    if (pigeonMap == null) {
       return null;
     }
     final Response result = Response();
@@ -41,9 +42,10 @@ class InitializePlayer {
     pigeonMap['playInBackground'] = playInBackground;
     return pigeonMap;
   }
+
   // ignore: unused_element
   static InitializePlayer _fromMap(Map<dynamic, dynamic> pigeonMap) {
-    if (pigeonMap == null){
+    if (pigeonMap == null) {
       return null;
     }
     final InitializePlayer result = InitializePlayer();
@@ -61,9 +63,10 @@ class SoundPlayerProxy {
     pigeonMap['uuid'] = uuid;
     return pigeonMap;
   }
+
   // ignore: unused_element
   static SoundPlayerProxy _fromMap(Map<dynamic, dynamic> pigeonMap) {
-    if (pigeonMap == null){
+    if (pigeonMap == null) {
       return null;
     }
     final SoundPlayerProxy result = SoundPlayerProxy();
@@ -88,9 +91,10 @@ class InitializePlayerWithShade {
     pigeonMap['canSkipForward'] = canSkipForward;
     return pigeonMap;
   }
+
   // ignore: unused_element
   static InitializePlayerWithShade _fromMap(Map<dynamic, dynamic> pigeonMap) {
-    if (pigeonMap == null){
+    if (pigeonMap == null) {
       return null;
     }
     final InitializePlayerWithShade result = InitializePlayerWithShade();
@@ -115,9 +119,10 @@ class StartPlayer {
     pigeonMap['startAt'] = startAt;
     return pigeonMap;
   }
+
   // ignore: unused_element
   static StartPlayer _fromMap(Map<dynamic, dynamic> pigeonMap) {
-    if (pigeonMap == null){
+    if (pigeonMap == null) {
       return null;
     }
     final StartPlayer result = StartPlayer();
@@ -143,7 +148,8 @@ class TrackProxy {
     final Map<dynamic, dynamic> pigeonMap = <dynamic, dynamic>{};
     pigeonMap['uuid'] = uuid;
     pigeonMap['path'] = path;
-    pigeonMap['mediaFormat'] = mediaFormat == null ? null : mediaFormat._toMap();
+    pigeonMap['mediaFormat'] =
+        mediaFormat == null ? null : mediaFormat._toMap();
     pigeonMap['title'] = title;
     pigeonMap['artist'] = artist;
     pigeonMap['album'] = album;
@@ -152,9 +158,10 @@ class TrackProxy {
     pigeonMap['albumArtFile'] = albumArtFile;
     return pigeonMap;
   }
+
   // ignore: unused_element
   static TrackProxy _fromMap(Map<dynamic, dynamic> pigeonMap) {
-    if (pigeonMap == null){
+    if (pigeonMap == null) {
       return null;
     }
     final TrackProxy result = TrackProxy();
@@ -197,9 +204,10 @@ class MediaFormatProxy {
     pigeonMap['pcm'] = pcm;
     return pigeonMap;
   }
+
   // ignore: unused_element
   static MediaFormatProxy _fromMap(Map<dynamic, dynamic> pigeonMap) {
-    if (pigeonMap == null){
+    if (pigeonMap == null) {
       return null;
     }
     final MediaFormatProxy result = MediaFormatProxy();
@@ -227,9 +235,10 @@ class SeekToPlayer {
     pigeonMap['milliseconds'] = milliseconds;
     return pigeonMap;
   }
+
   // ignore: unused_element
   static SeekToPlayer _fromMap(Map<dynamic, dynamic> pigeonMap) {
-    if (pigeonMap == null){
+    if (pigeonMap == null) {
       return null;
     }
     final SeekToPlayer result = SeekToPlayer();
@@ -253,9 +262,10 @@ class DurationResponse {
     pigeonMap['duration'] = duration;
     return pigeonMap;
   }
+
   // ignore: unused_element
   static DurationResponse _fromMap(Map<dynamic, dynamic> pigeonMap) {
-    if (pigeonMap == null){
+    if (pigeonMap == null) {
       return null;
     }
     final DurationResponse result = DurationResponse();
@@ -275,9 +285,10 @@ class GetDuration {
     pigeonMap['path'] = path;
     return pigeonMap;
   }
+
   // ignore: unused_element
   static GetDuration _fromMap(Map<dynamic, dynamic> pigeonMap) {
-    if (pigeonMap == null){
+    if (pigeonMap == null) {
       return null;
     }
     final GetDuration result = GetDuration();
@@ -296,9 +307,10 @@ class SetVolume {
     pigeonMap['volume'] = volume;
     return pigeonMap;
   }
+
   // ignore: unused_element
   static SetVolume _fromMap(Map<dynamic, dynamic> pigeonMap) {
-    if (pigeonMap == null){
+    if (pigeonMap == null) {
       return null;
     }
     final SetVolume result = SetVolume();
@@ -318,9 +330,10 @@ class SetPlaybackProgressInterval {
     pigeonMap['interval'] = interval;
     return pigeonMap;
   }
+
   // ignore: unused_element
   static SetPlaybackProgressInterval _fromMap(Map<dynamic, dynamic> pigeonMap) {
-    if (pigeonMap == null){
+    if (pigeonMap == null) {
       return null;
     }
     final SetPlaybackProgressInterval result = SetPlaybackProgressInterval();
@@ -340,9 +353,10 @@ class RequestAudioFocus {
     pigeonMap['audioFocus'] = audioFocus == null ? null : audioFocus._toMap();
     return pigeonMap;
   }
+
   // ignore: unused_element
   static RequestAudioFocus _fromMap(Map<dynamic, dynamic> pigeonMap) {
-    if (pigeonMap == null){
+    if (pigeonMap == null) {
       return null;
     }
     final RequestAudioFocus result = RequestAudioFocus();
@@ -366,9 +380,10 @@ class AudioFocusProxy {
     pigeonMap['hushOthersWithResume'] = hushOthersWithResume;
     return pigeonMap;
   }
+
   // ignore: unused_element
   static AudioFocusProxy _fromMap(Map<dynamic, dynamic> pigeonMap) {
-    if (pigeonMap == null){
+    if (pigeonMap == null) {
       return null;
     }
     final AudioFocusProxy result = AudioFocusProxy();
@@ -394,9 +409,10 @@ class BoolResponse {
     pigeonMap['boolResult'] = boolResult;
     return pigeonMap;
   }
+
   // ignore: unused_element
   static BoolResponse _fromMap(Map<dynamic, dynamic> pigeonMap) {
-    if (pigeonMap == null){
+    if (pigeonMap == null) {
       return null;
     }
     final BoolResponse result = BoolResponse();
@@ -416,9 +432,10 @@ class SoundRecorderProxy {
     pigeonMap['uuid'] = uuid;
     return pigeonMap;
   }
+
   // ignore: unused_element
   static SoundRecorderProxy _fromMap(Map<dynamic, dynamic> pigeonMap) {
-    if (pigeonMap == null){
+    if (pigeonMap == null) {
       return null;
     }
     final SoundRecorderProxy result = SoundRecorderProxy();
@@ -437,13 +454,15 @@ class StartRecording {
     final Map<dynamic, dynamic> pigeonMap = <dynamic, dynamic>{};
     pigeonMap['recorder'] = recorder == null ? null : recorder._toMap();
     pigeonMap['track'] = track == null ? null : track._toMap();
-    pigeonMap['audioSource'] = audioSource == null ? null : audioSource._toMap();
+    pigeonMap['audioSource'] =
+        audioSource == null ? null : audioSource._toMap();
     pigeonMap['quality'] = quality == null ? null : quality._toMap();
     return pigeonMap;
   }
+
   // ignore: unused_element
   static StartRecording _fromMap(Map<dynamic, dynamic> pigeonMap) {
-    if (pigeonMap == null){
+    if (pigeonMap == null) {
       return null;
     }
     final StartRecording result = StartRecording();
@@ -485,9 +504,10 @@ class AudioSourceProxy {
     pigeonMap['hotword'] = hotword;
     return pigeonMap;
   }
+
   // ignore: unused_element
   static AudioSourceProxy _fromMap(Map<dynamic, dynamic> pigeonMap) {
-    if (pigeonMap == null){
+    if (pigeonMap == null) {
       return null;
     }
     final AudioSourceProxy result = AudioSourceProxy();
@@ -525,9 +545,10 @@ class QualityProxy {
     pigeonMap['max'] = max;
     return pigeonMap;
   }
+
   // ignore: unused_element
   static QualityProxy _fromMap(Map<dynamic, dynamic> pigeonMap) {
-    if (pigeonMap == null){
+    if (pigeonMap == null) {
       return null;
     }
     final QualityProxy result = QualityProxy();
@@ -555,9 +576,10 @@ class MediaFormatResponse {
     pigeonMap['mediaFormats'] = mediaFormats;
     return pigeonMap;
   }
+
   // ignore: unused_element
   static MediaFormatResponse _fromMap(Map<dynamic, dynamic> pigeonMap) {
-    if (pigeonMap == null){
+    if (pigeonMap == null) {
       return null;
     }
     final MediaFormatResponse result = MediaFormatResponse();
@@ -579,9 +601,11 @@ class SetRecordingProgressInterval {
     pigeonMap['interval'] = interval;
     return pigeonMap;
   }
+
   // ignore: unused_element
-  static SetRecordingProgressInterval _fromMap(Map<dynamic, dynamic> pigeonMap) {
-    if (pigeonMap == null){
+  static SetRecordingProgressInterval _fromMap(
+      Map<dynamic, dynamic> pigeonMap) {
+    if (pigeonMap == null) {
       return null;
     }
     final SetRecordingProgressInterval result = SetRecordingProgressInterval();
@@ -605,9 +629,10 @@ class OnPlaybackProgress {
     pigeonMap['position'] = position;
     return pigeonMap;
   }
+
   // ignore: unused_element
   static OnPlaybackProgress _fromMap(Map<dynamic, dynamic> pigeonMap) {
-    if (pigeonMap == null){
+    if (pigeonMap == null) {
       return null;
     }
     final OnPlaybackProgress result = OnPlaybackProgress();
@@ -629,9 +654,10 @@ class OnPlaybackFinished {
     pigeonMap['track'] = track == null ? null : track._toMap();
     return pigeonMap;
   }
+
   // ignore: unused_element
   static OnPlaybackFinished _fromMap(Map<dynamic, dynamic> pigeonMap) {
-    if (pigeonMap == null){
+    if (pigeonMap == null) {
       return null;
     }
     final OnPlaybackFinished result = OnPlaybackFinished();
@@ -651,9 +677,10 @@ class OnShadeSkipForward {
     pigeonMap['track'] = track == null ? null : track._toMap();
     return pigeonMap;
   }
+
   // ignore: unused_element
   static OnShadeSkipForward _fromMap(Map<dynamic, dynamic> pigeonMap) {
-    if (pigeonMap == null){
+    if (pigeonMap == null) {
       return null;
     }
     final OnShadeSkipForward result = OnShadeSkipForward();
@@ -673,9 +700,10 @@ class OnShadeSkipBackward {
     pigeonMap['track'] = track == null ? null : track._toMap();
     return pigeonMap;
   }
+
   // ignore: unused_element
   static OnShadeSkipBackward _fromMap(Map<dynamic, dynamic> pigeonMap) {
-    if (pigeonMap == null){
+    if (pigeonMap == null) {
       return null;
     }
     final OnShadeSkipBackward result = OnShadeSkipBackward();
@@ -695,9 +723,10 @@ class OnShadePaused {
     pigeonMap['track'] = track == null ? null : track._toMap();
     return pigeonMap;
   }
+
   // ignore: unused_element
   static OnShadePaused _fromMap(Map<dynamic, dynamic> pigeonMap) {
-    if (pigeonMap == null){
+    if (pigeonMap == null) {
       return null;
     }
     final OnShadePaused result = OnShadePaused();
@@ -717,9 +746,10 @@ class OnShadeResumed {
     pigeonMap['track'] = track == null ? null : track._toMap();
     return pigeonMap;
   }
+
   // ignore: unused_element
   static OnShadeResumed _fromMap(Map<dynamic, dynamic> pigeonMap) {
-    if (pigeonMap == null){
+    if (pigeonMap == null) {
       return null;
     }
     final OnShadeResumed result = OnShadeResumed();
@@ -743,9 +773,10 @@ class OnRecordingProgress {
     pigeonMap['duration'] = duration;
     return pigeonMap;
   }
+
   // ignore: unused_element
   static OnRecordingProgress _fromMap(Map<dynamic, dynamic> pigeonMap) {
-    if (pigeonMap == null){
+    if (pigeonMap == null) {
       return null;
     }
     final OnRecordingProgress result = OnRecordingProgress();
@@ -767,9 +798,10 @@ class OnError {
     pigeonMap['error'] = error;
     return pigeonMap;
   }
+
   // ignore: unused_element
   static OnError _fromMap(Map<dynamic, dynamic> pigeonMap) {
-    if (pigeonMap == null){
+    if (pigeonMap == null) {
       return null;
     }
     final OnError result = OnError();
@@ -782,15 +814,16 @@ class OnError {
 class SoundsToPlatformApi {
   Future<Response> initializePlayer(InitializePlayer arg) async {
     final Map<dynamic, dynamic> requestMap = arg._toMap();
-    const BasicMessageChannel<dynamic> channel =
-        BasicMessageChannel<dynamic>('dev.flutter.pigeon.SoundsToPlatformApi.initializePlayer', StandardMessageCodec());
-    
+    const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
+        'dev.flutter.pigeon.SoundsToPlatformApi.initializePlayer',
+        StandardMessageCodec());
+
     final Map<dynamic, dynamic> replyMap = await channel.send(requestMap);
     if (replyMap == null) {
       throw PlatformException(
-        code: 'channel-error',
-        message: 'Unable to establish connection on channel.',
-        details: null);
+          code: 'channel-error',
+          message: 'Unable to establish connection on channel.',
+          details: null);
     } else if (replyMap['error'] != null) {
       final Map<dynamic, dynamic> error = replyMap['error'];
       throw PlatformException(
@@ -800,19 +833,21 @@ class SoundsToPlatformApi {
     } else {
       return Response._fromMap(replyMap['result']);
     }
-    
   }
-  Future<Response> initializePlayerWithShade(InitializePlayerWithShade arg) async {
+
+  Future<Response> initializePlayerWithShade(
+      InitializePlayerWithShade arg) async {
     final Map<dynamic, dynamic> requestMap = arg._toMap();
-    const BasicMessageChannel<dynamic> channel =
-        BasicMessageChannel<dynamic>('dev.flutter.pigeon.SoundsToPlatformApi.initializePlayerWithShade', StandardMessageCodec());
-    
+    const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
+        'dev.flutter.pigeon.SoundsToPlatformApi.initializePlayerWithShade',
+        StandardMessageCodec());
+
     final Map<dynamic, dynamic> replyMap = await channel.send(requestMap);
     if (replyMap == null) {
       throw PlatformException(
-        code: 'channel-error',
-        message: 'Unable to establish connection on channel.',
-        details: null);
+          code: 'channel-error',
+          message: 'Unable to establish connection on channel.',
+          details: null);
     } else if (replyMap['error'] != null) {
       final Map<dynamic, dynamic> error = replyMap['error'];
       throw PlatformException(
@@ -822,19 +857,20 @@ class SoundsToPlatformApi {
     } else {
       return Response._fromMap(replyMap['result']);
     }
-    
   }
+
   Future<Response> releasePlayer(SoundPlayerProxy arg) async {
     final Map<dynamic, dynamic> requestMap = arg._toMap();
-    const BasicMessageChannel<dynamic> channel =
-        BasicMessageChannel<dynamic>('dev.flutter.pigeon.SoundsToPlatformApi.releasePlayer', StandardMessageCodec());
-    
+    const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
+        'dev.flutter.pigeon.SoundsToPlatformApi.releasePlayer',
+        StandardMessageCodec());
+
     final Map<dynamic, dynamic> replyMap = await channel.send(requestMap);
     if (replyMap == null) {
       throw PlatformException(
-        code: 'channel-error',
-        message: 'Unable to establish connection on channel.',
-        details: null);
+          code: 'channel-error',
+          message: 'Unable to establish connection on channel.',
+          details: null);
     } else if (replyMap['error'] != null) {
       final Map<dynamic, dynamic> error = replyMap['error'];
       throw PlatformException(
@@ -844,19 +880,20 @@ class SoundsToPlatformApi {
     } else {
       return Response._fromMap(replyMap['result']);
     }
-    
   }
+
   Future<Response> startPlayer(StartPlayer arg) async {
     final Map<dynamic, dynamic> requestMap = arg._toMap();
-    const BasicMessageChannel<dynamic> channel =
-        BasicMessageChannel<dynamic>('dev.flutter.pigeon.SoundsToPlatformApi.startPlayer', StandardMessageCodec());
-    
+    const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
+        'dev.flutter.pigeon.SoundsToPlatformApi.startPlayer',
+        StandardMessageCodec());
+
     final Map<dynamic, dynamic> replyMap = await channel.send(requestMap);
     if (replyMap == null) {
       throw PlatformException(
-        code: 'channel-error',
-        message: 'Unable to establish connection on channel.',
-        details: null);
+          code: 'channel-error',
+          message: 'Unable to establish connection on channel.',
+          details: null);
     } else if (replyMap['error'] != null) {
       final Map<dynamic, dynamic> error = replyMap['error'];
       throw PlatformException(
@@ -866,19 +903,20 @@ class SoundsToPlatformApi {
     } else {
       return Response._fromMap(replyMap['result']);
     }
-    
   }
+
   Future<Response> stopPlayer(SoundPlayerProxy arg) async {
     final Map<dynamic, dynamic> requestMap = arg._toMap();
-    const BasicMessageChannel<dynamic> channel =
-        BasicMessageChannel<dynamic>('dev.flutter.pigeon.SoundsToPlatformApi.stopPlayer', StandardMessageCodec());
-    
+    const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
+        'dev.flutter.pigeon.SoundsToPlatformApi.stopPlayer',
+        StandardMessageCodec());
+
     final Map<dynamic, dynamic> replyMap = await channel.send(requestMap);
     if (replyMap == null) {
       throw PlatformException(
-        code: 'channel-error',
-        message: 'Unable to establish connection on channel.',
-        details: null);
+          code: 'channel-error',
+          message: 'Unable to establish connection on channel.',
+          details: null);
     } else if (replyMap['error'] != null) {
       final Map<dynamic, dynamic> error = replyMap['error'];
       throw PlatformException(
@@ -888,19 +926,20 @@ class SoundsToPlatformApi {
     } else {
       return Response._fromMap(replyMap['result']);
     }
-    
   }
+
   Future<Response> pausePlayer(SoundPlayerProxy arg) async {
     final Map<dynamic, dynamic> requestMap = arg._toMap();
-    const BasicMessageChannel<dynamic> channel =
-        BasicMessageChannel<dynamic>('dev.flutter.pigeon.SoundsToPlatformApi.pausePlayer', StandardMessageCodec());
-    
+    const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
+        'dev.flutter.pigeon.SoundsToPlatformApi.pausePlayer',
+        StandardMessageCodec());
+
     final Map<dynamic, dynamic> replyMap = await channel.send(requestMap);
     if (replyMap == null) {
       throw PlatformException(
-        code: 'channel-error',
-        message: 'Unable to establish connection on channel.',
-        details: null);
+          code: 'channel-error',
+          message: 'Unable to establish connection on channel.',
+          details: null);
     } else if (replyMap['error'] != null) {
       final Map<dynamic, dynamic> error = replyMap['error'];
       throw PlatformException(
@@ -910,19 +949,20 @@ class SoundsToPlatformApi {
     } else {
       return Response._fromMap(replyMap['result']);
     }
-    
   }
+
   Future<Response> resumePlayer(SoundPlayerProxy arg) async {
     final Map<dynamic, dynamic> requestMap = arg._toMap();
-    const BasicMessageChannel<dynamic> channel =
-        BasicMessageChannel<dynamic>('dev.flutter.pigeon.SoundsToPlatformApi.resumePlayer', StandardMessageCodec());
-    
+    const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
+        'dev.flutter.pigeon.SoundsToPlatformApi.resumePlayer',
+        StandardMessageCodec());
+
     final Map<dynamic, dynamic> replyMap = await channel.send(requestMap);
     if (replyMap == null) {
       throw PlatformException(
-        code: 'channel-error',
-        message: 'Unable to establish connection on channel.',
-        details: null);
+          code: 'channel-error',
+          message: 'Unable to establish connection on channel.',
+          details: null);
     } else if (replyMap['error'] != null) {
       final Map<dynamic, dynamic> error = replyMap['error'];
       throw PlatformException(
@@ -932,19 +972,20 @@ class SoundsToPlatformApi {
     } else {
       return Response._fromMap(replyMap['result']);
     }
-    
   }
+
   Future<Response> seekToPlayer(SeekToPlayer arg) async {
     final Map<dynamic, dynamic> requestMap = arg._toMap();
-    const BasicMessageChannel<dynamic> channel =
-        BasicMessageChannel<dynamic>('dev.flutter.pigeon.SoundsToPlatformApi.seekToPlayer', StandardMessageCodec());
-    
+    const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
+        'dev.flutter.pigeon.SoundsToPlatformApi.seekToPlayer',
+        StandardMessageCodec());
+
     final Map<dynamic, dynamic> replyMap = await channel.send(requestMap);
     if (replyMap == null) {
       throw PlatformException(
-        code: 'channel-error',
-        message: 'Unable to establish connection on channel.',
-        details: null);
+          code: 'channel-error',
+          message: 'Unable to establish connection on channel.',
+          details: null);
     } else if (replyMap['error'] != null) {
       final Map<dynamic, dynamic> error = replyMap['error'];
       throw PlatformException(
@@ -954,19 +995,20 @@ class SoundsToPlatformApi {
     } else {
       return Response._fromMap(replyMap['result']);
     }
-    
   }
+
   Future<DurationResponse> getDuration(GetDuration arg) async {
     final Map<dynamic, dynamic> requestMap = arg._toMap();
-    const BasicMessageChannel<dynamic> channel =
-        BasicMessageChannel<dynamic>('dev.flutter.pigeon.SoundsToPlatformApi.getDuration', StandardMessageCodec());
-    
+    const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
+        'dev.flutter.pigeon.SoundsToPlatformApi.getDuration',
+        StandardMessageCodec());
+
     final Map<dynamic, dynamic> replyMap = await channel.send(requestMap);
     if (replyMap == null) {
       throw PlatformException(
-        code: 'channel-error',
-        message: 'Unable to establish connection on channel.',
-        details: null);
+          code: 'channel-error',
+          message: 'Unable to establish connection on channel.',
+          details: null);
     } else if (replyMap['error'] != null) {
       final Map<dynamic, dynamic> error = replyMap['error'];
       throw PlatformException(
@@ -976,19 +1018,20 @@ class SoundsToPlatformApi {
     } else {
       return DurationResponse._fromMap(replyMap['result']);
     }
-    
   }
+
   Future<Response> setVolume(SetVolume arg) async {
     final Map<dynamic, dynamic> requestMap = arg._toMap();
-    const BasicMessageChannel<dynamic> channel =
-        BasicMessageChannel<dynamic>('dev.flutter.pigeon.SoundsToPlatformApi.setVolume', StandardMessageCodec());
-    
+    const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
+        'dev.flutter.pigeon.SoundsToPlatformApi.setVolume',
+        StandardMessageCodec());
+
     final Map<dynamic, dynamic> replyMap = await channel.send(requestMap);
     if (replyMap == null) {
       throw PlatformException(
-        code: 'channel-error',
-        message: 'Unable to establish connection on channel.',
-        details: null);
+          code: 'channel-error',
+          message: 'Unable to establish connection on channel.',
+          details: null);
     } else if (replyMap['error'] != null) {
       final Map<dynamic, dynamic> error = replyMap['error'];
       throw PlatformException(
@@ -998,19 +1041,21 @@ class SoundsToPlatformApi {
     } else {
       return Response._fromMap(replyMap['result']);
     }
-    
   }
-  Future<Response> setPlaybackProgressInterval(SetPlaybackProgressInterval arg) async {
+
+  Future<Response> setPlaybackProgressInterval(
+      SetPlaybackProgressInterval arg) async {
     final Map<dynamic, dynamic> requestMap = arg._toMap();
-    const BasicMessageChannel<dynamic> channel =
-        BasicMessageChannel<dynamic>('dev.flutter.pigeon.SoundsToPlatformApi.setPlaybackProgressInterval', StandardMessageCodec());
-    
+    const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
+        'dev.flutter.pigeon.SoundsToPlatformApi.setPlaybackProgressInterval',
+        StandardMessageCodec());
+
     final Map<dynamic, dynamic> replyMap = await channel.send(requestMap);
     if (replyMap == null) {
       throw PlatformException(
-        code: 'channel-error',
-        message: 'Unable to establish connection on channel.',
-        details: null);
+          code: 'channel-error',
+          message: 'Unable to establish connection on channel.',
+          details: null);
     } else if (replyMap['error'] != null) {
       final Map<dynamic, dynamic> error = replyMap['error'];
       throw PlatformException(
@@ -1020,19 +1065,20 @@ class SoundsToPlatformApi {
     } else {
       return Response._fromMap(replyMap['result']);
     }
-    
   }
+
   Future<Response> requestAudioFocus(RequestAudioFocus arg) async {
     final Map<dynamic, dynamic> requestMap = arg._toMap();
-    const BasicMessageChannel<dynamic> channel =
-        BasicMessageChannel<dynamic>('dev.flutter.pigeon.SoundsToPlatformApi.requestAudioFocus', StandardMessageCodec());
-    
+    const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
+        'dev.flutter.pigeon.SoundsToPlatformApi.requestAudioFocus',
+        StandardMessageCodec());
+
     final Map<dynamic, dynamic> replyMap = await channel.send(requestMap);
     if (replyMap == null) {
       throw PlatformException(
-        code: 'channel-error',
-        message: 'Unable to establish connection on channel.',
-        details: null);
+          code: 'channel-error',
+          message: 'Unable to establish connection on channel.',
+          details: null);
     } else if (replyMap['error'] != null) {
       final Map<dynamic, dynamic> error = replyMap['error'];
       throw PlatformException(
@@ -1042,19 +1088,20 @@ class SoundsToPlatformApi {
     } else {
       return Response._fromMap(replyMap['result']);
     }
-    
   }
+
   Future<Response> releaseAudioFocus(SoundPlayerProxy arg) async {
     final Map<dynamic, dynamic> requestMap = arg._toMap();
-    const BasicMessageChannel<dynamic> channel =
-        BasicMessageChannel<dynamic>('dev.flutter.pigeon.SoundsToPlatformApi.releaseAudioFocus', StandardMessageCodec());
-    
+    const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
+        'dev.flutter.pigeon.SoundsToPlatformApi.releaseAudioFocus',
+        StandardMessageCodec());
+
     final Map<dynamic, dynamic> replyMap = await channel.send(requestMap);
     if (replyMap == null) {
       throw PlatformException(
-        code: 'channel-error',
-        message: 'Unable to establish connection on channel.',
-        details: null);
+          code: 'channel-error',
+          message: 'Unable to establish connection on channel.',
+          details: null);
     } else if (replyMap['error'] != null) {
       final Map<dynamic, dynamic> error = replyMap['error'];
       throw PlatformException(
@@ -1064,18 +1111,19 @@ class SoundsToPlatformApi {
     } else {
       return Response._fromMap(replyMap['result']);
     }
-    
   }
+
   Future<BoolResponse> isShadeSupported() async {
-    const BasicMessageChannel<dynamic> channel =
-        BasicMessageChannel<dynamic>('dev.flutter.pigeon.SoundsToPlatformApi.isShadeSupported', StandardMessageCodec());
-    
+    const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
+        'dev.flutter.pigeon.SoundsToPlatformApi.isShadeSupported',
+        StandardMessageCodec());
+
     final Map<dynamic, dynamic> replyMap = await channel.send(null);
     if (replyMap == null) {
       throw PlatformException(
-        code: 'channel-error',
-        message: 'Unable to establish connection on channel.',
-        details: null);
+          code: 'channel-error',
+          message: 'Unable to establish connection on channel.',
+          details: null);
     } else if (replyMap['error'] != null) {
       final Map<dynamic, dynamic> error = replyMap['error'];
       throw PlatformException(
@@ -1085,18 +1133,19 @@ class SoundsToPlatformApi {
     } else {
       return BoolResponse._fromMap(replyMap['result']);
     }
-    
   }
+
   Future<BoolResponse> isShadePauseSupported() async {
-    const BasicMessageChannel<dynamic> channel =
-        BasicMessageChannel<dynamic>('dev.flutter.pigeon.SoundsToPlatformApi.isShadePauseSupported', StandardMessageCodec());
-    
+    const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
+        'dev.flutter.pigeon.SoundsToPlatformApi.isShadePauseSupported',
+        StandardMessageCodec());
+
     final Map<dynamic, dynamic> replyMap = await channel.send(null);
     if (replyMap == null) {
       throw PlatformException(
-        code: 'channel-error',
-        message: 'Unable to establish connection on channel.',
-        details: null);
+          code: 'channel-error',
+          message: 'Unable to establish connection on channel.',
+          details: null);
     } else if (replyMap['error'] != null) {
       final Map<dynamic, dynamic> error = replyMap['error'];
       throw PlatformException(
@@ -1106,18 +1155,19 @@ class SoundsToPlatformApi {
     } else {
       return BoolResponse._fromMap(replyMap['result']);
     }
-    
   }
+
   Future<BoolResponse> isShadeSkipForwardSupported() async {
-    const BasicMessageChannel<dynamic> channel =
-        BasicMessageChannel<dynamic>('dev.flutter.pigeon.SoundsToPlatformApi.isShadeSkipForwardSupported', StandardMessageCodec());
-    
+    const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
+        'dev.flutter.pigeon.SoundsToPlatformApi.isShadeSkipForwardSupported',
+        StandardMessageCodec());
+
     final Map<dynamic, dynamic> replyMap = await channel.send(null);
     if (replyMap == null) {
       throw PlatformException(
-        code: 'channel-error',
-        message: 'Unable to establish connection on channel.',
-        details: null);
+          code: 'channel-error',
+          message: 'Unable to establish connection on channel.',
+          details: null);
     } else if (replyMap['error'] != null) {
       final Map<dynamic, dynamic> error = replyMap['error'];
       throw PlatformException(
@@ -1127,18 +1177,19 @@ class SoundsToPlatformApi {
     } else {
       return BoolResponse._fromMap(replyMap['result']);
     }
-    
   }
+
   Future<BoolResponse> isShadeSkipBackwardsSupported() async {
-    const BasicMessageChannel<dynamic> channel =
-        BasicMessageChannel<dynamic>('dev.flutter.pigeon.SoundsToPlatformApi.isShadeSkipBackwardsSupported', StandardMessageCodec());
-    
+    const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
+        'dev.flutter.pigeon.SoundsToPlatformApi.isShadeSkipBackwardsSupported',
+        StandardMessageCodec());
+
     final Map<dynamic, dynamic> replyMap = await channel.send(null);
     if (replyMap == null) {
       throw PlatformException(
-        code: 'channel-error',
-        message: 'Unable to establish connection on channel.',
-        details: null);
+          code: 'channel-error',
+          message: 'Unable to establish connection on channel.',
+          details: null);
     } else if (replyMap['error'] != null) {
       final Map<dynamic, dynamic> error = replyMap['error'];
       throw PlatformException(
@@ -1148,18 +1199,19 @@ class SoundsToPlatformApi {
     } else {
       return BoolResponse._fromMap(replyMap['result']);
     }
-    
   }
+
   Future<BoolResponse> isBackgroundPlaybackSupported() async {
-    const BasicMessageChannel<dynamic> channel =
-        BasicMessageChannel<dynamic>('dev.flutter.pigeon.SoundsToPlatformApi.isBackgroundPlaybackSupported', StandardMessageCodec());
-    
+    const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
+        'dev.flutter.pigeon.SoundsToPlatformApi.isBackgroundPlaybackSupported',
+        StandardMessageCodec());
+
     final Map<dynamic, dynamic> replyMap = await channel.send(null);
     if (replyMap == null) {
       throw PlatformException(
-        code: 'channel-error',
-        message: 'Unable to establish connection on channel.',
-        details: null);
+          code: 'channel-error',
+          message: 'Unable to establish connection on channel.',
+          details: null);
     } else if (replyMap['error'] != null) {
       final Map<dynamic, dynamic> error = replyMap['error'];
       throw PlatformException(
@@ -1169,19 +1221,20 @@ class SoundsToPlatformApi {
     } else {
       return BoolResponse._fromMap(replyMap['result']);
     }
-    
   }
+
   Future<Response> initializeRecorder(SoundRecorderProxy arg) async {
     final Map<dynamic, dynamic> requestMap = arg._toMap();
-    const BasicMessageChannel<dynamic> channel =
-        BasicMessageChannel<dynamic>('dev.flutter.pigeon.SoundsToPlatformApi.initializeRecorder', StandardMessageCodec());
-    
+    const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
+        'dev.flutter.pigeon.SoundsToPlatformApi.initializeRecorder',
+        StandardMessageCodec());
+
     final Map<dynamic, dynamic> replyMap = await channel.send(requestMap);
     if (replyMap == null) {
       throw PlatformException(
-        code: 'channel-error',
-        message: 'Unable to establish connection on channel.',
-        details: null);
+          code: 'channel-error',
+          message: 'Unable to establish connection on channel.',
+          details: null);
     } else if (replyMap['error'] != null) {
       final Map<dynamic, dynamic> error = replyMap['error'];
       throw PlatformException(
@@ -1191,19 +1244,20 @@ class SoundsToPlatformApi {
     } else {
       return Response._fromMap(replyMap['result']);
     }
-    
   }
+
   Future<Response> releaseRecorder(SoundRecorderProxy arg) async {
     final Map<dynamic, dynamic> requestMap = arg._toMap();
-    const BasicMessageChannel<dynamic> channel =
-        BasicMessageChannel<dynamic>('dev.flutter.pigeon.SoundsToPlatformApi.releaseRecorder', StandardMessageCodec());
-    
+    const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
+        'dev.flutter.pigeon.SoundsToPlatformApi.releaseRecorder',
+        StandardMessageCodec());
+
     final Map<dynamic, dynamic> replyMap = await channel.send(requestMap);
     if (replyMap == null) {
       throw PlatformException(
-        code: 'channel-error',
-        message: 'Unable to establish connection on channel.',
-        details: null);
+          code: 'channel-error',
+          message: 'Unable to establish connection on channel.',
+          details: null);
     } else if (replyMap['error'] != null) {
       final Map<dynamic, dynamic> error = replyMap['error'];
       throw PlatformException(
@@ -1213,19 +1267,20 @@ class SoundsToPlatformApi {
     } else {
       return Response._fromMap(replyMap['result']);
     }
-    
   }
+
   Future<Response> startRecording(StartRecording arg) async {
     final Map<dynamic, dynamic> requestMap = arg._toMap();
-    const BasicMessageChannel<dynamic> channel =
-        BasicMessageChannel<dynamic>('dev.flutter.pigeon.SoundsToPlatformApi.startRecording', StandardMessageCodec());
-    
+    const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
+        'dev.flutter.pigeon.SoundsToPlatformApi.startRecording',
+        StandardMessageCodec());
+
     final Map<dynamic, dynamic> replyMap = await channel.send(requestMap);
     if (replyMap == null) {
       throw PlatformException(
-        code: 'channel-error',
-        message: 'Unable to establish connection on channel.',
-        details: null);
+          code: 'channel-error',
+          message: 'Unable to establish connection on channel.',
+          details: null);
     } else if (replyMap['error'] != null) {
       final Map<dynamic, dynamic> error = replyMap['error'];
       throw PlatformException(
@@ -1235,19 +1290,20 @@ class SoundsToPlatformApi {
     } else {
       return Response._fromMap(replyMap['result']);
     }
-    
   }
+
   Future<Response> stopRecording(SoundRecorderProxy arg) async {
     final Map<dynamic, dynamic> requestMap = arg._toMap();
-    const BasicMessageChannel<dynamic> channel =
-        BasicMessageChannel<dynamic>('dev.flutter.pigeon.SoundsToPlatformApi.stopRecording', StandardMessageCodec());
-    
+    const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
+        'dev.flutter.pigeon.SoundsToPlatformApi.stopRecording',
+        StandardMessageCodec());
+
     final Map<dynamic, dynamic> replyMap = await channel.send(requestMap);
     if (replyMap == null) {
       throw PlatformException(
-        code: 'channel-error',
-        message: 'Unable to establish connection on channel.',
-        details: null);
+          code: 'channel-error',
+          message: 'Unable to establish connection on channel.',
+          details: null);
     } else if (replyMap['error'] != null) {
       final Map<dynamic, dynamic> error = replyMap['error'];
       throw PlatformException(
@@ -1257,19 +1313,20 @@ class SoundsToPlatformApi {
     } else {
       return Response._fromMap(replyMap['result']);
     }
-    
   }
+
   Future<Response> pauseRecording(SoundRecorderProxy arg) async {
     final Map<dynamic, dynamic> requestMap = arg._toMap();
-    const BasicMessageChannel<dynamic> channel =
-        BasicMessageChannel<dynamic>('dev.flutter.pigeon.SoundsToPlatformApi.pauseRecording', StandardMessageCodec());
-    
+    const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
+        'dev.flutter.pigeon.SoundsToPlatformApi.pauseRecording',
+        StandardMessageCodec());
+
     final Map<dynamic, dynamic> replyMap = await channel.send(requestMap);
     if (replyMap == null) {
       throw PlatformException(
-        code: 'channel-error',
-        message: 'Unable to establish connection on channel.',
-        details: null);
+          code: 'channel-error',
+          message: 'Unable to establish connection on channel.',
+          details: null);
     } else if (replyMap['error'] != null) {
       final Map<dynamic, dynamic> error = replyMap['error'];
       throw PlatformException(
@@ -1279,19 +1336,20 @@ class SoundsToPlatformApi {
     } else {
       return Response._fromMap(replyMap['result']);
     }
-    
   }
+
   Future<Response> resumeRecording(SoundRecorderProxy arg) async {
     final Map<dynamic, dynamic> requestMap = arg._toMap();
-    const BasicMessageChannel<dynamic> channel =
-        BasicMessageChannel<dynamic>('dev.flutter.pigeon.SoundsToPlatformApi.resumeRecording', StandardMessageCodec());
-    
+    const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
+        'dev.flutter.pigeon.SoundsToPlatformApi.resumeRecording',
+        StandardMessageCodec());
+
     final Map<dynamic, dynamic> replyMap = await channel.send(requestMap);
     if (replyMap == null) {
       throw PlatformException(
-        code: 'channel-error',
-        message: 'Unable to establish connection on channel.',
-        details: null);
+          code: 'channel-error',
+          message: 'Unable to establish connection on channel.',
+          details: null);
     } else if (replyMap['error'] != null) {
       final Map<dynamic, dynamic> error = replyMap['error'];
       throw PlatformException(
@@ -1301,19 +1359,21 @@ class SoundsToPlatformApi {
     } else {
       return Response._fromMap(replyMap['result']);
     }
-    
   }
-  Future<MediaFormatResponse> getNativeEncoderFormats(MediaFormatProxy arg) async {
+
+  Future<MediaFormatResponse> getNativeEncoderFormats(
+      MediaFormatProxy arg) async {
     final Map<dynamic, dynamic> requestMap = arg._toMap();
-    const BasicMessageChannel<dynamic> channel =
-        BasicMessageChannel<dynamic>('dev.flutter.pigeon.SoundsToPlatformApi.getNativeEncoderFormats', StandardMessageCodec());
-    
+    const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
+        'dev.flutter.pigeon.SoundsToPlatformApi.getNativeEncoderFormats',
+        StandardMessageCodec());
+
     final Map<dynamic, dynamic> replyMap = await channel.send(requestMap);
     if (replyMap == null) {
       throw PlatformException(
-        code: 'channel-error',
-        message: 'Unable to establish connection on channel.',
-        details: null);
+          code: 'channel-error',
+          message: 'Unable to establish connection on channel.',
+          details: null);
     } else if (replyMap['error'] != null) {
       final Map<dynamic, dynamic> error = replyMap['error'];
       throw PlatformException(
@@ -1323,19 +1383,21 @@ class SoundsToPlatformApi {
     } else {
       return MediaFormatResponse._fromMap(replyMap['result']);
     }
-    
   }
-  Future<MediaFormatResponse> getNativeDecoderFormats(MediaFormatProxy arg) async {
+
+  Future<MediaFormatResponse> getNativeDecoderFormats(
+      MediaFormatProxy arg) async {
     final Map<dynamic, dynamic> requestMap = arg._toMap();
-    const BasicMessageChannel<dynamic> channel =
-        BasicMessageChannel<dynamic>('dev.flutter.pigeon.SoundsToPlatformApi.getNativeDecoderFormats', StandardMessageCodec());
-    
+    const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
+        'dev.flutter.pigeon.SoundsToPlatformApi.getNativeDecoderFormats',
+        StandardMessageCodec());
+
     final Map<dynamic, dynamic> replyMap = await channel.send(requestMap);
     if (replyMap == null) {
       throw PlatformException(
-        code: 'channel-error',
-        message: 'Unable to establish connection on channel.',
-        details: null);
+          code: 'channel-error',
+          message: 'Unable to establish connection on channel.',
+          details: null);
     } else if (replyMap['error'] != null) {
       final Map<dynamic, dynamic> error = replyMap['error'];
       throw PlatformException(
@@ -1345,19 +1407,21 @@ class SoundsToPlatformApi {
     } else {
       return MediaFormatResponse._fromMap(replyMap['result']);
     }
-    
   }
-  Future<Response> setRecordingProgressInterval(SetRecordingProgressInterval arg) async {
+
+  Future<Response> setRecordingProgressInterval(
+      SetRecordingProgressInterval arg) async {
     final Map<dynamic, dynamic> requestMap = arg._toMap();
-    const BasicMessageChannel<dynamic> channel =
-        BasicMessageChannel<dynamic>('dev.flutter.pigeon.SoundsToPlatformApi.setRecordingProgressInterval', StandardMessageCodec());
-    
+    const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
+        'dev.flutter.pigeon.SoundsToPlatformApi.setRecordingProgressInterval',
+        StandardMessageCodec());
+
     final Map<dynamic, dynamic> replyMap = await channel.send(requestMap);
     if (replyMap == null) {
       throw PlatformException(
-        code: 'channel-error',
-        message: 'Unable to establish connection on channel.',
-        details: null);
+          code: 'channel-error',
+          message: 'Unable to establish connection on channel.',
+          details: null);
     } else if (replyMap['error'] != null) {
       final Map<dynamic, dynamic> error = replyMap['error'];
       throw PlatformException(
@@ -1367,7 +1431,6 @@ class SoundsToPlatformApi {
     } else {
       return Response._fromMap(replyMap['result']);
     }
-    
   }
 }
 
@@ -1382,77 +1445,97 @@ abstract class SoundsFromPlatformApi {
   void onError(OnError arg);
   static void setup(SoundsFromPlatformApi api) {
     {
-      const BasicMessageChannel<dynamic> channel =
-          BasicMessageChannel<dynamic>('dev.flutter.pigeon.SoundsFromPlatformApi.onPlaybackProgress', StandardMessageCodec());
+      const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
+          'dev.flutter.pigeon.SoundsFromPlatformApi.onPlaybackProgress',
+          StandardMessageCodec());
       channel.setMessageHandler((dynamic message) async {
-        final Map<dynamic, dynamic> mapMessage = message as Map<dynamic, dynamic>;
-        final OnPlaybackProgress input = OnPlaybackProgress._fromMap(mapMessage);
+        final Map<dynamic, dynamic> mapMessage =
+            message as Map<dynamic, dynamic>;
+        final OnPlaybackProgress input =
+            OnPlaybackProgress._fromMap(mapMessage);
         api.onPlaybackProgress(input);
       });
     }
     {
-      const BasicMessageChannel<dynamic> channel =
-          BasicMessageChannel<dynamic>('dev.flutter.pigeon.SoundsFromPlatformApi.onPlaybackFinished', StandardMessageCodec());
+      const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
+          'dev.flutter.pigeon.SoundsFromPlatformApi.onPlaybackFinished',
+          StandardMessageCodec());
       channel.setMessageHandler((dynamic message) async {
-        final Map<dynamic, dynamic> mapMessage = message as Map<dynamic, dynamic>;
-        final OnPlaybackFinished input = OnPlaybackFinished._fromMap(mapMessage);
+        final Map<dynamic, dynamic> mapMessage =
+            message as Map<dynamic, dynamic>;
+        final OnPlaybackFinished input =
+            OnPlaybackFinished._fromMap(mapMessage);
         api.onPlaybackFinished(input);
       });
     }
     {
-      const BasicMessageChannel<dynamic> channel =
-          BasicMessageChannel<dynamic>('dev.flutter.pigeon.SoundsFromPlatformApi.onShadeSkipForward', StandardMessageCodec());
+      const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
+          'dev.flutter.pigeon.SoundsFromPlatformApi.onShadeSkipForward',
+          StandardMessageCodec());
       channel.setMessageHandler((dynamic message) async {
-        final Map<dynamic, dynamic> mapMessage = message as Map<dynamic, dynamic>;
-        final OnShadeSkipForward input = OnShadeSkipForward._fromMap(mapMessage);
+        final Map<dynamic, dynamic> mapMessage =
+            message as Map<dynamic, dynamic>;
+        final OnShadeSkipForward input =
+            OnShadeSkipForward._fromMap(mapMessage);
         api.onShadeSkipForward(input);
       });
     }
     {
-      const BasicMessageChannel<dynamic> channel =
-          BasicMessageChannel<dynamic>('dev.flutter.pigeon.SoundsFromPlatformApi.onShadeSkipBackward', StandardMessageCodec());
+      const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
+          'dev.flutter.pigeon.SoundsFromPlatformApi.onShadeSkipBackward',
+          StandardMessageCodec());
       channel.setMessageHandler((dynamic message) async {
-        final Map<dynamic, dynamic> mapMessage = message as Map<dynamic, dynamic>;
-        final OnShadeSkipBackward input = OnShadeSkipBackward._fromMap(mapMessage);
+        final Map<dynamic, dynamic> mapMessage =
+            message as Map<dynamic, dynamic>;
+        final OnShadeSkipBackward input =
+            OnShadeSkipBackward._fromMap(mapMessage);
         api.onShadeSkipBackward(input);
       });
     }
     {
-      const BasicMessageChannel<dynamic> channel =
-          BasicMessageChannel<dynamic>('dev.flutter.pigeon.SoundsFromPlatformApi.onShadePaused', StandardMessageCodec());
+      const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
+          'dev.flutter.pigeon.SoundsFromPlatformApi.onShadePaused',
+          StandardMessageCodec());
       channel.setMessageHandler((dynamic message) async {
-        final Map<dynamic, dynamic> mapMessage = message as Map<dynamic, dynamic>;
+        final Map<dynamic, dynamic> mapMessage =
+            message as Map<dynamic, dynamic>;
         final OnShadePaused input = OnShadePaused._fromMap(mapMessage);
         api.onShadePaused(input);
       });
     }
     {
-      const BasicMessageChannel<dynamic> channel =
-          BasicMessageChannel<dynamic>('dev.flutter.pigeon.SoundsFromPlatformApi.onShadeResumed', StandardMessageCodec());
+      const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
+          'dev.flutter.pigeon.SoundsFromPlatformApi.onShadeResumed',
+          StandardMessageCodec());
       channel.setMessageHandler((dynamic message) async {
-        final Map<dynamic, dynamic> mapMessage = message as Map<dynamic, dynamic>;
+        final Map<dynamic, dynamic> mapMessage =
+            message as Map<dynamic, dynamic>;
         final OnShadeResumed input = OnShadeResumed._fromMap(mapMessage);
         api.onShadeResumed(input);
       });
     }
     {
-      const BasicMessageChannel<dynamic> channel =
-          BasicMessageChannel<dynamic>('dev.flutter.pigeon.SoundsFromPlatformApi.onRecordingProgress', StandardMessageCodec());
+      const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
+          'dev.flutter.pigeon.SoundsFromPlatformApi.onRecordingProgress',
+          StandardMessageCodec());
       channel.setMessageHandler((dynamic message) async {
-        final Map<dynamic, dynamic> mapMessage = message as Map<dynamic, dynamic>;
-        final OnRecordingProgress input = OnRecordingProgress._fromMap(mapMessage);
+        final Map<dynamic, dynamic> mapMessage =
+            message as Map<dynamic, dynamic>;
+        final OnRecordingProgress input =
+            OnRecordingProgress._fromMap(mapMessage);
         api.onRecordingProgress(input);
       });
     }
     {
-      const BasicMessageChannel<dynamic> channel =
-          BasicMessageChannel<dynamic>('dev.flutter.pigeon.SoundsFromPlatformApi.onError', StandardMessageCodec());
+      const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
+          'dev.flutter.pigeon.SoundsFromPlatformApi.onError',
+          StandardMessageCodec());
       channel.setMessageHandler((dynamic message) async {
-        final Map<dynamic, dynamic> mapMessage = message as Map<dynamic, dynamic>;
+        final Map<dynamic, dynamic> mapMessage =
+            message as Map<dynamic, dynamic>;
         final OnError input = OnError._fromMap(mapMessage);
         api.onError(input);
       });
     }
   }
 }
-
