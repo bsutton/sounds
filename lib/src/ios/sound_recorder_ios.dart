@@ -42,6 +42,7 @@ import 'package:dart_native/src/ios/foundation/nserror.dart';
 import 'package:dart_numerics/dart_numerics.dart';
 import 'package:sounds/src/ios/frameworks/avfoundation/avaudiosessioncategory.dart';
 import 'package:sounds/src/ios/frameworks/avfoundation/avaudiosessiontypes.dart';
+import 'package:sounds/src/ios/frameworks/avfoundation/nsurl.dart';
 import 'package:sounds/src/ios/sounds.dart';
 import 'package:sounds/src/platform/sounds_platform_api.dart';
 import 'package:sounds_common/sounds_common.dart';
@@ -142,7 +143,7 @@ class SoundRecorderIOS implements AVAudioRecorderDelegate {
       //It looks like hes just trying to give the current audioRecorder a URL.
       //I dont get why he thought all that was neccesary.
       if (audioFileURL != null) {
-        audioRecorder.url = audioFileURL;
+        audioRecorder.url = audioFileURL as NSURL;
       }
       // ignore: avoid_catches_without_on_clauses
     } catch (e) {}

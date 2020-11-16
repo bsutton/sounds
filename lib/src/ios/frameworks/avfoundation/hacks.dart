@@ -1,7 +1,9 @@
 import 'dart:ffi';
 
 import 'package:dart_native/dart_native.dart';
+import 'package:sounds/src/ios/shade_player_ios.dart';
 
+import 'avaudioformat.dart';
 import 'avaudiosession.dart';
 
 ///Apple has deprecated this class. They suggest "Instead you should register for notifications".
@@ -10,6 +12,11 @@ class AVAudioPlayerDelegate {
   static AVAudioPlayerDelegate fromPointer(Pointer<Void> result) {}
 }
 
+class NSMutableCopying {}
+
+class AudioBufferList {
+  AudioBufferList.fromPointer(Object o);
+}
 
 class UIApplication {
   static AVAudioSession sharedSession;
@@ -33,7 +40,72 @@ class AVAudioCommonFormat {
   static AVAudioCommonFormat fromPointer(Pointer<Void> result) {}
 }
 
-class AVAudioFrameCount {}
+
+class AudioChannelLabel {
+  AudioChannelLabel.fromPointer(Pointer p);
+}
+
+
+class AudioTimeStamp {
+  AudioTimeStamp.fromPointer(Pointer p);
+}
+
+class NSLocale {
+  NSLocale.fromPointer(Pointer p);
+}
+
+class AVMediaCharacteristic {
+  AVMediaCharacteristic.fromPointer(Pointer p);
+} 
+
+class AVMetadataItem {
+  AVMetadataItem.fromPointer(Pointer p);
+} 
+
+class AVMediaType {
+  AVMediaType.fromPointer(Pointer p);
+} 
+class AudioChannelLayoutTag {
+  AudioChannelLayoutTag.fromPointer(Pointer p);
+}
+
+class AudioStreamPacketDescription {
+  AudioStreamPacketDescription.fromPointer(Pointer p);
+}
+
+class AVAudioMixerNode {
+  AVAudioMixerNode.fromPointer(Pointer p);
+}
+
+class AudioChannelLayout {
+  AudioChannelLayout.fromPointer(Pointer p);
+}
+
+class AVAudioOutputNode {
+  AVAudioOutputNode.fromPointer(Pointer p);
+}
+
+class AVAudioInputNode {
+  AVAudioInputNode.fromPointer(Pointer p);
+}
+
+class AVAudioConnectionPoint {
+  AVAudioConnectionPoint.fromPointer(Pointer p);
+}
+
+class AUMIDIOutputEventBlock {}
+
+class MusicSequence {
+  MusicSequence.fromPointer(Pointer p);
+}
+
+class AVAudioFrameCount {
+  AVAudioFrameCount.fromPointer(Pointer p);
+}
+
+class AVAudioPacketCount {
+  AVAudioPacketCount.fromPointer(Pointer p);
+}
 
 class NSSecureCoding {}
 
@@ -47,7 +119,8 @@ class AudioStreamBasicDescription {
 
 class NSData {
   static NSData fromPointer(Pointer<Void> result) {}
-  void add(Object object){}
+  static NSData fromURL(URL result) {}
+  void add(Object object) {}
 }
 
 class CMAudioFormatDescriptionRef {

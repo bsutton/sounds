@@ -5,6 +5,9 @@ import 'dart:ffi';
 
 import 'package:dart_native/dart_native.dart';
 import 'package:dart_native_gen/dart_native_gen.dart';
+import 'package:sounds/src/ios/frameworks/avfoundation/avaudioformat.dart';
+
+import 'hacks.dart';
 // You can uncomment this line when this package is ready.
 // import 'package:avfaudio/avaudiotypes.dart';
 
@@ -15,30 +18,33 @@ class AVAudioBuffer extends NSObject with NSCopying, NSMutableCopying {
   AVAudioBuffer.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
 
   AVAudioFormat get format {
-    Pointer<Void> result = perform(SEL('format'), decodeRetVal: false);
+    Pointer<Void> result =
+        perform(SEL('format'), decodeRetVal: false) as Pointer<Void>;
     return AVAudioFormat.fromPointer(result);
   }
 
   set format(AVAudioFormat format) =>
-      perform(SEL('setFormat:'), args: [format]);
+      perform(SEL('setFormat:'), args: <dynamic>[format]);
 
   AudioBufferList get audioBufferList {
-    Pointer<Void> result = perform(SEL('audioBufferList'), decodeRetVal: false);
+    Pointer<Void> result =
+        perform(SEL('audioBufferList'), decodeRetVal: false) as Pointer<Void>;
     return AudioBufferList.fromPointer(result);
   }
 
   set audioBufferList(AudioBufferList audioBufferList) =>
-      perform(SEL('setAudioBufferList:'), args: [audioBufferList]);
+      perform(SEL('setAudioBufferList:'), args: <dynamic>[audioBufferList]);
 
   AudioBufferList get mutableAudioBufferList {
     Pointer<Void> result =
-        perform(SEL('mutableAudioBufferList'), decodeRetVal: false);
+        perform(SEL('mutableAudioBufferList'), decodeRetVal: false)
+            as Pointer<Void>;
     return AudioBufferList.fromPointer(result);
   }
 
   set mutableAudioBufferList(AudioBufferList mutableAudioBufferList) =>
       perform(SEL('setMutableAudioBufferList:'),
-          args: [mutableAudioBufferList]);
+          args: <dynamic>[mutableAudioBufferList]);
 }
 
 @NativeAvailable(macos: '10.10', ios: '8.0', watchos: '2.0', tvos: '9.0')
@@ -48,48 +54,53 @@ class AVAudioPCMBuffer extends AVAudioBuffer {
   AVAudioPCMBuffer.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
 
   AVAudioFrameCount get frameCapacity {
-    Pointer<Void> result = perform(SEL('frameCapacity'), decodeRetVal: false);
+    Pointer<Void> result =
+        perform(SEL('frameCapacity'), decodeRetVal: false) as Pointer<Void>;
     return AVAudioFrameCount.fromPointer(result);
   }
 
   set frameCapacity(AVAudioFrameCount frameCapacity) =>
-      perform(SEL('setFrameCapacity:'), args: [frameCapacity]);
+      perform(SEL('setFrameCapacity:'), args: <dynamic>[frameCapacity]);
 
   AVAudioFrameCount get frameLength {
-    Pointer<Void> result = perform(SEL('frameLength'), decodeRetVal: false);
+    Pointer<Void> result =
+        perform(SEL('frameLength'), decodeRetVal: false) as Pointer<Void>;
     return AVAudioFrameCount.fromPointer(result);
   }
 
   set frameLength(AVAudioFrameCount frameLength) =>
-      perform(SEL('setFrameLength:'), args: [frameLength]);
+      perform(SEL('setFrameLength:'), args: <dynamic>[frameLength]);
 
   NSUInteger get stride {
-    return perform(SEL('stride'));
+    return perform(SEL('stride')) as NSUInteger;
   }
 
-  set stride(NSUInteger stride) => perform(SEL('setStride:'), args: [stride]);
+  set stride(NSUInteger stride) =>
+      perform(SEL('setStride:'), args: <dynamic>[stride]);
 
   double get floatChannelData {
-    return perform(SEL('floatChannelData'));
+    return perform(SEL('floatChannelData')) as double;
   }
 
   set floatChannelData(double floatChannelData) =>
-      perform(SEL('setFloatChannelData:'), args: [floatChannelData]);
+      perform(SEL('setFloatChannelData:'), args: <dynamic>[floatChannelData]);
 
   int get int16ChannelData {
-    return perform(SEL('int16ChannelData'));
+    return perform(SEL('int16ChannelData')) as int;
   }
 
   set int16ChannelData(int int16ChannelData) =>
-      perform(SEL('setInt16ChannelData:'), args: [int16ChannelData]);
+      perform(SEL('setInt16ChannelData:'), args: <dynamic>[int16ChannelData]);
 
   int get int32ChannelData {
-    return perform(SEL('int32ChannelData'));
+    return perform(SEL('int32ChannelData')) as int;
   }
 
   set int32ChannelData(int int32ChannelData) =>
-      perform(SEL('setInt32ChannelData:'), args: [int32ChannelData]);
-  AVAudioPCMBuffer(AVAudioFormat format, AVAudioFrameCount frameCapacity)
+      perform(SEL('setInt32ChannelData:'), args: <dynamic>[int32ChannelData]);
+
+  AVAudioPCMBuffer.fromAVAudio(
+      AVAudioFormat format, AVAudioFrameCount frameCapacity)
       : super.fromPointer(
             _initWithPCMFormatFrameCapacity(format, frameCapacity));
 
@@ -98,7 +109,8 @@ class AVAudioPCMBuffer extends AVAudioBuffer {
     Pointer<Void> target = alloc(Class('AVAudioPCMBuffer'));
     SEL sel = SEL('initWithPCMFormat:frameCapacity:');
     return msgSend(target, sel,
-        args: [format, frameCapacity], decodeRetVal: false);
+        args: <dynamic>[format, frameCapacity],
+        decodeRetVal: false) as Pointer<Void>;
   }
 }
 
@@ -111,58 +123,58 @@ class AVAudioCompressedBuffer extends AVAudioBuffer {
       : super.fromPointer(ptr);
 
   AVAudioPacketCount get packetCapacity {
-    Pointer<Void> result = perform(SEL('packetCapacity'), decodeRetVal: false);
+    Pointer<Void> result =
+        perform(SEL('packetCapacity'), decodeRetVal: false) as Pointer<Void>;
     return AVAudioPacketCount.fromPointer(result);
   }
 
   set packetCapacity(AVAudioPacketCount packetCapacity) =>
-      perform(SEL('setPacketCapacity:'), args: [packetCapacity]);
+      perform(SEL('setPacketCapacity:'), args: <dynamic>[packetCapacity]);
 
   AVAudioPacketCount get packetCount {
-    Pointer<Void> result = perform(SEL('packetCount'), decodeRetVal: false);
+    Pointer<Void> result =
+        perform(SEL('packetCount'), decodeRetVal: false) as Pointer<Void>;
     return AVAudioPacketCount.fromPointer(result);
   }
 
   set packetCount(AVAudioPacketCount packetCount) =>
-      perform(SEL('setPacketCount:'), args: [packetCount]);
+      perform(SEL('setPacketCount:'), args: <dynamic>[packetCount]);
 
   NSInteger get maximumPacketSize {
-    return perform(SEL('maximumPacketSize'));
+    return perform(SEL('maximumPacketSize')) as NSInteger;
   }
 
   set maximumPacketSize(NSInteger maximumPacketSize) =>
-      perform(SEL('setMaximumPacketSize:'), args: [maximumPacketSize]);
+      perform(SEL('setMaximumPacketSize:'), args: <dynamic>[maximumPacketSize]);
 
   Pointer<Void> get data {
-    return perform(SEL('data'));
+    return perform(SEL('data')) as Pointer<Void>;
   }
 
-  set data(Pointer<Void> data) => perform(SEL('setData:'), args: [data]);
-  @NativeAvailable(macosx: '10.13', ios: '11.0', watchos: '4.0', tvos: '11.0')
+  set data(Pointer<Void> data) =>
+      perform(SEL('setData:'), args: <dynamic>[data]);
   int get byteCapacity {
-    return perform(SEL('byteCapacity'));
+    return perform(SEL('byteCapacity')) as int;
   }
 
-  @NativeAvailable(macosx: '10.13', ios: '11.0', watchos: '4.0', tvos: '11.0')
   set byteCapacity(int byteCapacity) =>
-      perform(SEL('setByteCapacity:'), args: [byteCapacity]);
-  @NativeAvailable(macosx: '10.13', ios: '11.0', watchos: '4.0', tvos: '11.0')
+      perform(SEL('setByteCapacity:'), args: <dynamic>[byteCapacity]);
   int get byteLength {
-    return perform(SEL('byteLength'));
+    return perform(SEL('byteLength')) as int;
   }
 
-  @NativeAvailable(macosx: '10.13', ios: '11.0', watchos: '4.0', tvos: '11.0')
   set byteLength(int byteLength) =>
-      perform(SEL('setByteLength:'), args: [byteLength]);
+      perform(SEL('setByteLength:'), args: <dynamic>[byteLength]);
 
   AudioStreamPacketDescription get packetDescriptions {
     Pointer<Void> result =
-        perform(SEL('packetDescriptions'), decodeRetVal: false);
+        perform(SEL('packetDescriptions'), decodeRetVal: false) as Pointer<Void>;
     return AudioStreamPacketDescription.fromPointer(result);
   }
 
   set packetDescriptions(AudioStreamPacketDescription packetDescriptions) =>
-      perform(SEL('setPacketDescriptions:'), args: [packetDescriptions]);
+      perform(SEL('setPacketDescriptions:'),
+          args: <dynamic>[packetDescriptions]);
   AVAudioCompressedBuffer.initWithFormatPacketCapacityMaximumPacketSize(
       AVAudioFormat format,
       AVAudioPacketCount packetCapacity,
@@ -177,7 +189,8 @@ class AVAudioCompressedBuffer extends AVAudioBuffer {
     Pointer<Void> target = alloc(Class('AVAudioCompressedBuffer'));
     SEL sel = SEL('initWithFormat:packetCapacity:maximumPacketSize:');
     return msgSend(target, sel,
-        args: [format, packetCapacity, maximumPacketSize], decodeRetVal: false);
+        args: <dynamic>[format, packetCapacity, maximumPacketSize],
+        decodeRetVal: false) as Pointer<Void>;
   }
 
   AVAudioCompressedBuffer.initWithFormatPacketCapacity(
@@ -190,6 +203,6 @@ class AVAudioCompressedBuffer extends AVAudioBuffer {
     Pointer<Void> target = alloc(Class('AVAudioCompressedBuffer'));
     SEL sel = SEL('initWithFormat:packetCapacity:');
     return msgSend(target, sel,
-        args: [format, packetCapacity], decodeRetVal: false);
+        args: <dynamic>[format, packetCapacity], decodeRetVal: false) as Pointer<Void>;
   }
 }

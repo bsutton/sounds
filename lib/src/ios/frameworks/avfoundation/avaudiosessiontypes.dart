@@ -1,7 +1,11 @@
 // ignore_for_file: public_member_api_docs
 //ignore_for_file: constant_identifier_names
-typedef AVAudioSessionPort = Function();
+import 'dart:ffi';
 
+typedef AVAudioSessionPort = Function();
+dynamic Function() AVAudioSessionPortFromPointer(Pointer<Void> p) {
+  return AVAudioSessionPort as dynamic Function();
+}
 class AVAudioSessionCategoryOptions {
   int rawValue;
   AVAudioSessionCategoryOptions({this.rawValue});

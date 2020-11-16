@@ -5,6 +5,8 @@ import 'dart:ffi';
 
 import 'package:dart_native/dart_native.dart';
 import 'package:dart_native_gen/dart_native_gen.dart';
+
+import 'hacks.dart';
 // You can uncomment this line when this package is ready.
 // import 'package:avfoundation/avbase.dart';
 // You can uncomment this line when this package is ready.
@@ -20,32 +22,32 @@ class AVMediaSelectionGroup extends NSObject with NSCopying {
   AVMediaSelectionGroup.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
 
   AVMediaSelectionOption get options {
-    Pointer<Void> result = perform(SEL('options'), decodeRetVal: false);
+    Pointer<Void> result = perform(SEL('options'), decodeRetVal: false) as Pointer<Void>;
     return AVMediaSelectionOption.fromPointer(result);
   }
 
   set options(AVMediaSelectionOption options) =>
-      perform(SEL('setOptions:'), args: [options]);
+      perform(SEL('setOptions:'), args: <dynamic>[options]);
   @NativeAvailable(macos: '10.10', ios: '8.0', tvos: '9.0', watchos: '1.0')
   AVMediaSelectionOption get defaultOption {
-    Pointer<Void> result = perform(SEL('defaultOption'), decodeRetVal: false);
+    Pointer<Void> result = perform(SEL('defaultOption'), decodeRetVal: false) as Pointer<Void>;
     return AVMediaSelectionOption.fromPointer(result);
   }
 
   @NativeAvailable(macos: '10.10', ios: '8.0', tvos: '9.0', watchos: '1.0')
   set defaultOption(AVMediaSelectionOption defaultOption) =>
-      perform(SEL('setDefaultOption:'), args: [defaultOption]);
+      perform(SEL('setDefaultOption:'), args: <dynamic>[defaultOption]);
 
   bool get allowsEmptySelection {
-    return perform(SEL('allowsEmptySelection'));
+    return perform(SEL('allowsEmptySelection')) as bool;
   }
 
   set allowsEmptySelection(bool allowsEmptySelection) =>
-      perform(SEL('setAllowsEmptySelection:'), args: [allowsEmptySelection]);
+      perform(SEL('setAllowsEmptySelection:'), args: <dynamic>[allowsEmptySelection]);
 
   AVMediaSelectionOption mediaSelectionOptionWithPropertyList(NSObject plist) {
     Pointer<Void> result = perform(SEL('mediaSelectionOptionWithPropertyList:'),
-        args: [plist], decodeRetVal: false);
+        args: <dynamic>[plist], decodeRetVal: false) as Pointer<Void>;
     return AVMediaSelectionOption.fromPointer(result);
   }
 }
@@ -56,8 +58,8 @@ extension AVMediaSelectionGroupAVMediaSelectionOptionFiltering
       AVMediaSelectionOption mediaSelectionOptions) {
     Pointer<Void> result = Class('AVMediaSelectionOptionFiltering').perform(
         SEL('playableMediaSelectionOptionsFromArray:'),
-        args: [mediaSelectionOptions],
-        decodeRetVal: false);
+        args: <dynamic>[mediaSelectionOptions],
+        decodeRetVal: false) as Pointer<Void>;
     return AVMediaSelectionOption.fromPointer(result);
   }
 
@@ -68,8 +70,8 @@ extension AVMediaSelectionGroupAVMediaSelectionOptionFiltering
           String preferredLanguages) {
     Pointer<Void> result = Class('AVMediaSelectionOptionFiltering').perform(
         SEL('mediaSelectionOptionsFromArray:filteredAndSortedAccordingToPreferredLanguages:'),
-        args: [mediaSelectionOptions, preferredLanguages],
-        decodeRetVal: false);
+        args: <dynamic>[mediaSelectionOptions, preferredLanguages],
+        decodeRetVal: false) as Pointer<Void>;
     return AVMediaSelectionOption.fromPointer(result);
   }
 
@@ -77,8 +79,8 @@ extension AVMediaSelectionGroupAVMediaSelectionOptionFiltering
       AVMediaSelectionOption mediaSelectionOptions, NSLocale locale) {
     Pointer<Void> result = Class('AVMediaSelectionOptionFiltering').perform(
         SEL('mediaSelectionOptionsFromArray:withLocale:'),
-        args: [mediaSelectionOptions, locale],
-        decodeRetVal: false);
+        args: <dynamic>[mediaSelectionOptions, locale],
+        decodeRetVal: false) as Pointer<Void>;
     return AVMediaSelectionOption.fromPointer(result);
   }
 
@@ -88,8 +90,8 @@ extension AVMediaSelectionGroupAVMediaSelectionOptionFiltering
           AVMediaCharacteristic mediaCharacteristics) {
     Pointer<Void> result = Class('AVMediaSelectionOptionFiltering').perform(
         SEL('mediaSelectionOptionsFromArray:withMediaCharacteristics:'),
-        args: [mediaSelectionOptions, mediaCharacteristics],
-        decodeRetVal: false);
+        args: <dynamic>[mediaSelectionOptions, mediaCharacteristics],
+        decodeRetVal: false) as Pointer<Void>;
     return AVMediaSelectionOption.fromPointer(result);
   }
 
@@ -99,8 +101,8 @@ extension AVMediaSelectionGroupAVMediaSelectionOptionFiltering
           AVMediaCharacteristic mediaCharacteristics) {
     Pointer<Void> result = Class('AVMediaSelectionOptionFiltering').perform(
         SEL('mediaSelectionOptionsFromArray:withoutMediaCharacteristics:'),
-        args: [mediaSelectionOptions, mediaCharacteristics],
-        decodeRetVal: false);
+        args: <dynamic>[mediaSelectionOptions, mediaCharacteristics],
+        decodeRetVal: false) as Pointer<Void>;
     return AVMediaSelectionOption.fromPointer(result);
   }
 }
@@ -114,82 +116,82 @@ class AVMediaSelectionOption extends NSObject with NSCopying {
       : super.fromPointer(ptr);
 
   AVMediaType get mediaType {
-    Pointer<Void> result = perform(SEL('mediaType'), decodeRetVal: false);
+    Pointer<Void> result = perform(SEL('mediaType'), decodeRetVal: false) as Pointer<Void>;
     return AVMediaType.fromPointer(result);
   }
 
   set mediaType(AVMediaType mediaType) =>
-      perform(SEL('setMediaType:'), args: [mediaType]);
+      perform(SEL('setMediaType:'), args: <dynamic>[mediaType]);
 
   NSNumber get mediaSubTypes {
-    Pointer<Void> result = perform(SEL('mediaSubTypes'), decodeRetVal: false);
+    Pointer<Void> result = perform(SEL('mediaSubTypes'), decodeRetVal: false) as Pointer<Void>;
     return NSNumber.fromPointer(result);
   }
 
   set mediaSubTypes(NSNumber mediaSubTypes) =>
-      perform(SEL('setMediaSubTypes:'), args: [mediaSubTypes]);
+      perform(SEL('setMediaSubTypes:'), args: <dynamic>[mediaSubTypes]);
 
   bool get playable {
-    return perform(SEL('playable'));
+    return perform(SEL('playable')) as bool;
   }
 
-  set playable(bool playable) => perform(SEL('setPlayable:'), args: [playable]);
+  set playable(bool playable) => perform(SEL('setPlayable:'), args: <dynamic>[playable]);
   @NativeAvailable(macos: '10.9', ios: '7.0', tvos: '9.0', watchos: '1.0')
   String get extendedLanguageTag {
     Pointer<Void> result =
-        perform(SEL('extendedLanguageTag'), decodeRetVal: false);
+        perform(SEL('extendedLanguageTag'), decodeRetVal: false) as Pointer<Void>;
     return NSString.fromPointer(result).raw;
   }
 
   @NativeAvailable(macos: '10.9', ios: '7.0', tvos: '9.0', watchos: '1.0')
   set extendedLanguageTag(String extendedLanguageTag) =>
-      perform(SEL('setExtendedLanguageTag:'), args: [extendedLanguageTag]);
+      perform(SEL('setExtendedLanguageTag:'), args: <dynamic>[extendedLanguageTag]);
 
   NSLocale get locale {
-    Pointer<Void> result = perform(SEL('locale'), decodeRetVal: false);
+    Pointer<Void> result = perform(SEL('locale'), decodeRetVal: false) as Pointer<Void>;
     return NSLocale.fromPointer(result);
   }
 
-  set locale(NSLocale locale) => perform(SEL('setLocale:'), args: [locale]);
+  set locale(NSLocale locale) => perform(SEL('setLocale:'), args: <dynamic>[locale]);
 
   AVMetadataItem get commonMetadata {
-    Pointer<Void> result = perform(SEL('commonMetadata'), decodeRetVal: false);
+    Pointer<Void> result = perform(SEL('commonMetadata'), decodeRetVal: false) as Pointer<Void>;
     return AVMetadataItem.fromPointer(result);
   }
 
   set commonMetadata(AVMetadataItem commonMetadata) =>
-      perform(SEL('setCommonMetadata:'), args: [commonMetadata]);
+      perform(SEL('setCommonMetadata:'), args: <dynamic>[commonMetadata]);
 
   NSString get availableMetadataFormats {
     Pointer<Void> result =
-        perform(SEL('availableMetadataFormats'), decodeRetVal: false);
+        perform(SEL('availableMetadataFormats'), decodeRetVal: false) as Pointer<Void>;
     return NSString.fromPointer(result);
   }
 
   set availableMetadataFormats(NSString availableMetadataFormats) =>
       perform(SEL('setAvailableMetadataFormats:'),
-          args: [availableMetadataFormats]);
+          args: <dynamic>[availableMetadataFormats]);
   @NativeAvailable(macos: '10.9', ios: '7.0', tvos: '9.0', watchos: '1.0')
   String get displayName {
-    Pointer<Void> result = perform(SEL('displayName'), decodeRetVal: false);
+    Pointer<Void> result = perform(SEL('displayName'), decodeRetVal: false) as Pointer<Void>;
     return NSString.fromPointer(result).raw;
   }
 
   @NativeAvailable(macos: '10.9', ios: '7.0', tvos: '9.0', watchos: '1.0')
   set displayName(String displayName) =>
-      perform(SEL('setDisplayName:'), args: [displayName]);
+      perform(SEL('setDisplayName:'), args: <dynamic>[displayName]);
 
   bool hasMediaCharacteristic(AVMediaCharacteristic mediaCharacteristic) {
-    return perform(SEL('hasMediaCharacteristic:'), args: [mediaCharacteristic]);
+    return perform(SEL('hasMediaCharacteristic:'), args: <dynamic>[mediaCharacteristic]) as bool;
   }
 
   AVMetadataItem metadataForFormat(String format) {
     Pointer<Void> result =
-        perform(SEL('metadataForFormat:'), args: [format], decodeRetVal: false);
+        perform(SEL('metadataForFormat:'), args: <dynamic>[format], decodeRetVal: false) as Pointer<Void>;
     return AVMetadataItem.fromPointer(result);
   }
 
-  AVMediaSelectionOption(AVMediaSelectionGroup mediaSelectionGroup)
+  AVMediaSelectionOption.fromGroup(AVMediaSelectionGroup mediaSelectionGroup)
       : super.fromPointer(_associatedMediaSelectionOptionInMediaSelectionGroup(
             mediaSelectionGroup));
 
@@ -198,18 +200,18 @@ class AVMediaSelectionOption extends NSObject with NSCopying {
     Pointer<Void> target = alloc(Class('AVMediaSelectionOption'));
     SEL sel = SEL('associatedMediaSelectionOptionInMediaSelectionGroup:');
     return msgSend(target, sel,
-        args: [mediaSelectionGroup], decodeRetVal: false);
+        args: <dynamic>[mediaSelectionGroup], decodeRetVal: false) as Pointer<Void>;
   }
 
   NSObject propertyList() {
-    Pointer<Void> result = perform(SEL('propertyList'), decodeRetVal: false);
+    Pointer<Void> result = perform(SEL('propertyList'), decodeRetVal: false) as Pointer<Void>;
     return NSObject.fromPointer(result);
   }
 
   @NativeAvailable(macos: '10.9', ios: '7.0', tvos: '9.0', watchos: '1.0')
   String displayNameWithLocale(NSLocale locale) {
     Pointer<Void> result = perform(SEL('displayNameWithLocale:'),
-        args: [locale], decodeRetVal: false);
+        args: <dynamic>[locale], decodeRetVal: false) as Pointer<Void>;
     return NSString.fromPointer(result).raw;
   }
 }

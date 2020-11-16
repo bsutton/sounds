@@ -239,13 +239,34 @@ class AVAudioPlayer extends NSObject {
   bool play() {
     return perform(SEL('play')) as bool;
   }
-
+  //handmade possibly should be skipping to next song instead
+  bool skipForward(NSTimeInterval time) {
+    if (time.value.toInt() >= currentTime.inSeconds) {
+      return playAtTime(time);
+    } else {
+      return false;
+    }
+  }
+  //handmade possibly should be skipping to previous song instead
+  bool skipBackward(NSTimeInterval time) {
+    if (time.value.toInt() <= currentTime.inSeconds) {
+      return playAtTime(time);
+    } else {
+      return false;
+    }
+  }
+  
   bool playAtTime(NSTimeInterval time) {
     return perform(SEL('playAtTime:'), args: <dynamic>[time]) as bool;
   }
 
   void pause() {
     perform(SEL('pause'));
+  }
+
+  //haven't checked but pretty sure this class has a resume
+  void resume() {
+    perform(SEL('resume'));
   }
 
   void stop() {

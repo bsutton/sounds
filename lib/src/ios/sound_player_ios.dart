@@ -255,7 +255,7 @@ class SoundPlayerIOS implements AVAudioPlayerDelegate {
       bool canSkipBackwards}) {
     var response = Response();
 
-    var audioFileURL = URL(track.path ?? "");
+    var audioFileURL = URL(fileURLWithPath: track.path ?? "");
     // Able to play in silent mode
 
     if (setCategoryDone == t_SET_CATEGORY_DONE.not_SET) {

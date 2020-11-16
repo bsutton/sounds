@@ -10,22 +10,22 @@ import 'package:dart_native_gen/dart_native_gen.dart';
 // You can uncomment this line when this package is ready.
 // import 'package:coreaudiotypes/coreaudiotypes.dart';
 
-typedef int64_t null();
+// typedef int64_t null();
 
-typedef uint32_t null();
+// typedef uint32_t null();
 
-typedef uint32_t null();
+// typedef uint32_t null();
 
-typedef uint32_t null();
+// typedef uint32_t null();
 
-typedef void AVAudioNodeCompletionHandler();
+// typedef void AVAudioNodeCompletionHandler();
 
-typedef NSUInteger null();
+// typedef NSUInteger null();
 
-typedef struct null();
+// typedef struct null();
 
-typedef struct null();
+// typedef struct null();
 
-typedef struct null();
+// typedef struct null();
 
-typedef struct null();
+// typedef struct null();

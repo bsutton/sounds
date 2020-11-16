@@ -6,7 +6,7 @@ import 'dart:ffi';
 import 'package:dart_native/dart_native.dart';
 import 'package:dart_native_gen/dart_native_gen.dart';
 
-import 'unused/avmediaselectiongroup.dart';
+import 'avmediaselectiongroup.dart';
 // You can uncomment this line when this package is ready.
 // import 'package:avfoundation/avbase.dart';
 // You can uncomment this line when this package is ready.

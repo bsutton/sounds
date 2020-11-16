@@ -22,14 +22,22 @@ import 'dart:io';
 import 'package:dart_native/dart_native.dart';
 import 'package:sounds/src/ios/frameworks/avfoundation/avaudiosessioncategory.dart';
 import 'package:sounds/src/ios/frameworks/avfoundation/avaudiosessiontypes.dart';
+import 'package:sounds/src/ios/frameworks/mpclasses/mpnowplayinginfoproperty.dart';
+import 'package:sounds/src/ios/ios_to_platform_api.dart';
 import 'package:sounds/src/ios/sound_player_ios.dart';
 import 'package:sounds/src/ios/sounds.dart';
+import 'package:sounds/src/platform/sounds_platform_api.dart';
 import 'package:sounds_common/sounds_common.dart';
 
 import '../../sounds.dart';
 import 'frameworks/avfoundation/avaudioplayer.dart';
 import 'frameworks/avfoundation/avaudiosession.dart';
 import 'frameworks/avfoundation/hacks.dart';
+import 'frameworks/mpclasses/mediaItemproperty.dart';
+import 'frameworks/mpclasses/mpmediaitemartwork.dart';
+import 'frameworks/mpclasses/mpremotecommand.dart';
+import 'frameworks/mpclasses/mpremotecommandcenter.dart';
+import 'frameworks/util/uiimage.dart';
 
 /// Plays an audio track using the OSs on UI (sometimes referred to as a Shade) media
 /// player.
@@ -54,7 +62,7 @@ class URL
 {
   String fileURLWithPath;
 
-  URL(String s, {String this.fileURLWithPath});
+  URL({String this.fileURLWithPath});
 
   int get scheme => 0;
 
@@ -104,7 +112,7 @@ class ShadePlayerIOS extends SoundPlayerIOS
 
         // Check whether the audio file is stored as a path to a file or a buffer
         if (track.path != null) {
-            audioFileURL = URL(track.path ?? "");
+            audioFileURL = URL(fileURLWithPath: track.path ?? "");
                
             // Able to play in silent mode
             if (_setCategoryDone == null) {
@@ -199,8 +207,6 @@ class ShadePlayerIOS extends SoundPlayerIOS
             audioPlayer.play();
             startProgressTimer();
         }
-        //[ self invokeCallback:@"updatePlaybackState" arguments:playingState];
-                    isPaused = false;
 
         // Display the notification with the media controls
         setupRemoteCommandCenter(canPause, canSkipForward: canSkipForward, canSkipBackward: canSkipBackward);
@@ -208,139 +214,104 @@ class ShadePlayerIOS extends SoundPlayerIOS
 
     }
 
-    void initializeShadePlayer(call: FlutterMethodCall, result: FlutterResult) {
-        _setCategoryDone = .not_SET
-        _setActiveDone = .not_SET
-        result(NSNumber(value: true))
+    bool initializeShadePlayer() {
+        _setCategoryDone = null;
+        _setActiveDone = null;
+        return NSNumber(true) as bool;
     }
+    //where release would be called we now just call stop
 
-    override func release(_ call: FlutterMethodCall?, result: FlutterResult) {
-        // The code used to release all the media player resources is the same of the one needed
-        // to stop the media playback. Then, use that one.
-        // [self stopRecorder:result];
-        stop();
-        var commandCenter = MPRemoteCommandCenter.sharedSession();
-        if (pauseTarget != null) {
-                commandCenter.togglePlayPauseCommand.removeTarget(pauseTarget, action: null);
-            pauseTarget = null;
-        }
-        if forwardTarget != null {
-            if var forwardTarget = forwardTarget {
-                commandCenter.nextTrackCommand.removeTarget(forwardTarget, action: null)
-            }
-            forwardTarget = null
-        }
 
-        if backwardTarget != null {
-            if var backwardTarget = backwardTarget {
-                commandCenter.previousTrackCommand.removeTarget(backwardTarget, action: null)
-            }
-            backwardTarget = null
-        }
+    @override
+    ///factory returns a sound player manager.
+    IOSToPlatformAPI getPlugin() => IOSToPlatformAPI();
 
-        getPlugin()?.freeSlot(slotNo: slotNo)
-        result("The player has been successfully released")
-
-    }
-
-    override func getPlugin() -> SoundPlayerManager? {
-        return shadePlayerManager
-    }
-
-    override func invokeCallback(_ methodName: String?, stringArg: String?) {
-        var dic = [
-            "slotNo": NSNumber(value: Int32(slotNo)),
-            "arg": stringArg ?? ""
-            ] as [String : Any]
-        getPlugin()?.invokeCallback(methodName, arguments: dic)
-    }
-
-    func invokeCallback(_ methodName: String?, boolArg: Bool) {
-        var dic = [
-            "slotNo": NSNumber(value: Int32(slotNo)),
-            "arg": NSNumber(value: boolArg)
-        ]
-        getPlugin()?.invokeCallback(methodName, arguments: dic)
-    }
 
     // Give the system information about what the audio player
     // is currently playing. Takes in the image to display in the
     // notification to control the media playback.
-    func setupNowPlaying() {
+    void setupNowPlaying() {
         // Initialize the MPNowPlayingInfoCenter
+        ///After reading this article, https://developer.apple.com/documentation/mediaplayer/mpnowplayinginfocenter/1615899-defaultcenter?language=objc 
+        ///I believe this is the same as
+        var playingInfoCenter = MPNowPlayingInfoCenter.defaultInstance();
+        
 
-        var playingInfoCenter = MPNowPlayingInfoCenter.default()
-        var songInfo: [AnyHashable : Any] = [:]
+        var songInfo = <String>[];
         // The caller specify an asset to be used.
         // Probably good in the future to allow the caller to specify the image itself, and not a resource.
-        if (track?.albumArtUrl != null) && (NSString.self != NSNull.self) {
+        if ((track.albumArtUrl != null) && (this != null)) {
             // Retrieve the album art for the
             // current track .
-            var url = URL(string: track?.albumArtUrl ?? "")
-            var artworkImage: UIImage? = null
-            do{
-                var data = try Data(contentsOf: url!)
-                artworkImage = UIImage(data: data)
+            var url = URL(fileURLWithPath: track.albumArtUrl ?? "");
+
+            //UI image might be the same as a flutter image
+            //they're both just view components
+            UIImage artworkImage = null;
+            try{
+                var data = NSData.fromURL(url);
+                artworkImage = UIImage.imageWithData(data);
             }
-            catch{
-                print("failed to set data")
-                
+            on Exception catch(e){
+                print("failed to set data");
+                Log.d(e.toString());
             }
             
             
-            if artworkImage != null {
+            if (artworkImage != null) {
                 var albumArt = MPMediaItemArtwork(
-                    boundsSize: artworkImage?.size ?? CGSize.zero,
-                    requestHandler: { size in
-                        return artworkImage!
-                    })
-
-                songInfo[MPMediaItemPropertyArtwork] = albumArt
+                    boundsSize: (artworkImage.size),
+                    requestHandler: () {
+                      artworkImage.size;
+                    });
+                songInfo.add(MPMediaItemProperty.Artwork = albumArt as String);
             }
-        } else if (track?.albumArtAsset) != null && (NSString.self != NSNull.self) {
-            var artworkImage = UIImage(named: track?.albumArtAsset ?? "")
-            if artworkImage != null {
+        } else if ((track.albumArtAsset) != null && (this != null)) {
+            var artworkImage = UIImage.imageNamed(track.albumArtAsset ?? "");
+            if (artworkImage != null) {
                 var albumArt = MPMediaItemArtwork(
-                    boundsSize: artworkImage?.size ?? CGSize.zero,
-                    requestHandler: { size in
-                        return artworkImage!
-                    })
+                    boundsSize: (artworkImage.size),
+                    requestHandler: () {
+                      artworkImage.size;
+                    });
 
-                songInfo[MPMediaItemPropertyArtwork] = albumArt
+                songInfo.add(MPMediaItemProperty.Artwork = albumArt as String);
             }
-        } else if (track?.albumArtFile) != null && (NSString.self != NSNull.self) {
-            var artworkImage = UIImage(contentsOfFile: track?.albumArtFile ?? "")
-            if artworkImage != null {
+        } else if ((track.albumArtFile) != null && (this != null)) {
+            var artworkImage = UIImage.imageWithContentsOfFile(track.albumArtFile ?? "");
+            if (artworkImage != null) {
                 var albumArt = MPMediaItemArtwork(
-                    boundsSize: artworkImage?.size ?? CGSize.zero,
-                    requestHandler: { size in
-                        return artworkImage!
-                    })
-                songInfo[MPMediaItemPropertyArtwork] = albumArt
+                    boundsSize: (artworkImage.size),
+                    requestHandler: () {
+                      artworkImage.size;
+                    });
+                songInfo.add(MPMediaItemProperty.Artwork = albumArt as String);
             }
         } else {
-            var artworkImage = UIImage(named: "AppIcon")
-            if artworkImage != null {
+            var artworkImage = UIImage.imageNamed("AppIcon");
+            if (artworkImage != null) {
                 var albumArt = MPMediaItemArtwork(
-                    boundsSize: artworkImage?.size ?? CGSize.zero,
-                    requestHandler: { size in
-                        return artworkImage!
-                    })
-                songInfo[MPMediaItemPropertyArtwork] = albumArt
+                    boundsSize: (artworkImage.size),
+                    requestHandler: () {
+                      artworkImage.size;
+                    });
+                songInfo.add(MPMediaItemProperty.Artwork  = albumArt as String);
             }
         }
 
-        var progress = NSNumber(value: audioPlayer?.currentTime ?? 0.0)
-        var duration = NSNumber(value: audioPlayer?.duration ?? 0.0)
+        var progress = NSNumber(audioPlayer.currentTime ?? 0.0);
+        var duration = NSNumber(audioPlayer.duration ?? 0.0);
 
-        songInfo[MPMediaItemPropertyTitle] = track?.title
-        songInfo[MPMediaItemPropertyArtist] = track?.artist
-        songInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = progress
-        songInfo[MPMediaItemPropertyPlaybackDuration] = duration
-        var b = audioPlayer?.isPlaying ?? false
-        songInfo[MPNowPlayingInfoPropertyPlaybackRate] = NSNumber(value: b ? 1.0 : 0.0)
+        //pretty certain MPMediaItem is an enum.
+        songInfo.add(MPMediaItemProperty.Title = track.title);
+        songInfo.add(MPMediaItemProperty.Artist = track.artist);
+        songInfo.add(MPNowPlayingInfoCenter.MPNowPlayingInfoPropertyElapsedPlaybackTime = progress.toString());
+        songInfo.add(MPMediaItemProperty.PlaybackDuration = duration.toString());
+        bool b = (audioPlayer.playing ?? false) as bool;
+        songInfo.add(MPNowPlayingInfoCenter.MPNowPlayingInfoPropertyPlaybackRate = NSNumber(b ? 1.0 : 0.0).toString());
 
-        playingInfoCenter.nowPlayingInfo = songInfo as? [String : Any]
+        //TODO convert this to Map<Value, Type> manually
+        playingInfoCenter.nowPlayingInfo = songInfo as Map<String, dynamic>;
     }
 
     void cleanTarget(bool canPause, {bool canSkipForward, bool canSkipBackward}) {
@@ -357,86 +328,96 @@ class ShadePlayerIOS extends SoundPlayerIOS
         //       [self pausePlayer:result];
         //       return MPRemoteCommandHandlerStatusSuccess;
         //   }];
-        var commandCenter = MPRemoteCommandCenter.sharedSession()
-
-        if pauseTarget != null {
-            if var pauseTarget = pauseTarget {
-                commandCenter.togglePlayPauseCommand.removeTarget(pauseTarget, action: null)
-            }
-            pauseTarget = null
+        var commandCenter = MPRemoteCommandCenter.sharedCommandCenter();
+        if (pauseTarget != null) {
+            //Changed as remove target does not exist.
+            //Thought this achieved the same goal
+            //commandCenter.togglePlayPauseCommand.removeTarget(pauseTarget, action: null);
+            commandCenter.togglePlayPauseCommand.enabled = false;
+            pauseTarget = null;
         }
-        if forwardTarget != null {
-            if var forwardTarget = forwardTarget {
-                commandCenter.nextTrackCommand.removeTarget(forwardTarget, action: null)
-            }
-            forwardTarget = null
+        if (forwardTarget != null) {
+                //commandCenter.nextTrackCommand.removeTarget(forwardTarget, action: null);
+            commandCenter.nextTrackCommand.enabled = false;
+            forwardTarget = null;
         }
 
-        if backwardTarget != null {
-            if var backwardTarget = backwardTarget {
-                commandCenter.previousTrackCommand.removeTarget(backwardTarget, action: null)
+            if(backwardTarget != null) {
+               //commandCenter.previousTrackCommand.removeTarget(backwardTarget, action: null)
+            commandCenter.previousTrackCommand.enabled = false;
+            backwardTarget = null;
             }
-            backwardTarget = null
-        }
-        commandCenter.togglePlayPauseCommand.isEnabled = true // If the caller does not want to control pause button, we will use our default action
-        commandCenter.nextTrackCommand.isEnabled = canSkipForward
-        commandCenter.previousTrackCommand.isEnabled = canSkipBackward
+        
+        commandCenter.togglePlayPauseCommand.enabled = true; // If the caller does not want to control pause button, we will use our default action
+        commandCenter.nextTrackCommand.enabled = canSkipForward;
+        commandCenter.previousTrackCommand.enabled = canSkipBackward;
 
-        do {
-            pauseTarget = commandCenter.togglePlayPauseCommand.addTarget(handler: { event in
-
-                var b = self.audioPlayer?.isPlaying ?? false
+        void pauseCommand(){
+          var b = audioPlayer.playing ?? false;
                 // If the caller wants to control the pause button, just call him
-                if b{
-                    if canPause {
-                        self.invokeCallback("pause", boolArg: true)
+                if (b){
+                    if (canPause) {
+                        //invokeCallback("pause", boolArg: true);
                     } else {
-                        self.pause()
+                        audioPlayer.pause();
                     }
                 } else {
-                    if canPause {
-                        self.invokeCallback("resume", boolArg: true)
+                    if (canPause) {
+                        //invokeCallback("resume", boolArg: true);
                     } else {
-                        self.resume()
+                        audioPlayer.resume();
                     }
                 }
-                return .success
-            })
+            };
+        
+        try {
+          //dont think these casts are valid but its a hack for now
+          commandCenter.pauseCommand = pauseCommand as MPRemoteCommand;
+          pauseTarget = commandCenter.pauseCommand as Function;
+
+                
+        }
+        on Exception catch(e){
+          Log.d(e.toString());
         }
 
-        if canSkipForward {
-            forwardTarget = commandCenter.nextTrackCommand.addTarget(handler: { event in
-                self.invokeCallback("skipForward", stringArg: "")
+        if (canSkipForward) {
+          commandCenter.nextTrackCommand = audioPlayer.skipBackward as MPRemoteCommand;
+            forwardTarget = commandCenter.nextTrackCommand as Function;
+            //(handler: { event in
+              //  invokeCallback("skipForward", stringArg: "")
                 // [[MediaController sharedInstance] fastForward];    // forward to next track.
-                return .success
-            })
+            //});
         }
 
-        if canSkipBackward {
-            backwardTarget = commandCenter.previousTrackCommand.addTarget(handler: { event in
-                self.invokeCallback("skipBackward", stringArg: "")
+        if (canSkipBackward) {
+          commandCenter.nextTrackCommand = audioPlayer.skipBackward as MPRemoteCommand;
+            backwardTarget = commandCenter.nextTrackCommand as Function;
+            //backwardTarget = commandCenter.previousTrackCommand.addTarget(handler: { event in
+              //  invokeCallback("skipBackward", stringArg: "")
                 // [[MediaController sharedInstance] rewind];    // back to previous track.
-                return .success
-            })
+           // });
         }
     }
-
-    override func stop() {
-        stopProgressTimer()
-        isPaused = false
-        if audioPlayer != null {
-            audioPlayer?.stop()
+    @override
+     void stop() {
+        stopProgressTimer();
+        isPaused = false;
+        if (audioPlayer != null) {
+            audioPlayer?.stop();
             //audioPlayer = null;
         }
         // ????  [self cleanTarget:false canSkipForward:false canSkipBackward:false];
-        if (_setActiveDone != .by_USER /* The caller did it himself : Sounds must not change that) */) && (setActiveDone != .not_SET) {
-            cleanTarget(false, canSkipForward: false, canSkipBackward: false) // ???
-            do {
-                try AVAudioSession.sharedInstance()._setActive(false)
-            } catch {
+        /* The caller did it himself : Sounds must not change that) */
+        if ((_setActiveDone != t_SET_CATEGORY_DONE.by_USER ) && (setActiveDone != null)) {
+            cleanTarget(false, canSkipForward: false, canSkipBackward: false); // ???
+            try {
+            AVAudioSession.sharedInstance().setActive(active: false);
+            }on Exception catch(e) {
+              Log.d(e.toString());
             }
-            setActiveDone = .not_SET
-        }
+            setActiveDone = null;
+        };
     }
 
     // Give the system information about what to do when the notification

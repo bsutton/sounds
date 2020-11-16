@@ -7,10 +7,10 @@ import 'package:dart_native/dart_native.dart';
 import 'package:dart_native_gen/dart_native_gen.dart';
 // You can uncomment this line when this package is ready.
 // import 'package:foundation/nsobject.dart';
-import 'availability.dart';
+//import 'availability.dart';
 
 class AVAudioQuality extends NSEnum {
-  const AVAudioQuality(dynamic raw) : super(raw);
+  const AVAudioQuality(dynamic raw) : super(raw as int);
   AVAudioQuality.fromPointer(Pointer<Void> ptr) : super(ptr.address);
 }
 
