@@ -2,7 +2,6 @@
 
 import 'dart:ffi';
 import 'package:sounds/src/ios/frameworks/audiofile/audiofile.dart';
-import 'package:sounds/src/ios/frameworks/util/types.dart';
 
 /// Dynamic library
 final DynamicLibrary _dynamicLibrary = DynamicLibrary.open(

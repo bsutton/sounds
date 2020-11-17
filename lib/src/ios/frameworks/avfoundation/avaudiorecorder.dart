@@ -42,7 +42,7 @@ class AVAudioRecorder extends NSObject {
   id get settings {
     Pointer<Void> result =
         perform(SEL('settings'), decodeRetVal: false) as Pointer<Void>;
-    return id(result) as id;
+    return id(result);
   }
 
   set settings(id settings) =>

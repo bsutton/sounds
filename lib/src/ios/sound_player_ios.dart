@@ -20,26 +20,24 @@ import 'package:dart_native/src/ios/foundation/objc_basic_type.dart';
 
 import '../../sounds.dart';
 import '../platform/sounds_platform_api.dart';
-import '../sound_player.dart';
 import 'frameworks/avfoundation/avaudioplayer.dart';
 import 'frameworks/avfoundation/avaudiosession.dart';
 import 'frameworks/avfoundation/avaudiosessioncategory.dart';
-import 'frameworks/avfoundation/avaudiosessionmode.dart';
-import 'frameworks/avfoundation/avaudiosessiontypes.dart';
 import 'frameworks/avfoundation/hacks.dart';
 import 'shade_player_ios.dart';
 import 'sounds.dart';
 
 class SoundPlayerIOS implements AVAudioPlayerDelegate {
-  SoundPlayer _player;
+  //SoundPlayer _player;
   AVAudioPlayer audioPlayer;
   var isPaused = false;
   t_SET_CATEGORY_DONE setCategoryDone;
   t_SET_CATEGORY_DONE setActiveDone;
 
-  Uri _audioFileURL;
+  //Uri _audioFileURL;
 
   @override
+  // ignore_for_file: override_on_non_overriding_member
   MediaFormatResponse getNativeDecoderFormats(MediaFormat mediaFormat) {
     // TODO: implement getNativeDecoderFormats
     throw UnimplementedError();
@@ -51,20 +49,21 @@ class SoundPlayerIOS implements AVAudioPlayerDelegate {
     throw UnimplementedError();
   }
 
+//changed return types of response to void
   @override
-  Response initializePlayer(InitializePlayer initializePlayer) {
+  void initializePlayer(InitializePlayer initializePlayer) {
     isPaused = false;
   }
 
   @override
-  Response initializePlayerWithShade(
+  void initializePlayerWithShade(
       InitializePlayerWithShade initializePlayerWithShade) {
     // TODO: implement initializePlayerWithShade
     throw UnimplementedError();
   }
 
   @override
-  Response initializeRecorder(SoundRecorder recorder) {
+  void initializeRecorder(SoundRecorder recorder) {
     // TODO: implement initializeRecorder
     throw UnimplementedError();
   }
@@ -144,8 +143,10 @@ class SoundPlayerIOS implements AVAudioPlayerDelegate {
     throw UnimplementedError();
   }
 
-  ///
-  Response releasePlayer() {}
+  ///TODO we should be done with responses on the ios code at this point.
+  Response releasePlayer() {
+    return Response();
+  }
 
   @override
   Response requestAudioFocus(AudioFocusProxy requestAudioFocus) {
@@ -179,7 +180,7 @@ class SoundPlayerIOS implements AVAudioPlayerDelegate {
       } catch (_) {}
       var b = resume();
       if (b) {
-        var filePath = _audioFileURL.toFilePath();
+        //var filePath = _audioFileURL.toFilePath();
         response.success = true;
       } else {
         response.success = false;
@@ -214,6 +215,8 @@ class SoundPlayerIOS implements AVAudioPlayerDelegate {
   }
 
   @override
+
+  ///TODO we should be done with responses.
   Response seekToPlayer(Duration offset) {
     var response = Response();
     if (audioPlayer != null) {
@@ -225,14 +228,18 @@ class SoundPlayerIOS implements AVAudioPlayerDelegate {
       response.error = 'AudioPlayer is not set';
       response.errorCode = SoundsToPlatformApi.errnoUnknownPlayer;
     }
+    return response;
   }
 
   Duration _playbackProgressInterval = Duration(milliseconds: 100);
-  @override
+
+  ///TODO we should be done with responses  @override
   Response setPlaybackProgressInterval(Duration interval) {
     _playbackProgressInterval = interval;
+    return Response();
   }
 
+  ///TODO we should be done with responses
   @override
   Response setVolume(int volume) {
     var response = Response();
@@ -245,6 +252,7 @@ class SoundPlayerIOS implements AVAudioPlayerDelegate {
       response.error = 'AudioPlayer is not set';
       response.errorCode = SoundsToPlatformApi.errnoUnknownPlayer;
     }
+    return response;
   }
 
   @override
@@ -366,7 +374,7 @@ class SoundPlayerIOS implements AVAudioPlayerDelegate {
     print("stopping ProgressTimer");
   }
 
-  ///
+  ///TODO we should be done with responses
   Response stopPlayer() {
     stopProgressTimer();
     isPaused = false;
@@ -383,6 +391,7 @@ class SoundPlayerIOS implements AVAudioPlayerDelegate {
       } catch (_) {}
       setActiveDone = t_SET_CATEGORY_DONE.not_SET;
     }
+    return Response();
   }
 
   void updateProgress() {
@@ -427,51 +436,52 @@ sending updateProgress: duration: $duration, position: $currentTime""");
     }
     stopProgressTimer();
   }
+  ///TODO this is unused but might still need to be 
+  // void _setCategory(AVAudioSessionCategory category, AVAudioSessionMode mode,
+  //     AVAudioSessionCategoryOptions options) {
+  //   // Able to play in silent mode
+  //   var b = false;
 
-  void _setCategory(AVAudioSessionCategory category, AVAudioSessionMode mode,
-      AVAudioSessionCategoryOptions options) {
-    // Able to play in silent mode
-    var b = false;
+  //   try {
+  //     AVAudioSession.sharedInstance()
+  //         .setCategory(category: category, mode: mode, options: options);
+  //     b = true;
+  //     // ignore: avoid_catches_without_on_clauses
+  //   } catch (_) {}
+  //   // The caller did it himself : Sounds must not change that)
+  //   setCategoryDone = t_SET_CATEGORY_DONE.by_USER;
+  //   setActiveDone = t_SET_CATEGORY_DONE.not_SET;
+  //   // var r = NSNumber(value: b);
+  //   // result(r)
+  // }
 
-    try {
-      AVAudioSession.sharedInstance()
-          .setCategory(category: category, mode: mode, options: options);
-      b = true;
-      // ignore: avoid_catches_without_on_clauses
-    } catch (_) {}
-    // The caller did it himself : Sounds must not change that)
-    setCategoryDone = t_SET_CATEGORY_DONE.by_USER;
-    setActiveDone = t_SET_CATEGORY_DONE.not_SET;
-    // var r = NSNumber(value: b);
-    // result(r)
-  }
+  ///TODO this is unused but might still need to be 
+  // void _setActive(bool enabled) {
+  //   if (enabled) {
+  //     if (setActiveDone != t_SET_CATEGORY_DONE.not_SET) {
+  //       // Already activated. Nothing todo;
+  //       // The caller did it himself : Sounds must not change that)
+  //       setActiveDone = t_SET_CATEGORY_DONE.by_USER;
+  //       return;
+  //     }
 
-  void _setActive(bool enabled) {
-    if (enabled) {
-      if (setActiveDone != t_SET_CATEGORY_DONE.not_SET) {
-        // Already activated. Nothing todo;
-        // The caller did it himself : Sounds must not change that)
-        setActiveDone = t_SET_CATEGORY_DONE.by_USER;
-        return;
-      }
-
-      setActiveDone = t_SET_CATEGORY_DONE.by_USER;
-    } else {
-      if (setActiveDone == t_SET_CATEGORY_DONE.not_SET) {
-        // Already desactivated
-        return;
-      }
-      setActiveDone = t_SET_CATEGORY_DONE.not_SET;
-    }
-    var b = false;
-    try {
-      AVAudioSession.sharedInstance().setActive(active: enabled);
-      b = true;
-      // ignore: avoid_catches_without_on_clauses
-    } catch (_) {}
-    // var r = NSNumber(value: b)
-    // result(r)
-  }
+  //     setActiveDone = t_SET_CATEGORY_DONE.by_USER;
+  //   } else {
+  //     if (setActiveDone == t_SET_CATEGORY_DONE.not_SET) {
+  //       // Already desactivated
+  //       return;
+  //     }
+  //     setActiveDone = t_SET_CATEGORY_DONE.not_SET;
+  //   }
+  //   var b = false;
+  //   try {
+  //     AVAudioSession.sharedInstance().setActive(active: enabled);
+  //     b = true;
+  //     // ignore: avoid_catches_without_on_clauses
+  //   } catch (_) {}
+  //   // var r = NSNumber(value: b)
+  //   // result(r)
+  // }
 
   @override
   void audioPlayerBeginInterruption(AVAudioPlayer player) {

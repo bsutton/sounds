@@ -34,8 +34,6 @@
 
 // var soundRecorderManager: SoundRecorderManager? // Singvaron
 
-import 'dart:ffi';
-
 import 'package:dart_native/dart_native.dart';
 import 'package:dart_native/src/ios/foundation/objc_basic_type.dart';
 import 'package:dart_native/src/ios/foundation/nserror.dart';
@@ -60,13 +58,15 @@ class SoundRecorderIOS implements AVAudioRecorderDelegate {
   t_SET_CATEGORY_DONE setCategoryDone;
   t_SET_CATEGORY_DONE setActiveDone;
 
-  Duration _recordingProgressInterval = Duration(milliseconds: 100);
+  ///TODO this is unused but might still need to be
+  //Duration _recordingProgressInterval = Duration(milliseconds: 100);
 
   @override
+  // ignore_for_file: override_on_non_overriding_member
   Response setRecordingProgressInterval(
       SetRecordingProgressInterval setRecordingProgressInterval) {
-    _recordingProgressInterval =
-        Duration(milliseconds: setRecordingProgressInterval.interval);
+    // _recordingProgressInterval =
+    //     Duration(milliseconds: setRecordingProgressInterval.interval);
 
     return Responses.success();
   }
@@ -75,14 +75,20 @@ class SoundRecorderIOS implements AVAudioRecorderDelegate {
 
   @override
   // Originally took SoundRecorderProxy
-  Response releaseRecorder(SoundRecorderProxy recorder) {}
+  ///TODO response needs to be phased out
+  Response releaseRecorder(SoundRecorderProxy recorder) {
+    return Response();
+  }
 
+  ///TODO response needs to be phased out
   @override
   Response startRecording(StartRecording startRecording) {
     //var args = call.arguments as! Dictionary<String, Any>
     var path = startRecording.track.path;
-    var sampleRateArgs = startRecording.track.mediaFormat.sampleRate;
-    var numChannelsArgs = startRecording.track.mediaFormat.numChannels;
+
+    ///TODO these will definitley need to be used
+    // var sampleRateArgs = startRecording.track.mediaFormat.sampleRate;
+    // var numChannelsArgs = startRecording.track.mediaFormat.numChannels;
     var iosQuality = startRecording.quality;
     var bitRate = startRecording.track.mediaFormat.bitRate;
     var formatArg = startRecording.track.mediaFormat.name;
@@ -118,17 +124,19 @@ class SoundRecorderIOS implements AVAudioRecorderDelegate {
         Log.d(e.toString());
       }
       setCategoryDone = t_SET_CATEGORY_DONE.for_RECORDING;
-      Error error;
+
+      ///May still need to be used
+      //Error error;
 
       // set volume default to speaker
-      var success = false;
+      //var success = false;
       try {
         //preffered method
         // try //audioSession.overrideOutputAudioPort(AVAudioSessionPortOverrideSpeaker)
 
         audioSession
             .overrideOutputAudioPort(AVAudioSessionPortOverride.Speaker);
-        success = true;
+        //success = true;
       } on Exception catch (e) {
         Log.d(e.toString());
       }
@@ -155,7 +163,7 @@ class SoundRecorderIOS implements AVAudioRecorderDelegate {
     startProgressTimer();
 
     //var filePath = audioFileURL.path; never used
-    Responses.success();
+    return Responses.success();
   }
 
   @override
@@ -208,9 +216,12 @@ class SoundRecorderIOS implements AVAudioRecorderDelegate {
   }
 
   Duration _recorderProgressInterval = Duration(milliseconds: 100);
+
+  ///TODO response needs to be phased out
   @override
   Response setPlaybackProgressInterval(Duration interval) {
     _recorderProgressInterval = interval;
+    return Response();
   }
 
   void updateProgress() {

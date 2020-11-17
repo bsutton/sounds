@@ -9,8 +9,6 @@
 
 import 'dart:ffi';
 
-import 'package:dart_native/dart_native.dart';
-import 'package:sounds/src/ios/frameworks/avfoundation/avaudiofile.dart';
 import 'package:sounds/src/ios/frameworks/util/types.dart';
 import 'package:sounds/src/ios/sound_player_ios.dart';
 import 'package:sounds/src/ios/sound_recorder_ios.dart';
@@ -21,7 +19,6 @@ import 'frameworks/audiofile/audiofileclose.dart';
 import 'frameworks/audiofile/audiofilegetproperty.dart';
 import 'frameworks/audiofile/audiofileopenurl.dart';
 import 'frameworks/avfoundation/cfurl.dart';
-import 'frameworks/audiofile/audiofile.dart';
 
 class IOSToPlatformAPI extends SoundsToPlatformApi {
 // Slots to track method calls from the dart into ios code.

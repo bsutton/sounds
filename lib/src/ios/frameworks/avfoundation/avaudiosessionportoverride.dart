@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:dart_native/dart_native.dart';
 
 //TODO we need to figure out how this is handled in the obj C code

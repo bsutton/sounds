@@ -4,7 +4,6 @@
 import 'dart:ffi';
 
 import 'package:dart_native/dart_native.dart';
-import 'package:dart_native_gen/dart_native_gen.dart';
 // You can uncomment this line when this package is ready.
 // import 'package:foundation/nsobject.dart';
 //import 'availability.dart';

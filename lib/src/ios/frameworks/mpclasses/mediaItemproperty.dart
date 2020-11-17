@@ -1,5 +1,4 @@
 // ignore: file_names
-import 'package:dart_native/dart_native.dart';
 // ignore_for_file: non_constant_identifier_names
 // ignore_for_file: public_member_api_docs
 

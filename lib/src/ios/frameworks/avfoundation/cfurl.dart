@@ -1,6 +1,4 @@
 import 'dart:ffi';
-import 'dart:html';
-import 'dart:typed_data';
 import 'package:ffi/ffi.dart';
 import 'package:dart_native/dart_native.dart';
 // ignore_for_file: public_member_api_docs
