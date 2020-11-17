@@ -2,144 +2,126 @@ import 'dart:ffi';
 
 import 'package:sounds/src/ios/shade_player_ios.dart';
 
-import 'avaudiosession.dart';
-
 ///Apple has deprecated this class. They suggest "Instead you should register for notifications".
 ///https://developer.apple.com/documentation/avfoundation/avaudiosessiondelegate?language=objc
-class AVAudioPlayerDelegate {
-  AVAudioPlayerDelegate.fromPointer(Pointer<Void> result) {}
-}
+///Protocols are equivilent to implementations
 
-class NSMutableCopying {}
+// class UIApplication {
+//   static AVAudioSession sharedSession;
+// }
 
-class AudioBufferList {
-  AudioBufferList.fromPointer(Object o);
-}
+// {
+//   AVAudioFramePosition.fromPointer(Pointer<Void> result) {}
+// }
 
-class UIApplication {
-  static AVAudioSession sharedSession;
-}
+// class AVAudioCommonFormat {
+//   AVAudioCommonFormat.fromPointer(Pointer<Void> result) {}
+// }
 
-class AVSampleRateKey {}
+// class AudioChannelLabel {
+//   AudioChannelLabel.fromPointer(Pointer p);
+// }
 
-class AVFormatIDKey {}
+// class AudioTimeStamp {
+//   AudioTimeStamp.fromPointer(Pointer p);
+// }
 
-class AVNumberOfChannelsKey {}
+// class NSLocale {
+//   NSLocale.fromPointer(Pointer p);
+// }
 
-class AVEncoderAudioQualityKey {}
+// class AVMediaCharacteristic {
+//   AVMediaCharacteristic.fromPointer(Pointer p);
+// }
 
-class AVEncoderBitRateKey {}
+// class AVMetadataItem {
+//   AVMetadataItem.fromPointer(Pointer p);
+// }
 
-class AVAudioFramePosition {
-  AVAudioFramePosition.fromPointer(Pointer<Void> result) {}
-}
+// class AVMediaType {
+//   AVMediaType.fromPointer(Pointer p);
+// }
 
-class AVAudioCommonFormat {
-  AVAudioCommonFormat.fromPointer(Pointer<Void> result) {}
-}
+// class AudioChannelLayoutTag {
+//   AudioChannelLayoutTag.fromPointer(Pointer p);
+// }
 
-class AudioChannelLabel {
-  AudioChannelLabel.fromPointer(Pointer p);
-}
+// class AudioStreamPacketDescription {
+//   AudioStreamPacketDescription.fromPointer(Pointer p);
+// }
 
-class AudioTimeStamp {
-  AudioTimeStamp.fromPointer(Pointer p);
-}
+// class AVAudioMixerNode {
+//   AVAudioMixerNode.fromPointer(Pointer p);
+// }
 
-class NSLocale {
-  NSLocale.fromPointer(Pointer p);
-}
+// class AudioChannelLayout {
+//   AudioChannelLayout.fromPointer(Pointer p);
+// }
 
-class AVMediaCharacteristic {
-  AVMediaCharacteristic.fromPointer(Pointer p);
-}
+// class AVAudioOutputNode {
+//   AVAudioOutputNode.fromPointer(Pointer p);
+// }
 
-class AVMetadataItem {
-  AVMetadataItem.fromPointer(Pointer p);
-}
+// class AVAudioInputNode {
+//   AVAudioInputNode.fromPointer(Pointer p);
+// }
 
-class AVMediaType {
-  AVMediaType.fromPointer(Pointer p);
-}
+// class AVAudioConnectionPoint {
+//   AVAudioConnectionPoint.fromPointer(Pointer p);
+// }
 
-class AudioChannelLayoutTag {
-  AudioChannelLayoutTag.fromPointer(Pointer p);
-}
+// class AUMIDIOutputEventBlock {}
 
-class AudioStreamPacketDescription {
-  AudioStreamPacketDescription.fromPointer(Pointer p);
-}
+// class MusicSequence {
+//   MusicSequence.fromPointer(Pointer p);
+// }
 
-class AVAudioMixerNode {
-  AVAudioMixerNode.fromPointer(Pointer p);
-}
+// class AVAudioFrameCount {
+//   AVAudioFrameCount.fromPointer(Pointer p);
+// }
 
-class AudioChannelLayout {
-  AudioChannelLayout.fromPointer(Pointer p);
-}
+// class AVAudioPacketCount {
+//   AVAudioPacketCount.fromPointer(Pointer p);
+// }
 
-class AVAudioOutputNode {
-  AVAudioOutputNode.fromPointer(Pointer p);
-}
+// class AVAudioChannelCount {
+//   AVAudioChannelCount.fromPointer(Pointer<Void> result) {}
+// }
 
-class AVAudioInputNode {
-  AVAudioInputNode.fromPointer(Pointer p);
-}
+// class AudioStreamBasicDescription {
+//   AudioStreamBasicDescription.fromPointer(Pointer<Void> result) {}
+// }
 
-class AVAudioConnectionPoint {
-  AVAudioConnectionPoint.fromPointer(Pointer p);
-}
+// class CMAudioFormatDescriptionRef {
+//   CMAudioFormatDescriptionRef.fromPointer(Pointer<Void> result) {}
+// }
 
-class AUMIDIOutputEventBlock {}
+// class AUAudioUnit {
+//   AUAudioUnit.fromPointer(Pointer<Void> result) {}
+// }
+// class NSCoder {}
+// class AVAudioNodeBus {}
 
-class MusicSequence {
-  MusicSequence.fromPointer(Pointer p);
-}
 
-class AVAudioFrameCount {
-  AVAudioFrameCount.fromPointer(Pointer p);
-}
-
-class AVAudioPacketCount {
-  AVAudioPacketCount.fromPointer(Pointer p);
-}
-
+///TODO this needs to be set up
 class NSSecureCoding {}
 
-class AVAudioChannelCount {
-  AVAudioChannelCount.fromPointer(Pointer<Void> result) {}
-}
-
-class AudioStreamBasicDescription {
-  AudioStreamBasicDescription.fromPointer(Pointer<Void> result) {}
-}
-
+///TODO This needs to be set up
 class NSData {
   NSData.fromPointer(Pointer<Void> result) {}
   NSData.fromURL(URL result) {}
   void add(Object object) {}
 }
 
-class CMAudioFormatDescriptionRef {
-  CMAudioFormatDescriptionRef.fromPointer(Pointer<Void> result) {}
-}
-
-class AUAudioUnit {
-  AUAudioUnit.fromPointer(Pointer<Void> result) {}
-}
-
+///TODO this needs to be set up
 class NSTimeInterval {
   double value;
   NSTimeInterval(this.value);
   NSTimeInterval.fromPointer(Pointer<Void> result) {}
 }
 
-class AVAudioNodeBus {}
 
-class NSCopying {}
-
+///TODO this needs to be set up
 class NSCharacterSet {
   NSCharacterSet.fromPointer(Pointer<Void> result) {}
 }
-
-class NSCoder {}

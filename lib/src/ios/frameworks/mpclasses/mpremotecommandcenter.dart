@@ -19,7 +19,8 @@ class MPRemoteCommandCenter extends NSObject {
   MPRemoteCommandCenter.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
 
   MPRemoteCommand get pauseCommand {
-    Pointer<Void> result = perform(SEL('pauseCommand'), decodeRetVal: false) as Pointer<Void>;
+    Pointer<Void> result =
+        perform(SEL('pauseCommand'), decodeRetVal: false) as Pointer<Void>;
     return MPRemoteCommand.fromPointer(result);
   }
 

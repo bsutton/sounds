@@ -6,6 +6,7 @@ import 'dart:ffi';
 import 'package:dart_native/dart_native.dart';
 import 'package:dart_native_gen/dart_native_gen.dart';
 
+import 'avaudioframeposition.dart';
 import 'hacks.dart';
 // You can uncomment this line when this package is ready.
 // import 'package:avfaudio/avaudiotypes.dart';
@@ -27,7 +28,8 @@ class AVAudioTime extends NSObject {
     return perform(SEL('hostTime')) as int;
   }
 
-  set hostTime(int hostTime) => perform(SEL('setHostTime:'), args: <dynamic>[hostTime]);
+  set hostTime(int hostTime) =>
+      perform(SEL('setHostTime:'), args: <dynamic>[hostTime]);
 
   bool get sampleTimeValid {
     return perform(SEL('sampleTimeValid')) as bool;
@@ -37,7 +39,8 @@ class AVAudioTime extends NSObject {
       perform(SEL('setSampleTimeValid:'), args: <dynamic>[sampleTimeValid]);
 
   AVAudioFramePosition get sampleTime {
-    Pointer<Void> result = perform(SEL('sampleTime'), decodeRetVal: false) as Pointer<Void>;
+    Pointer<Void> result =
+        perform(SEL('sampleTime'), decodeRetVal: false) as Pointer<Void>;
     return AVAudioFramePosition.fromPointer(result);
   }
 
@@ -51,23 +54,25 @@ class AVAudioTime extends NSObject {
   set sampleRate(double sampleRate) =>
       perform(SEL('setSampleRate:'), args: <dynamic>[sampleRate]);
 
-  AudioTimeStamp get audioTimeStamp {
-    Pointer<Void> result = perform(SEL('audioTimeStamp'), decodeRetVal: false) as Pointer<Void>;
-    return AudioTimeStamp.fromPointer(result);
-  }
+  // AudioTimeStamp get audioTimeStamp {
+  //   Pointer<Void> result =
+  //       perform(SEL('audioTimeStamp'), decodeRetVal: false) as Pointer<Void>;
+  //   return AudioTimeStamp.fromPointer(result);
+  // }
 
-  set audioTimeStamp(AudioTimeStamp audioTimeStamp) =>
-      perform(SEL('setAudioTimeStamp:'), args: <dynamic>[audioTimeStamp]);
-  AVAudioTime.initWithAudioTimeStampSampleRate(
-      AudioTimeStamp ts, double sampleRate)
-      : super.fromPointer(_initWithAudioTimeStampSampleRate(ts, sampleRate));
+  // set audioTimeStamp(AudioTimeStamp audioTimeStamp) =>
+  //     perform(SEL('setAudioTimeStamp:'), args: <dynamic>[audioTimeStamp]);
+  // AVAudioTime.initWithAudioTimeStampSampleRate(
+  //     AudioTimeStamp ts, double sampleRate)
+  //     : super.fromPointer(_initWithAudioTimeStampSampleRate(ts, sampleRate));
 
-  static Pointer<Void> _initWithAudioTimeStampSampleRate(
-      AudioTimeStamp ts, double sampleRate) {
-    Pointer<Void> target = alloc(Class('AVAudioTime'));
-    SEL sel = SEL('initWithAudioTimeStamp:sampleRate:');
-    return msgSend(target, sel, args: <dynamic>[ts, sampleRate], decodeRetVal: false) as Pointer<Void>;
-  }
+  // static Pointer<Void> _initWithAudioTimeStampSampleRate(
+  //     AudioTimeStamp ts, double sampleRate) {
+  //   Pointer<Void> target = alloc(Class('AVAudioTime'));
+  //   SEL sel = SEL('initWithAudioTimeStamp:sampleRate:');
+  //   return msgSend(target, sel,
+  //       args: <dynamic>[ts, sampleRate], decodeRetVal: false) as Pointer<Void>;
+  // }
 
   AVAudioTime.initWithHostTime(int hostTime)
       : super.fromPointer(_initWithHostTime(hostTime));
@@ -75,7 +80,8 @@ class AVAudioTime extends NSObject {
   static Pointer<Void> _initWithHostTime(int hostTime) {
     Pointer<Void> target = alloc(Class('AVAudioTime'));
     SEL sel = SEL('initWithHostTime:');
-    return msgSend(target, sel, args: <dynamic>[hostTime], decodeRetVal: false) as Pointer<Void>;
+    return msgSend(target, sel, args: <dynamic>[hostTime], decodeRetVal: false)
+        as Pointer<Void>;
   }
 
   AVAudioTime.initWithSampleTimeAtRate(
@@ -87,7 +93,8 @@ class AVAudioTime extends NSObject {
     Pointer<Void> target = alloc(Class('AVAudioTime'));
     SEL sel = SEL('initWithSampleTime:atRate:');
     return msgSend(target, sel,
-        args: <dynamic>[sampleTime, sampleRate], decodeRetVal: false) as Pointer<Void>;
+        args: <dynamic>[sampleTime, sampleRate],
+        decodeRetVal: false) as Pointer<Void>;
   }
 
   AVAudioTime.initWithHostTimeSampleTimeAtRate(
@@ -100,17 +107,18 @@ class AVAudioTime extends NSObject {
     Pointer<Void> target = alloc(Class('AVAudioTime'));
     SEL sel = SEL('initWithHostTime:sampleTime:atRate:');
     return msgSend(target, sel,
-        args: <dynamic>[hostTime, sampleTime, sampleRate], decodeRetVal: false) as Pointer<Void>;
+        args: <dynamic>[hostTime, sampleTime, sampleRate],
+        decodeRetVal: false) as Pointer<Void>;
   }
 
-  static AVAudioTime timeWithAudioTimeStampSampleRate(
-      AudioTimeStamp ts, double sampleRate) {
-    Pointer<Void> result = Class('AVAudioTime').perform(
-        SEL('timeWithAudioTimeStamp:sampleRate:'),
-        args: <dynamic>[ts, sampleRate],
-        decodeRetVal: false) as Pointer<Void>;
-    return AVAudioTime.fromPointer(result);
-  }
+  // static AVAudioTime timeWithAudioTimeStampSampleRate(
+  //     AudioTimeStamp ts, double sampleRate) {
+  //   Pointer<Void> result = Class('AVAudioTime').perform(
+  //       SEL('timeWithAudioTimeStamp:sampleRate:'),
+  //       args: <dynamic>[ts, sampleRate],
+  //       decodeRetVal: false) as Pointer<Void>;
+  //   return AVAudioTime.fromPointer(result);
+  // }
 
   static AVAudioTime timeWithHostTime(int hostTime) {
     Pointer<Void> result = Class('AVAudioTime').perform(
@@ -157,6 +165,7 @@ class AVAudioTime extends NSObject {
   static Pointer<Void> _extrapolateTimeFromAnchor(AVAudioTime anchorTime) {
     Pointer<Void> target = alloc(Class('AVAudioTime'));
     SEL sel = SEL('extrapolateTimeFromAnchor:');
-    return msgSend(target, sel, args: <dynamic>[anchorTime], decodeRetVal: false) as Pointer<Void>;
+    return msgSend(target, sel,
+        args: <dynamic>[anchorTime], decodeRetVal: false) as Pointer<Void>;
   }
 }

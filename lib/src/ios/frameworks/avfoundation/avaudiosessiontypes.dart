@@ -6,6 +6,7 @@ typedef AVAudioSessionPort = Function();
 dynamic Function() AVAudioSessionPortFromPointer(Pointer<Void> p) {
   return AVAudioSessionPort as dynamic Function();
 }
+
 class AVAudioSessionCategoryOptions {
   int rawValue;
   AVAudioSessionCategoryOptions({this.rawValue});

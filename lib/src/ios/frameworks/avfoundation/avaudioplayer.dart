@@ -8,6 +8,7 @@ import 'package:dart_native_gen/dart_native_gen.dart';
 import 'package:sounds/src/ios/frameworks/avfoundation/nsurl.dart';
 
 import '../../shade_player_ios.dart';
+import 'avaudioplayerdelegate.dart';
 import 'hacks.dart';
 // ignore_for_file: public_member_api_docs
 
@@ -239,6 +240,7 @@ class AVAudioPlayer extends NSObject {
   bool play() {
     return perform(SEL('play')) as bool;
   }
+
   //handmade possibly should be skipping to next song instead
   bool skipForward(NSTimeInterval time) {
     if (time.value.toInt() >= currentTime.inSeconds) {
@@ -247,6 +249,7 @@ class AVAudioPlayer extends NSObject {
       return false;
     }
   }
+
   //handmade possibly should be skipping to previous song instead
   bool skipBackward(NSTimeInterval time) {
     if (time.value.toInt() <= currentTime.inSeconds) {
@@ -255,7 +258,7 @@ class AVAudioPlayer extends NSObject {
       return false;
     }
   }
-  
+
   bool playAtTime(NSTimeInterval time) {
     return perform(SEL('playAtTime:'), args: <dynamic>[time]) as bool;
   }

@@ -48,7 +48,7 @@ import 'package:sounds_common/sounds_common.dart';
 import 'frameworks/avfoundation/avaudiorecorder.dart';
 import 'frameworks/avfoundation/avaudiosession.dart';
 import 'frameworks/avfoundation/avaudiosessionportoverride.dart';
-import 'frameworks/avfoundation/hacks.dart';
+import 'frameworks/avfoundation/avkeys.dart';
 import 'response_extension.dart';
 
 class SoundRecorderIOS implements AVAudioRecorderDelegate {
@@ -100,15 +100,15 @@ class SoundRecorderIOS implements AVAudioRecorderDelegate {
     audioFileURL = Uri(path: path);
 
     var audioSettings = <dynamic, NSNumber>{
-      AVSampleRateKey: NSNumber(sampleRate),
-      AVFormatIDKey: NSNumber(/*Int32*/ (format)),
-      AVNumberOfChannelsKey: NSNumber(numChannels),
-      AVEncoderAudioQualityKey: NSNumber(iosQuality ?? 0x40)
+      AVKeys.AVSampleRateKey: NSNumber(sampleRate),
+      AVKeys.AVFormatIDKey: NSNumber(/*Int32*/ (format)),
+      AVKeys.AVNumberOfChannelsKey: NSNumber(numChannels),
+      AVKeys.AVEncoderAudioQualityKey: NSNumber(iosQuality ?? 0x40)
     };
 
     // If bitrate is defined, the use it, otherwise use the OS default
     if (bitRate != null) {
-      audioSettings[AVEncoderBitRateKey] = NSNumber(bitRate ?? 0);
+      audioSettings[AVKeys.AVEncoderBitRateKey] = NSNumber(bitRate ?? 0);
     }
 
     // Setup audio session the first time the user starts recording with this SoundRecorder instance.

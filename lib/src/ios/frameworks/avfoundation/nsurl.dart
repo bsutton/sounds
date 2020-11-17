@@ -23,7 +23,7 @@ typedef NSURLResourceKey = String Function(String);
 
 ///
 // ignore: prefer_mixin
-class NSURL extends NSObject with NSSecureCoding, NSCopying {
+class NSURL extends NSObject with NSSecureCoding {
   ///
   NSURL([Class isa]) : super(isa ?? Class('NSURL'));
 
@@ -567,7 +567,7 @@ extension NSURLNSPromisedItems on NSURL {
 
 ///
 // ignore: prefer_mixin
-class NSURLQueryItem extends NSObject with NSSecureCoding, NSCopying {
+class NSURLQueryItem extends NSObject with NSSecureCoding {
   ///
   NSURLQueryItem([Class isa]) : super(isa ?? Class('NSURLQueryItem'));
 
@@ -616,7 +616,7 @@ class NSURLQueryItem extends NSObject with NSSecureCoding, NSCopying {
 
 ///
 // ignore: prefer_mixin
-class NSURLComponents extends NSObject with NSCopying {
+class NSURLComponents extends NSObject {
   ///
   NSURLComponents([Class isa]) : super(isa ?? Class('NSURLComponents'));
 
@@ -1170,7 +1170,7 @@ extension NSURLNSURLPathUtilities on NSURL {
 
 ///
 // ignore: prefer_mixin
-class NSFileSecurity extends NSObject with NSCopying, NSSecureCoding {
+class NSFileSecurity extends NSObject with NSSecureCoding {
   ///
   NSFileSecurity([Class isa]) : super(isa ?? Class('NSFileSecurity'));
 
@@ -1178,15 +1178,15 @@ class NSFileSecurity extends NSObject with NSCopying, NSSecureCoding {
   NSFileSecurity.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
 
   ///
-  NSFileSecurity.withCoder(NSCoder coder)
-      : super.fromPointer(_initWithCoder(coder));
+  // NSFileSecurity.withCoder(NSCoder coder)
+  //     : super.fromPointer(_initWithCoder(coder));
 
-  static Pointer<Void> _initWithCoder(NSCoder coder) {
-    var target = alloc(Class('NSFileSecurity'));
-    var sel = SEL('initWithCoder:');
-    return msgSend(target, sel, args: <dynamic>[coder], decodeRetVal: false)
-        as Pointer<Void>;
-  }
+  // static Pointer<Void> _initWithCoder(NSCoder coder) {
+  //   var target = alloc(Class('NSFileSecurity'));
+  //   var sel = SEL('initWithCoder:');
+  //   return msgSend(target, sel, args: <dynamic>[coder], decodeRetVal: false)
+  //       as Pointer<Void>;
+  // }
 }
 
 ///

@@ -6,9 +6,8 @@ import 'dart:ffi';
 import 'package:dart_native/dart_native.dart';
 import 'package:dart_native_gen/dart_native_gen.dart';
 import 'package:sounds/src/ios/frameworks/avfoundation/avaudioformat.dart';
-import 'package:sounds/src/ios/frameworks/avfoundation/hacks.dart';
 
-import 'avaudiobuffer.dart';
+import 'avaudioframeposition.dart';
 import 'avaudionode.dart';
 // You can uncomment this line when this package is ready.
 // import 'package:avfaudio/avaudiobuffer.dart';
@@ -81,8 +80,8 @@ const AVAudioEngineManualRenderingMode
     AVAudioEngineManualRenderingMode(1);
 
 // last param type was OSStatus which is just an int anyway
-typedef AVAudioEngineManualRenderingStatus AVAudioEngineManualRenderingBlock(
-    AVAudioFrameCount numberOfFrames, AudioBufferList outBuffer, int outError);
+// typedef AVAudioEngineManualRenderingStatus AVAudioEngineManualRenderingBlock(
+//     AVAudioFrameCount numberOfFrames, AudioBufferList outBuffer, int outError);
 
 @NativeAvailable(macos: '10.10', ios: '8.0', watchos: '2.0', tvos: '9.0')
 @native
@@ -90,42 +89,43 @@ class AVAudioEngine extends NSObject {
   AVAudioEngine([Class isa]) : super(isa ?? Class('AVAudioEngine'));
   AVAudioEngine.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
 
-  MusicSequence get musicSequence {
-    Pointer<Void> result =
-        perform(SEL('musicSequence'), decodeRetVal: false) as Pointer<Void>;
-    return MusicSequence.fromPointer(result);
-  }
+  // MusicSequence get musicSequence {
+  //   Pointer<Void> result =
+  //       perform(SEL('musicSequence'), decodeRetVal: false) as Pointer<Void>;
+  //   return MusicSequence.fromPointer(result);
+  // }
 
-  set musicSequence(MusicSequence musicSequence) =>
-      perform(SEL('setMusicSequence:'), args: <dynamic>[musicSequence]);
+  // set musicSequence(MusicSequence musicSequence) =>
+  //     perform(SEL('setMusicSequence:'), args: <dynamic>[musicSequence]);
 
-  AVAudioOutputNode get outputNode {
-    Pointer<Void> result =
-        perform(SEL('outputNode'), decodeRetVal: false) as Pointer<Void>;
-    return AVAudioOutputNode.fromPointer(result);
-  }
+  // AVAudioOutputNode get outputNode {
+  //   Pointer<Void> result =
+  //       perform(SEL('outputNode'), decodeRetVal: false) as Pointer<Void>;
+  //   return AVAudioOutputNode.fromPointer(result);
+  // }
 
-  set outputNode(AVAudioOutputNode outputNode) =>
-      perform(SEL('setOutputNode:'), args: <dynamic>[outputNode]);
-  @NativeAvailable(macos: '10.10', ios: '8.0', watchos: '4.0', tvos: '11.0')
-  AVAudioInputNode get inputNode {
-    Pointer<Void> result =
-        perform(SEL('inputNode'), decodeRetVal: false) as Pointer<Void>;
-    return AVAudioInputNode.fromPointer(result);
-  }
+  // set outputNode(AVAudioOutputNode outputNode) =>
+  //     perform(SEL('setOutputNode:'), args: <dynamic>[outputNode]);
 
-  @NativeAvailable(macos: '10.10', ios: '8.0', watchos: '4.0', tvos: '11.0')
-  set inputNode(AVAudioInputNode inputNode) =>
-      perform(SEL('setInputNode:'), args: <dynamic>[inputNode]);
+  // @NativeAvailable(macos: '10.10', ios: '8.0', watchos: '4.0', tvos: '11.0')
+  // AVAudioInputNode get inputNode {
+  //   Pointer<Void> result =
+  //       perform(SEL('inputNode'), decodeRetVal: false) as Pointer<Void>;
+  //   return AVAudioInputNode.fromPointer(result);
+  // }
 
-  AVAudioMixerNode get mainMixerNode {
-    Pointer<Void> result =
-        perform(SEL('mainMixerNode'), decodeRetVal: false) as Pointer<Void>;
-    return AVAudioMixerNode.fromPointer(result);
-  }
+  // @NativeAvailable(macos: '10.10', ios: '8.0', watchos: '4.0', tvos: '11.0')
+  // set inputNode(AVAudioInputNode inputNode) =>
+  //     perform(SEL('setInputNode:'), args: <dynamic>[inputNode]);
 
-  set mainMixerNode(AVAudioMixerNode mainMixerNode) =>
-      perform(SEL('setMainMixerNode:'), args: <dynamic>[mainMixerNode]);
+  // AVAudioMixerNode get mainMixerNode {
+  //   Pointer<Void> result =
+  //       perform(SEL('mainMixerNode'), decodeRetVal: false) as Pointer<Void>;
+  //   return AVAudioMixerNode.fromPointer(result);
+  // }
+
+  // set mainMixerNode(AVAudioMixerNode mainMixerNode) =>
+  //     perform(SEL('setMainMixerNode:'), args: <dynamic>[mainMixerNode]);
 
   bool get running {
     return perform(SEL('running')) as bool;
@@ -155,6 +155,7 @@ class AVAudioEngine extends NSObject {
   set attachedNodes(AVAudioNode attachedNodes) =>
       perform(SEL('setAttachedNodes:'), args: <dynamic>[attachedNodes]);
   @NativeAvailable(macos: '10.13', ios: '11.0', watchos: '4.0', tvos: '11.0')
+
   ///this is already a const
   // AVAudioEngineManualRenderingBlock get manualRenderingBlock {
   //   Pointer<Void> result =
@@ -163,15 +164,15 @@ class AVAudioEngine extends NSObject {
   //   return AVAudioEngineManualRenderingBlock;
   // }
 
-  @NativeAvailable(macos: '10.13', ios: '11.0', watchos: '4.0', tvos: '11.0')
-  set manualRenderingBlock(
-          AVAudioEngineManualRenderingBlock manualRenderingBlock) =>
-      perform(SEL('setManualRenderingBlock:'),
-          args: <dynamic>[manualRenderingBlock]);
-  @NativeAvailable(macos: '10.13', ios: '11.0', watchos: '4.0', tvos: '11.0')
-  bool get isInManualRenderingMode {
-    return perform(SEL('isInManualRenderingMode')) as bool;
-  }
+  // @NativeAvailable(macos: '10.13', ios: '11.0', watchos: '4.0', tvos: '11.0')
+  // set manualRenderingBlock(
+  //         AVAudioEngineManualRenderingBlock manualRenderingBlock) =>
+  //     perform(SEL('setManualRenderingBlock:'),
+  //         args: <dynamic>[manualRenderingBlock]);
+  // @NativeAvailable(macos: '10.13', ios: '11.0', watchos: '4.0', tvos: '11.0')
+  // bool get isInManualRenderingMode {
+  //   return perform(SEL('isInManualRenderingMode')) as bool;
+  // }
 
   @NativeAvailable(macos: '10.13', ios: '11.0', watchos: '4.0', tvos: '11.0')
   set isInManualRenderingMode(bool isInManualRenderingMode) =>
@@ -203,18 +204,18 @@ class AVAudioEngine extends NSObject {
       perform(SEL('setManualRenderingFormat:'),
           args: <dynamic>[manualRenderingFormat]);
   @NativeAvailable(macos: '10.13', ios: '11.0', watchos: '4.0', tvos: '11.0')
-  AVAudioFrameCount get manualRenderingMaximumFrameCount {
-    Pointer<Void> result =
-        perform(SEL('manualRenderingMaximumFrameCount'), decodeRetVal: false)
-            as Pointer<Void>;
-    return AVAudioFrameCount.fromPointer(result);
-  }
+  // AVAudioFrameCount get manualRenderingMaximumFrameCount {
+  //   Pointer<Void> result =
+  //       perform(SEL('manualRenderingMaximumFrameCount'), decodeRetVal: false)
+  //           as Pointer<Void>;
+  //   return AVAudioFrameCount.fromPointer(result);
+  // }
 
-  @NativeAvailable(macos: '10.13', ios: '11.0', watchos: '4.0', tvos: '11.0')
-  set manualRenderingMaximumFrameCount(
-          AVAudioFrameCount manualRenderingMaximumFrameCount) =>
-      perform(SEL('setManualRenderingMaximumFrameCount:'),
-          args: <dynamic>[manualRenderingMaximumFrameCount]);
+  // @NativeAvailable(macos: '10.13', ios: '11.0', watchos: '4.0', tvos: '11.0')
+  // set manualRenderingMaximumFrameCount(
+  //         AVAudioFrameCount manualRenderingMaximumFrameCount) =>
+  //     perform(SEL('setManualRenderingMaximumFrameCount:'),
+  //         args: <dynamic>[manualRenderingMaximumFrameCount]);
   @NativeAvailable(macos: '10.13', ios: '11.0', watchos: '4.0', tvos: '11.0')
   AVAudioFramePosition get manualRenderingSampleTime {
     Pointer<Void> result =
@@ -245,37 +246,37 @@ class AVAudioEngine extends NSObject {
     perform(SEL('detachNode:'), args: <dynamic>[node]);
   }
 
-  void connectToFromBusToBusFormat(AVAudioNode node1, AVAudioNode node2,
-      AVAudioNodeBus bus1, AVAudioNodeBus bus2,
-      {AVAudioFormat format}) {
-    perform(SEL('connect:to:fromBus:toBus:format:'),
-        args: <dynamic>[node1, node2, bus1, bus2, format]);
-  }
+  // void connectToFromBusToBusFormat(AVAudioNode node1, AVAudioNode node2,
+  //     AVAudioNodeBus bus1, AVAudioNodeBus bus2,
+  //     {AVAudioFormat format}) {
+  //   perform(SEL('connect:to:fromBus:toBus:format:'),
+  //       args: <dynamic>[node1, node2, bus1, bus2, format]);
+  // }
 
   void connectToFormat(AVAudioNode node1, AVAudioNode node2,
       {AVAudioFormat format}) {
     perform(SEL('connect:to:format:'), args: <dynamic>[node1, node2, format]);
   }
 
-  @NativeAvailable(macos: '10.11', ios: '9.0', watchos: '2.0', tvos: '9.0')
-  void connectToConnectionPointsFromBusFormat(AVAudioNode sourceNode,
-      AVAudioConnectionPoint destNodes, AVAudioNodeBus sourceBus,
-      {AVAudioFormat format}) {
-    perform(SEL('connect:toConnectionPoints:fromBus:format:'),
-        args: <dynamic>[sourceNode, destNodes, sourceBus, format]);
-  }
+  // @NativeAvailable(macos: '10.11', ios: '9.0', watchos: '2.0', tvos: '9.0')
+  // void connectToConnectionPointsFromBusFormat(AVAudioNode sourceNode,
+  //     AVAudioConnectionPoint destNodes, AVAudioNodeBus sourceBus,
+  //     {AVAudioFormat format}) {
+  //   perform(SEL('connect:toConnectionPoints:fromBus:format:'),
+  //       args: <dynamic>[sourceNode, destNodes, sourceBus, format]);
+  // }
 
-  void disconnectNodeInputBus(AVAudioNode node, AVAudioNodeBus bus) {
-    perform(SEL('disconnectNodeInput:bus:'), args: <dynamic>[node, bus]);
-  }
+  // void disconnectNodeInputBus(AVAudioNode node, AVAudioNodeBus bus) {
+  //   perform(SEL('disconnectNodeInput:bus:'), args: <dynamic>[node, bus]);
+  // }
 
   void disconnectNodeInput(AVAudioNode node) {
     perform(SEL('disconnectNodeInput:'), args: <dynamic>[node]);
   }
 
-  void disconnectNodeOutputBus(AVAudioNode node, AVAudioNodeBus bus) {
-    perform(SEL('disconnectNodeOutput:bus:'), args: <dynamic>[node, bus]);
-  }
+  // void disconnectNodeOutputBus(AVAudioNode node, AVAudioNodeBus bus) {
+  //   perform(SEL('disconnectNodeOutput:bus:'), args: <dynamic>[node, bus]);
+  // }
 
   void disconnectNodeOutput(AVAudioNode node) {
     perform(SEL('disconnectNodeOutput:'), args: <dynamic>[node]);
@@ -302,34 +303,34 @@ class AVAudioEngine extends NSObject {
     perform(SEL('stop'));
   }
 
-  @NativeAvailable(macos: '10.11', ios: '9.0', watchos: '2.0', tvos: '9.0')
-  AVAudioConnectionPoint inputConnectionPointForNodeInputBus(
-      AVAudioNode node, AVAudioNodeBus bus) {
-    Pointer<Void> result = perform(SEL('inputConnectionPointForNode:inputBus:'),
-        args: <dynamic>[node, bus], decodeRetVal: false) as Pointer<Void>;
-    return AVAudioConnectionPoint.fromPointer(result);
-  }
+  // @NativeAvailable(macos: '10.11', ios: '9.0', watchos: '2.0', tvos: '9.0')
+  // AVAudioConnectionPoint inputConnectionPointForNodeInputBus(
+  //     AVAudioNode node, AVAudioNodeBus bus) {
+  //   Pointer<Void> result = perform(SEL('inputConnectionPointForNode:inputBus:'),
+  //       args: <dynamic>[node, bus], decodeRetVal: false) as Pointer<Void>;
+  //   return AVAudioConnectionPoint.fromPointer(result);
+  // }
 
-  @NativeAvailable(macos: '10.11', ios: '9.0', watchos: '2.0', tvos: '9.0')
-  AVAudioConnectionPoint outputConnectionPointsForNodeOutputBus(
-      AVAudioNode node, AVAudioNodeBus bus) {
-    Pointer<Void> result = perform(
-        SEL('outputConnectionPointsForNode:outputBus:'),
-        args: <dynamic>[node, bus],
-        decodeRetVal: false) as Pointer<Void>;
-    return AVAudioConnectionPoint.fromPointer(result);
-  }
+  // @NativeAvailable(macos: '10.11', ios: '9.0', watchos: '2.0', tvos: '9.0')
+  // AVAudioConnectionPoint outputConnectionPointsForNodeOutputBus(
+  //     AVAudioNode node, AVAudioNodeBus bus) {
+  //   Pointer<Void> result = perform(
+  //       SEL('outputConnectionPointsForNode:outputBus:'),
+  //       args: <dynamic>[node, bus],
+  //       decodeRetVal: false) as Pointer<Void>;
+  //   return AVAudioConnectionPoint.fromPointer(result);
+  // }
 
-  @NativeAvailable(macos: '10.13', ios: '11.0', watchos: '4.0', tvos: '11.0')
-  bool enableManualRenderingModeFormatMaximumFrameCountError(
-      AVAudioEngineManualRenderingMode mode,
-      AVAudioFormat pcmFormat,
-      AVAudioFrameCount maximumFrameCount,
-      NSObjectRef<NSError> outError) {
-    return perform(
-        SEL('enableManualRenderingMode:format:maximumFrameCount:error:'),
-        args: <dynamic>[mode, pcmFormat, maximumFrameCount, outError]) as bool;
-  }
+  // @NativeAvailable(macos: '10.13', ios: '11.0', watchos: '4.0', tvos: '11.0')
+  // bool enableManualRenderingModeFormatMaximumFrameCountError(
+  //     AVAudioEngineManualRenderingMode mode,
+  //     AVAudioFormat pcmFormat,
+  //     AVAudioFrameCount maximumFrameCount,
+  //     NSObjectRef<NSError> outError) {
+  //   return perform(
+  //       SEL('enableManualRenderingMode:format:maximumFrameCount:error:'),
+  //       args: <dynamic>[mode, pcmFormat, maximumFrameCount, outError]) as bool;
+  // }
 
   @NativeAvailable(macos: '10.13', ios: '11.0', watchos: '4.0', tvos: '11.0')
   void disableManualRenderingMode() {
@@ -337,31 +338,31 @@ class AVAudioEngine extends NSObject {
   }
 
   @NativeAvailable(macos: '10.13', ios: '11.0', watchos: '4.0', tvos: '11.0')
-  AVAudioEngineManualRenderingStatus renderOfflineToBufferError(
-      AVAudioFrameCount numberOfFrames,
-      AVAudioPCMBuffer buffer,
-      NSObjectRef<NSError> outError) {
-    Pointer<Void> result = perform(SEL('renderOffline:toBuffer:error:'),
-        args: <dynamic>[numberOfFrames, buffer, outError],
-        decodeRetVal: false) as Pointer<Void>;
-    return AVAudioEngineManualRenderingStatus.fromPointer(result);
-  }
+  // AVAudioEngineManualRenderingStatus renderOfflineToBufferError(
+  //     AVAudioFrameCount numberOfFrames,
+  //     AVAudioPCMBuffer buffer,
+  //     NSObjectRef<NSError> outError) {
+  //   Pointer<Void> result = perform(SEL('renderOffline:toBuffer:error:'),
+  //       args: <dynamic>[numberOfFrames, buffer, outError],
+  //       decodeRetVal: false) as Pointer<Void>;
+  //   return AVAudioEngineManualRenderingStatus.fromPointer(result);
+  // }
 
-  @NativeAvailable(macos: '10.14', ios: '12.0', watchos: '5.0', tvos: '12.0')
-  void connectMIDIToFormatBlock(
-      AVAudioNode sourceNode, AVAudioNode destinationNode,
-      {AVAudioFormat format, AUMIDIOutputEventBlock tapBlock}) {
-    perform(SEL('connectMIDI:to:format:block:'),
-        args: <dynamic>[sourceNode, destinationNode, format, tapBlock]);
-  }
+  // @NativeAvailable(macos: '10.14', ios: '12.0', watchos: '5.0', tvos: '12.0')
+  // void connectMIDIToFormatBlock(
+  //     AVAudioNode sourceNode, AVAudioNode destinationNode,
+  //     {AVAudioFormat format, AUMIDIOutputEventBlock tapBlock}) {
+  //   perform(SEL('connectMIDI:to:format:block:'),
+  //       args: <dynamic>[sourceNode, destinationNode, format, tapBlock]);
+  // }
 
-  @NativeAvailable(macos: '10.14', ios: '12.0', watchos: '5.0', tvos: '12.0')
-  void connectMIDIToNodesFormatBlock(
-      AVAudioNode sourceNode, AVAudioNode destinationNodes,
-      {AVAudioFormat format, AUMIDIOutputEventBlock tapBlock}) {
-    perform(SEL('connectMIDI:toNodes:format:block:'),
-        args: <dynamic>[sourceNode, destinationNodes, format, tapBlock]);
-  }
+  // @NativeAvailable(macos: '10.14', ios: '12.0', watchos: '5.0', tvos: '12.0')
+  // void connectMIDIToNodesFormatBlock(
+  //     AVAudioNode sourceNode, AVAudioNode destinationNodes,
+  //     {AVAudioFormat format, AUMIDIOutputEventBlock tapBlock}) {
+  //   perform(SEL('connectMIDI:toNodes:format:block:'),
+  //       args: <dynamic>[sourceNode, destinationNodes, format, tapBlock]);
+  // }
 
   @NativeAvailable(macos: '10.14', ios: '12.0', watchos: '5.0', tvos: '12.0')
   void disconnectMIDIFrom(AVAudioNode sourceNode, AVAudioNode destinationNode) {

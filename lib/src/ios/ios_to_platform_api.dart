@@ -371,7 +371,7 @@ class IOSToPlatformAPI extends SoundsToPlatformApi {
           AudioFilePropertyID.kAudioFilePropertyEstimatedDuration,
           outDataSize.addressOfNative,
           thePropSize.addressOfNative);
-          
+
       AudioFileClose(wfileID);
     }
     print("getDuration status $status");

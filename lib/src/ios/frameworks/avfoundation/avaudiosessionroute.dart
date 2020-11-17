@@ -7,22 +7,26 @@ import 'package:dart_native/dart_native.dart';
 import 'package:dart_native_gen/dart_native_gen.dart';
 import 'package:sounds/src/ios/frameworks/avfoundation/avaudiosessiontypes.dart';
 
-import 'hacks.dart';
+import 'audiochannelabel.dart';
+
 // You can uncomment this line when this package is ready.
 // import 'package:avfaudio/avaudiosessiontypes.dart';
 ///This is a nasty hack
 typedef AVAudioSessionLocation = Function(Pointer<Void> p);
-dynamic Function(Pointer<Void> p) AVAudioSessionLocationFromPointer(Pointer<Void> p) {
+dynamic Function(Pointer<Void> p) AVAudioSessionLocationFromPointer(
+    Pointer<Void> p) {
   return AVAudioSessionLocation as dynamic Function(Pointer<Void> p);
 }
 
 typedef AVAudioSessionOrientation = Function(Pointer p);
-dynamic Function(Pointer<Void> p) AVAudioSessionOrientationFromPointer(Pointer<Void> p) {
+dynamic Function(Pointer<Void> p) AVAudioSessionOrientationFromPointer(
+    Pointer<Void> p) {
   return AVAudioSessionLocation as dynamic Function(Pointer<Void> p);
 }
 
 typedef AVAudioSessionPolarPattern = Function(Pointer p);
-dynamic Function(Pointer<Void> p) AVAudioSessionPolarPatternFromPointer(Pointer<Void> p) {
+dynamic Function(Pointer<Void> p) AVAudioSessionPolarPatternFromPointer(
+    Pointer<Void> p) {
   return AVAudioSessionLocation as dynamic Function(Pointer<Void> p);
 }
 
@@ -131,7 +135,8 @@ class AVAudioSessionDataSourceDescription extends NSObject {
   AVAudioSessionOrientation get orientation {
     Pointer<Void> result =
         perform(SEL('orientation'), decodeRetVal: false) as Pointer<Void>;
-    return AVAudioSessionOrientationFromPointer(result) as AVAudioSessionOrientation;
+    return AVAudioSessionOrientationFromPointer(result)
+        as AVAudioSessionOrientation;
   }
 
   @NativeAvailable(ios: '7.0', watchos: '2.0', tvos: '9.0')
@@ -144,7 +149,8 @@ class AVAudioSessionDataSourceDescription extends NSObject {
     Pointer<Void> result =
         perform(SEL('supportedPolarPatterns'), decodeRetVal: false)
             as Pointer<Void>;
-    return AVAudioSessionPolarPatternFromPointer(result) as AVAudioSessionPolarPattern;
+    return AVAudioSessionPolarPatternFromPointer(result)
+        as AVAudioSessionPolarPattern;
   }
 
   @NativeAvailable(ios: '7.0', tvos: '9.0')
@@ -159,7 +165,8 @@ class AVAudioSessionDataSourceDescription extends NSObject {
     Pointer<Void> result =
         perform(SEL('selectedPolarPattern'), decodeRetVal: false)
             as Pointer<Void>;
-    return AVAudioSessionPolarPatternFromPointer(result) as AVAudioSessionPolarPattern;
+    return AVAudioSessionPolarPatternFromPointer(result)
+        as AVAudioSessionPolarPattern;
   }
 
   @NativeAvailable(ios: '7.0', tvos: '9.0')
@@ -173,7 +180,8 @@ class AVAudioSessionDataSourceDescription extends NSObject {
     Pointer<Void> result =
         perform(SEL('preferredPolarPattern'), decodeRetVal: false)
             as Pointer<Void>;
-    return AVAudioSessionPolarPatternFromPointer(result) as AVAudioSessionPolarPattern;
+    return AVAudioSessionPolarPatternFromPointer(result)
+        as AVAudioSessionPolarPattern;
   }
 
   @NativeAvailable(ios: '7.0', tvos: '9.0')

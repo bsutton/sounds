@@ -15,15 +15,23 @@
  */
 
 // ignore_for_file: implementation_imports
+import 'package:dart_native/src/ios/foundation/gcd.dart';
+import 'dart:ffi';
+
 import 'package:dart_native/src/ios/foundation/nserror.dart';
 import 'package:dart_native/src/ios/foundation/objc_basic_type.dart';
+import 'package:dart_native/src/ios/runtime/selector.dart';
+import 'package:dart_native/src/ios/runtime/protocol.dart';
+import 'package:dart_native/src/ios/runtime/nsobject_protocol.dart';
+import 'package:dart_native/src/ios/runtime/nsobject.dart';
+import 'package:dart_native/src/ios/runtime/class.dart';
 
 import '../../sounds.dart';
 import '../platform/sounds_platform_api.dart';
 import 'frameworks/avfoundation/avaudioplayer.dart';
+import 'frameworks/avfoundation/avaudioplayerdelegate.dart';
 import 'frameworks/avfoundation/avaudiosession.dart';
 import 'frameworks/avfoundation/avaudiosessioncategory.dart';
-import 'frameworks/avfoundation/hacks.dart';
 import 'shade_player_ios.dart';
 import 'sounds.dart';
 
@@ -436,7 +444,8 @@ sending updateProgress: duration: $duration, position: $currentTime""");
     }
     stopProgressTimer();
   }
-  ///TODO this is unused but might still need to be 
+
+  ///TODO this is unused but might still need to be
   // void _setCategory(AVAudioSessionCategory category, AVAudioSessionMode mode,
   //     AVAudioSessionCategoryOptions options) {
   //   // Able to play in silent mode
@@ -455,7 +464,7 @@ sending updateProgress: duration: $duration, position: $currentTime""");
   //   // result(r)
   // }
 
-  ///TODO this is unused but might still need to be 
+  ///TODO this is unused but might still need to be
   // void _setActive(bool enabled) {
   //   if (enabled) {
   //     if (setActiveDone != t_SET_CATEGORY_DONE.not_SET) {
@@ -516,6 +525,111 @@ sending updateProgress: duration: $duration, position: $currentTime""");
       AVAudioPlayer player, NSUInteger flags) {
     // TODO: implement audioPlayerEndInterruptionWithOptions
   }
+
+  @override
+  void audioPlayerDecodeErrorDidOccur(AVAudioPlayer player, Error error) {
+    // TODO: implement audioPlayerDecodeErrorDidOccur
+  }
+
+  @override
+  NSObject autorelease() {
+    // TODO: implement autorelease
+    throw UnimplementedError();
+  }
+
+  @override
+  bool conforms({Protocol to}) {
+    // TODO: implement conforms
+    throw UnimplementedError();
+  }
+
+  @override
+  NSObject copy() {
+    // TODO: implement copy
+    throw UnimplementedError();
+  }
+
+  @override
+  // TODO: implement debugDescription
+  String get debugDescription => throw UnimplementedError();
+
+  @override
+  // TODO: implement description
+  String get description => throw UnimplementedError();
+
+  @override
+  // TODO: implement hash
+  int get hash => throw UnimplementedError();
+
+  @override
+  NSObject init() {
+    // TODO: implement init
+    throw UnimplementedError();
+  }
+
+  @override
+  bool isEqual(NSObjectProtocol object) {
+    // TODO: implement isEqual
+    throw UnimplementedError();
+  }
+
+  @override
+  bool isKind({Class of}) {
+    // TODO: implement isKind
+    throw UnimplementedError();
+  }
+
+  @override
+  bool isMember({Class of}) {
+    // TODO: implement isMember
+    throw UnimplementedError();
+  }
+
+  @override
+  bool isProxy() {
+    // TODO: implement isProxy
+    throw UnimplementedError();
+  }
+
+  @override
+  // TODO: implement isa
+  Class get isa => throw UnimplementedError();
+
+  @override
+  NSObject mutableCopy() {
+    // TODO: implement mutableCopy
+    throw UnimplementedError();
+  }
+
+  @override
+  void perform(SEL selector,
+      {List args,
+      DispatchQueue onQueue,
+      bool waitUntilDone = true,
+      bool decodeRetVal = true}) {
+    // TODO: implement perform
+    throw UnimplementedError();
+  }
+
+  @override
+  // TODO: implement pointer
+  Pointer<Void> get pointer => throw UnimplementedError();
+
+  @override
+  bool responds({SEL to}) {
+    // TODO: implement responds
+    throw UnimplementedError();
+  }
+
+  @override
+  NSObjectProtocol self() {
+    // TODO: implement self
+    throw UnimplementedError();
+  }
+
+  @override
+  // TODO: implement superclass
+  Class get superclass => throw UnimplementedError();
 
   // @override
   // registerAVAudioPlayerDelegate() {

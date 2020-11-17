@@ -63,7 +63,8 @@ class URL {
 
   int get host => 0;
 }
-//TODO fix what this is returning 
+
+//TODO fix what this is returning
 class NSURLSession {
   URLSessionDataTask dataTask({URL url, Set<dynamic> compvarionHandler}) {
     return URLSessionDataTask();
@@ -89,10 +90,10 @@ class ShadePlayerIOS extends SoundPlayerIOS {
   AVAudioSessionCategory _setActiveDone;
   AVAudioSessionCategory _setCategoryDone;
 
-  ///
-  void init() {
-    /// super.init();
-  }
+  // ///
+  // void init() {
+  //   super.init();
+  // }
 
   // ignore: avoid_positional_boolean_parameters
   void start(
