@@ -32,7 +32,7 @@ import 'frameworks/avfoundation/avaudioplayer.dart';
 import 'frameworks/avfoundation/avaudioplayerdelegate.dart';
 import 'frameworks/avfoundation/avaudiosession.dart';
 import 'frameworks/avfoundation/avaudiosessioncategory.dart';
-import 'shade_player_ios.dart';
+import 'frameworks/util/url.dart';
 import 'sounds.dart';
 
 class SoundPlayerIOS implements AVAudioPlayerDelegate {

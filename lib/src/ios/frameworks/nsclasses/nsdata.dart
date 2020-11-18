@@ -1,7 +1,7 @@
 import 'dart:ffi';
 
 import 'package:dart_native/dart_native.dart';
-import 'package:sounds/src/ios/shade_player_ios.dart';
+import 'package:sounds/src/ios/frameworks/util/url.dart';
 
 class NSData extends NSObject {
   NSData(Class isa) : super(isa);

@@ -18,6 +18,7 @@ import 'package:dart_native/dart_native.dart';
 import 'package:sounds/src/ios/frameworks/avfoundation/avaudiosessioncategory.dart';
 import 'package:sounds/src/ios/frameworks/avfoundation/avaudiosessiontypes.dart';
 import 'package:sounds/src/ios/frameworks/mpclasses/mpnowplayinginfoproperty.dart';
+import 'package:sounds/src/ios/frameworks/util/url.dart';
 import 'package:sounds/src/ios/ios_to_platform_api.dart';
 import 'package:sounds/src/ios/sound_player_ios.dart';
 import 'package:sounds/src/ios/sounds.dart';
@@ -53,16 +54,6 @@ class FlutterError {
 }
 
 class URLSessionDataTask {}
-
-class URL {
-  String fileURLWithPath;
-
-  URL({String this.fileURLWithPath});
-
-  int get scheme => 0;
-
-  int get host => 0;
-}
 
 //TODO fix what this is returning
 class NSURLSession {
