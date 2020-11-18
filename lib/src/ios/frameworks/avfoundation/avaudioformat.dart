@@ -5,10 +5,11 @@ import 'dart:ffi';
 
 import 'package:dart_native/dart_native.dart';
 import 'package:dart_native_gen/dart_native_gen.dart';
+import 'package:sounds/src/ios/frameworks/nsclasses/nsdata.dart';
+import 'package:sounds/src/ios/frameworks/nsclasses/nssecurecoding.dart';
 
 import 'avaudiochannellayout.dart';
 import 'avaudiocommonformat.dart';
-import 'hacks.dart';
 // You can uncomment this line when this package is ready.
 // import 'package:avfaudio/avaudiochannellayout.dart';
 // You can uncomment this line when this package is ready.
@@ -222,5 +223,17 @@ class AVAudioFormat extends NSObject with NSSecureCoding {
 
   bool isEqual(covariant NSObject object) {
     return perform(SEL('isEqual:'), args: <dynamic>[object]) as bool;
+  }
+
+  @override
+  id decodeObjectOfClass(Class aClass, NSString key) {
+    // TODO: implement decodeObjectOfClass
+    throw UnimplementedError();
+  }
+
+  @override
+  T initWithCoder<T>() {
+    // TODO: implement initWithCoder
+    throw UnimplementedError();
   }
 }

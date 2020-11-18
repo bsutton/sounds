@@ -26,11 +26,11 @@ import 'package:sounds_common/sounds_common.dart';
 import '../../sounds.dart';
 import 'frameworks/avfoundation/avaudioplayer.dart';
 import 'frameworks/avfoundation/avaudiosession.dart';
-import 'frameworks/avfoundation/hacks.dart';
 import 'frameworks/mpclasses/mediaItemproperty.dart';
 import 'frameworks/mpclasses/mpmediaitemartwork.dart';
 import 'frameworks/mpclasses/mpremotecommand.dart';
 import 'frameworks/mpclasses/mpremotecommandcenter.dart';
+import 'frameworks/nsclasses/nsdata.dart';
 import 'frameworks/util/uiimage.dart';
 
 /// Plays an audio track using the OSs on UI (sometimes referred to as a Shade) media

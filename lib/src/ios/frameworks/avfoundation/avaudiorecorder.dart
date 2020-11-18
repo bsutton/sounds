@@ -6,10 +6,10 @@ import 'dart:ffi';
 import 'package:dart_native/dart_native.dart';
 import 'package:dart_native_gen/dart_native_gen.dart';
 import 'package:sounds/src/ios/frameworks/avfoundation/avaudioformat.dart';
-import 'package:sounds/src/ios/frameworks/avfoundation/nsurl.dart';
+import 'package:sounds/src/ios/frameworks/nsclasses/nstimeinterval.dart';
+import 'package:sounds/src/ios/frameworks/nsclasses/nsurl.dart';
 
 import 'avaudiosessionroute.dart';
-import 'hacks.dart';
 // You can uncomment this line when this package is ready.
 // import 'package:avfaudio/avaudioformat.dart';
 // You can uncomment this line when this package is ready.

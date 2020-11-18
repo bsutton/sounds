@@ -6,7 +6,9 @@ import 'dart:ffi';
 import 'package:dart_native/dart_native.dart';
 import 'package:dart_native_gen/dart_native_gen.dart';
 
-import 'hacks.dart';
+import 'nscharacterset.dart';
+import 'nsdata.dart';
+import 'nssecurecoding.dart';
 // You can uncomment this line when this package is ready.
 // import 'package:foundation/nsobject.dart';
 // You can uncomment this line when this package is ready.
@@ -536,6 +538,18 @@ class NSURL extends NSObject with NSSecureCoding {
   void stopAccessingSecurityScopedResource() {
     perform(SEL('stopAccessingSecurityScopedResource'));
   }
+
+  @override
+  id decodeObjectOfClass(Class aClass, NSString key) {
+    // TODO: implement decodeObjectOfClass
+    throw UnimplementedError();
+  }
+
+  @override
+  T initWithCoder<T>() {
+    // TODO: implement initWithCoder
+    throw UnimplementedError();
+  }
 }
 
 ///
@@ -609,6 +623,18 @@ class NSURLQueryItem extends NSObject with NSSecureCoding {
         args: <dynamic>[name, value],
         decodeRetVal: false) as Pointer<Void>;
     return NSURLQueryItem.fromPointer(result);
+  }
+
+  @override
+  id decodeObjectOfClass(Class aClass, NSString key) {
+    // TODO: implement decodeObjectOfClass
+    throw UnimplementedError();
+  }
+
+  @override
+  T initWithCoder<T>() {
+    // TODO: implement initWithCoder
+    throw UnimplementedError();
   }
 }
 
@@ -1176,6 +1202,18 @@ class NSFileSecurity extends NSObject with NSSecureCoding {
 
   ///
   NSFileSecurity.fromPointer(Pointer<Void> ptr) : super.fromPointer(ptr);
+
+  @override
+  id decodeObjectOfClass(Class aClass, NSString key) {
+    // TODO: implement decodeObjectOfClass
+    throw UnimplementedError();
+  }
+
+  @override
+  T initWithCoder<T>() {
+    // TODO: implement initWithCoder
+    throw UnimplementedError();
+  }
 
   ///
   // NSFileSecurity.withCoder(NSCoder coder)

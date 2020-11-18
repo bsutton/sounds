@@ -5,11 +5,12 @@ import 'dart:ffi';
 
 import 'package:dart_native/dart_native.dart';
 import 'package:dart_native_gen/dart_native_gen.dart';
-import 'package:sounds/src/ios/frameworks/avfoundation/nsurl.dart';
+import 'package:sounds/src/ios/frameworks/nsclasses/nsdata.dart';
+import 'package:sounds/src/ios/frameworks/nsclasses/nstimeinterval.dart';
+import 'package:sounds/src/ios/frameworks/nsclasses/nsurl.dart';
 
 import '../../shade_player_ios.dart';
 import 'avaudioplayerdelegate.dart';
-import 'hacks.dart';
 // ignore_for_file: public_member_api_docs
 
 @native

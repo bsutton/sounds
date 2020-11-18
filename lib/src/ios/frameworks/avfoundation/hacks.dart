@@ -1,7 +1,3 @@
-import 'dart:ffi';
-
-import 'package:sounds/src/ios/shade_player_ios.dart';
-
 ///Apple has deprecated this class. They suggest "Instead you should register for notifications".
 ///https://developer.apple.com/documentation/avfoundation/avaudiosessiondelegate?language=objc
 ///Protocols are equivilent to implementations
@@ -102,26 +98,35 @@ import 'package:sounds/src/ios/shade_player_ios.dart';
 // class NSCoder {}
 // class AVAudioNodeBus {}
 
+///TODO this needs to be set up bookmarked
+// class NSSecureCoding {}
+
+///TODO Not sure how accurate this is at this point
+// class NSData extends NSObject {
+//   NSData(Class isa) : super(isa);
+//   NSData.fromPointer(Pointer<Void> result) : super.fromPointer(result);
+//   String datapath;
+//   NSData.fromURL(URL result) {
+//     datapath = result.fileURLWithPath;
+//   }
+//   void add(Object object) {}
+// }
 
 ///TODO this needs to be set up
-class NSSecureCoding {}
+// class NSTimeInterval {
+//   double value;
+//   NSTimeInterval(this.value);
+//   NSTimeInterval.fromPointer(Pointer<Void> result) {}
+// }
 
-///TODO This needs to be set up
-class NSData {
-  NSData.fromPointer(Pointer<Void> result) {}
-  NSData.fromURL(URL result) {}
-  void add(Object object) {}
-}
+///TODO not sure if this works the way i'm expecting
+// class NSTimeInterval extends NSObject {
+//   double value;
+//   NSTimeInterval(this.value);
+//   NSTimeInterval.fromPointer(Pointer<Void> p) : super.fromPointer(p) {}
+// }
 
-///TODO this needs to be set up
-class NSTimeInterval {
-  double value;
-  NSTimeInterval(this.value);
-  NSTimeInterval.fromPointer(Pointer<Void> result) {}
-}
-
-
-///TODO this needs to be set up
-class NSCharacterSet {
-  NSCharacterSet.fromPointer(Pointer<Void> result) {}
-}
+// ///TODO this needs to be set up
+// class NSCharacterSet extends NSObject {
+//   NSCharacterSet.fromPointer(Pointer<Void> result) : super.fromPointer(result);
+// }

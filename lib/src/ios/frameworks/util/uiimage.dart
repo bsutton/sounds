@@ -5,7 +5,8 @@ import 'dart:ffi';
 
 import 'package:dart_native/dart_native.dart';
 import 'package:dart_native_gen/dart_native_gen.dart';
-import 'package:sounds/src/ios/frameworks/avfoundation/hacks.dart';
+import 'package:sounds/src/ios/frameworks/nsclasses/nsdata.dart';
+import 'package:sounds/src/ios/frameworks/nsclasses/nssecurecoding.dart';
 // You can uncomment this line when this package is ready.
 // import 'package:foundation/foundation.dart';
 // You can uncomment this line when this package is ready.
@@ -271,6 +272,18 @@ class UIImage extends NSObject with NSSecureCoding {
     Pointer<Void> result = Class('UIImage').perform(SEL('imageWithData:'),
         args: <dynamic>[data], decodeRetVal: false) as Pointer<Void>;
     return UIImage.fromPointer(result);
+  }
+
+  @override
+  id decodeObjectOfClass(Class aClass, NSString key) {
+    // TODO: implement decodeObjectOfClass
+    throw UnimplementedError();
+  }
+
+  @override
+  T initWithCoder<T>() {
+    // TODO: implement initWithCoder
+    throw UnimplementedError();
   }
 //   @NativeAvailable(ios: '6.0')
 //   static UIImage imageWithDataScale(NSData data, double scale) {

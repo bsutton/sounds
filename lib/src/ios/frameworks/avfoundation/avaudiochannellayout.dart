@@ -5,8 +5,7 @@ import 'dart:ffi';
 
 import 'package:dart_native/dart_native.dart';
 import 'package:dart_native_gen/dart_native_gen.dart';
-
-import 'hacks.dart';
+import 'package:sounds/src/ios/frameworks/nsclasses/nssecurecoding.dart';
 // You can uncomment this line when this package is ready.
 // import 'package:avfaudio/avaudiotypes.dart';
 
@@ -75,6 +74,18 @@ class AVAudioChannelLayout extends NSObject with NSSecureCoding {
 
   bool isEqual(NSObjectProtocol object) {
     return perform(SEL('isEqual:'), args: <dynamic>[object]) as bool;
+  }
+
+  @override
+  id decodeObjectOfClass(Class aClass, NSString key) {
+    // TODO: implement decodeObjectOfClass
+    throw UnimplementedError();
+  }
+
+  @override
+  T initWithCoder<T>() {
+    // TODO: implement initWithCoder
+    throw UnimplementedError();
   }
 
   // static AVAudioChannelLayout layoutWithLayoutTag(

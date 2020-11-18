@@ -5,11 +5,11 @@ import 'dart:ffi';
 
 import 'package:dart_native/dart_native.dart';
 import 'package:dart_native_gen/dart_native_gen.dart';
+import 'package:sounds/src/ios/frameworks/nsclasses/nstimeinterval.dart';
 import 'avaudiobuffer.dart';
 import 'avaudiotime.dart';
 
 import 'avaudioengine.dart';
-import 'hacks.dart';
 // You can uncomment this line when this package is ready.
 // import 'package:avfaudio/avaudiotypes.dart';
 // You can uncomment this line when this package is ready.
