@@ -20,7 +20,7 @@ dependencies:
     path: ../sounds_common
   sounds_platform_interface:
     path: ../sounds_platform_interface
-
+  test:
   uuid: ^2.0.4
   flutter: 
     sdk: flutter
