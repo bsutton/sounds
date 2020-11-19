@@ -15,7 +15,8 @@ Flutter plugin that provides audio recording and playback services
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.public_header_files = 'Classes/**/*.h'
-  s.dependency 'Flutter'
+  s.vendored_frameworks = 'Flutter.framework'
+  #s.dependency 'Flutter'
   s.platform = :ios, '10.0'
 
   s.ios.deployment_target = '10.0'
