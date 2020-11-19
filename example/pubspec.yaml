@@ -15,7 +15,7 @@ dependencies:
   flutter:
     sdk: flutter
   sounds:
-    path: ..    
+    path: ..
   sounds_common: #^1.0.0
     path: ../../sounds_common
 

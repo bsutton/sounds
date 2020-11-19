@@ -6,7 +6,7 @@ description: Sounds provide a complete api and Widgets for audio playback and re
 repository: https://github.com/bsutton/sounds
 environment: 
   sdk: '>=2.10.0 <3.0.0'
-  flutter: '>=1.20.0 <2.0.0'
+  flutter: '>=1.20.0 <3.0.0'
 dependencies: 
   dart_native: ^0.3.4
   dart_numerics: ^0.0.5
