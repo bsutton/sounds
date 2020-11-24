@@ -8,6 +8,7 @@ pubspec.lock
 android/gradle
 build/
 
+.symlinks
 .idea/
 sounds.iml
 sounds_android.iml
