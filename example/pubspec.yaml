@@ -12,6 +12,7 @@ environment:
   sdk: ">=2.10.0 <3.0.0"
 
 dependencies:
+  dart_native: ^0.3.4
   flutter:
     sdk: flutter
   sounds:

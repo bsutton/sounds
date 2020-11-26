@@ -8,7 +8,7 @@ class CFAllocatorRef extends Struct {}
 class CFURLRef extends Struct {}
 
 // ignore: avoid_classes_with_only_static_members
-class CFURLPathStyle extends Struct {
+class CFURLPathStyle{
   @Uint32()
   final int value;
   CFURLPathStyle(this.value);
@@ -17,7 +17,7 @@ class CFURLPathStyle extends Struct {
 }
 
 //Possbile this should be extending an NSObject
-class CFURL extends Struct {
+class CFURL{
   ///Path must always be to a file
   //original signiature
 
@@ -56,7 +56,7 @@ class CFString extends NSObject {
   }
 }
 
-class CFStringEncoding extends Struct {
+class CFStringEncoding{
   @Uint32()
   final int value;
   CFStringEncoding(this.value);
