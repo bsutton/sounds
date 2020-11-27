@@ -13,5 +13,5 @@ class MyApp extends StatelessWidget {
 String getURL() {
   runDartNative();
   CFURL obj = CFURL.fromfromFileSystemPathString('../assets/samples/sample.mp3', CFURLPathStyle(0));
-  return obj.toString();
+  return obj.addressOf.toString();
 }
