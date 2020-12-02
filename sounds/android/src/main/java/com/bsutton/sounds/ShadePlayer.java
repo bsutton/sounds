@@ -15,145 +15,137 @@ package com.bsutton.sounds;
  *   along with Sounds .  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import android.Manifest;
-import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.media.MediaPlayer;
-import android.media.MediaRecorder;
 import android.media.AudioManager;
-import android.os.Build;
-import android.os.Bundle;
 import android.os.Handler;
-import android.os.RemoteException;
-import android.os.SystemClock;
-import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaMetadataCompat;
-import android.support.v4.media.session.MediaControllerCompat;
-import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-import androidx.arch.core.util.Function;
-import androidx.core.app.ActivityCompat;
+import androidx.annotation.UiThread;
 
-import android.media.AudioFocusRequest;
-
-import java.io.*;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.time.Duration;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 // import io.flutter.embedding.engine.FlutterEngine;
 // import io.flutter.embedding.engine.plugins.FlutterPlugin;
 //import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 // import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 // import io.flutter.plugin.common.BinaryMessenger;
-import io.flutter.plugin.common.MethodCall;
-import io.flutter.plugin.common.MethodChannel;
-import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
-import io.flutter.plugin.common.MethodChannel.Result;
-
-import java.util.concurrent.Callable;
-
-import io.flutter.plugin.common.PluginRegistry;
-import io.flutter.plugin.common.PluginRegistry.Registrar;
-import com.bsutton.sounds.SoundPlayer;
-import com.bsutton.sounds.MediaBrowserHelper;
-import com.bsutton.sounds.Track;
 
 public class ShadePlayer extends SoundPlayer {
 	private MediaBrowserHelper mMediaBrowserHelper;
-	private Timer mTimer = new Timer();
-	final private Handler mainHandler = new Handler();
 
-	ShadePlayer(int aSlotNo) {
-		super(aSlotNo);
-		// slotNo = aSlotNo;
+	// Used to make callback on the main UI thread
+	// for progress updates
+	final private Handler tickUIHandler = new Handler();
+
+
+	private boolean playInBackground;
+	private boolean canPause;
+	private boolean canSkipBackward;
+	private boolean canSkipForward;
+
+	private SoundsPlatformApi.SoundPlayerProxy playerProxy;
+	private SoundsPlatformApi.TrackProxy trackProxy;
+
+	ShadePlayer() {
 	}
 
-	SoundPlayerPlugin getPlugin() {
-		return ShadePlayerPlugin.ShadePlayerPlugin;
+
+	private boolean connected = false;
+
+	void initializeShadePlayer(SoundsPlatformApi.SoundPlayerProxy playerProxy, boolean playInBackground,
+							   boolean canPause, boolean canSkipBackward, boolean canSkipForward) throws SoundsException {
+
+		if (mMediaBrowserHelper != null)
+			throw new SoundsException(ErrorCodes.errnoGeneral, "The player has already been initialised");
+
+		this.playerProxy = playerProxy;
+		this.playInBackground = playInBackground;
+		this.canPause = canPause;
+		this.canSkipBackward = canSkipBackward;
+		this.canSkipForward = canSkipForward;
+
+		audioManager = (AudioManager) SoundsPlugin.ctx.getSystemService(Context.AUDIO_SERVICE);
+
+
+		connected = false;
+		CountDownLatch connectedLatch = new CountDownLatch(1);
+
+		// If the initialization will be successful, result.success will
+		// be called, otherwise result.error will be called.
+		mMediaBrowserHelper = new MediaBrowserHelper(new MediaPlayerConnectionListener(connectedLatch, true),
+				new MediaPlayerConnectionListener(connectedLatch,  false));
+//		// Pass the playback state updater to the media browser
+//		mMediaBrowserHelper.setPlaybackStateUpdater(new PlaybackStateUpdater());
+
+		// The connection process has completed.
+		try {
+			connectedLatch.await(5, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			throw new SoundsException(ErrorCodes.errnoTimeout, "Timedout waiting for Media to start playing");
+		}
+
+		if (connected == false)
+			throw new SoundsException(ErrorCodes.errnoGeneral, "Failed to connect to the media browser");
+
+	}
+
+
+	/**
+	 * The callable instance to call when the media player has been connected.
+	 */
+	private class MediaPlayerConnectionListener implements Callable<Void> {
+		// Whether this callback is called when the connection is successful
+		private boolean isSuccessfulCallback;
+		private CountDownLatch connectedLatch;
+
+		MediaPlayerConnectionListener(CountDownLatch connectedLatch, boolean isSuccessfulCallback) {
+			this.isSuccessfulCallback = isSuccessfulCallback;
+			this.connectedLatch = connectedLatch;
+		}
+
+		@Override
+		public Void call() throws Exception {
+
+			// notify initialise that the connection process has completed.
+			connected = isSuccessfulCallback;
+			connectedLatch.countDown();
+			return null;
+		}
+	}
+
+
+	@Override
+	public void dispose() {
+		try {
+			releaseSoundPlayer();
+		}
+		catch (SoundsException e)
+		{
+			Log.d(TAG, "SoundPlayer.dispose() Exception: " + e.toString());
+		}
 	}
 
 	@Override
-	void initializeSoundPlayer(final MethodCall call, final Result result) {
-		// super.initializeSoundPlayer( call, result );
-		audioManager = (AudioManager) SoundPlayerPlugin.androidContext.getSystemService(Context.AUDIO_SERVICE);
-		assert (Sounds.androidActivity != null);
-
-		// Initialize the media browser if it hasn't already been initialized
-		if (mMediaBrowserHelper == null) {
-			// If the initialization will be successful, result.success will
-			// be called, otherwise result.error will be called.
-			mMediaBrowserHelper = new MediaBrowserHelper(new MediaPlayerConnectionListener(result, true),
-					new MediaPlayerConnectionListener(result, false));
-			// Pass the playback state updater to the media browser
-			mMediaBrowserHelper.setPlaybackStateUpdater(new PlaybackStateUpdater());
-
-		}
-		result.success("The player had already been initialized.");
-	}
-
-	@Override
-	void releaseSoundPlayer(final MethodCall call, final Result result) {
-		// Throw an error if the media player is not initialized
-		if (mMediaBrowserHelper == null) {
-			result.error(TAG, "The player cannot be released because it is not initialized.", null);
-			return;
-		}
+	void releaseSoundPlayer() throws SoundsException {
+		checkMediaPlayer();
 
 		// Release the media browser
 		mMediaBrowserHelper.releaseMediaBrowser();
 		mMediaBrowserHelper = null;
-		result.success("The player has been successfully released");
 	}
 
-	void invokeCallbackWithInteger(String methodName, int arg) {
-		Map<String, Object> dic = new HashMap<String, Object>();
-		dic.put("slotNo", slotNo);
-		dic.put("arg", arg);
-		getPlugin().invokeCallback(methodName, dic);
-	}
+	@Override
+	public void startPlayer(SoundsPlatformApi.TrackProxy track, Duration startAt) throws SoundsException {
+		this.trackProxy = track;
 
-	void invokeCallbackWithBoolean(String methodName, Boolean arg) {
-		Map<String, Object> dic = new HashMap<String, Object>();
-		dic.put("slotNo", slotNo);
-		dic.put("arg", arg);
-		getPlugin().invokeCallback(methodName, dic);
-	}
-
-	public void startShadePlayer(final MethodCall call, final Result result) {
-		final HashMap<String, Object> trackMap = call.argument("track");
-		final Track track = new Track(trackMap);
-
-		boolean canSkipForward = call.argument("canSkipForward");
-		boolean canSkipBackward = call.argument("canSkipBackward");
-		boolean canPause = call.argument("canPause");
-
-		// Exit the method if a media browser helper was not initialized
-		if (!wasMediaPlayerInitialized(result)) {
-			return;
-		}
+		checkMediaPlayer();
 
 		String path = track.getPath();
-
-		mTimer = new Timer();
 
 		if (canPause) {
 			mMediaBrowserHelper.setPauseHandler(new PauseHandler());
@@ -179,185 +171,174 @@ public class ShadePlayer extends SoundPlayer {
 			mMediaBrowserHelper.removePauseHandler();
 		}
 
-		if (setActiveDone == t_SET_CATEGORY_DONE.NOT_SET) {
-			requestFocus();
-			setActiveDone = t_SET_CATEGORY_DONE.FOR_PLAYING;
-		}
 
 		// Pass to the media browser the metadata to use in the notification
 		mMediaBrowserHelper.setNotificationMetadata(track);
 
+		CountDownLatch mediaStartedLatch = new CountDownLatch(1);
+
 		// Add the listeners for the onPrepared and onCompletion events
-		mMediaBrowserHelper.setMediaPlayerOnPreparedListener(new MediaPlayerOnPreparedListener(result, path));
+		mMediaBrowserHelper.setMediaPlayerOnPreparedListener(new MediaPlayerOnPreparedListener(mediaStartedLatch, trackProxy.getPath()));
 		mMediaBrowserHelper.setMediaPlayerOnCompletionListener(new MediaPlayerOnCompletionListener());
 
 		// Send the audio file to the media player
 		mMediaBrowserHelper.mediaControllerCompat.getTransportControls().playFromMediaId(path, null);
 
 		// The media player is started in the on prepared callback
+		// we wait for it to start.
+		try {
+			mediaStartedLatch.await(5, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			throw new SoundsException(ErrorCodes.errnoTimeout, "Timedout waiting for Media to start playing");
+		}
+
+		startProgressTimer();
+
 	}
 
-	private boolean _stopPlayer() {
-		// This remove all pending runnables
-		mTimer.cancel();
-		if (mMediaBrowserHelper == null)
-			return false;
-		if ((setActiveDone != t_SET_CATEGORY_DONE.BY_USER) && (setActiveDone != t_SET_CATEGORY_DONE.NOT_SET)) {
-			abandonFocus();
-			setActiveDone = t_SET_CATEGORY_DONE.NOT_SET;
+	private Duration trackDuration;
+
+	private void startProgressTimer( ) {
+		// Set timer task to send event to RN
+		trackDuration = Duration.ofMillis(mMediaBrowserHelper.mediaControllerCompat.getMetadata()
+				.getLong(MediaMetadataCompat.METADATA_KEY_DURATION));
+
+		// make certain no tickers are currently running.
+		stopProgressTimer( false);
+
+		tickUIHandler.post(() -> sendPlaybackProgress(trackDuration));
+	}
+
+	private void stopProgressTimer(boolean sendFinal) {
+		/// send a final update before we stop the ticker
+		/// so dart sees the last position we reached.
+		if (sendFinal) {
+			sendPlaybackProgress(trackDuration);
 		}
+		tickUIHandler.removeCallbacksAndMessages(null);
+	}
+
+	@UiThread
+	private void sendPlaybackProgress(Duration trackDuration) {
+		try {
+
+			PlaybackStateCompat playbackState = mMediaBrowserHelper.mediaControllerCompat
+					.getPlaybackState();
+
+			if (playbackState != null) {
+
+				long currentPosition = playbackState.getPosition();
+
+
+				SoundsPlatformApi.OnPlaybackProgress args = new SoundsPlatformApi.OnPlaybackProgress();
+				args.setPlayer(playerProxy);
+				args.setTrack(trackProxy);
+				args.setDuration(trackDuration.toMillis());
+				args.setPosition(currentPosition);
+
+				// send the update
+				tickUIHandler.post(new Runnable() {
+					@Override
+					public void run() {
+						new SoundsPlatformApi.SoundsFromPlatformApi(SoundsPlugin.getBinaryMessenger()).onPlaybackProgress(args, (reply) -> {});
+					}
+				});
+				// reschedule ourselves.
+				tickUIHandler.postDelayed(() -> sendPlaybackProgress(trackDuration), (model.progressInterval.toMillis()));
+			}
+			else
+			{
+				Log.e(TAG, "PlaybackState is null!");
+			}
+
+		} catch (Exception e) {
+			Log.d(TAG, "Exception: " + e.toString());
+		}
+	}
+
+	public void stopPlayer() throws SoundsException {
+		// This remove all pending runnables
+		stopProgressTimer(true);
+		checkMediaPlayer();
+
 		try {
 			// Stop the playback
 			mMediaBrowserHelper.stop();
 		} catch (Exception e) {
-			return false;
+			throw new SoundsException(ErrorCodes.errnoGeneral, e.getMessage());
 		}
-		return true;
 	}
 
-	@Override
-	public void stopPlayer(final MethodCall call, final Result result) {
-		_stopPlayer();
-		result.success("Unknown result");
-	}
+
 
 	@Override
-	public void pausePlayer(final MethodCall call, final Result result) {
-		// Exit the method if a media browser helper was not initialized
-		if (!wasMediaPlayerInitialized(result)) {
-			return;
-		}
-
-		if ((setActiveDone != t_SET_CATEGORY_DONE.BY_USER) && (setActiveDone != t_SET_CATEGORY_DONE.NOT_SET)) {
-			abandonFocus();
-			setActiveDone = t_SET_CATEGORY_DONE.NOT_SET;
-		}
+	public void pausePlayer() throws SoundsException {
+		checkMediaPlayer();
 
 		try {
+			stopProgressTimer(true);
 			// Pause the media player
 			mMediaBrowserHelper.pausePlayback();
-			result.success("paused player.");
 		} catch (Exception e) {
 			Log.e(TAG, "pausePlay exception: " + e.getMessage());
-			result.error(ERR_UNKNOWN, ERR_UNKNOWN, e.getMessage());
+			throw new SoundsException(ErrorCodes.errnoUnknownPlayer, e.getMessage());
 		}
 	}
 
 	@Override
-	public void resumePlayer(final MethodCall call, final Result result) {
-		// Exit the method if a media browser helper was not initialized
-		if (!wasMediaPlayerInitialized(result)) {
-			return;
-		}
+	public void resumePlayer() throws SoundsException {
+		checkMediaPlayer();
 
 		// Throw an error if we can't resume the media player because it is already
 		// playing
 		PlaybackStateCompat playbackState = mMediaBrowserHelper.mediaControllerCompat.getPlaybackState();
-		if (playbackState != null && playbackState.getState() == PlaybackStateCompat.STATE_PLAYING) {
-			result.error(ERR_PLAYER_IS_PLAYING, ERR_PLAYER_IS_PLAYING, ERR_PLAYER_IS_PLAYING);
-			return;
-		}
-		if (setActiveDone == t_SET_CATEGORY_DONE.NOT_SET) {
-			requestFocus();
-			setActiveDone = t_SET_CATEGORY_DONE.FOR_PLAYING;
-		}
 
 		try {
+			startProgressTimer();
 			// Resume the player
 			mMediaBrowserHelper.resumePlayback();
-
-			// Seek the player to the last position and resume it
-			result.success("resumed player.");
 		} catch (Exception e) {
 			Log.e(TAG, "mediaPlayer resume: " + e.getMessage());
-			result.error(ERR_UNKNOWN, ERR_UNKNOWN, e.getMessage());
+			throw new SoundsException(ErrorCodes.errnoGeneral, e.getMessage());
 		}
 	}
 
 	@Override
-	public void seekToPlayer(final MethodCall call, Result result) {
-		int millis = call.argument("milli");
+	public void seekToPlayer(Duration seekTo) throws SoundsException {
+		checkMediaPlayer();
 
-		// Exit the method if a media browser helper was not initialized
-		if (!wasMediaPlayerInitialized(result)) {
-			Log.d(TAG, "seekToPlayer ended with no initialization");
-			return;
-		}
-
-		mMediaBrowserHelper.seekTo(millis);
+		mMediaBrowserHelper.seekTo(seekTo.toMillis());
 		// Should declaratively change state:
 		// https://stackoverflow.com/questions/39719320/seekto-does-not-trigger-onplaybackstatechanged-in-mediacontrollercompat
 		mMediaBrowserHelper.playPlayback();
-
-		result.success(String.valueOf(millis));
 	}
 
 	@Override
-	public void setVolume(final MethodCall call, final Result result) {
-		// Exit the method if a media browser helper was not initialized
-		if (!wasMediaPlayerInitialized(result)) {
-			return;
-		}
-		double volume = call.argument("volume");
-		float mVolume = (float) volume;
+	public void setVolume(float volume) throws SoundsException {
+		checkMediaPlayer();
 
 		// Get the maximum value for the volume
 		int maxVolume = mMediaBrowserHelper.mediaControllerCompat.getPlaybackInfo().getMaxVolume();
 		// Get the value of the new volume level
-		int newVolume = (int) Math.floor(mVolume * maxVolume);
+		int newVolume = (int) Math.floor(volume * maxVolume);
 
 		// Adjust the media player volume to the given level
 		mMediaBrowserHelper.mediaControllerCompat.setVolumeTo(newVolume, 0);
-		result.success("Set volume");
 	}
 
-	public void setProgressInterval(final MethodCall call, Result result) {
-		if (call.argument("milli") == null)
-			return;
-		int duration = call.argument("milli");
-
-		this.model.progressInterval = duration;
-		result.success("setProgressInterval: " + this.model.progressInterval);
+	public void setPlaybackProgressInterval(Duration interval) {
+		this.model.progressInterval = interval;
 	}
 
-	private boolean wasMediaPlayerInitialized(final Result result) {
+	private void checkMediaPlayer() throws SoundsException {
 		if (mMediaBrowserHelper == null) {
 			Log.e(TAG, "initializePlayer() must be called before this method.");
-			result.error(TAG, "initializePlayer() must be called before this method.", null);
-			return false;
+			throw new SoundsException(ErrorCodes.errnoUnknownPlayer, "The MediaBrowser has not been initialised");
 		}
-
-		return true;
 	}
 
 	// -------------------------------------------------------------------------------------------------------------------------------
 
-	/**
-	 * The callable instance to call when the media player has been connected.
-	 */
-	private class MediaPlayerConnectionListener implements Callable<Void> {
-		private Result mResult;
-		// Whether this callback is called when the connection is successful
-		private boolean mIsSuccessfulCallback;
-
-		MediaPlayerConnectionListener(Result result, boolean isSuccessfulCallback) {
-			mResult = result;
-			mIsSuccessfulCallback = isSuccessfulCallback;
-		}
-
-		@Override
-		public Void call() throws Exception {
-			if (mIsSuccessfulCallback) {
-				// mResult.success( "The media player has been successfully initialized" );
-				invokeCallbackWithBoolean("onPlayerReady", true);
-			} else {
-				invokeCallbackWithBoolean("onPlayerReady", false);
-				// mResult.error( TAG, "An error occurred while initializing the media player",
-				// null );
-			}
-			return null;
-		}
-	}
 
 	/**
 	 * A listener that is triggered when the pause buttons in the notification are
@@ -372,10 +353,21 @@ public class ShadePlayer extends SoundPlayer {
 		@Override
 		public Void call() throws Exception {
 			PlaybackStateCompat playbackState = mMediaBrowserHelper.mediaControllerCompat.getPlaybackState();
-			if (playbackState.getState() == PlaybackStateCompat.STATE_PLAYING)
-				invokeCallbackWithBoolean("pause", true);
+			if (playbackState.getState() == PlaybackStateCompat.STATE_PLAYING) {
+				SoundsPlatformApi.OnShadePaused args = new SoundsPlatformApi.OnShadePaused();
+				args.setPlayer(playerProxy);
+				args.setTrack(trackProxy);
+				new SoundsPlatformApi.SoundsFromPlatformApi(SoundsPlugin.getBinaryMessenger()).onShadePaused(args, (reply) -> {});
+			}
 			else
-				invokeCallbackWithBoolean("resume", true);
+			{
+				SoundsPlatformApi.OnShadeResumed args = new SoundsPlatformApi.OnShadeResumed();
+				args.setPlayer(playerProxy);
+				args.setTrack(trackProxy);
+				new SoundsPlatformApi.SoundsFromPlatformApi(SoundsPlugin.getBinaryMessenger()).onShadeResumed(args, (reply) -> {});
+
+			}
+
 
 			return null;
 		}
@@ -395,37 +387,45 @@ public class ShadePlayer extends SoundPlayer {
 		@Override
 		public Void call() throws Exception {
 			if (mIsSkippingForward) {
-				getPlugin().invokeCallbackWithString(slotNo, "skipForward", null);
+				SoundsPlatformApi.OnShadeSkipForward args = new SoundsPlatformApi.OnShadeSkipForward();
+				args.setPlayer(playerProxy);
+				args.setTrack(trackProxy);
+				new SoundsPlatformApi.SoundsFromPlatformApi(SoundsPlugin.getBinaryMessenger()).onShadeSkipForward(args, (reply) -> {});
+
 			} else {
-				getPlugin().invokeCallbackWithString(slotNo, "skipBackward", null);
+				SoundsPlatformApi.OnShadeSkipBackward args = new SoundsPlatformApi.OnShadeSkipBackward();
+				args.setPlayer(playerProxy);
+				args.setTrack(trackProxy);
+				new SoundsPlatformApi.SoundsFromPlatformApi(SoundsPlugin.getBinaryMessenger()).onShadeSkipBackward(args, (reply) -> {});
 			}
 
 			return null;
 		}
 	}
 
-	/**
-	 * A function that triggers a function in the Dart code to update the playback
-	 * state.
-	 */
-	private class PlaybackStateUpdater implements Function<BackgroundAudioService.SystemPlaybackState, Void> {
-		@Override
-		public Void apply(BackgroundAudioService.SystemPlaybackState newState) {
-			invokeCallbackWithInteger("updatePlaybackState", newState.stateNo);
-			return null;
-		}
-	}
+//	/**
+//	 * A function that triggers a function in the Dart code to update the playback
+//	 * state.
+//	 */
+//	private class PlaybackStateUpdater implements Function<BackgroundAudioService.SystemPlaybackState, Void> {
+//		@Override
+//		public Void apply(BackgroundAudioService.SystemPlaybackState newState) {
+//			invokeCallbackWithInteger("updatePlaybackState", newState.stateNo);
+//			return null;
+//		}
+//	}
 
 	/**
 	 * The callable instance to call when the media player is prepared.
 	 */
 	private class MediaPlayerOnPreparedListener implements Callable<Void> {
-		private Result mResult;
-		private String mPath;
 
-		private MediaPlayerOnPreparedListener(Result result, String path) {
-			mResult = result;
+		private String mPath;
+		CountDownLatch mediaStartedLatch;
+
+		private MediaPlayerOnPreparedListener(CountDownLatch mediaStartedLatch, String path) {
 			mPath = path;
+			this.mediaStartedLatch = mediaStartedLatch;
 		}
 
 		@Override
@@ -433,58 +433,14 @@ public class ShadePlayer extends SoundPlayer {
 			// The content is ready to be played, then play it
 			mMediaBrowserHelper.playPlayback();
 
-			// Set timer task to send event to RN
-			long trackDuration = mMediaBrowserHelper.mediaControllerCompat.getMetadata()
-					.getLong(MediaMetadataCompat.METADATA_KEY_DURATION);
-
-			TimerTask mTask = new TimerTask() {
-				@Override
-				public void run() {
-					// long time = mp.getCurrentPosition();
-					// DateFormat format = new SimpleDateFormat("mm:ss:SS", Locale.US);
-					// final String displayTime = format.format(time);
-
-					try {
-						if ((mMediaBrowserHelper == null) || (mMediaBrowserHelper.mediaControllerCompat == null)) {
-							Log.e(TAG,
-									"MediaPlayerOnPreparedListener timer: mMediaBrowserHelper.mediaControllerCompat is NULL. This is BAD !!!");
-
-							_stopPlayer();
-							if (mMediaBrowserHelper != null)
-								mMediaBrowserHelper.releaseMediaBrowser();
-							mMediaBrowserHelper = null;
-							return;
-						}
-						JSONObject json = new JSONObject();
-						PlaybackStateCompat playbackState = mMediaBrowserHelper.mediaControllerCompat
-								.getPlaybackState();
-
-						if (playbackState == null) {
-							return;
-						}
-
-						long currentPosition = playbackState.getPosition();
-
-						json.put("duration", String.valueOf(trackDuration));
-						json.put("current_position", String.valueOf(currentPosition));
-						mainHandler.post(new Runnable() {
-							@Override
-							public void run() {
-								getPlugin().invokeCallbackWithString(slotNo, "updateProgress", json.toString());
-							}
-						});
-
-					} catch (JSONException je) {
-						Log.d(TAG, "Json Exception: " + je.toString());
-					}
-				}
-			};
-
-			mTimer.schedule(mTask, 0, model.progressInterval);
-			mResult.success((mPath));
+			// the audio is running.
+			mediaStartedLatch.countDown();
 
 			return null;
 		}
+
+
+
 	}
 
 	/**
@@ -498,26 +454,20 @@ public class ShadePlayer extends SoundPlayer {
 		@Override
 		public Void call() throws Exception {
 			// Reset the timer
-			mTimer.cancel();
-			long trackDuration = mMediaBrowserHelper.mediaControllerCompat.getMetadata()
-					.getLong(MediaMetadataCompat.METADATA_KEY_DURATION);
-
 			Log.d(TAG, "Plays completed.");
-			try {
-				JSONObject json = new JSONObject();
-				long currentPosition = mMediaBrowserHelper.mediaControllerCompat.getPlaybackState().getPosition();
+			stopProgressTimer(true);
 
-				json.put("duration", String.valueOf(trackDuration));
-				json.put("current_position", String.valueOf(currentPosition));
-				getPlugin().invokeCallbackWithString(slotNo, "audioPlayerFinishedPlaying", json.toString());
-				if ((setActiveDone != t_SET_CATEGORY_DONE.BY_USER) && (setActiveDone != t_SET_CATEGORY_DONE.NOT_SET)) {
-					abandonFocus();
-					setActiveDone = t_SET_CATEGORY_DONE.NOT_SET;
+
+			SoundsPlatformApi.OnPlaybackFinished args = new SoundsPlatformApi.OnPlaybackFinished();
+			args.setPlayer(playerProxy);
+			args.setTrack(trackProxy);
+
+			tickUIHandler.post(new Runnable() {
+				@Override
+				public void run() {
+					new SoundsPlatformApi.SoundsFromPlatformApi(SoundsPlugin.getBinaryMessenger()).onPlaybackFinished(args, (reply) -> {});
 				}
-			} catch (JSONException je) {
-				Log.d(TAG, "Json Exception: " + je.toString());
-			}
-
+			});
 			return null;
 		}
 	}

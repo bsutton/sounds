@@ -14,19 +14,25 @@
  *   along with Sounds.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'package:sounds_platform_interface/sounds_platform_interface.dart';
+
 ///
 /// Determines the source that should be recorded.
 /// Currently these are only supported by android.
+///
 /// For iOS we always record from the microphone.
 class AudioSource {
-  final int _value;
-  const AudioSource._internal(this._value);
-  String toString() => 'AudioSource.$_value';
+  final int _source;
+  const AudioSource._internal(this._source);
+  String toString() => 'AudioSource.$_source';
 
   ///
-  int get value => _value;
+  int get source => _source;
 
-  ///
+  /// The const defined here are intended to be platform agnostic
+  /// however the exactly match the Android definitions which
+  /// the android platform depends on. If you change
+  /// these you MUST update the android platform code.
   static const defaultSource = AudioSource._internal(0);
 
   ///
@@ -58,4 +64,29 @@ class AudioSource {
 
   ///
   static const hotword = AudioSource._internal(10);
+}
+
+/// Generates an AudioSourceProxy from an audioSource so
+/// we can pass it down to the host platform.
+class AudioSourceHelper {
+  /// Generates an AudioSourceProxy from an audioSource so
+  /// we can pass it down to the host platform.
+  static AudioSourceProxy generate(AudioSource audioSource) {
+    var proxy = AudioSourceProxy();
+
+    proxy.audioSource = audioSource.source;
+    proxy.defaultSource = AudioSource.defaultSource.source;
+    proxy.mic = AudioSource.mic.source;
+    proxy.voiceUplink = AudioSource.voiceUplink.source;
+    proxy.voiceDownlink = AudioSource.voiceDownlink.source;
+    proxy.camcorder = AudioSource.camcorder.source;
+    proxy.voiceRecognition = AudioSource.voiceRecognition.source;
+    proxy.voiceCommunication = AudioSource.voiceCommunication.source;
+    proxy.remoteSubmix = AudioSource.remoteSubmix.source;
+    proxy.unprocessed = AudioSource.unprocessed.source;
+    proxy.radioTuner = AudioSource.radioTuner.source;
+    proxy.hotword = AudioSource.hotword.source;
+
+    return proxy;
+  }
 }

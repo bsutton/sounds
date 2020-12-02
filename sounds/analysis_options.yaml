@@ -1,11 +1,14 @@
 #
 ---
-include: package:effective_dart/analysis_options.yaml
+#include: package:effective_dart/analysis_options.yaml
 
     
 analyzer:
+  #  exclude: [lib/src/ios/frameworks/**]
   errors:
     todo: ignore
+
+    # ignore_for_file: public_member_api_docs
   
   strong-mode:
     implicit-casts: false

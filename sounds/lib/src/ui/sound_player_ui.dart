@@ -245,7 +245,7 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
 
   void _onStopped() {
     if (widget._autoFocus) {
-      _player.audioFocus(AudioFocus.abandonFocus);
+      _player.releaseAudioFocus();
     }
     setState(() {
       /// we can get a race condition when we stop the playback
@@ -442,7 +442,7 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
   Future<void> _start() async {
     try {
       if (widget._autoFocus == true) {
-        await _player.audioFocus(AudioFocus.hushOthersWithResume);
+        await _player.requestAudioFocus(AudioFocus.hushOthersWithResume);
       }
       await _player.play(track);
       _playState = PlayState.playing;

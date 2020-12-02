@@ -3,7 +3,6 @@
 import 'package:path/path.dart';
 import 'package:sounds_common/sounds_common.dart';
 
-import '../media_format/native_media_format.dart';
 import '../sound_recorder.dart';
 
 /// a track.
@@ -12,7 +11,7 @@ class RecordingTrack {
   Track track;
 
   /// The [MediaFormat] to record to.
-  NativeMediaFormat mediaFormat;
+  MediaFormat mediaFormat;
 
   /// Create a [RecordingTrack] fro a [Track].
   ///

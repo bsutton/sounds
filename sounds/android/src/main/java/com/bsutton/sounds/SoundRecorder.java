@@ -15,42 +15,29 @@ package com.bsutton.sounds;
  *   along with Sounds.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import android.content.Context;
 import android.media.MediaRecorder;
 import android.os.Build;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.util.Log;
 
 import androidx.annotation.UiThread;
 
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.Duration;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import io.flutter.embedding.engine.plugins.FlutterPlugin;
-import io.flutter.embedding.engine.plugins.activity.ActivityAware;
-import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
-import io.flutter.plugin.common.BinaryMessenger;
-import io.flutter.plugin.common.MethodCall;
-import io.flutter.plugin.common.MethodChannel;
-import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
-import io.flutter.plugin.common.MethodChannel.Result;
 
-import io.flutter.plugin.common.PluginRegistry;
-import io.flutter.plugin.common.PluginRegistry.Registrar;
 
-public class SoundRecorder {
+import static com.bsutton.sounds.ErrorCodes.errnoInvalidArgument;
+
+public class SoundRecorder extends SoundsProxy {
+	static final String TAG = "SoundRecorder";
+	static final String ERR_UNKNOWN = "ERR_UNKNOWN";
+
 	static final String ERR_RECORDER_IS_NULL = "ERR_RECORDER_IS_NULL";
 	static final String ERR_RECORDER_IS_RECORDING = "ERR_RECORDER_IS_RECORDING";
 
-	final static String TAG = "SoundRecorder";
 	final RecorderAudioModel model = new RecorderAudioModel();
 	final public Handler progressTickHandler = new Handler();
 
@@ -58,52 +45,34 @@ public class SoundRecorder {
 	private final ExecutorService taskScheduler = Executors.newSingleThreadExecutor();
 	private Handler mainHandler = new Handler();
 
-	SoundRecorder(int aSlotNo) {
-		slotNo = aSlotNo;
+	SoundsPlatformApi.SoundRecorderProxy recorderProxy;
+	/// The current track we are recording to.
+	SoundsPlatformApi.TrackProxy trackProxy;
+
+	void initializeSoundRecorder(SoundsPlatformApi.SoundRecorderProxy proxy) {
+		this.recorderProxy = proxy;
 	}
 
-	SoundRecorderPlugin getPlugin() {
-		return SoundRecorderPlugin.soundRecorderPlugin;
+	@Override
+	public void dispose() {
+		try {
+			releaseSoundRecorder();
+		} catch (SoundsException e) {
+			Log.e(TAG, "Error disposing of a SoundRecorder " + e.getMessage());
+		}
 	}
-
-	void initializeSoundRecorder(final MethodCall call, final Result result) {
-		result.success("Sounds Recorder Initialized");
-	}
-
-	void releaseSoundRecorder(final MethodCall call, final Result result) {
-		result.success("Sounds Recorder Released");
-	}
-
-	void invokeCallbackWithString(String methodName, String arg) {
-		Map<String, Object> dic = new HashMap<String, Object>();
-		dic.put("slotNo", slotNo);
-		dic.put("arg", arg);
-		getPlugin().invokeCallback(methodName, dic);
-	}
-
-	void invokeCallbackWithDouble(String methodName, double arg) {
-		Map<String, Object> dic = new HashMap<String, Object>();
-		dic.put("slotNo", slotNo);
-		dic.put("arg", arg);
-		getPlugin().invokeCallback(methodName, dic);
-	}
-
-	public void startRecorder(final MethodCall call, final Result result) {
-		Log.d(TAG, "startRecorder: " + call.argument("path"));
-		Integer sampleRate = call.argument("sampleRate");
-		Integer numChannels = call.argument("numChannels");
-		Integer bitRate = call.argument("bitRate");
-		int encoder = call.argument("encoder");
-		int format = call.argument("format");
-		int audioSource = call.argument("audioSource");
-		final String path = call.argument("path");
-		_startRecorder(numChannels, sampleRate, bitRate, encoder, format, audioSource, path, result);
+	void releaseSoundRecorder() throws SoundsException {
+		stopRecorder();
 
 	}
 
-	public void _startRecorder(Integer numChannels, Integer sampleRate, Integer bitRate, Integer encoder, int format,
-			int audioSource, String path, final Result result) {
-		assert (path != null);
+	public void startRecorder(SoundsPlatformApi.AudioSourceProxy audioSource, SoundsPlatformApi.TrackProxy track) throws SoundsException {
+		this.trackProxy = track;
+		SoundsPlatformApi.MediaFormatProxy mediaFormatProxy =track.getMediaFormat();
+		int numChannels = mediaFormatProxy.getNumChannels().intValue();
+		int sampleRate = mediaFormatProxy.getSampleRate().intValue();
+		int bitRate = mediaFormatProxy.getBitRate().intValue();
+		String name = mediaFormatProxy.getName();
 		final int v = Build.VERSION.SDK_INT;
 		MediaRecorder mediaRecorder = model.getMediaRecorder();
 
@@ -112,36 +81,27 @@ public class SoundRecorder {
 			model.setMediaRecorder(mediaRecorder);
 		}
 
+		String path = track.getPath();
 		try {
 			if (path == null) {
-				result.error(TAG, "InvalidArgument", "path must NOT be null.");
-				return;
+				throw new SoundsException(errnoInvalidArgument, "The Track contained a null path");
 			}
 
 			mediaRecorder.reset();
 			try {
-				mediaRecorder.setAudioSource(audioSource);
+				mediaRecorder.setAudioSource(audioSource.getAudioSource().intValue());
 			} catch (RuntimeException e) {
-				result.error(TAG, "Permissions",
+
+				throw new SoundsException(ErrorCodes.errnoAudioSourcePermissionDenied,
 						"Error setting the AudioSource. Check that you have permission to use the microphone.");
-				return;
 			}
-			mediaRecorder.setOutputFormat(format);
+			AndroidMediaFormat mediaFormat = AndroidMediaFormats.generate(mediaFormatProxy);
+			mediaRecorder.setOutputFormat(mediaFormat.format);
 			mediaRecorder.setOutputFile(path);
-			mediaRecorder.setAudioEncoder(encoder);
-
-			if (numChannels != null) {
-				mediaRecorder.setAudioChannels(numChannels);
-			}
-
-			if (sampleRate != null) {
-				mediaRecorder.setAudioSamplingRate(sampleRate);
-			}
-
-			// If bitrate is defined, then use it, otherwise use the OS default
-			if (bitRate != null) {
-				mediaRecorder.setAudioEncodingBitRate(bitRate);
-			}
+			mediaRecorder.setAudioEncoder(mediaFormat.encoder);
+			mediaRecorder.setAudioChannels(numChannels);
+			mediaRecorder.setAudioSamplingRate(sampleRate);
+			mediaRecorder.setAudioEncodingBitRate(bitRate);
 
 			mediaRecorder.prepare();
 			mediaRecorder.start();
@@ -149,42 +109,32 @@ public class SoundRecorder {
 			this.model.startTime = SystemClock.elapsedRealtime();
 			startProgressTimer();
 
-			result.success("Success");
+
 		} catch (Exception e) {
 			Log.e(TAG, "Exception: ", e);
-			result.error(TAG, "Error starting recorder", e.getMessage());
+
 			try {
-				boolean b = _stopRecorder();
-
+				/// we try to clean up by stopping the recorder.
+				stopRecorder();
 			} catch (Exception e2) {
-
 			}
+			throw new SoundsException(ErrorCodes.errnoGeneral,  "Error starting recorder" +  e.getMessage());
 		}
 	}
 
-	public void stopRecorder(final MethodCall call, final Result result) {
-		// taskScheduler.submit ( () -> _stopRecorder ( result ) );
-		boolean b = _stopRecorder();
-		if (b)
-			result.success("Media Recorder is closed");
-		else
-			result.success(" Cannot close Recorder");
-	}
-
-	public boolean _stopRecorder() {
-		// This remove all pending runnables
+	public void stopRecorder() throws SoundsException {
+		// This removes all pending runnables
 		stopProgressTimer();
-
+		
 		if (this.model.getMediaRecorder() == null) {
 			Log.d(TAG, "mediaRecorder is null");
-
-			return true;
+			throw new SoundsException(ErrorCodes.errnoNotRecording, "The MediaRecorder was null");
 		}
 		try {
 			if (Build.VERSION.SDK_INT >= 24) {
 
 				try {
-					this.model.getMediaRecorder().resume(); // This is stupid, but cannot reset() if Pause Mode !
+					this.model.getMediaRecorder().resume(); // This is required as we cannot stop if we are paused.
 				} catch (Exception e) {
 				}
 			}
@@ -194,46 +144,35 @@ public class SoundRecorder {
 			this.model.setMediaRecorder(null);
 		} catch (Exception e) {
 			Log.d(TAG, "Error Stop Recorder");
-			return false;
-
+			throw new SoundsException(ErrorCodes.errnoGeneral, "An error occured trying to stop the recorder " + e.getCause().getClass().getSimpleName()
+			 + " "  + e.getMessage());
 		}
-		mainHandler.post(new Runnable() {
-			@Override
-			public void run() {
-
-			}
-		});
-		return true;
 	}
 
-	public void pauseRecorder(final MethodCall call, final Result result) {
+	public void pauseRecorder() throws SoundsException {
 		if (this.model.getMediaRecorder() == null) {
 			Log.d(TAG, "mediaRecorder is null");
-			result.error(TAG, "Recorder is closed", "\"Recorder is closed\"");
-			return;
+			throw new SoundsException(ErrorCodes.errnoNotRecording, "The MediaRecorder was null");
 		}
 		if (Build.VERSION.SDK_INT < 24) {
-			result.error(TAG, "Bad Android API level", "\"Pause/Resume needs at least Android API 24\"");
+			throw new SoundsException(ErrorCodes.errnoNotSupported, "Pause/Resume needs at least Android API 24");
 		} else {
 			stopProgressTimer();
 			this.model.getMediaRecorder().pause();
-			result.success("Recorder is paused");
 		}
 	}
 
-	public void resumeRecorder(final MethodCall call, final Result result) {
+	public void resumeRecorder() throws SoundsException {
 		if (this.model.getMediaRecorder() == null) {
 			Log.d(TAG, "mediaRecorder is null");
-			result.error(TAG, "Recorder is closed", "\"Recorder is closed\"");
-			return;
+			throw new SoundsException(ErrorCodes.errnoNotRecording, "The MediaRecorder was null");
 		}
 		if (Build.VERSION.SDK_INT < 24) {
-			result.error(TAG, "Bad Android API level", "\"Pause/Resume needs at least Android API 24\"");
+			throw new SoundsException(ErrorCodes.errnoNotSupported, "Pause/Resume needs at least Android API 24");
 		} else {
 			// restart tickers.
 			startProgressTimer();
 			this.model.getMediaRecorder().resume();
-			result.success(true);
 		}
 	}
 
@@ -247,7 +186,7 @@ public class SoundRecorder {
 	private void startProgressTimer() {
 		// make certain no tickers are currently running.
 		stopProgressTimer();
-		progressTickHandler.post(() -> sendProgressUpdate());
+		progressTickHandler.post(() -> sendRecordingUpdate());
 	}
 
 	// stops the progress and Db level tickers.
@@ -275,39 +214,32 @@ public class SoundRecorder {
 		}
 		return db;
 	}
-
 	// Sends a progress update to the dart code containing the current_position and
 	// the Db Level
 	// This method then re-queues itself.
 	@UiThread
-	private void sendProgressUpdate() {
-		long time = SystemClock.elapsedRealtime() - model.startTime;
+	private void sendRecordingUpdate() {
 		try {
-			JSONObject json = new JSONObject();
-			json.put("current_position", String.valueOf(time));
-			json.put("decibels", String.valueOf(getDbLevel()));
-			invokeCallbackWithString("updateProgress", json.toString());
-			// Log.d(TAG, "updateProgress: " + json.toString());
 
-			// re-queue ourselves based on the desired subscription interval.
-			boolean queued = progressTickHandler.postDelayed(() -> sendProgressUpdate(),
-					this.model.progressIntervalMillis);
-			// Log.d(TAG, "progress posted=" + queued + " delay:" +
-			// this.model.subsDurationMillis);
-		} catch (Exception je) {
-			Log.d(TAG, "Exception calling updateProgress: " + je.toString());
+			SoundsPlatformApi.OnRecordingProgress args = new SoundsPlatformApi.OnRecordingProgress();
+			args.setRecorder(recorderProxy);
+			args.setTrack(trackProxy);
+			long elapsed = SystemClock.elapsedRealtime() - model.startTime;
+			args.setDuration(elapsed);
+			args.setDecibels(getDbLevel());
+
+		
+			new SoundsPlatformApi.SoundsFromPlatformApi(SoundsPlugin.getBinaryMessenger()).onRecordingProgress(args, (reply) -> {});
+			// reschedule ourselves.
+			progressTickHandler.postDelayed(() -> sendRecordingUpdate(), this.model.progressInterval.toMillis());
+		} catch (Exception e) {
+			Log.d(TAG, "Exception: " + e.toString());
 		}
 	}
 
-	public void setProgressInterval(final MethodCall call, final Result result) {
-		Log.d(TAG, "setProgressInterval: " + call.argument("milli"));
-		if (call.argument("milli") == null) {
-			return;
-		}
-		int duration = call.argument("milli");
-
-		this.model.progressIntervalMillis = duration;
-		result.success("setProgressInterval: " + this.model.progressIntervalMillis);
+	public void setProgressInterval(Duration interval) {
+		this.model.progressInterval = interval;
 	}
+
 
 }

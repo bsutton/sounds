@@ -289,12 +289,12 @@ class _MainBodyState extends State<MainBody> {
         var player = SoundPlayer.withShadeUI(autoFocus: false);
         player.onStopped = ({wasUser}) {
           player.release();
-          player.audioFocus(AudioFocus.abandonFocus);
+          player.releaseAudioFocus();
         };
         if (PlayerState().hushOthers) {
-          player.audioFocus(AudioFocus.hushOthersWithResume);
+          player.requestAudioFocus(AudioFocus.hushOthersWithResume);
         } else {
-          player.audioFocus(AudioFocus.stopOthersWithResume);
+          player.requestAudioFocus(AudioFocus.stopOthersWithResume);
         }
         player.play(createAssetTrack());
         Scaffold.of(context).showSnackBar(new SnackBar(

@@ -23,6 +23,7 @@ import 'package:logger/logger.dart';
 /// demonstrates the recording widget linked to a playback widget.
 void main() {
   runApp(MyApp());
+
   ///Set logging level
   Log.loggingLevel = Level.warning;
 }

@@ -20,11 +20,8 @@ final String albumArtPath =
 class RemotePlayer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return SoundPlayerUI.fromLoader(
-      _createRemoteTrack,
-      showTitle: true,
-      autoFocus: PlayerState().hushOthers
-    );
+    return SoundPlayerUI.fromLoader(_createRemoteTrack,
+        showTitle: true, autoFocus: PlayerState().hushOthers);
   }
 
   Future<Track> _createRemoteTrack(BuildContext context) async {

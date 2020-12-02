@@ -5,6 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:sounds/sounds.dart';
 import 'package:sounds_common/sounds_common.dart';
 
+import 'package:sounds_platform_interface/sounds_platform_interface.dart';
+
 import 'demo_media_path.dart';
 
 /// Describes how the media is stored.
@@ -27,12 +29,15 @@ enum MediaStorage {
 
 /// get the duration for the media with the given MediaFormat.
 Future<Duration> getDuration(MediaFormat mediaFormat) async {
-  Future<Duration> duration;
+  Duration duration;
   switch (MediaPath().media) {
     case MediaStorage.file:
     case MediaStorage.buffer:
-      duration =
-          mediaFormat.getDuration(MediaPath().pathForMediaFormat(mediaFormat));
+      var args = GetDuration();
+      args.path = MediaPath().pathForMediaFormat(mediaFormat);
+      duration = Duration(
+          milliseconds:
+              (await SoundsToPlatformApi().getDuration(args)).duration);
       break;
     case MediaStorage.asset:
       duration = null;

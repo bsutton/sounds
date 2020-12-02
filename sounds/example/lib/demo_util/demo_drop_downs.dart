@@ -68,7 +68,7 @@ class _DropdownsState extends State<Dropdowns> {
   }
 
   Widget buildCodecDropdown() {
-    return FutureBuilder<List<NativeMediaFormat>>(
+    return FutureBuilder<List<MediaFormat>>(
         future: NativeMediaFormats().encoders,
         builder: (context, asynData) {
           if (!asynData.hasData)

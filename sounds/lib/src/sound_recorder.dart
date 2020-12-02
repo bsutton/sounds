@@ -18,24 +18,17 @@ import 'dart:async';
 import 'dart:core';
 
 import 'package:sounds_common/sounds_common.dart';
+import 'package:sounds_platform_interface/sounds_platform_interface.dart';
+import 'package:uuid/uuid.dart';
 
 import '../sounds.dart';
 import 'audio_source.dart';
-
-import 'media_format/native_media_format.dart';
-import 'media_format/native_media_formats.dart';
-import 'plugins/base_plugin.dart';
-import 'plugins/sound_recorder_plugin.dart';
+import 'plugins/app_life_cycle_observer.dart';
+import 'plugins/platform_dispatcher.dart';
 import 'quality.dart';
 import 'recording_disposition.dart';
 import 'util/recording_disposition_manager.dart';
 import 'util/recording_track.dart';
-
-enum _RecorderState {
-  isStopped,
-  isPaused,
-  isRecording,
-}
 
 /// The [requestPermissions] callback allows you to provide an
 /// UI informing the user that we are about to ask for a permission.
@@ -44,16 +37,27 @@ typedef RequestPermission = Future<bool> Function(Track track);
 
 typedef RecorderEventWithCause = void Function({bool wasUser});
 
+enum _InternalRecorderState {
+  preinitialisation,
+  initialised,
+  recording,
+  stopped,
+  paused
+}
+
 /// Provide an API for recording audio.
-class SoundRecorder implements SlotEntry {
-  final SoundRecorderPlugin _plugin;
+class SoundRecorder {
+  final String _uuid = Uuid().v4();
+  final _plugin = SoundsToPlatformApi();
+
+  SoundRecorderProxy _proxy;
+
+  final AppLifeCycleObserver _lifeCycleObserver = AppLifeCycleObserver();
 
   RecorderEventWithCause _onPaused;
   RecorderEventWithCause _onResumed;
   RecorderEventWithCause _onStarted;
   RecorderEventWithCause _onStopped;
-
-  _RecorderState _recorderState = _RecorderState.isStopped;
 
   RecordingDispositionManager _dispositionManager;
 
@@ -93,19 +97,6 @@ class SoundRecorder implements SlotEntry {
   /// The track we are recording to.
   RecordingTrack _recordingTrack;
 
-  /// Used to flag that the recorder is ready to record.
-  /// When this completion completes [_recorderReady] is set
-  /// to [true].
-  Completer<bool> _recorderReadyCompletion = Completer<bool>();
-
-  /// Used to wait for the plugin to connect us to an OS MediaPlayer
-  Future<bool> _recorderReady;
-
-  /// When we do a [_softRelease] we need to flag that the plugin
-  /// needs to be re-initialized so we set this to true.
-  /// Its also true on construction to force the initial initialisation.
-  bool _pluginInitRequired = true;
-
   /// If true then the recorder will continue to record
   /// even if the app is pushed to the background.
   ///
@@ -115,111 +106,53 @@ class SoundRecorder implements SlotEntry {
   /// resume recording when the app is resumed.
   final bool _playInBackground;
 
+  _InternalRecorderState _internalRecorderState =
+      _InternalRecorderState.preinitialisation;
+
   /// Create a [SoundRecorder] to record audio.
   ///
 
   SoundRecorder({bool playInBackground = false})
-      : _playInBackground = playInBackground,
-        _plugin = SoundRecorderPlugin() {
-    _commonInit();
-  }
+      : _playInBackground = playInBackground {
+    _proxy = SoundRecorderProxy();
+    _proxy.uuid = _uuid;
+    PlatformDispatcher().registerRecorder(_proxy, this);
 
-  /// initialize the SoundRecorder
-  /// You do not need to call this as the recorder auto initializes itself
-  /// and in fact has to re-initialize its self after an app pause.
-  void initialize() {
-    // NOOP - as its not required but apparently wanted.
-  }
-
-  void _commonInit() {
-    _plugin.register(this);
+    _lifeCycleObserver.onSystemAppPaused = _onSystemAppPaused;
+    _lifeCycleObserver.onSystemAppResumed = _onSystemAppResumed;
     _dispositionManager = RecordingDispositionManager(this);
-
-    // place [_recorderReady] into a non-completed state.
-    _recorderReadyCompletion = Completer<bool>();
-    _recorderReady = _recorderReadyCompletion.future;
   }
 
-  Future<R> _initializeAndRun<R>(Future<R> Function() run) async {
-    if (_pluginInitRequired) {
-      _pluginInitRequired = false;
-
-      _recorderReadyCompletion = Completer<bool>();
-
-      /// we allow five seconds for the connect to complete or
-      /// we timeout returning false.
-      _recorderReady = _recorderReadyCompletion.future
-          .timeout(Duration(seconds: 5), onTimeout: () => Future.value(false));
-
-      await _plugin.initializeRecorder(this);
-
-      /// This is a fake invocation of onRecorderReady until
-      /// we can change the OS native code to send us an
-      /// [onRecorderReady] event.
-      _onRecorderReady(result: true);
-    } else {
-      assert(_recorderReady != null);
+  Future<void> _initialize() async {
+    if (_internalRecorderState == _InternalRecorderState.preinitialisation) {
+      await _plugin.initializeRecorder(_proxy);
+      _internalRecorderState = _InternalRecorderState.initialised;
     }
-
-    return _recorderReady.then((ready) {
-      if (ready) {
-        return run();
-      } else {
-        /// This can happen if you have a breakpoint in you code and
-        /// you don't let the initialisation logic complete.
-        throw RecorderInvalidStateException("Recorder initialisation timeout");
-      }
-    });
   }
 
   /// Call this method when you have finished with the recorder
   /// and want to release any resources the recorder has attached.
   Future<void> release() async {
-    if (!_plugin.isRegistered(this)) {
+    if (_internalRecorderState == _InternalRecorderState.preinitialisation) {
       throw RecorderInvalidStateException(
           'The recorder is no longer registered. '
           'Did you call release() twice?');
     }
-    return _initializeAndRun(() async {
-      _dispositionManager.release();
-      await _softRelease();
-      _recordingTrack?.release();
-      _plugin.release(this);
-    });
-  }
+    _dispositionManager.release();
 
-  /// Called when the app is paused to release the OS resources
-  /// but keep the [SoundRecorder] in a state that can be restarted.
-  Future<void> _softRelease() async {
     if (isRecording) {
       await stop();
     }
-
-    // release the android/ios resources but
-    // leave the slot intact so we can resume.
-    if (!_pluginInitRequired) {
-      /// looks like this method is re-entrant when app is pausing
-      /// so we need to protect ourselves from being called twice.
-      _pluginInitRequired = true;
-
-      _recorderReady = null;
-
-      /// the plugin is in an initialized state
-      /// so we need to release it.
-      await _plugin.releaseRecorder(this);
-    }
+    _recordingTrack?.release();
+    await _plugin.releaseRecorder(_proxy);
+    PlatformDispatcher().releaseRecoder(_proxy);
+    _proxy = null;
+    _internalRecorderState = _InternalRecorderState.preinitialisation;
   }
 
   /// Future indicating if initialisation has completed.
-  Future<bool> get initialized => _recorderReady;
-
-  /// callback occurs when the OS Recorder completes initialisatin.
-  /// TODO: implement the _onRecorderReady event from
-  /// the native OS plugins.
-  /// [result] true if the recorder init completed successfully.
-  void _onRecorderReady({bool result}) {
-    _recorderReadyCompletion.complete(result);
-  }
+  bool get isInitialized =>
+      _internalRecorderState != _InternalRecorderState.preinitialisation;
 
   /// Starts the recorder recording to the
   /// passed in [Track].
@@ -266,73 +199,70 @@ class SoundRecorder implements SlotEntry {
           "specified for it's [mediaFormat]");
     }
 
-    if (!(track.mediaFormat is NativeMediaFormat)) {
+    if (!(await track.mediaFormat.isNativeEncoder)) {
       throw MediaFormatException(
           'Only [NativeMediaFormat]s can be used when recording');
     }
 
-    var started = Completer<void>();
-
     /// We must not already be recording.
-    if (_recorderState != _RecorderState.isStopped) {
-      var exception = RecorderInvalidStateException('Recorder is not stopped.');
-      started.completeError(exception);
-      throw exception;
+    if (isRecording) {
+      throw RecorderInvalidStateException('Recorder is already recording.');
     }
 
     if (!track.isFile) {
-      var exception = RecorderException(
+      throw RecorderException(
           "Only file based tracks are supported. Used Track.fromFile().");
-      started.completeError(exception);
-      throw exception;
     }
 
-    _initializeAndRun(() async {
-      _recordingTrack =
-          RecordingTrack(track, track.mediaFormat as NativeMediaFormat);
+    await _initialize();
 
-      /// Throws an exception if the path isn't valid.
-      _recordingTrack.validatePath();
+    _recordingTrack = RecordingTrack(track, track.mediaFormat);
 
-      /// the MediaFormat must be supported.
-      if (!await NativeMediaFormats()
-          .isNativeEncoder(_recordingTrack.track.mediaFormat)) {
-        var exception = MediaFormatException('MediaFormat not supported.');
-        started.completeError(exception);
-        throw exception;
-      }
+    /// Throws an exception if the path isn't valid.
+    _recordingTrack.validatePath();
 
-      // we assume that we have all necessary permissions
-      var hasPermissions = true;
+    /// the MediaFormat must be supported.
+    if (!await _recordingTrack.track.mediaFormat.isNativeEncoder) {
+      throw MediaFormatException('MediaFormat not supported.');
+    }
 
-      if (onRequestPermissions != null) {
-        hasPermissions = await onRequestPermissions(track);
-      }
+    // we assume that we have all necessary permissions
+    var hasPermissions = true;
 
-      if (hasPermissions) {
-        _timePaused = Duration(seconds: 0);
+    if (onRequestPermissions != null) {
+      hasPermissions = await onRequestPermissions(track);
+    }
 
-        await _plugin.start(this, _recordingTrack.track.path,
-            _recordingTrack.mediaFormat, audioSource, quality);
+    if (hasPermissions) {
+      _timePaused = Duration(seconds: 0);
 
-        _recorderState = _RecorderState.isRecording;
-        if (_onStarted != null) _onStarted(wasUser: true);
-      } else {
-        Log.d('Call to SoundRecorder.record() failed as '
-            'onRequestPermissions() returned false');
-      }
-      started.complete();
-    });
+      var args = StartRecording();
+      args.recorder = _proxy;
+
+      /// should we be passing down the recording track?
+      args.track = trackProxy(track);
+      args.audioSource = AudioSourceHelper.generate(audioSource);
+      args.quality = QualityHelper.generate(quality);
+
+      await _plugin.startRecording(args);
+      _internalRecorderState = _InternalRecorderState.recording;
+
+      if (_onStarted != null) _onStarted(wasUser: true);
+    } else {
+      Log.d('Call to SoundRecorder.record() failed as '
+          'onRequestPermissions() returned false');
+    }
   }
 
   /// returns true if we are recording.
-  bool get isRecording => (_recorderState == _RecorderState.isRecording);
+  bool get isRecording =>
+      _internalRecorderState == _InternalRecorderState.recording;
 
   /// returns true if the record is stopped.
-  bool get isStopped => (_recorderState == _RecorderState.isStopped);
+  bool get isStopped => !isRecording;
 
   /// returns true if the recorder is paused.
-  bool get isPaused => (_recorderState == _RecorderState.isPaused);
+  bool get isPaused => _internalRecorderState == _InternalRecorderState.paused;
 
   /// Returns a stream of [RecordingDisposition] which
   /// provides live updates as the recording proceeds.
@@ -358,17 +288,16 @@ class SoundRecorder implements SlotEntry {
           "You cannot stop recording when the recorder is not running.");
     }
 
-    await _initializeAndRun(() async {
-      await _plugin.stop(this);
+    Log.e('Track duration: ${await _recordingTrack.track.duration}');
+    Log.e('Track path: ${await _recordingTrack.track.path}');
+    await _plugin.stopRecording(_proxy);
 
-      _recorderState = _RecorderState.isStopped;
+    _internalRecorderState = _InternalRecorderState.stopped;
 
-      /// send final db so any listening UI is reset.
-      _dispositionManager.updateDisposition(
-          _dispositionManager.lastDuration, 0);
+    /// send final db so any listening UI is reset.
+    _dispositionManager.updateDisposition(_dispositionManager.lastDuration, 0);
 
-      if (_onStopped != null) _onStopped(wasUser: true);
-    });
+    if (_onStopped != null) _onStopped(wasUser: true);
   }
 
   /// Pause recording.
@@ -380,12 +309,10 @@ class SoundRecorder implements SlotEntry {
           "You cannot pause recording when the recorder is not running.");
     }
 
-    _initializeAndRun(() async {
-      await _plugin.pause(this);
-      _pauseStarted = DateTime.now();
-      _recorderState = _RecorderState.isPaused;
-      if (_onPaused != null) _onPaused(wasUser: true);
-    });
+    await _plugin.pauseRecording(_proxy);
+    _pauseStarted = DateTime.now();
+    _internalRecorderState = _InternalRecorderState.paused;
+    if (_onPaused != null) _onPaused(wasUser: true);
   }
 
   /// Resume recording.
@@ -397,28 +324,28 @@ class SoundRecorder implements SlotEntry {
           "You cannot resume recording when the recorder is not paused.");
     }
 
-    await _initializeAndRun(() async {
-      _timePaused += (DateTime.now().difference(_pauseStarted));
+    _timePaused += (DateTime.now().difference(_pauseStarted));
 
-      try {
-        await _plugin.resume(this);
-      } on Object catch (e) {
-        Log.d("Exception throw trying to resume the recorder $e");
-        await stop();
-        rethrow;
-      }
-      _recorderState = _RecorderState.isRecording;
-      if (_onResumed != null) _onResumed(wasUser: true);
-    });
+    try {
+      await _plugin.resumeRecording(_proxy);
+    } on Object catch (e) {
+      Log.d("Exception throw trying to resume the recorder $e");
+      await stop();
+      rethrow;
+    }
+    _internalRecorderState = _InternalRecorderState.recording;
+    if (_onResumed != null) _onResumed(wasUser: true);
   }
 
   /// Sets the frequency at which duration updates are sent to
   /// duration listeners.
   /// The default is every 10 milliseconds.
   Future<void> _setProgressInterval(Duration interval) async {
-    await _initializeAndRun(() async {
-      await _plugin.setProgressInterval(this, interval);
-    });
+    await _initialize();
+    var args = SetRecordingProgressInterval();
+    args.recorder = _proxy;
+    args.interval = interval.inMilliseconds;
+    await _plugin.setRecordingProgressInterval(args);
   }
 
   /// Returns the duration of the recording
@@ -478,21 +405,23 @@ class SoundRecorder implements SlotEntry {
   /// If we are recording we simply stop the recording.
   /// This could be a problem with some apps if they want to
   /// record in the background.
-  void _onSystemAppPaused() {
-    Log.d(red('onSystemAppPaused  track=${_recordingTrack?.track}'));
-    if (isRecording && !_playInBackground) {
-      /// CONSIDER: this could be expensive as we do a [recode]
-      /// when we stop. We might need to look at doing a lazy
-      /// call to [recode].
-      stop();
+  Future<void> _onSystemAppPaused() async {
+    if (isInitialized) {
+      Log.d(red('onSystemAppPaused  track=${_recordingTrack?.track}'));
+      if (isRecording && !_playInBackground) {
+        /// CONSIDER: this could be expensive as we do a [recode]
+        /// when we stop. We might need to look at doing a lazy
+        /// call to [recode].
+        await stop();
+      }
+      await release();
     }
-    _softRelease();
   }
 
   /// System event telling us that our app has been resumed.
   /// We take no action when resuming. This is a place holder
   /// in case we change our mind.
-  void _onSystemAppResumed() {
+  Future<void> _onSystemAppResumed() async {
     Log.d(red('onSystemAppResumed track=${_recordingTrack?.track}'));
   }
 }
@@ -511,7 +440,7 @@ void recorderSetProgressInterval(SoundRecorder recorder, Duration interval) =>
     recorder._setProgressInterval(interval);
 
 ///
-void recorderUpdateProgress(
+void onRecordingProgress(
         SoundRecorder recorder, Duration duration, double decibels) =>
     recorder._updateProgress(duration, decibels);
 
@@ -525,6 +454,9 @@ void onSystemAppPaused(SoundRecorder recorder) => recorder._onSystemAppPaused();
 /// System event notification that the app has resumed
 void onSystemAppResumed(SoundRecorder recorder) =>
     recorder._onSystemAppResumed();
+
+/// Get the unique id for this sound player.
+String soundRecoderUuid(SoundRecorder recorder) => recorder._uuid;
 
 ///
 /// Execeptions

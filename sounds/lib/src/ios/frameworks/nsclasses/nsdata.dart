@@ -1,0 +1,14 @@
+import 'dart:ffi';
+
+import 'package:dart_native/dart_native.dart';
+import 'package:sounds/src/ios/frameworks/util/url.dart';
+
+class NSData extends NSObject {
+  NSData(Class isa) : super(isa);
+  NSData.fromPointer(Pointer<Void> result) : super.fromPointer(result);
+  String datapath;
+  NSData.fromURL(URL result) {
+    datapath = result.fileURLWithPath;
+  }
+  void add(Object object) {}
+}

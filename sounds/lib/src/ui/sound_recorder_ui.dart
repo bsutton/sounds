@@ -245,14 +245,15 @@ class SoundRecorderUIState extends State<SoundRecorderUI> {
   /// The [stop] methods stops the recording and calls
   /// the [onStopped] callback.
   ///
-  void stop() {
-    _stop();
+  Future<void> stop() {
+    return _stop();
   }
 
-  void _stop() {
+  Future<void> _stop() {
     if (_recorder.isRecording) {
-      _recorder.stop();
+      return _recorder.stop();
     }
+    return null;
   }
 
   /// as recording progresses we update the media's duration.
