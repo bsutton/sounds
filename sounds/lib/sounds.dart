@@ -21,15 +21,9 @@ export 'package:sounds_common/sounds_common.dart'
         PlaybackDisposition,
         Track,
         FileUtil,
-        Downloader,
-        AdtsAacMediaFormat,
-        CafOpusMediaFormat,
-        MP3MediaFormat,
-        NativeMediaFormats,
-        OggOpusMediaFormat,
-        OggVorbisMediaFormat,
-        PCMMediaFormat,
-        WellKnownMediaFormats;
+        Downloader;
+
+export 'src/media_format/well_know_media_formats.dart';
 
 export 'src/album.dart';
 export 'src/audio_focus.dart';

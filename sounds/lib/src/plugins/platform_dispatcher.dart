@@ -82,7 +82,7 @@ class PlatformDispatcher implements SoundsFromPlatformApi {
     var playerProxy = arg.player;
     // var trackProxy = arg.track;
     var disposition = PlaybackDisposition(
-      PlaybackDispositionState.finished,
+      PlaybackDispositionState.stopped,
     );
 
     p.onPlaybackFinished(_getPlayer(playerProxy), disposition);

@@ -2,9 +2,10 @@ import 'dart:async';
 import 'dart:core';
 
 import 'package:flutter/material.dart';
-import 'package:sounds/sounds.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:sounds/sounds.dart';
 import 'package:sounds_common/sounds_common.dart';
+import '../lib/src/media_format/adts_aac_media_format.dart';
 
 void main() {
   var recordingPath = Track.tempFile(AdtsAacMediaFormat());
