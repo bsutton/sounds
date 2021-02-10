@@ -370,7 +370,7 @@ class SoundPlayer: NSObject, AVAudioPlayerDelegate {
                 audioFileURL = remoteUrl
                 isRemote = true
             } else {
-                audioFileURL = URL(string: path ?? "")
+                audioFileURL = remoteUrl ?? URL(fileURLWithPath: path ?? "", isDirectory: false)
             }
         }
         // Able to play in silent mode
