@@ -33,8 +33,8 @@ import Flutter
 private var _channel: FlutterMethodChannel?
 var _soundRecorderChannel: FlutterMethodChannel?
 
-func SoundRecorderReg(_ registrar: (NSObjectProtocol & FlutterPluginRegistrar)?) {
-    SoundRecorderManager.register(with: registrar!)
+func SoundRecorderReg(_ registrar: FlutterPluginRegistrar) {
+    SoundRecorderManager.register(with: registrar)
 }
 
 var soundRecorderManager: SoundRecorderManager? // Singleton
@@ -136,9 +136,9 @@ class SoundRecorder: NSObject, AVAudioRecorderDelegate {
         let bitRate = args?["bitRate"] as? NSNumber
         let formatArg = args?["format"] as? NSNumber
 
-        var sampleRate: Float = 44100
+        let sampleRate: Float = 44100
 
-        var numChannels = 2
+        let numChannels = 2
 
         let format = formatArg?.intValue ?? 0
 
@@ -190,7 +190,7 @@ class SoundRecorder: NSObject, AVAudioRecorderDelegate {
 
 
         do {
-            if let audioFileURL = audioFileURL, let audioSettings = audioSettings as? [String : Any] {
+            if let audioFileURL = audioFileURL {
                 audioRecorder = try AVAudioRecorder(
                     url: audioFileURL,
                     settings: audioSettings)

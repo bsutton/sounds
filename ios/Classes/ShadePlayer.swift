@@ -34,8 +34,8 @@ import MediaPlayer
 /// Allows playback control even when the phone is locked.
 private var _channel: FlutterMethodChannel?
 
-func ShadePlayerReg(_ registrar: (NSObjectProtocol & FlutterPluginRegistrar)?) {
-    ShadePlayerManager.register(with: registrar!)
+func ShadePlayerReg(_ registrar: FlutterPluginRegistrar) {
+    ShadePlayerManager.register(with: registrar)
 }
 
 var shadePlayerManager: ShadePlayerManager? // Singleton
@@ -67,7 +67,7 @@ class ShadePlayerManager: SoundPlayerManager {
         return shadePlayerManager
     }
 
-    override func handle(_ call: FlutterMethodCall?, result: FlutterResult) {
+    override func handle(_ call: FlutterMethodCall?, result: @escaping FlutterResult) {
         let args = call?.arguments as! Dictionary<String, Any>
         var slotNo = (args["slotNo"] as? NSNumber)?.intValue ?? 0
 
@@ -99,7 +99,7 @@ class ShadePlayerManager: SoundPlayerManager {
         } else if "startShadePlayer" == call?.method {
             aShadePlayer?.start(call: call, result: result)
         } else {
-            super.handle(call, result: result)
+            super.handle(call!, result: result)
         }
     }
 }

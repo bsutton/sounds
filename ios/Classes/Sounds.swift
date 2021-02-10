@@ -50,8 +50,8 @@ enum t_SET_CATEGORY_DONE : Int {
     case by_USER // The caller did it himself : Sounds must not change that)
 }
 
-class Sounds: NSObject, FlutterPlugin, AVAudioPlayerDelegate {
-    class func register(with registrar: FlutterPluginRegistrar) {
+public class Sounds: NSObject, FlutterPlugin, AVAudioPlayerDelegate {
+    public class func register(with registrar: FlutterPluginRegistrar) {
         SoundPlayerReg(registrar)
         SoundRecorderReg(registrar)
         ShadePlayerReg(registrar)
