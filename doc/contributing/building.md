@@ -93,10 +93,6 @@ flutter build apk
 
 You can now import the project into Android Studio.
 
-{% hint style="warning" %}
-Be certain you open the `sounds/example/android` project NOT sounds/android otherwise sounds won't compile!
-{% endhint %}
-
 After importing `Sounds` into Android Studio you need to ensure the top level 'sounds' directory is selected in your Project view.
 
 To build the `Sounds` Java Code:

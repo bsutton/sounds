@@ -41,18 +41,19 @@ var soundRecorderManager: SoundRecorderManager? // Singleton
 
 class SoundRecorderManager: NSObject, FlutterPlugin {
     private var soundRecorderSlots: [AnyHashable]?
-    class func register(with registrar:  FlutterPluginRegistrar) {
+
+    class func register(with registrar: (NSObjectProtocol & FlutterPluginRegistrar)) {
         _channel = FlutterMethodChannel(
             name: "com.bsutton.sounds.sound_recorder",
             binaryMessenger: registrar.messenger())
         assert(soundRecorderManager == nil)
         soundRecorderManager = SoundRecorderManager()
-        registrar.addMethodCallDelegate(soundRecorderManager!, channel: _channel!)
+        registrar.addMethodCallDelegate(soundRecorderManager!, channel: _channel ?? <#default value#>)
     }
 
     func handle(_ call: FlutterMethodCall, result: FlutterResult) {
         let args = call.arguments as! Dictionary<String, Any>
-        let slotNo = args["slotNo"] as! Int
+        let slotNo = args["slotNo"] as! NSNumber
 
 
         // The dart code supports lazy initialization of recorders.
@@ -62,16 +63,15 @@ class SoundRecorderManager: NSObject, FlutterPlugin {
         // As such we need to grow the slot array upto the 
         // requested slot no. even if we haven't seen initialisation
         // for the lower numbered slots.
-        //>=
-        while (slotNo >= (soundRecorderSlots?.count ?? 0)){
-            soundRecorderSlots?[Int(slotNo)] = NSNull()
-            
+        while slotNo >= (soundRecorderSlots?.count ?? 0) {
+            soundRecorderSlots?.append(NSNull())
         }
-        
-        var aSoundRecorder: SoundRecorder?
+
+        var aSoundRecorder = soundRecorderSlots?[slotNo] as? SoundRecorder
+
         if "initializeSoundRecorder" == call.method {
-            assert(soundRecorderSlots?[slotNo] == nil)
-            aSoundRecorder = soundRecorderSlots?[slotNo] as? SoundRecorder
+            assert(soundRecorderSlots?[slotNo] == NSNull())
+            aSoundRecorder = SoundRecorder(slotNo)
             soundRecorderSlots?[slotNo] = aSoundRecorder
             aSoundRecorder?.initializeSoundRecorder(call, result: result)
         } else if "releaseSoundRecorder" == call.method {
@@ -93,9 +93,8 @@ class SoundRecorderManager: NSObject, FlutterPlugin {
         }
     }
 
-
     func invokeCallback(_ methodName: String?, arguments call: [AnyHashable : Any]?) {
-        _channel?.invokeMethod(methodName!, arguments: call!)
+        _channel?.invokeMethod(methodName ?? <#default value#>, arguments: call)
     }
 
     func freeSlot(_ slotNo: Int) {
@@ -107,7 +106,6 @@ class SoundRecorderManager: NSObject, FlutterPlugin {
         soundRecorderSlots = []
     }
 }
-
 
 class SoundRecorder: NSObject, AVAudioRecorderDelegate {
     private var audioFileURL: URL?
@@ -122,7 +120,7 @@ class SoundRecorder: NSObject, AVAudioRecorderDelegate {
         return soundRecorderManager
     }
 
-    init(aSlotNo: Int) {
+    convenience init?(_ aSlotNo: Int) {
         slotNo = aSlotNo
     }
 
@@ -176,12 +174,7 @@ class SoundRecorder: NSObject, AVAudioRecorderDelegate {
             // set volume default to speaker
             var success = false
             do {
-                //preffered method
-               // try //audioSession.overrideOutputAudioPort(AVAudioSessionPortOverrideSpeaker)
-
-                // tristans go at compiling.
-                _ = audioSession.preferredInput
-                 try audioSession.overrideOutputAudioPort(AVAudioSession.PortOverride(rawValue: AVAudioSession.PortOverride.RawValue(kAudioSessionOverrideAudioRoute_Speaker))!)
+                try audioSession.overrideOutputAudioPort(AVAudioSessionPortOverrideSpeaker)
                 success = true
             } catch {
                 print("error doing outputaudioportoverride - \(error.localizedDescription)")
@@ -267,7 +260,7 @@ class SoundRecorder: NSObject, AVAudioRecorderDelegate {
 
     @objc func updateProgress() {
         let decibels = getDbLevel()
-        let currentTime = NSNumber(value: Double?(audioRecorder!.currentTime * 1000)!)
+        let currentTime = NSNumber(value: Double?(audioRecorder?.currentTime ?? <#default value#> * 1000) ?? <#default value#>)
         audioRecorder?.updateMeters()
 
         let status = String(
@@ -307,7 +300,7 @@ class SoundRecorder: NSObject, AVAudioRecorderDelegate {
     }
 
     func invokeCallback(_ methodName: String?, numberArg arg: NSNumber?) {
-        var dic: Dictionary<String, Any>? = nil
+        var dic: [ExpressibleByStringLiteral : NSNumber]? = nil
         if let arg = arg {
             dic = [
                 "slotNo": NSNumber(value: Int32(slotNo)),

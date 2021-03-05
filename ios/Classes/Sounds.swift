@@ -51,7 +51,7 @@ enum t_SET_CATEGORY_DONE : Int {
 }
 
 class Sounds: NSObject, FlutterPlugin, AVAudioPlayerDelegate {
-    class func register(with registrar: FlutterPluginRegistrar) {
+    class func register(with registrar: (NSObjectProtocol & FlutterPluginRegistrar)) {
         SoundPlayerReg(registrar)
         SoundRecorderReg(registrar)
         ShadePlayerReg(registrar)
