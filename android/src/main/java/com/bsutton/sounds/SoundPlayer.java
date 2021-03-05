@@ -46,7 +46,7 @@ public class SoundPlayer {
 
 	final static String TAG = "SoundPlayer";
 	final PlayerAudioModel model = new PlayerAudioModel();
-	final private Handler tickHandler = new Handler();
+	final private Handler tickHandler = new Handler(Looper.getMainLooper());
 	t_SET_CATEGORY_DONE setActiveDone = t_SET_CATEGORY_DONE.NOT_SET;
 	AudioFocusRequest audioFocusRequest = null;
 	AudioManager audioManager;

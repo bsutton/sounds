@@ -52,7 +52,7 @@ public class SoundRecorder {
 
 	final static String TAG = "SoundRecorder";
 	final RecorderAudioModel model = new RecorderAudioModel();
-	final public Handler progressTickHandler = new Handler();
+	final public Handler progressTickHandler = new Handler(Looper.getMainLooper());
 
 	int slotNo;
 	private final ExecutorService taskScheduler = Executors.newSingleThreadExecutor();
