@@ -44,7 +44,7 @@ class SoundRecorderPlugin implements MethodCallHandler {
 	static final String ERR_RECORDER_IS_NULL = "ERR_RECORDER_IS_NULL";
 	static final String ERR_RECORDER_IS_RECORDING = "ERR_RECORDER_IS_RECORDING";
 
-	public static void attachSoundRecorder(Context ctx, BinaryMessenger messenger) {
+	public static void attachToEngine(Context ctx, BinaryMessenger messenger) {
 		assert (soundRecorderPlugin == null);
 		soundRecorderPlugin = new SoundRecorderPlugin();
 		assert (slots == null);
@@ -53,6 +53,11 @@ class SoundRecorderPlugin implements MethodCallHandler {
 		channel.setMethodCallHandler(soundRecorderPlugin);
 		Log.d(TAG, "Registering channel: " + CHANNEL_NAME);
 		androidContext = ctx;
+	}
+
+	public void detachFromEngine()
+	{
+		channel.setMethodCallHandler(null);
 	}
 
 	void invokeCallback(String methodName, Map dic) {
@@ -70,7 +75,7 @@ class SoundRecorderPlugin implements MethodCallHandler {
 	}
 
 	@Override
-	public void onMethodCall(final MethodCall call, final Result result) {
+	public void onMethodCall(@NonNull  MethodCall call, @NonNull  Result result) {
 		int slotNo = call.argument("slotNo");
 
 		// The dart code supports lazy initialization of the recorder.

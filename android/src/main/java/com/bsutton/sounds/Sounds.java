@@ -57,12 +57,12 @@ public class Sounds implements FlutterPlugin, ActivityAware {
 	 * https://flutter.dev/docs/development/packages-and-plugins/plugin-api-migration
 	 */
 	@Override
-	public void onAttachedToEngine(FlutterPlugin.FlutterPluginBinding binding) {
+	public void onAttachedToEngine(@NonNull FlutterPlugin.FlutterPluginBinding binding) {
 		ctx = binding.getApplicationContext();
 
-		SoundPlayerPlugin.attachSoundPlayer(ctx, binding.getBinaryMessenger());
-		SoundRecorderPlugin.attachSoundRecorder(ctx, binding.getBinaryMessenger());
-		ShadePlayerPlugin.attachShadePlayer(ctx, binding.getBinaryMessenger());
+		SoundPlayerPlugin.attachToEngine(ctx, binding.getBinaryMessenger());
+		SoundRecorderPlugin.attachToEngine(ctx, binding.getBinaryMessenger());
+		ShadePlayerPlugin.attachToEngine(ctx, binding.getBinaryMessenger());
 	}
 
 	/**
@@ -75,9 +75,9 @@ public class Sounds implements FlutterPlugin, ActivityAware {
 		ctx = registrar.context();
 		androidActivity = registrar.activity();
 
-		SoundPlayerPlugin.attachSoundPlayer(ctx, registrar.messenger());
-		SoundRecorderPlugin.attachSoundRecorder(ctx, registrar.messenger());
-		ShadePlayerPlugin.attachShadePlayer(ctx, registrar.messenger());
+		SoundPlayerPlugin.attachToEngine(ctx, registrar.messenger());
+		SoundRecorderPlugin.attachToEngine(ctx, registrar.messenger());
+		ShadePlayerPlugin.attachToEngine(ctx, registrar.messenger());
 
 		/// We are fully initialised for v1 embedding
 		initialised.countDown();
@@ -85,7 +85,10 @@ public class Sounds implements FlutterPlugin, ActivityAware {
 	}
 
 	@Override
-	public void onDetachedFromEngine(FlutterPlugin.FlutterPluginBinding binding) {
+	public void onDetachedFromEngine(@NonNull FlutterPlugin.FlutterPluginBinding binding) {
+		SoundPlayerPlugin.detachSoundPlayer();
+		SoundRecorderPlugin.detchSoundRecorder();
+		ShadePlayerPlugin.detachShadePlayer();
 	}
 
 	@Override

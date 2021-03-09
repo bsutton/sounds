@@ -72,7 +72,7 @@ class ShadePlayerPlugin extends SoundPlayerPlugin implements MethodCallHandler {
 	static Context androidContext;
 	static ShadePlayerPlugin ShadePlayerPlugin; // singleton
 
-	public static void attachShadePlayer(Context ctx, BinaryMessenger messenger) {
+	public static void attachToEngine(Context ctx, BinaryMessenger messenger) {
 		assert (soundPlayerPlugin == null);
 
 		ShadePlayerPlugin = new ShadePlayerPlugin();
@@ -82,6 +82,11 @@ class ShadePlayerPlugin extends SoundPlayerPlugin implements MethodCallHandler {
 		channel.setMethodCallHandler(ShadePlayerPlugin);
 		androidContext = ctx;
 
+	}
+	
+	public void detachFromEngine()
+	{
+		channel.setMethodCallHandler(null);
 	}
 
 	void invokeCallback(String methodName, Map dic) {
@@ -97,7 +102,7 @@ class ShadePlayerPlugin extends SoundPlayerPlugin implements MethodCallHandler {
 	}
 
 	@Override
-	public void onMethodCall(final MethodCall call, final Result result) {
+	public void onMethodCall(@NonNull  MethodCall call, @NonNull  Result result) {
 		int slotNo = call.argument("slotNo");
 		Log.d(TAG, "onMethodCall called: " + call.method + " for slot: " + slotNo);
 
