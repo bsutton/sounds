@@ -8,20 +8,36 @@ import '../sound_recorder.dart';
 import '../util/recorded_audio.dart';
 import 'recorder_playback_controller.dart' as controller;
 
+/// Function typedef used as a callback when we start
+/// recording a track.
 typedef OnStart = void Function();
-typedef OnProgress = void Function(RecordedAudio media);
-typedef OnStop = void Function(RecordedAudio media);
 
-enum _RecorderState {
-  isStopped,
-  isRecording,
-}
+/// Function typedef used as a callback to update the caller on
+/// recording progress
+/// playing a track.
+typedef OnProgress = void Function(RecordedAudio media);
+
+/// Function typedef used as a callback when we stop
+/// recording a track.
+typedef OnStop = void Function(RecordedAudio media);
 
 /// The [requestPermissions] callback allows you to provide an
 /// UI informing the user that we are about to ask for a permission.
 ///
 typedef UIRequestPermission = Future<bool> Function(
     BuildContext context, Track track);
+
+void _onStartNoOp() {}
+
+void _onStopNoOp(RecordedAudio media) {}
+
+Future<bool> _onUIRequestPermission(BuildContext context, Track track) =>
+    Future.value(true);
+
+enum _RecorderState {
+  isStopped,
+  isRecording,
+}
 
 /// A UI for recording audio.
 class SoundRecorderUI extends StatefulWidget {
@@ -106,10 +122,10 @@ class SoundRecorderUI extends StatefulWidget {
   /// ```
   SoundRecorderUI(
     Track track, {
-    this.onStart,
-    this.onStopped,
-    this.requestPermissions,
-    Key key,
+    this.onStart = _onStartNoOp,
+    this.onStopped = _onStopNoOp,
+    this.requestPermissions = _onUIRequestPermission,
+    Key? key,
   })  : audio = RecordedAudio.recordTo(track),
         super(key: key);
 
@@ -123,13 +139,12 @@ class SoundRecorderUI extends StatefulWidget {
 class SoundRecorderUIState extends State<SoundRecorderUI> {
   _RecorderState _state = _RecorderState.isStopped;
 
-  SoundRecorder _recorder;
+  final SoundRecorder _recorder;
 
   //var fakeStream = StreamController<RecordingDisposition>();
 
   ///
-  SoundRecorderUIState() {
-    _recorder = SoundRecorder();
+  SoundRecorderUIState() : _recorder = SoundRecorder() {
     _recorder.onStarted = _onStarted;
     _recorder.onStopped = _onStopped;
   }
@@ -181,14 +196,17 @@ class SoundRecorderUIState extends State<SoundRecorderUI> {
             /// fakeStream.stream
             initialData: RecordingDisposition.zero(), // was START_DECIBELS
             builder: (_, streamData) {
-              var disposition = streamData.data;
-              print(disposition.decibels);
+              var decibels = 0.09;
+              if (streamData.hasData) {
+                decibels = streamData.data!.decibels;
+                print(decibels);
+              }
               //      onRecorderProgress(context, this, disposition.duration);
               return Stack(alignment: Alignment.center, children: [
                 AnimatedContainer(
                   duration: Duration(milliseconds: 180),
-                  width: disposition.decibels * 2 + _minDbCircle,
-                  height: disposition.decibels * 2 + _minDbCircle,
+                  width: decibels * 2 + _minDbCircle,
+                  height: decibels * 2 + _minDbCircle,
                   constraints: BoxConstraints(
                       maxHeight: 80.0 + _minDbCircle,
                       maxWidth: 80.0 + _minDbCircle),
@@ -268,14 +286,10 @@ class SoundRecorderUIState extends State<SoundRecorderUI> {
 
     Future<bool> request;
 
-    if (widget.requestPermissions != null) {
-      /// ask the user before we actually ask the OS so
-      /// the dev has a chance to inform the user as to why we need
-      /// permissions.
-      request = widget.requestPermissions(context, track);
-    } else {
-      request = Future.value(true);
-    }
+    /// ask the user before we actually ask the OS so
+    /// the dev has a chance to inform the user as to why we need
+    /// permissions.
+    request = widget.requestPermissions(context, track);
 
     request.then((granted) async {
       requesting.complete(granted);
@@ -289,29 +303,25 @@ class SoundRecorderUIState extends State<SoundRecorderUI> {
     return requesting.future;
   }
 
-  void _onStarted({bool wasUser}) async {
+  void _onStarted({required bool wasUser}) async {
     Log.d(green('started Recording to: '
         '${widget.audio.track.identity})'));
 
     setState(() {
       _state = _RecorderState.isRecording;
 
-      if (widget.onStart != null) {
-        widget.onStart();
-      }
+      widget.onStart();
 
       controller.onRecordingStarted(context);
     });
   }
 
-  void _onStopped({bool wasUser}) {
+  void _onStopped({required bool wasUser}) {
     setState(() {
       _updateDuration(_recorder.duration);
       _state = _RecorderState.isStopped;
 
-      if (widget.onStopped != null) {
-        widget.onStopped(widget.audio);
-      }
+      widget.onStopped(widget.audio);
 
       controller.onRecordingStopped(context, _recorder.duration);
     });

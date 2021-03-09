@@ -36,7 +36,7 @@ class GrayedOut extends StatelessWidget {
   final double opacity;
 
   ///
-  GrayedOut({@required this.child, this.grayedOut = true})
+  GrayedOut({required this.child, this.grayedOut = true})
       : opacity = grayedOut == true ? 0.3 : 1.0;
 
   @override

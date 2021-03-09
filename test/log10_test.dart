@@ -10,7 +10,7 @@ void main() {
     var track =
         Track.fromFile(recording, mediaFormat: WellKnownMediaFormats.adtsAac);
     var recorder = SoundRecorder();
-    recorder.onStopped = ({wasUser}) {
+    recorder.onStopped = ({wasUser = false}) {
       recorder.release();
 
       /// recording has finished so play it back to the user.
@@ -45,7 +45,7 @@ void main() {
         ));
 
     var recorder = SoundRecorder();
-    recorder.onStopped = ({wasUser}) {
+    recorder.onStopped = ({wasUser = false}) {
       recorder.release();
     };
 

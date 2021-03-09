@@ -14,9 +14,9 @@ class Dropdowns extends StatefulWidget {
 
   /// ctor
   const Dropdowns({
-    Key key,
-    @required void Function(MediaFormat) onMediaFormatChanged,
-  })  : _onMediaFormatChanged = onMediaFormatChanged,
+    Key? key,
+    required void Function(MediaFormat) onMediaFormatChanged,
+  })   : _onMediaFormatChanged = onMediaFormatChanged,
         super(key: key);
 
   @override
@@ -76,7 +76,7 @@ class _DropdownsState extends State<Dropdowns> {
           else {
             var menuItems = <DropdownMenuItem<MediaFormat>>[];
 
-            for (var mediaFormat in asynData.data) {
+            for (var mediaFormat in asynData.data!) {
               menuItems.add(DropdownMenuItem<MediaFormat>(
                 value: mediaFormat,
                 child: Text(mediaFormat.name),
@@ -86,12 +86,12 @@ class _DropdownsState extends State<Dropdowns> {
             return DropdownButton<MediaFormat>(
                 value: ActiveMediaFormat().mediaFormat,
                 onChanged: (newMediaFormat) async {
-                  widget._onMediaFormatChanged(newMediaFormat);
+                  widget._onMediaFormatChanged(newMediaFormat!);
 
                   /// this is hacky as we should be passing the actual
                   /// useOSUI flag.
-                  await ActiveMediaFormat().setMediaFormat(
-                      withShadeUI: false, mediaFormat: newMediaFormat);
+                  await ActiveMediaFormat()
+                      .setMediaFormat(mediaFormat: newMediaFormat);
 
                   //await getDuration(ActiveMediaFormat().mediaFormat);
                   setState(() {});
@@ -105,7 +105,7 @@ class _DropdownsState extends State<Dropdowns> {
     return DropdownButton<MediaStorage>(
       value: MediaPath().media,
       onChanged: (newMedia) {
-        MediaPath().media = newMedia;
+        MediaPath().media = newMedia!;
 
         setState(() {});
       },

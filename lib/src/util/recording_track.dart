@@ -14,21 +14,19 @@ class RecordingTrack {
   /// The [MediaFormat] to record to.
   NativeMediaFormat mediaFormat;
 
-  /// Create a [RecordingTrack] fro a [Track].
+  /// Create a [RecordingTrack] from a [Track] for tracks
+  /// that were created via [Track.fromFile].
   ///
   /// Throws a [MediaFormatException] if the requested [MediaFormat]
   /// is not supported.
   ///
   RecordingTrack(this.track, this.mediaFormat) {
-    ArgumentError.checkNotNull(track, 'track');
-    ArgumentError.checkNotNull(mediaFormat, 'mediaFormat');
-
     if (!track.isFile) {
       ArgumentError("Only Tracks created via [Track.fromFile] are supported");
     }
 
-    if (FileUtil().exists(track.path)) {
-      FileUtil().truncate(track.path);
+    if (FileUtil().exists(track.path!)) {
+      FileUtil().truncate(track.path!);
     }
   }
 
@@ -42,16 +40,14 @@ class RecordingTrack {
   /// Check that the target recording path is valid
   void validatePath() {
     /// the directory where we are recording to MUST exist.
-    if (!FileUtil().directoryExists(dirname(track.path))) {
+    if (!FileUtil().directoryExists(dirname(track.path!))) {
       throw DirectoryNotFoundException(
-          'The directory ${dirname(track.path)} must exists');
+          'The directory ${dirname(track.path!)} must exists');
     }
   }
 
   /// Release all system resources for the track.
   void release() {
-    if (track != null) {
-      trackRelease(track);
-    }
+    trackRelease(track);
   }
 }

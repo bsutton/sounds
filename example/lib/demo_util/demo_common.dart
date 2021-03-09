@@ -27,21 +27,21 @@ enum MediaStorage {
 
 /// get the duration for the media with the given MediaFormat.
 Future<Duration> getDuration(MediaFormat mediaFormat) async {
-  Future<Duration> duration;
+  Duration duration;
   switch (MediaPath().media) {
     case MediaStorage.file:
     case MediaStorage.buffer:
-      duration =
-          mediaFormat.getDuration(MediaPath().pathForMediaFormat(mediaFormat));
+      duration = await mediaFormat
+          .getDuration(MediaPath().pathForMediaFormat(mediaFormat));
       break;
     case MediaStorage.asset:
-      duration = null;
+      duration = Duration.zero;
       break;
     case MediaStorage.remoteExampleFile:
-      duration = null;
+      duration = Duration.zero;
       break;
     case MediaStorage.stream:
-      duration = null;
+      duration = Duration.zero;
       break;
   }
   return duration;
@@ -80,7 +80,7 @@ bool directoryExists(String path) {
 /// This is stupid but just for demonstration  of startPlayerFromBuffer()
 Future<Uint8List> makeBuffer(String path) async {
   try {
-    if (!fileExists(path)) return null;
+    if (!fileExists(path)) return Uint8List.fromList([]);
     var file = File(path);
     file.openRead();
     var contents = await file.readAsBytes();
@@ -88,6 +88,6 @@ Future<Uint8List> makeBuffer(String path) async {
     return contents;
   } on Object catch (e) {
     Log.d(e.toString());
-    return null;
+    rethrow;
   }
 }

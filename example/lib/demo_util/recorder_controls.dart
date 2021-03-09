@@ -12,7 +12,7 @@ import 'recorder_state.dart';
 class RecorderControls extends StatefulWidget {
   /// ctor
   const RecorderControls({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -54,10 +54,14 @@ class _RecorderControlsState extends State<RecorderControls> {
                 .dispositionStream(interval: Duration(milliseconds: 50)),
             initialData: RecordingDisposition.zero(),
             builder: (context, snapshot) {
-              var recordingDisposition = snapshot.data;
-              var dbLevel = recordingDisposition.decibels;
+              var dbLevel = 1.0;
+              if (snapshot.hasData) {
+                var recordingDisposition = snapshot.data!;
+                dbLevel = recordingDisposition.decibels;
+              }
+
               return LinearProgressIndicator(
-                  value: 100.0 / 160.0 * (dbLevel ?? 1) / 100,
+                  value: 100.0 / 160.0 * dbLevel / 100,
                   valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
                   backgroundColor: Colors.red);
             })
@@ -70,8 +74,12 @@ class _RecorderControlsState extends State<RecorderControls> {
             .dispositionStream(interval: Duration(milliseconds: 50)),
         initialData: RecordingDisposition.zero(),
         builder: (context, snapshot) {
-          var disposition = snapshot.data;
-          var txt = formatDuration(disposition.duration);
+          String txt = '';
+          if (snapshot.hasData) {
+            RecordingDisposition disposition;
+            disposition = snapshot.data!;
+            txt = formatDuration(disposition.duration);
+          }
 
           return Container(
             margin: EdgeInsets.only(top: 12.0, bottom: 16.0),
@@ -93,9 +101,9 @@ class _RecorderControlsState extends State<RecorderControls> {
       child: ClipOval(
           child: GrayedOut(
         grayedOut: !canRecord(),
-        child: FlatButton(
+        child: TextButton(
           onPressed: () => startStopRecorder(context),
-          padding: EdgeInsets.all(8.0),
+          style: TextButton.styleFrom(padding: EdgeInsets.all(8.0)),
           child: Image(
             image: recorderAssetImage(),
           ),
@@ -111,10 +119,11 @@ class _RecorderControlsState extends State<RecorderControls> {
       child: ClipOval(
         child: GrayedOut(
             grayedOut: !isRecording(),
-            child: FlatButton(
+            child: TextButton(
+              style: TextButton.styleFrom(padding: EdgeInsets.all(8.0)
+                  // disabledColor: Colors.white,
+                  ),
               onPressed: pauseResumeRecorder,
-              disabledColor: Colors.white,
-              padding: EdgeInsets.all(8.0),
               child: Image(
                 width: 36.0,
                 height: 36.0,
@@ -153,7 +162,7 @@ class _RecorderControlsState extends State<RecorderControls> {
           backgroundColor: Colors.red,
           content:
               Text('You must select a Media type of File or Buffer to record'));
-      Scaffold.of(context).showSnackBar(error);
+      ScaffoldMessenger.of(context).showSnackBar(error);
       passed = false;
     }
     // Disable the button if the selected MediaFormat is not supported

@@ -10,7 +10,7 @@ class ActiveMediaFormat {
   bool _decoderSupported = false;
 
   ///
-  SoundRecorder recorderModule;
+  SoundRecorder? recorderModule;
 
   /// Factory to access the active MediaFormat.
   factory ActiveMediaFormat() {
@@ -19,7 +19,7 @@ class ActiveMediaFormat {
   ActiveMediaFormat._internal();
 
   /// Set the active code for the the recording and player modules.
-  void setMediaFormat({bool withShadeUI, MediaFormat mediaFormat}) async {
+  Future<void> setMediaFormat({required MediaFormat mediaFormat}) async {
     _encoderSupported = await mediaFormat.isNativeEncoder;
     _decoderSupported = await mediaFormat.isNativeDecoder;
 

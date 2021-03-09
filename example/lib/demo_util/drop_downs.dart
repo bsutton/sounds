@@ -14,9 +14,9 @@ class Dropdowns extends StatefulWidget {
 
   /// ctor
   const Dropdowns({
-    Key key,
-    @required void Function(MediaFormat) onCodecChanged,
-  })  : _onMediaFormatChanged = onCodecChanged,
+    Key? key,
+    required void Function(MediaFormat) onCodecChanged,
+  })   : _onMediaFormatChanged = onCodecChanged,
         super(key: key);
 
   @override
@@ -68,12 +68,11 @@ class _DropdownsState extends State<Dropdowns> {
     return DropdownButton<MediaFormat>(
       value: ActiveMediaFormat().mediaFormat,
       onChanged: (newCodec) {
-        widget._onMediaFormatChanged(newCodec);
+        widget._onMediaFormatChanged(newCodec!);
 
         /// this is hacky as we should be passing the actually
         /// useOSUI flag.
-        ActiveMediaFormat()
-            .setMediaFormat(withShadeUI: false, mediaFormat: newCodec);
+        ActiveMediaFormat().setMediaFormat(mediaFormat: newCodec);
 
         setState(() {
           getDuration(ActiveMediaFormat().mediaFormat);
@@ -112,7 +111,7 @@ class _DropdownsState extends State<Dropdowns> {
     return DropdownButton<MediaStorage>(
       value: MediaPath().media,
       onChanged: (newMedia) {
-        MediaPath().media = newMedia;
+        MediaPath().media = newMedia!;
 
         setState(() {});
       },

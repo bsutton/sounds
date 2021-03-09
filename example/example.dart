@@ -73,7 +73,7 @@ class SoundExampleApp extends StatelessWidget {
 
     if (usingExternalStorage) {
       /// only required if track is on external storage
-      if (Permission.storage.status == PermissionStatus.undetermined) {
+      if (Permission.storage.status == PermissionStatus.denied) {
         print('You are probably missing the storage permission '
             'in your manifest.');
       }
@@ -145,17 +145,17 @@ class SoundExampleApp extends StatelessWidget {
             'the required permissions'));
 
     // Find the Scaffold in the widget tree and use it to show a SnackBar.
-    Scaffold.of(context).showSnackBar(snackBar);
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   ///
-  Future<bool> showAlertDialog(BuildContext context, String prompt) {
+  Future<bool> showAlertDialog(BuildContext context, String prompt) async {
     // set up the buttons
-    Widget cancelButton = FlatButton(
+    Widget cancelButton = TextButton(
       child: Text("Cancel"),
       onPressed: () => Navigator.of(context).pop(false),
     );
-    Widget continueButton = FlatButton(
+    Widget continueButton = TextButton(
       child: Text("Continue"),
       onPressed: () => Navigator.of(context).pop(true),
     );
@@ -171,11 +171,13 @@ class SoundExampleApp extends StatelessWidget {
     );
 
     // show the dialog
-    return showDialog<bool>(
+    var result = await showDialog<bool>(
       context: context,
       builder: (context) {
         return alert;
       },
     );
+
+    return result!;
   }
 }

@@ -28,7 +28,7 @@ class PlayerState {
   /// When passsing [true] to [setHush] the other auidio
   /// player's (e.g. spotify) sound is lowered.
   ///
-  Future<void> setHush({bool hushOthers}) async {
+  Future<void> setHush({required bool hushOthers}) async {
     _hushOthers = hushOthers;
   }
 }

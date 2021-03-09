@@ -21,7 +21,6 @@ import 'package:sounds_common/sounds_common.dart';
 
 import '../sounds.dart';
 import 'audio_source.dart';
-
 import 'media_format/native_media_format.dart';
 import 'media_format/native_media_formats.dart';
 import 'plugins/base_plugin.dart';
@@ -31,18 +30,19 @@ import 'recording_disposition.dart';
 import 'util/recording_disposition_manager.dart';
 import 'util/recording_track.dart';
 
-enum _RecorderState {
-  isStopped,
-  isPaused,
-  isRecording,
-}
-
 /// The [requestPermissions] callback allows you to provide an
 /// UI informing the user that we are about to ask for a permission.
 ///
 typedef RequestPermission = Future<bool> Function(Track track);
 
-typedef RecorderEventWithCause = void Function({bool wasUser});
+///
+typedef RecorderEventWithCause = void Function({required bool wasUser});
+
+enum _RecorderState {
+  isStopped,
+  isPaused,
+  isRecording,
+}
 
 /// Provide an API for recording audio.
 class SoundRecorder implements SlotEntry {
@@ -55,7 +55,7 @@ class SoundRecorder implements SlotEntry {
 
   _RecorderState _recorderState = _RecorderState.isStopped;
 
-  RecordingDispositionManager _dispositionManager;
+  late RecordingDispositionManager _dispositionManager;
 
   /// [SoundRecorder] calls the [onRequestPermissions] callback
   /// to give you a chance to grant the necessary permissions.
@@ -88,10 +88,10 @@ class SoundRecorder implements SlotEntry {
   /// If we have paused during the current recording player this
   /// will be the time
   /// the most recent pause commenced.
-  DateTime _pauseStarted;
+  late DateTime _pauseStarted;
 
   /// The track we are recording to.
-  RecordingTrack _recordingTrack;
+  RecordingTrack? _recordingTrack;
 
   /// Used to flag that the recorder is ready to record.
   /// When this completion completes [_recorderReady] is set
@@ -99,7 +99,7 @@ class SoundRecorder implements SlotEntry {
   Completer<bool> _recorderReadyCompletion = Completer<bool>();
 
   /// Used to wait for the plugin to connect us to an OS MediaPlayer
-  Future<bool> _recorderReady;
+  late Future<bool> _recorderReady;
 
   /// When we do a [_softRelease] we need to flag that the plugin
   /// needs to be re-initialized so we set this to true.
@@ -120,8 +120,18 @@ class SoundRecorder implements SlotEntry {
 
   SoundRecorder({bool playInBackground = false})
       : _playInBackground = playInBackground,
-        _plugin = SoundRecorderPlugin() {
-    _commonInit();
+        _plugin = SoundRecorderPlugin(),
+        _onStarted = _onStartedNoOp,
+        _onStopped = _onStoppedNoOp,
+        _onPaused = _onPausedNoOp,
+        _onResumed = _onResumedNoOp,
+        onRequestPermissions = _onUIRequestPermissionNoOp {
+    _plugin.register(this);
+    _dispositionManager = RecordingDispositionManager(this);
+
+    // place [_recorderReady] into a non-completed state.
+    _recorderReadyCompletion = Completer<bool>();
+    _recorderReady = _recorderReadyCompletion.future;
   }
 
   /// initialize the SoundRecorder
@@ -129,15 +139,6 @@ class SoundRecorder implements SlotEntry {
   /// and in fact has to re-initialize its self after an app pause.
   void initialize() {
     // NOOP - as its not required but apparently wanted.
-  }
-
-  void _commonInit() {
-    _plugin.register(this);
-    _dispositionManager = RecordingDispositionManager(this);
-
-    // place [_recorderReady] into a non-completed state.
-    _recorderReadyCompletion = Completer<bool>();
-    _recorderReady = _recorderReadyCompletion.future;
   }
 
   Future<R> _initializeAndRun<R>(Future<R> Function() run) async {
@@ -157,10 +158,7 @@ class SoundRecorder implements SlotEntry {
       /// we can change the OS native code to send us an
       /// [onRecorderReady] event.
       _onRecorderReady(result: true);
-    } else {
-      assert(_recorderReady != null);
     }
-
     return _recorderReady.then((ready) {
       if (ready) {
         return run();
@@ -202,8 +200,6 @@ class SoundRecorder implements SlotEntry {
       /// so we need to protect ourselves from being called twice.
       _pluginInitRequired = true;
 
-      _recorderReady = null;
-
       /// the plugin is in an initialized state
       /// so we need to release it.
       await _plugin.releaseRecorder(this);
@@ -217,7 +213,7 @@ class SoundRecorder implements SlotEntry {
   /// TODO: implement the _onRecorderReady event from
   /// the native OS plugins.
   /// [result] true if the recorder init completed successfully.
-  void _onRecorderReady({bool result}) {
+  void _onRecorderReady({required bool result}) {
     _recorderReadyCompletion.complete(result);
   }
 
@@ -261,11 +257,6 @@ class SoundRecorder implements SlotEntry {
     AudioSource audioSource = AudioSource.mic,
     Quality quality = Quality.low,
   }) async {
-    if (track.mediaFormat == null) {
-      throw MediaFormatException("The [Track] must have a [NativeMediaFormat] "
-          "specified for it's [mediaFormat]");
-    }
-
     if (!(track.mediaFormat is NativeMediaFormat)) {
       throw MediaFormatException(
           'Only [NativeMediaFormat]s can be used when recording');
@@ -292,11 +283,11 @@ class SoundRecorder implements SlotEntry {
           RecordingTrack(track, track.mediaFormat as NativeMediaFormat);
 
       /// Throws an exception if the path isn't valid.
-      _recordingTrack.validatePath();
+      _recordingTrack!.validatePath();
 
       /// the MediaFormat must be supported.
       if (!await NativeMediaFormats()
-          .isNativeEncoder(_recordingTrack.track.mediaFormat)) {
+          .isNativeEncoder(_recordingTrack!.track.mediaFormat)) {
         var exception = MediaFormatException('MediaFormat not supported.');
         started.completeError(exception);
         throw exception;
@@ -304,19 +295,16 @@ class SoundRecorder implements SlotEntry {
 
       // we assume that we have all necessary permissions
       var hasPermissions = true;
-
-      if (onRequestPermissions != null) {
-        hasPermissions = await onRequestPermissions(track);
-      }
+      hasPermissions = await onRequestPermissions(track);
 
       if (hasPermissions) {
         _timePaused = Duration(seconds: 0);
 
-        await _plugin.start(this, _recordingTrack.track.path,
-            _recordingTrack.mediaFormat, audioSource, quality);
+        await _plugin.start(this, _recordingTrack!.track.path!,
+            _recordingTrack!.mediaFormat, audioSource, quality);
 
         _recorderState = _RecorderState.isRecording;
-        if (_onStarted != null) _onStarted(wasUser: true);
+        _onStarted(wasUser: true);
       } else {
         Log.d('Call to SoundRecorder.record() failed as '
             'onRequestPermissions() returned false');
@@ -367,7 +355,7 @@ class SoundRecorder implements SlotEntry {
       _dispositionManager.updateDisposition(
           _dispositionManager.lastDuration, 0);
 
-      if (_onStopped != null) _onStopped(wasUser: true);
+      _onStopped(wasUser: true);
     });
   }
 
@@ -384,7 +372,7 @@ class SoundRecorder implements SlotEntry {
       await _plugin.pause(this);
       _pauseStarted = DateTime.now();
       _recorderState = _RecorderState.isPaused;
-      if (_onPaused != null) _onPaused(wasUser: true);
+      _onPaused(wasUser: true);
     });
   }
 
@@ -408,7 +396,7 @@ class SoundRecorder implements SlotEntry {
         rethrow;
       }
       _recorderState = _RecorderState.isRecording;
-      if (_onResumed != null) _onResumed(wasUser: true);
+      _onResumed(wasUser: true);
     });
   }
 
@@ -436,7 +424,7 @@ class SoundRecorder implements SlotEntry {
     var duration = elapsedDuration - _timePaused;
     // Log.d('update duration called: $elapsedDuration');
     _dispositionManager.updateDisposition(duration, decibels);
-    _recordingTrack.duration = duration;
+    if (_recordingTrack != null) _recordingTrack!.duration = duration;
   }
 
   ///
@@ -575,3 +563,13 @@ class RecorderNotPausedException extends RecorderException {
   ///
   RecorderNotPausedException(String message) : super(message);
 }
+
+void _onStartedNoOp({required bool wasUser}) {}
+
+void _onStoppedNoOp({required bool wasUser}) {}
+
+Future<bool> _onUIRequestPermissionNoOp(Track track) => Future.value(false);
+
+void _onPausedNoOp({required bool wasUser}) {}
+
+void _onResumedNoOp({required bool wasUser}) {}

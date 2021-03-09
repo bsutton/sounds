@@ -15,7 +15,7 @@ class GrayedOut extends StatelessWidget {
   final double _opacity;
 
   /// ctor
-  GrayedOut({@required Widget child, bool grayedOut = true})
+  GrayedOut({required Widget child, bool grayedOut = true})
       : _child = child,
         _grayedOut = grayedOut,
         _opacity = grayedOut == true ? 0.3 : 1.0;

@@ -26,6 +26,7 @@ export 'package:sounds_common/sounds_common.dart'
 export 'src/album.dart';
 export 'src/android/android_audio_focus_gain.dart';
 export 'src/audio_focus.dart';
+export 'src/audio_source.dart' show AudioSource;
 export 'src/ios/ios_session_category.dart';
 export 'src/ios/ios_session_category_option.dart';
 export 'src/ios/ios_session_mode.dart';
@@ -38,6 +39,7 @@ export 'src/media_format/ogg_opus_media_format.dart';
 export 'src/media_format/ogg_vorbis_media_format.dart';
 export 'src/media_format/pcm_media_format.dart';
 export 'src/media_format/well_know_media_formats.dart';
+export 'src/quality.dart' show Quality;
 export 'src/quick_play.dart' show QuickPlay;
 export 'src/recording_disposition.dart' show RecordingDisposition;
 export 'src/sound_player.dart'
@@ -55,5 +57,3 @@ export 'src/ui/recorder_playback_controller.dart'
     show RecorderPlaybackController;
 export 'src/ui/sound_player_ui.dart' show SoundPlayerUI;
 export 'src/ui/sound_recorder_ui.dart' show SoundRecorderUI;
-export 'src/audio_source.dart' show AudioSource;
-export 'src/quality.dart' show Quality;

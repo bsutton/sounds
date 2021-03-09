@@ -34,11 +34,11 @@ class SlotEntry {}
 // ignore: prefer_mixin
 abstract class BasePlugin with WidgetsBindingObserver {
   /// ignore: prefer_final_fields
-  List<SlotEntry> _slots;
+  List<SlotEntry?> _slots;
 
   ///
   @protected
-  MethodChannel _channel;
+  late final MethodChannel _channel;
 
   /// The registered name of the plugin.
   final String _registeredName;
@@ -50,7 +50,7 @@ abstract class BasePlugin with WidgetsBindingObserver {
     _channel = MethodChannel(_registeredName);
     _channel.setMethodCallHandler(_onMethodCallback);
 
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance?.addObserver(this);
   }
 
   /// This method is currently not used as we are a singleton
@@ -59,7 +59,7 @@ abstract class BasePlugin with WidgetsBindingObserver {
   /// these events until the app stops in which case it will
   /// be freed automatically.
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
+    WidgetsBinding.instance?.removeObserver(this);
   }
 
   @override
@@ -88,12 +88,19 @@ abstract class BasePlugin with WidgetsBindingObserver {
     var slotNo = call.arguments['slotNo'] as int;
     var slotEntry = _slots[slotNo];
 
-    // Log.d(
-    //     'Dart received ${call.method} on slotNo $slotNo for '
-    //     '${slotEntry?.runtimeType}',
-    //     supressDuplicates: true);
+    if (slotEntry == null) {
+      Log.e(
+          // ignore: lines_longer_than_80_chars
+          "onMethodCallback for ${call.method} on slot $slotNo. The slot $slotNo doesn't exists");
+      return Future<dynamic>.value(null);
 
-    return onMethodCallback(slotEntry, call);
+      // Log.d(
+      //     'Dart received ${call.method} on slotNo $slotNo for '
+      //     '${slotEntry?.runtimeType}',
+      //     supressDuplicates: true);
+    } else {
+      return onMethodCallback(slotEntry, call);
+    }
   }
 
   /// Invokes a method in the platform specific plugin for the

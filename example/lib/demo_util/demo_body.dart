@@ -18,7 +18,7 @@ import 'remote_player.dart';
 class MainBody extends StatefulWidget {
   ///
   const MainBody({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -28,8 +28,8 @@ class MainBody extends StatefulWidget {
 class _MainBodyState extends State<MainBody> {
   bool initialized = false;
 
-  String recordingFile;
-  Track track;
+  late final String recordingFile;
+  late final Track track;
 
   @override
   void initState() {
@@ -44,10 +44,10 @@ class _MainBodyState extends State<MainBody> {
   Future<bool> init() async {
     if (!initialized) {
       await initializeDateFormatting();
-      await RecorderState().init();
+      RecorderState().init();
       ActiveMediaFormat().recorderModule = RecorderState().recorderModule;
-      await ActiveMediaFormat().setMediaFormat(
-          withShadeUI: false, mediaFormat: WellKnownMediaFormats.adtsAac);
+      await ActiveMediaFormat()
+          .setMediaFormat(mediaFormat: WellKnownMediaFormats.adtsAac);
 
       initialized = true;
     }
@@ -55,9 +55,7 @@ class _MainBodyState extends State<MainBody> {
   }
 
   void dispose() {
-    if (recordingFile != null) {
-      File(recordingFile).delete();
-    }
+    File(recordingFile).delete();
     super.dispose();
   }
 
@@ -77,7 +75,7 @@ class _MainBodyState extends State<MainBody> {
             final dropdowns =
                 Dropdowns(onMediaFormatChanged: (mediaFormat) async {
               await ActiveMediaFormat()
-                  .setMediaFormat(withShadeUI: false, mediaFormat: mediaFormat);
+                  .setMediaFormat(mediaFormat: mediaFormat);
 
               /// If we have changed MediaFormat the recording is no longer valid.
               FileUtil().truncate(recordingFile);
@@ -153,7 +151,7 @@ class _MainBodyState extends State<MainBody> {
     );
   }
 
-  void hushOthersSwitchChanged({bool hushOthers}) {
+  void hushOthersSwitchChanged({required bool hushOthers}) {
     setState(() {
       PlayerState().setHush(hushOthers: hushOthers);
     });
@@ -176,7 +174,7 @@ class _MainBodyState extends State<MainBody> {
 
     if (usingExternalStorage) {
       /// only required if track is on external storage
-      if (Permission.storage.status == PermissionStatus.undetermined) {
+      if (Permission.storage.status == PermissionStatus.denied) {
         print('You are probably missing the storage permission '
             'in your manifest.');
       }
@@ -248,17 +246,17 @@ class _MainBodyState extends State<MainBody> {
             'the required permissions'));
 
     // Find the Scaffold in the widget tree and use it to show a SnackBar.
-    Scaffold.of(context).showSnackBar(snackBar);
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   ///s
-  Future<bool> showAlertDialog(BuildContext context, String prompt) {
+  Future<bool> showAlertDialog(BuildContext context, String prompt) async {
     // set up the buttons
-    Widget cancelButton = FlatButton(
+    Widget cancelButton = TextButton(
       child: Text("Cancel"),
       onPressed: () => Navigator.of(context).pop(false),
     );
-    Widget continueButton = FlatButton(
+    Widget continueButton = TextButton(
       child: Text("Continue"),
       onPressed: () => Navigator.of(context).pop(true),
     );
@@ -274,20 +272,21 @@ class _MainBodyState extends State<MainBody> {
     );
 
     // show the dialog
-    return showDialog<bool>(
+    var result = await showDialog<bool>(
       context: context,
       builder: (context) {
         return alert;
       },
     );
+    return result!;
   }
 
   Widget buildShadePlayer() {
-    return RaisedButton(
+    return ElevatedButton(
       child: Text('Play Asset via Shade'),
       onPressed: () {
         var player = SoundPlayer.withShadeUI(autoFocus: false);
-        player.onStopped = ({wasUser}) {
+        player.onStopped = ({required wasUser}) {
           player.release();
           player.audioFocus(AudioFocus.abandonFocus);
         };
@@ -297,7 +296,7 @@ class _MainBodyState extends State<MainBody> {
           player.audioFocus(AudioFocus.stopOthersWithResume);
         }
         player.play(createAssetTrack());
-        Scaffold.of(context).showSnackBar(new SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(new SnackBar(
             content: new Text("Playing via the OS's Media Player.")));
       },
     );
@@ -340,11 +339,11 @@ class Left extends StatelessWidget {
 }
 
 Widget buildRemoteShadeButton(BuildContext context) {
-  return RaisedButton(
+  return ElevatedButton(
     child: Text('Play Remote URL via Shade'),
     onPressed: () {
       playRemoteURL();
-      Scaffold.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
           new SnackBar(content: new Text("Playing test OS's Media Player.")));
     },
   );
@@ -354,7 +353,7 @@ Widget buildRemoteShadeButton(BuildContext context) {
 void playRemoteURL() async {
   SoundPlayer soundPlayer =
       SoundPlayer.withShadeUI(canSkipBackward: false, playInBackground: true);
-  soundPlayer.onStopped = ({wasUser}) => soundPlayer.release();
+  soundPlayer.onStopped = ({required wasUser}) => soundPlayer.release();
 
   Track track = Track.fromURL(
       'https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_2MG.mp3');

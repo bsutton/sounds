@@ -9,10 +9,10 @@ class TrackSwitch extends StatefulWidget {
 
   /// ctor
   const TrackSwitch({
-    Key key,
-    @required bool isAudioPlayer,
-    @required void Function(bool userOSUI) switchPlayer,
-  })  : _isAudioPlayer = isAudioPlayer,
+    Key? key,
+    required bool isAudioPlayer,
+    required void Function(bool userOSUI) switchPlayer,
+  })   : _isAudioPlayer = isAudioPlayer,
         _switchPlayer = switchPlayer,
         super(key: key);
 
@@ -58,7 +58,7 @@ class _TrackSwitchState extends State<TrackSwitch> {
     widget._switchPlayer(allowTracks);
   }
 
-  void hushOthersSwitchChanged({bool hushOthers}) {
+  void hushOthersSwitchChanged({bool hushOthers = false}) {
     PlayerState().setHush(hushOthers: hushOthers);
   }
 }

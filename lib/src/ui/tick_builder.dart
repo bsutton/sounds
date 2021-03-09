@@ -2,7 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-typedef TickerBuilder = Widget Function(BuildContext context, int index);
+/// Function typedef for the [TickBuilder] builder callback.
+typedef TickerBuilderBuilder = Widget Function(BuildContext context, int index);
 
 ///
 typedef OnTick = void Function(int index);
@@ -18,7 +19,7 @@ typedef OnTick = void Function(int index);
 /// The build is called each [interval] period.
 ///
 class TickBuilder extends StatefulWidget {
-  final TickerBuilder _builder;
+  final TickerBuilderBuilder _builder;
   final Duration _interval;
   final int _limit;
   final bool _active;
@@ -27,12 +28,12 @@ class TickBuilder extends StatefulWidget {
   /// [interval] is the time between each tick. We could the [builder]
   ///  for each tick.
   /// [limit] the tick count will reset when we hit the limit.
-  /// If limit is null then it will increment forever.
+  /// If limit is -1 then it will increment forever.
   /// If [active] is false the tick builder will stop ticking.
   TickBuilder(
-      {@required TickerBuilder builder,
-      @required Duration interval,
-      int limit,
+      {required TickerBuilderBuilder builder,
+      required Duration interval,
+      int limit = -1,
       bool active = true})
       : _builder = builder,
         _interval = interval,
@@ -64,7 +65,7 @@ class _TickBuilderState extends State<TickBuilder> {
       if (mounted && widget._active) {
         setState(() {
           tickCount++;
-          if (widget._limit != null && tickCount > widget._limit) {
+          if (widget._limit != -1 && tickCount > widget._limit) {
             tickCount = 0;
           }
         });

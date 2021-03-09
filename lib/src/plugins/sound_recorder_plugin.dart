@@ -33,11 +33,10 @@ class SoundRecorderPlugin extends BasePlugin {
   /// ignore: prefer_final_fields
   static var _slots = <SlotEntry>[];
 
-  static SoundRecorderPlugin _self;
+  static late final SoundRecorderPlugin _self = SoundRecorderPlugin._internal();
 
   /// Factory
   factory SoundRecorderPlugin() {
-    _self ??= SoundRecorderPlugin._internal();
     return _self;
   }
   SoundRecorderPlugin._internal()
@@ -70,7 +69,7 @@ class SoundRecorderPlugin extends BasePlugin {
       'sampleRate': mediaFormat.sampleRate,
       'numChannels': mediaFormat.numChannels,
       'bitRate': mediaFormat.bitRate,
-      'audioSource': audioSource?.value,
+      'audioSource': audioSource.value,
     };
 
     if (Platform.isAndroid) {
@@ -78,7 +77,7 @@ class SoundRecorderPlugin extends BasePlugin {
       param['format'] = mediaFormat.androidFormat;
     } else {
       param['format'] = mediaFormat.iosFormat;
-      param['iosQuality'] = iosQuality?.value;
+      param['iosQuality'] = iosQuality.value;
     }
     await invokeMethod(recorder, 'startRecorder', param);
   }
@@ -112,11 +111,8 @@ class SoundRecorderPlugin extends BasePlugin {
       case "updateProgress":
         _updateProgress(call, recorder);
         break;
-
-      default:
-        throw ArgumentError('Unknown method ${call.method}');
     }
-    return null;
+    throw ArgumentError('Unknown method ${call.method}');
   }
 
   void _updateProgress(MethodCall call, sound_recorder.SoundRecorder recorder) {

@@ -1,24 +1,25 @@
-import 'package:meta/meta.dart';
 import 'package:sounds_common/sounds_common.dart';
 
 import 'sound_player.dart';
 
-typedef TrackChange = Track Function(int currentTrackIndex, Track current);
+/// Used by onSkipForward and onSkipBackwards to provide information
+/// about the current track.
+typedef TrackChange = Track Function(int currentTrackIndex, Track? current);
 
 /// An [Album] allows you to play a collection of [Tracks] via
 /// the OS's builtin audio UI.
 ///
 class Album {
-  SoundPlayer _player;
+  late final SoundPlayer _player;
 
   final bool _virtualAlbum;
 
-  List<Track> _tracks;
+  final List<Track> _tracks;
 
   var _currentTrackIndex = 0;
 
   /// Returns the track that is currently selected.
-  Track _currentTrack;
+  Track? _currentTrack;
 
   /// If you use the [Album.virtual] constructor then
   /// you must provide a handler for [onFirstTrack].
@@ -46,16 +47,19 @@ class Album {
   /// By default the Album displays on the OS' audio player.
   /// To suppress the OS' audio player pass [SoundPlayer.noUI()]
   /// to [player].
-  Album.fromTracks(this._tracks, SoundPlayer player) : _virtualAlbum = false {
-    Album._internal(player, _virtualAlbum);
+  Album.fromTracks(this._tracks, SoundPlayer? player)
+      : _virtualAlbum = false,
+        onFirstTrack = _onFirstTrackNoOp,
+        onSkipForward = _onSkipForwardNoOp,
+        onSkipBackward = _onSkipBackwardNoOp {
+    _internal(player);
 
     if (_tracks.isEmpty) {
       throw NoTracksAlbumException('You must pass at least one track');
     }
   }
 
-  Album._internal(SoundPlayer player, bool virtualAlbum)
-      : _virtualAlbum = virtualAlbum {
+  void _internal(SoundPlayer? player) {
     _player = player ?? SoundPlayer.withShadeUI();
 
     _player.onSkipBackward = _skipBackward;
@@ -66,7 +70,7 @@ class Album {
   /// Creates a virtual album which will be played
   /// via the OS' built in player.
   /// Each time the album needs a new track the [onSkipForward]
-  /// method is called an you need to return the track to be played.
+  /// method is called and you need to return the track to be played.
   /// When you [play] an album [onSkipForward] is called immediately
   /// to get the first track.
   /// If the user clicks the skip back button on the OS UI then
@@ -75,11 +79,16 @@ class Album {
   /// The Album will not allow the user to skip back past the first
   /// track you supplied so there is no looping back over the start
   /// of an album.
-  Album.virtual(SoundPlayer player) : _virtualAlbum = true {
-    Album._internal(player, _virtualAlbum);
+  Album.virtual(SoundPlayer player)
+      : _virtualAlbum = true,
+        _tracks = <Track>[],
+        onFirstTrack = _onFirstTrackNoOp,
+        onSkipForward = _onSkipForwardNoOp,
+        onSkipBackward = _onSkipBackwardNoOp {
+    _internal(player);
   }
 
-  void _onStopped({bool wasUser}) {}
+  void _onStopped({required bool wasUser}) {}
 
   void _skipBackward() {
     if (_currentTrackIndex > 1) {
@@ -99,7 +108,7 @@ class Album {
   }
 
   void _skipForward() {
-    if (_tracks == null || _currentTrackIndex < _tracks.length - 1) {
+    if (_tracks.isEmpty || _currentTrackIndex < _tracks.length - 1) {
       stop(wasUser: true);
 
       _currentTrack = _nextTrack();
@@ -114,18 +123,16 @@ class Album {
 
   /// finds the previous track.
   /// If the album is virtual it calls out
-  /// to get the next track.
+  /// to get the prior track.
   Track _previousTrack() {
-    Track previous;
+    var previous = Track.end;
     var originalIndex = _currentTrackIndex;
     _currentTrackIndex--;
     if (_virtualAlbum) {
-      if (onSkipBackward != null) {
-        previous = onSkipBackward(
-          originalIndex,
-          _currentTrack,
-        );
-      }
+      previous = onSkipBackward(
+        originalIndex,
+        _currentTrack,
+      );
     } else {
       previous = _tracks[_currentTrackIndex];
     }
@@ -136,16 +143,14 @@ class Album {
   /// If the album is virtual it calls out
   /// to get the next track.
   Track _nextTrack() {
-    Track next;
+    var next = Track.end;
     var originalIndex = _currentTrackIndex;
     _currentTrackIndex++;
     if (_virtualAlbum) {
-      if (onSkipForward != null) {
-        next = onSkipForward(
-          originalIndex,
-          _currentTrack,
-        );
-      }
+      next = onSkipForward(
+        originalIndex,
+        _currentTrack,
+      );
     } else {
       next = _tracks[_currentTrackIndex];
     }
@@ -160,13 +165,17 @@ class Album {
     } else {
       _currentTrack = _tracks[_currentTrackIndex];
     }
-    _player.play(_currentTrack);
+    if (_currentTrack != null) {
+      _player.play(_currentTrack!);
+    }
   }
 
   /// stop the album playing.
-  void stop({@required bool wasUser}) {
+  void stop({required bool wasUser}) {
     _player.stop(wasUser: wasUser);
-    trackRelease(_currentTrack);
+    if (_currentTrack != null) {
+      trackRelease(_currentTrack!);
+    }
   }
 
   /// pause the album playing
@@ -189,3 +198,7 @@ class NoTracksAlbumException implements Exception {
 
   String toString() => _message;
 }
+
+Track _onFirstTrackNoOp() => Track.end;
+Track _onSkipForwardNoOp(int index, Track? track) => Track.end;
+Track _onSkipBackwardNoOp(int index, Track? track) => Track.end;

@@ -20,22 +20,24 @@ final String albumArtPath =
 class RemotePlayer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return SoundPlayerUI.fromLoader(
-      _createRemoteTrack,
-      showTitle: true,
-      autoFocus: PlayerState().hushOthers
-    );
+    var track = _createRemoteTrack(context);
+
+    if (track != null) {
+      return SoundPlayerUI.fromTrack(track,
+          showTitle: true, autoFocus: PlayerState().hushOthers);
+    } else
+      return Text('No valid track selected');
   }
 
-  Future<Track> _createRemoteTrack(BuildContext context) async {
-    Track track;
+  Track? _createRemoteTrack(BuildContext context) {
+    Track? track;
     // validate MediaFormat for example file
     if (ActiveMediaFormat().mediaFormat != WellKnownMediaFormats.mp3) {
       var error = SnackBar(
           backgroundColor: Colors.red,
           content: Text('You must set the MediaFormat to MP3 to '
               'play the "Remote Example File"'));
-      Scaffold.of(context).showSnackBar(error);
+      ScaffoldMessenger.of(context).showSnackBar(error);
     } else {
       // We have to play an example audio file loaded via a URL
       track = Track.fromURL(exampleAudioFilePath,

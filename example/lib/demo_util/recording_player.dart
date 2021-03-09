@@ -21,7 +21,7 @@ class RecordingPlayer extends StatelessWidget {
 
   ///
   Future<Track> createTrack(BuildContext context) async {
-    Track track;
+    late Track track;
 
     String title;
     try {
@@ -38,24 +38,24 @@ class RecordingPlayer extends StatelessWidget {
           // Do we want to play from buffer or from file ?
           track = await _createBufferTrack();
           title = 'Recording from buffer playback';
+        } else {
+          throw RecorderInvalidStateException('Unsupported MediaPath');
         }
 
-        if (track != null) {
-          track.title = title;
-          track.artist = "By sounds";
+        track.title = title;
+        track.artist = "By sounds";
 
-          if (Platform.isIOS) {
-            track.albumArtAsset = 'AppIcon';
-          } else if (Platform.isAndroid) {
-            track.albumArtAsset = 'AppIcon.png';
-          }
+        if (Platform.isIOS) {
+          track.albumArtAsset = 'AppIcon';
+        } else if (Platform.isAndroid) {
+          track.albumArtAsset = 'AppIcon.png';
         }
       } else {
         var error = SnackBar(
             backgroundColor: Colors.red,
             content: Text('You must make a recording first with the '
                 'selected MediaFormat first.'));
-        Scaffold.of(context).showSnackBar(error);
+        ScaffoldMessenger.of(context).showSnackBar(error);
       }
     } on Object catch (err) {
       Log.d('error: $err');
@@ -72,12 +72,10 @@ class RecordingPlayer extends StatelessWidget {
         MediaPath().pathForMediaFormat(ActiveMediaFormat().mediaFormat))) {
       var dataBuffer = await makeBuffer(
           MediaPath().pathForMediaFormat(ActiveMediaFormat().mediaFormat));
-      if (dataBuffer == null) {
-        throw Exception('Unable to create the buffer');
-      }
       track = Track.fromBuffer(dataBuffer,
           mediaFormat: ActiveMediaFormat().mediaFormat);
-    }
+    } else
+      throw RecorderInvalidStateException("The recording file doesn't exist");
     return track;
   }
 
@@ -93,6 +91,6 @@ class RecordingPlayer extends StatelessWidget {
   bool _recordingExist(BuildContext context) {
     // Do we want to play from buffer or from file ?
     var path = MediaPath().pathForMediaFormat(ActiveMediaFormat().mediaFormat);
-    return (path != null && fileExists(path));
+    return fileExists(path);
   }
 }

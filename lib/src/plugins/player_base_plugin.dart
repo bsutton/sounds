@@ -11,7 +11,10 @@ import '../ios/ios_session_mode.dart';
 import '../sound_player.dart' as audio_player;
 import 'base_plugin.dart';
 
-typedef ConnectedCallback = void Function({bool result});
+
+typedef _ConnectedCallback = void Function({required bool result});
+
+void _onPlayerReadyNoOp({bool result = false}) {}
 
 /// base for all plugins that provide Plaback services.
 abstract class PlayerBasePlugin extends BasePlugin {
@@ -24,9 +27,11 @@ abstract class PlayerBasePlugin extends BasePlugin {
 
   /// Pass in the [_registeredName] which is the registered
   /// name of the plugin.
-  PlayerBasePlugin(String registeredName) : super(registeredName, _slots);
+  PlayerBasePlugin(String registeredName)
+      : _onPlayerReady = _onPlayerReadyNoOp,
+        super(registeredName, _slots);
 
-  ConnectedCallback _onPlayerReady;
+  _ConnectedCallback _onPlayerReady;
 
   /// The callbackMap is used to map callbacks to a completer
   /// created by the originator of the callback.
@@ -42,11 +47,11 @@ abstract class PlayerBasePlugin extends BasePlugin {
   ///
   /// CONSIDER: adding a timeout to the completer so we are guarenteed that
   /// the callbacks complete.
-  final _callbackMap = <String, Completer>{};
+  final _callbackMap = <String, Completer<Duration>>{};
 
   /// Allows you to register for connection events.
   /// ignore: avoid_setters_without_getters
-  set onPlayerReady(ConnectedCallback callback) => _onPlayerReady = callback;
+  set onPlayerReady(_ConnectedCallback callback) => _onPlayerReady = callback;
 
   /// Over load this method to play audio.
   Future<void> play(audio_player.SoundPlayer player, Track track);
@@ -111,7 +116,7 @@ abstract class PlayerBasePlugin extends BasePlugin {
     var uuid = json['callbackUuid'] as String;
 
     // complete the future waiting for this call to return.
-    _callbackMap[uuid].complete(duration);
+    _callbackMap[uuid]!.complete(duration);
   }
 
   ///
@@ -148,7 +153,7 @@ abstract class PlayerBasePlugin extends BasePlugin {
   /// The caller can manage the audio focus with this function
   /// If [request] is true then we request the focus
   /// If [request] is false then we abandon the focus.
-  Future<void> audioFocus(SlotEntry slotEntry, {bool request}) async {
+  Future<void> audioFocus(SlotEntry slotEntry, {required bool request}) async {
     await invokeMethod(
         slotEntry, 'setActive', <String, dynamic>{'enabled': request});
   }
@@ -199,7 +204,7 @@ abstract class PlayerBasePlugin extends BasePlugin {
         {
           var result = call.arguments['arg'] as bool;
           Log.d('onPlayerReady $result');
-          if (_onPlayerReady != null) _onPlayerReady(result: result);
+          _onPlayerReady(result: result);
         }
         break;
 
@@ -258,18 +263,14 @@ abstract class PlayerBasePlugin extends BasePlugin {
 
           /// If there is an outstanding callback then complete it
           /// so the UI doesn't hang.
-          if (callbackUuid != null) {
-            _callbackMap[callbackUuid].completeError(description);
-          }
+          _callbackMap[callbackUuid]!.completeError(description);
 
           audio_player.onSystemError(player, description);
         }
         break;
-
-      default:
-        throw ArgumentError('Unknown method ${call.method}');
     }
-    return null;
+
+    throw ArgumentError('Unknown method ${call.method}');
   }
 
   /// Called when the OS resumes our app.

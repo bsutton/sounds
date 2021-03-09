@@ -37,11 +37,19 @@ class MediaPath {
 
   /// returns the path to the file for the given MediaFormat.
   String pathForMediaFormat(MediaFormat mediaFormat) {
-    return _path[mediaFormat];
+    if (!_path.containsKey(mediaFormat)) throw UnknownMediaFormat(mediaFormat);
+    return _path[mediaFormat]!;
   }
 
   /// [true] if a path for the give MediaFormat exists.
   bool exists(MediaFormat mediaFormat) {
     return _path[mediaFormat] != null;
   }
+}
+
+class UnknownMediaFormat implements Exception {
+  MediaFormat mediaFormat;
+  UnknownMediaFormat(this.mediaFormat);
+
+  String toString() => 'No audio for ${mediaFormat.name} ';
 }

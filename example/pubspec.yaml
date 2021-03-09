@@ -1,4 +1,4 @@
-name: sounds_demo
+name: sounds_example
 description: Demonstrates how to use the sounds plugin.
 
 # The following defines the version and build number for your application.
@@ -9,7 +9,7 @@ description: Demonstrates how to use the sounds plugin.
 # Read more about versioning at semver.org.
 version: 1.0.0+1
 environment:
-    sdk: ">=2.1.0 <3.0.0"
+    sdk: ">=2.12.0 <3.0.0"
     flutter: ">=1.17.0 <2.0.0"
 
 dependencies:
@@ -17,17 +17,17 @@ dependencies:
     sdk: flutter
   sounds:
     path: ..    
-  sounds_common: ^1.0.0
-    #path: ../../sounds_common
+  sounds_common: # ^1.0.0
+    path: ../../sounds_common
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  intl: ^0.16.0
-  cupertino_icons: ^0.1.3
-  path_provider: ^1.6.1
-  path: ^1.6.4
-  permission_handler: ">=5.0.0 <6.0.0"
-  uuid: ^2.0.4
+  intl: ^0.17.0
+  cupertino_icons: ^1.0.2
+  path_provider: ^2.0.0
+  path: ^1.8.0
+  permission_handler: ^6.0.0
+  uuid: ^3.0.0
 
 
 #dependency_overrides:

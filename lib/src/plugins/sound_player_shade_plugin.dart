@@ -24,11 +24,11 @@ import 'player_base_plugin.dart';
 
 ///
 class SoundPlayerShadePlugin extends PlayerBasePlugin {
-  static SoundPlayerShadePlugin _self;
+  static late final SoundPlayerShadePlugin _self =
+      SoundPlayerShadePlugin._internal();
 
   /// Factory
   factory SoundPlayerShadePlugin() {
-    _self ??= SoundPlayerShadePlugin._internal();
     return _self;
   }
   SoundPlayerShadePlugin._internal()
@@ -95,11 +95,9 @@ class SoundPlayerShadePlugin extends PlayerBasePlugin {
 
         onSystemUpdatePlaybackState(player, playbackState);
         break;
-
-      default:
-        super.onMethodCallback(player, call);
     }
-    return null;
+
+    return super.onMethodCallback(player, call);
   }
 }
 
