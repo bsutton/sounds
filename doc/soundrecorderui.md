@@ -202,11 +202,11 @@ class SoundExampleApp extends StatelessWidget {
   ///
   Future<bool> showAlertDialog(BuildContext context, String prompt) {
     // set up the buttons
-    Widget cancelButton = FlatButton(
+    Widget cancelButton = TextButton(
       child: Text("Cancel"),
       onPressed: () => Navigator.of(context).pop(false),
     );
-    Widget continueButton = FlatButton(
+    Widget continueButton = TextButton(
       child: Text("Continue"),
       onPressed: () => Navigator.of(context).pop(true),
     );
