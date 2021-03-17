@@ -1,0 +1,23 @@
+include: package:lint/analysis_options_package.yaml
+
+# For lint rules and documentation, see http://dart-lang.github.io/linter/lints.
+# Uncomment to specify additional rules.
+linter:
+  
+  rules:
+    lines_longer_than_80_chars: false
+    camel_case_types: true
+    always_declare_return_types: true
+    
+    await_only_futures: true
+    unawaited_futures: true
+    comment_references: true
+    avoid_print: false
+  
+
+analyzer:
+  
+  exclude: lib/templates/*.dart
+  strong-mode:
+    implicit-casts: false
+    implicit-dynamic: false
