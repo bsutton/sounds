@@ -18,30 +18,16 @@ dependencies:
   path: ^1.8.0
   provider: ^5.0.0
   sounds_common: ^2.0.0
-    #path: ../sounds_common
   stacktrace_impl: ^2.0.0
-  
   uuid: ^3.0.0
 dev_dependencies: 
   dcli: ^0.51.5
   effective_dart: ^1.2.1
   flutter_test: 
     sdk: flutter
-
-  # e2e: ^0.7.0
   lint: ^1.1.1
   pedantic: ^1.9.0
   pub_semver: ^2.0.0
-  # flutter_driver: 
-  #   sdk: flutter
-
-
-dependency_overrides:
-#  file: ^6.1.0
-#  args: ^2.0.0
-#  archive: ^3.0.0
-#  crypto: ^3.0.0
-  
 flutter: 
   plugin: 
     platforms: 
