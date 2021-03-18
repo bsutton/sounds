@@ -36,10 +36,8 @@ void main() {
 
   test('Sound Recorder #Recording Quality', () {
     final recording = Track.tempFile(WellKnownMediaFormats.adtsAac);
-    final track = Track.fromFile(recording,
-        mediaFormat: const AdtsAacMediaFormat(
-          
-        ));
+    final track =
+        Track.fromFile(recording, mediaFormat: const AdtsAacMediaFormat());
 
     final recorder = SoundRecorder();
     recorder.onStopped = ({wasUser = false}) {

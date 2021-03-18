@@ -65,8 +65,7 @@ class QuickPlay {
 
   void _internal(double volume, bool withShadeUI) {
     if (withShadeUI) {
-      _player = SoundPlayer.withShadeUI(
-          canPause: false);
+      _player = SoundPlayer.withShadeUI(canPause: false);
     } else {
       _player = SoundPlayer.noUI();
     }

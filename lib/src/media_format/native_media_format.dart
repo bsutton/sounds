@@ -28,12 +28,12 @@ abstract class NativeMediaFormat extends MediaFormat {
         );
 
   @override
-  Future<bool> get isNativeDecoder  =>
-       NativeMediaFormats().isNativeDecoder(this);
+  Future<bool> get isNativeDecoder =>
+      NativeMediaFormats().isNativeDecoder(this);
 
   @override
-  Future<bool> get isNativeEncoder  =>
-       NativeMediaFormats().isNativeEncoder(this);
+  Future<bool> get isNativeEncoder =>
+      NativeMediaFormats().isNativeEncoder(this);
 
   @override
   Future<Duration> getDuration(String path) =>
