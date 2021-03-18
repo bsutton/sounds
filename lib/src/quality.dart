@@ -19,6 +19,7 @@
 class Quality {
   final int _value;
   const Quality._internal(this._value);
+  @override
   String toString() => 'IOSQuality.$_value';
 
   /// returns the quality which is a bit mask

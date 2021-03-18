@@ -33,24 +33,24 @@ class NativeMediaFormats implements MediaProvider {
   /// for playback.
   @override
   Future<List<NativeMediaFormat>> get decoders async {
-    var supported = <NativeMediaFormat>[];
+    final supported = <NativeMediaFormat>[];
 
     /// common formats
-    supported.add(AdtsAacMediaFormat());
+    supported.add(const AdtsAacMediaFormat());
     supported.add(MP3MediaFormat());
-    supported.add(PCMMediaFormat());
+    supported.add(const PCMMediaFormat());
 
     if (Platform.isIOS) {
       // ios specific formats
-      supported.add(CafOpusMediaFormat());
+      supported.add(const CafOpusMediaFormat());
     } else {
       // android
       supported.add(OggVorbisMediaFormat());
 
-      var deviceInfo = DeviceInfoPlugin();
-      var androidInfo = await deviceInfo.androidInfo;
+      final deviceInfo = DeviceInfoPlugin();
+      final androidInfo = await deviceInfo.androidInfo;
       if (androidInfo.version.sdkInt >= 21) {
-        supported.add(OggOpusMediaFormat());
+        supported.add(const OggOpusMediaFormat());
       }
     }
     return supported;
@@ -60,28 +60,28 @@ class NativeMediaFormats implements MediaProvider {
   /// for recording.
   @override
   Future<List<NativeMediaFormat>> get encoders async {
-    var supported = <NativeMediaFormat>[];
+    final supported = <NativeMediaFormat>[];
 
     /// common formats
-    supported.add(AdtsAacMediaFormat());
+    supported.add(const AdtsAacMediaFormat());
 
     if (Platform.isIOS) {
       // ios specific formats
-      supported.add(CafOpusMediaFormat());
-      supported.add(PCMMediaFormat());
+      supported.add(const CafOpusMediaFormat());
+      supported.add(const PCMMediaFormat());
     } else {
       // android
-      var deviceInfo = DeviceInfoPlugin();
-      var androidInfo = await deviceInfo.androidInfo;
+      final deviceInfo = DeviceInfoPlugin();
+      final androidInfo = await deviceInfo.androidInfo;
       if (androidInfo.version.sdkInt >= 29) {
-        supported.add(OggOpusMediaFormat());
+        supported.add(const OggOpusMediaFormat());
         supported.add(OggVorbisMediaFormat());
       }
     }
     return supported;
   }
 
-  /// list of known [MediaFormats]. Thes formats may not be natively
+  /// list of known [MediaFormat]s. Thes formats may not be natively
   /// supported on every platform.
   ///
   /// To determine if a [MediaFormat] is natively supported on your
@@ -89,23 +89,23 @@ class NativeMediaFormats implements MediaProvider {
   /// [MediaFormat.isNativeDecoder].
   ///
   /// Use [encoders] and [decoders] to get a list of natively
-  /// supported [MediaFormats].
+  /// supported [MediaFormat]s.
   List<MediaFormat> get mediaFormats => _mediaFormats;
 
   static List<MediaFormat> get _mediaFormats => [
-        AdtsAacMediaFormat(),
-        CafOpusMediaFormat(),
-        PCMMediaFormat(),
-        OggOpusMediaFormat(),
+        const AdtsAacMediaFormat(),
+        const CafOpusMediaFormat(),
+        const PCMMediaFormat(),
+        const OggOpusMediaFormat(),
         OggVorbisMediaFormat(),
         MP3MediaFormat(),
-        PCMMediaFormat()
+        const PCMMediaFormat()
       ];
 
   /// Returns true if the [mediaFormat] is natively supported
   /// on the current OS and SDK version.
   Future<bool> isNativeDecoder(MediaFormat mediaFormat) async {
-    for (var native in await decoders) {
+    for (final native in await decoders) {
       if (mediaFormat.name == native.name) {
         return true;
       }
@@ -116,7 +116,7 @@ class NativeMediaFormats implements MediaProvider {
   /// Returns true if the [mediaFormat] is natively supported
   /// on the current OS and SDK version.
   Future<bool> isNativeEncoder(MediaFormat mediaFormat) async {
-    for (var native in await encoders) {
+    for (final native in await encoders) {
       if (mediaFormat.name == native.name) {
         return true;
       }
@@ -130,7 +130,7 @@ class NativeMediaFormats implements MediaProvider {
   /// This method also registered the [NativeDurationProvider].
   void _register() {
     /// add the set of native codecs.
-    for (var mediaFormat in _mediaFormats) {
+    for (final mediaFormat in _mediaFormats) {
       MediaFormatManager().register(mediaFormat);
     }
   }

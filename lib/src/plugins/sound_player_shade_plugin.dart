@@ -31,22 +31,20 @@ class SoundPlayerShadePlugin extends PlayerBasePlugin {
   factory SoundPlayerShadePlugin() {
     return _self;
   }
-  SoundPlayerShadePlugin._internal()
-      : super('com.bsutton.sounds.sounds_shade_player');
+  SoundPlayerShadePlugin._internal() : super('com.bsutton.sounds.shade_player');
 
-  /// Plays the given [track]. [canSkipForward] and [canSkipBackward] must be
-  /// passed to provide information on whether the user can skip to the next
-  /// or to the previous song in the lock screen controls.
+  /// Plays the given [track].
   ///
   /// This method should only be used if the player has been initialize
   /// with the audio player specific features.
+  @override
   Future<void> play(SoundPlayer player, Track track) async {
-    final trackMap = <String, dynamic>{
-      "title": track.title,
-      "artist": track.artist,
-      "albumArtUrl": track.albumArtUrl,
-      "albumArtAsset": track.albumArtAsset,
-    };
+    final trackMap = <String, dynamic>{};
+    _setArg(trackMap, 'artist', track.artist);
+    _setArg(trackMap, 'title', track.title);
+    _setArg(trackMap, 'albumArtUrl', track.albumArtUrl);
+    _setArg(trackMap, 'albumArtAsset', track.albumArtAsset);
+    _setArg(trackMap, 'albumArtFile', track.albumArtFile);
 
     /// buffer is only supported on iOS.
     if (track.isBuffer) {
@@ -64,11 +62,12 @@ class SoundPlayerShadePlugin extends PlayerBasePlugin {
   }
 
   ///
+  @override
   Future<dynamic> onMethodCallback(
       covariant SoundPlayer player, MethodCall call) {
     switch (call.method) {
       case 'pause':
-        var b = call.arguments['arg'] as bool;
+        final b = call.arguments['arg'] as bool;
         if (b) {
           onSystemPaused(player);
         } else {
@@ -89,15 +88,21 @@ class SoundPlayerShadePlugin extends PlayerBasePlugin {
       /// notifications from the os when the OS Media Player
       /// changes state.
       case 'updatePlaybackState':
-        var stateNo = call.arguments['arg'] as int;
+        final stateNo = call.arguments['arg'] as int;
 
-        var playbackState = SystemPlaybackState.values[stateNo];
+        final playbackState = SystemPlaybackState.values[stateNo];
 
         onSystemUpdatePlaybackState(player, playbackState);
         break;
     }
 
     return super.onMethodCallback(player, call);
+  }
+
+  void _setArg(Map<String, dynamic> args, String key, String value) {
+    if (value.isNotEmpty) {
+      args[key] = value;
+    }
   }
 }
 

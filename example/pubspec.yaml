@@ -13,6 +13,7 @@ environment:
     flutter: ">=1.17.0 <2.0.0"
 
 dependencies:
+  completer_ex: ^3.0.0
   flutter:
     sdk: flutter
   sounds:
@@ -27,6 +28,7 @@ dependencies:
   path_provider: ^2.0.0
   path: ^1.8.0
   permission_handler: ^6.0.0
+    # path: ../../../flutter-permission-handler/permission_handler
   uuid: ^3.0.0
 
 

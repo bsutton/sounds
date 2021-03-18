@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:completer_ex/completer_ex.dart';
 import 'package:sounds/sounds.dart';
 import 'package:flutter_test/flutter_test.dart';
 // import 'package:e2e/e2e.dart';
@@ -12,15 +13,15 @@ void main() {
     expect(player, equals(isNotNull));
 
     var released = false;
-    var finished = Completer<bool>();
+    final finished = CompleterEx<bool>();
 
     player.onStopped = ({wasUser = false}) => finished.complete(true);
-    Future.delayed(Duration(seconds: 10), () => finished.complete(false));
+    Future.delayed(const Duration(seconds: 10), () => finished.complete(false));
 
-    player.play(Track.fromFile('assets/sample.acc',
+    await player.play(Track.fromFile('assets/sample.acc',
         mediaFormat: WellKnownMediaFormats.adtsAac));
 
-    finished.future.then<bool>((release) => released = release);
+    await finished.future.then<bool>((release) => released = release);
 
     await finished.future;
 

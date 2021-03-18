@@ -66,7 +66,7 @@ class QuickPlay {
   void _internal(double volume, bool withShadeUI) {
     if (withShadeUI) {
       _player = SoundPlayer.withShadeUI(
-          canPause: false, canSkipBackward: false, canSkipForward: false);
+          canPause: false);
     } else {
       _player = SoundPlayer.noUI();
     }
@@ -78,7 +78,7 @@ class QuickPlay {
   ///
   /// The [path] of the file to play.
   ///
-  /// An [TrackFileMustExistException] exception will be thrown
+  /// An [TrackPathException] exception will be thrown
   /// if the file doesn't exist.
   ///
   /// If the file contains a unknown MediaFormat then

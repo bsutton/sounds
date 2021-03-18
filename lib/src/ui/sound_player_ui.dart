@@ -45,10 +45,10 @@ class SoundPlayerUI extends StatefulWidget {
 
   final bool _showTitle;
 
-  /// The [Track] passed when [fromTrack] is called.
+  /// The [Track] passed when [SoundPlayerUI.fromTrack] is called.
   ///
   /// If the fromLoader ctor is used this will be null.
-  late final Track _track;
+  final Track? _track;
 
   final OnLoad _onLoad;
 
@@ -70,11 +70,11 @@ class SoundPlayerUI extends StatefulWidget {
   /// If [enabled] is true (the default) then the Player will be enabled.
   /// If [enabled] is false then the player will be disabled and the user
   /// will not be able to click the play button.
-  /// The [audioFocus] allows you to control what happens to other
+  /// The audioFocus allows you to control what happens to other
   /// media that is playing when our player starts.
   /// By default we use [AudioFocus.hushOthersWithResume] which will
   /// reduce the volume of any other players.
-  SoundPlayerUI.fromTrack(Track track,
+  const SoundPlayerUI.fromTrack(Track track,
       {Key? key,
       bool showTitle = false,
       bool enabled = true,
@@ -89,7 +89,7 @@ class SoundPlayerUI extends StatefulWidget {
   /// [SoundPlayerUI.fromLoader] allows you to dynamically provide
   /// a [Track] when the user clicks the play button.
   ///
-  /// The [track] must have been created with a [mediaFormat] otherwise
+  /// The [Track] must have been created with a [MediaFormat] otherwise
   /// a [MediaFormatException] will be thrown.
   ///
   /// [onLoad] is the function that is called when the user clicks the
@@ -101,11 +101,11 @@ class SoundPlayerUI extends StatefulWidget {
   /// If [enabled] is true (the default) then the Player will be enabled.
   /// If [enabled] is false then the player will be disabled and the user
   /// will not be able to click the play button.
-  /// The [audioFocus] allows you to control what happens to other
+  /// The [autoFocus] allows you to control what happens to other
   /// media that is playing when our player starts.
   /// By default we use [AudioFocus.hushOthersWithResume] which will
   /// reduce the volume of any other players.
-  SoundPlayerUI.fromLoader(OnLoad onLoad,
+  const SoundPlayerUI.fromLoader(OnLoad onLoad,
       {Key? key,
       bool showTitle = false,
       bool enabled = true,
@@ -114,12 +114,13 @@ class SoundPlayerUI extends StatefulWidget {
         _autoFocus = autoFocus,
         _showTitle = showTitle,
         _enabled = enabled,
+        _track = null,
         super(key: key);
 
   @override
-  State<StatefulWidget> createState() {
-    return SoundPlayerUIState(_track, enabled: _enabled);
-  }
+  State<StatefulWidget> createState() =>
+      // ignore: no_logic_in_create_state
+      SoundPlayerUIState(_track, enabled: _enabled);
 }
 
 /// internal state.
@@ -139,25 +140,28 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
   // and we should block user interaction until the transition completes.
   bool __transitioning = false;
 
+  final bool _enabled;
+
   /// indicates that we have started the player but we are waiting
   /// for it to load the audio resource.
   bool __loading = false;
 
-  /// If the widget was constructed with a call to [fromTrack]
+  /// If the widget was constructed with a call to [SoundPlayerUI.fromTrack]
   /// then this holds that value.
   ///
-  /// If the widget was constructed with a call to  [fromLoader] then
-  /// this value won't be initialised until [widget._onLoad] is called.
-  /// we called [play] and the [_loader] method was called.
+  /// If the widget was constructed with a call to  [SoundPlayerUI.fromLoader] then
+  /// this value won't be initialised until [SoundPlayerUI._onLoad] is called.
   Track? _track;
 
   ///
-  SoundPlayerUIState(this._track, {required bool enabled})
+  SoundPlayerUIState(Track? track, {required bool enabled})
       : _player = SoundPlayer.noUI(),
+        _track = track,
+        _enabled = enabled,
         _localController = StreamController<PlaybackDisposition>.broadcast() {
-    _sliderPosition.position = Duration(seconds: 0);
-    _sliderPosition.maxPosition = Duration(seconds: 0);
-    if (!enabled) {
+    _sliderPosition.position = const Duration();
+    _sliderPosition.maxPosition = const Duration();
+    if (_enabled) {
       __playState = PlayState.disabled;
     }
 
@@ -165,7 +169,7 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
   }
 
   /// returns the active track.
-  /// If [fromLoader] was called then this may return null if if you haven't
+  /// If [SoundPlayerUI.fromLoader] was called then this may return null if if you haven't
   /// called play or fromLoader returned null.
   Track? get track => _track;
 
@@ -176,7 +180,7 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
     Log.d('didUpdateWidget ${track?.artist}');
     track?.duration.then((duration) {
       _localController.add(PlaybackDisposition(PlaybackDispositionState.init,
-          position: Duration.zero, duration: duration));
+          duration: duration));
     });
   }
 
@@ -192,7 +196,7 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
   /// and sending methodCalls to a slot that no longe exists.
   /// I'm not certain this is working as advertised.
   @override
-  void reassemble() async {
+  Future<void> reassemble() async {
     super.reassemble();
     if (track != null) {
       if (_playState != PlayState.stopped) {
@@ -248,7 +252,7 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
   }
 
   /// This method is used by the [RecorderPlaybackController] to attached
-  /// the [_localController] to the [SoundRecordUI]'s stream.
+  /// the [_localController] to the [SoundRecorderUI]'s stream.
   /// This is only done when this player is attached to a
   /// [RecorderPlaybackController].
   ///
@@ -274,7 +278,7 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
   }
 
   Widget _buildPlayBar() {
-    var rows = <Widget>[];
+    final rows = <Widget>[];
     rows.add(Row(children: [_buildDuration(), _buildSlider()]));
     if (widget._showTitle && track != null) rows.add(_buildTitle());
 
@@ -417,6 +421,7 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
         await _player.audioFocus(AudioFocus.hushOthersWithResume);
       }
       if (track != null) {
+        await _player.setVolume(1.0);
         await _player.play(track!);
         _playState = PlayState.playing;
       }
@@ -485,55 +490,50 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
     Widget button;
 
     if (_loading == true) {
-      button = Container(
+      button = TickBuilder(
+          interval: const Duration(milliseconds: 100),
+          builder: (context, index) {
+            if (index > 1) {
+              return StreamBuilder<PlaybackDisposition>(
+                  stream: _localController.stream,
+                  initialData: PlaybackDisposition.init(),
+                  builder: (context, asyncData) {
+                    // Log.e(yellow('state ${disposition.state} '
+                    //     'progress: ${disposition.progress}'));
+                    double? progress = 0.0;
+                    if (asyncData.hasData) {
+                      final disposition = asyncData.data!;
 
-          /// use a tick builder so we don't show the spinkit unless
-          /// at least 100ms has passed. This stops a little flicker
-          /// of the spiner caused by the default loading state.
-          child: TickBuilder(
-              interval: Duration(milliseconds: 100),
-              builder: (context, index) {
-                if (index > 1) {
-                  return StreamBuilder<PlaybackDisposition>(
-                      stream: _localController.stream,
-                      initialData: PlaybackDisposition.init(),
-                      builder: (context, asyncData) {
-                        // Log.e(yellow('state ${disposition.state} '
-                        //     'progress: ${disposition.progress}'));
-                        double? progress = 0.0;
-                        if (asyncData.hasData) {
-                          var disposition = asyncData.data!;
-
-                          switch (disposition.state) {
-                            case PlaybackDispositionState.preload:
-                              progress = null; // indeterminate
-                              break;
-                            case PlaybackDispositionState.loading:
-                              progress = disposition.progress;
-                              break;
-                            default:
-                              progress = null;
-                              break;
-                          }
-                        }
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: CircularProgressIndicator(
-                              strokeWidth: 5, value: progress),
-                        );
-                      });
-                } else {
-                  return Container(width: 32, height: 32);
-                }
-              }));
+                      switch (disposition.state) {
+                        case PlaybackDispositionState.preload:
+                          progress = null; // indeterminate
+                          break;
+                        case PlaybackDispositionState.loading:
+                          progress = disposition.progress;
+                          break;
+                        default:
+                          progress = null;
+                          break;
+                      }
+                    }
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CircularProgressIndicator(
+                          strokeWidth: 5, value: progress),
+                    );
+                  });
+            } else {
+              return const SizedBox(width: 32, height: 32);
+            }
+          });
     } else {
       button = _buildPlayButtonIcon();
     }
-    return Container(
+    return SizedBox(
         width: 50,
         height: 50,
         child: Padding(
-            padding: EdgeInsets.only(left: 0, right: 0),
+            padding: const EdgeInsets.only(),
             child: FutureBuilder<bool>(
                 future: canPlay,
                 builder: (context, asyncData) {
@@ -552,7 +552,7 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
     Widget button;
     switch (_playState) {
       case PlayState.playing:
-        button = Icon(Icons.pause, color: Colors.black);
+        button = const Icon(Icons.pause, color: Colors.black);
         break;
       case PlayState.stopped:
       case PlayState.paused:
@@ -569,8 +569,8 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
         break;
       case PlayState.disabled:
         GrayedOut(
-            grayedOut: true,
-            child: button = Icon(Icons.play_arrow, color: Colors.blueGrey));
+            child: button =
+                const Icon(Icons.play_arrow, color: Colors.blueGrey));
         break;
     }
     return button;
@@ -607,21 +607,21 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
   }
 
   Widget _buildTitle() {
-    var columns = <Widget>[];
+    final columns = <Widget>[];
 
     if (track != null) {
       if (track!.title.isNotEmpty) {
         columns.add(Text(track!.title));
       }
       if (track!.title.isNotEmpty && track!.artist.isNotEmpty) {
-        columns.add(Text(' / '));
+        columns.add(const Text(' / '));
       }
       if (track!.artist.isNotEmpty) {
         columns.add(Text(track!.artist));
       }
     }
     return Container(
-      margin: EdgeInsets.only(bottom: 5),
+      margin: const EdgeInsets.only(bottom: 5),
       child: Row(children: columns),
     );
   }
@@ -660,6 +660,7 @@ class _TrackLoaderException implements Exception {
   ///
   _TrackLoaderException(this._message);
 
+  @override
   String toString() => _message;
 }
 

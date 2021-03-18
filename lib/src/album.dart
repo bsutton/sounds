@@ -6,7 +6,7 @@ import 'sound_player.dart';
 /// about the current track.
 typedef TrackChange = Track Function(int currentTrackIndex, Track? current);
 
-/// An [Album] allows you to play a collection of [Tracks] via
+/// An [Album] allows you to play a collection of [Track]s via
 /// the OS's builtin audio UI.
 ///
 class Album {
@@ -35,7 +35,7 @@ class Album {
   TrackChange onSkipForward;
 
   /// If you use the [Album.virtual] constructor then
-  /// you need to provide a handlers for [onSkipbackward]
+  /// you need to provide a handlers for [onSkipBackward]
   /// method.
   /// see [Album.virtual()] for details.
   TrackChange onSkipBackward;
@@ -126,7 +126,7 @@ class Album {
   /// to get the prior track.
   Track _previousTrack() {
     var previous = Track.end;
-    var originalIndex = _currentTrackIndex;
+    final originalIndex = _currentTrackIndex;
     _currentTrackIndex--;
     if (_virtualAlbum) {
       previous = onSkipBackward(
@@ -144,7 +144,7 @@ class Album {
   /// to get the next track.
   Track _nextTrack() {
     var next = Track.end;
-    var originalIndex = _currentTrackIndex;
+    final originalIndex = _currentTrackIndex;
     _currentTrackIndex++;
     if (_virtualAlbum) {
       next = onSkipForward(
@@ -196,6 +196,7 @@ class NoTracksAlbumException implements Exception {
   ///
   NoTracksAlbumException(this._message);
 
+  @override
   String toString() => _message;
 }
 

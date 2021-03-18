@@ -33,6 +33,7 @@ class SliderPosition extends ChangeNotifier {
     if (!_disposed) notifyListeners();
   }
 
+  @override
   void dispose() {
     _disposed = true;
     super.dispose();

@@ -51,22 +51,17 @@ public class MediaBrowserHelper {
 			// MediaControllerCompat object and associate it with MediaSessionCompat. Once
 			// completed,
 			// start the audio playback.
-			try {
-				assert (Sounds.androidActivity != null);
-				mediaControllerCompat = new MediaControllerCompat(Sounds.androidActivity,
-						mMediaBrowserCompat.getSessionToken());
-				MediaControllerCompat.setMediaController(Sounds.androidActivity, mediaControllerCompat);
+			assert (Sounds.androidActivity != null);
+			mediaControllerCompat = new MediaControllerCompat(Sounds.androidActivity,
+					mMediaBrowserCompat.getSessionToken());
+			MediaControllerCompat.setMediaController(Sounds.androidActivity, mediaControllerCompat);
 
-				Log.w("MediaBrowserHelper", "onConnect = Success");
+			Log.w("MediaBrowserHelper", "onConnect = Success");
 
-				// Start the audio playback
-				// MediaControllerCompat.getMediaController(mActivity).getTransportControls().playFromMediaId("http://path-to-audio-file.com",
-				// null);
+			// Start the audio playback
+			// MediaControllerCompat.getMediaController(mActivity).getTransportControls().playFromMediaId("http://path-to-audio-file.com",
+			// null);
 
-			} catch (RemoteException e) {
-				Log.e("MediaBrowserHelper",
-						"The following error occurred while" + " initializing the media controller.", e);
-			}
 
 			// Call the successful connection callback if it was provided
 			if (mServiceConnectionSuccessCallback != null) {

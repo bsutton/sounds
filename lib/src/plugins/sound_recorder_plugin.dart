@@ -64,7 +64,7 @@ class SoundRecorderPlugin extends BasePlugin {
     AudioSource audioSource,
     Quality iosQuality,
   ) async {
-    var param = <String, dynamic>{
+    final param = <String, dynamic>{
       'path': path,
       'sampleRate': mediaFormat.sampleRate,
       'numChannels': mediaFormat.numChannels,
@@ -105,6 +105,7 @@ class SoundRecorderPlugin extends BasePlugin {
     });
   }
 
+  @override
   Future<dynamic> onMethodCallback(
       covariant sound_recorder.SoundRecorder recorder, MethodCall call) {
     switch (call.method) {
@@ -116,10 +117,10 @@ class SoundRecorderPlugin extends BasePlugin {
   }
 
   void _updateProgress(MethodCall call, sound_recorder.SoundRecorder recorder) {
-    var result = convert.json.decode(call.arguments['arg'] as String)
+    final result = convert.json.decode(call.arguments['arg'] as String)
         as Map<String, dynamic>;
 
-    var duration =
+    final duration =
         Duration(milliseconds: int.parse(result['current_position'] as String));
     var decibels = double.parse(result['decibels'] as String);
 
@@ -137,6 +138,7 @@ class SoundRecorderPlugin extends BasePlugin {
 
   /// Called when the OS resumes our app.
   /// We need to broadcast this to all player SlotEntries.
+  @override
   void onSystemAppResumed() {
     forEachSlot((entry) {
       /// knowledge of the AudioPlayer at this level is a little
@@ -148,6 +150,7 @@ class SoundRecorderPlugin extends BasePlugin {
 
   /// Called when the OS resumes our app.
   /// We need to broadcast this to all player SlotEntries.
+  @override
   void onSystemAppPaused() {
     forEachSlot((entry) {
       /// knowledge of the AudioPlayer at this level is a little

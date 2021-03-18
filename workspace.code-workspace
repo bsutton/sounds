@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../sounds_common"
+		}
+	],
+	"settings": {
+		"debug.openDebug": "openOnDebugBreak"
+	}
+}

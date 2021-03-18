@@ -29,7 +29,7 @@ class _MainBodyState extends State<MainBody> {
   bool initialized = false;
 
   late final String recordingFile;
-  late final Track track;
+  late Track track;
 
   @override
   void initState() {
@@ -286,9 +286,9 @@ class _MainBodyState extends State<MainBody> {
       child: Text('Play Asset via Shade'),
       onPressed: () {
         var player = SoundPlayer.withShadeUI(autoFocus: false);
-        player.onStopped = ({required wasUser}) {
-          player.release();
-          player.audioFocus(AudioFocus.abandonFocus);
+        player.onStopped = ({required wasUser}) async {
+          await player.audioFocus(AudioFocus.abandonFocus);
+          await player.release();
         };
         if (PlayerState().hushOthers) {
           player.audioFocus(AudioFocus.hushOthersWithResume);

@@ -28,7 +28,7 @@ class RecordingDispositionManager {
 
   /// The duration between updates to the stream.
   /// Defaults to [10ms].
-  Duration interval = Duration(milliseconds: 10);
+  Duration interval = const Duration(milliseconds: 10);
 
   /// We cache the last duration (length of recording) we have seen as
   /// its needed during wrap up.
@@ -68,8 +68,6 @@ class RecordingDispositionManager {
 
   /// Sends a disposition if the [interval] has elapsed since
   /// we last sent the data.
-  /// Set [force] to force an stream update even if the interval
-  /// since the last update hasn't lapsed.
   void updateDisposition(Duration duration, double decibels) {
     lastDuration = duration;
     assert(_streamCreated);
@@ -80,8 +78,8 @@ class RecordingDispositionManager {
   /// api so we can release any attached resources.
   void release() {
     _dispositionController
-      // TODO signal that the stream is closed?
-      // ..add(null) // We keep that strange line for backward compatibility
-      ..close();
+        // TODO signal that the stream is closed?
+        // ..add(null) // We keep that strange line for backward compatibility
+        .close();
   }
 }

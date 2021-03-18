@@ -33,10 +33,23 @@ class SoundPlayerPlugin extends PlayerBasePlugin {
   }
   SoundPlayerPlugin._internal() : super('com.bsutton.sounds.sound_player');
 
+  @override
   Future<void> play(player.SoundPlayer player, Track track) async {
-    var args = <String, dynamic>{};
+    final args = <String, dynamic>{};
     args['path'] = trackStoragePath(track);
+    _setArg(args, 'artist', track.artist);
+    _setArg(args, 'title', track.title);
+    _setArg(args, 'albumArtUrl', track.albumArtUrl);
+    _setArg(args, 'albumArtAsset', track.albumArtAsset);
+    _setArg(args, 'albumArtFile', track.albumArtFile);
+
     Log.d('calling invoke startPlayer');
     return invokeMethod(player, 'startPlayer', args);
+  }
+
+  void _setArg(Map<String, dynamic> args, String key, String value) {
+    if (value.isNotEmpty) {
+      args[key] = value;
+    }
   }
 }

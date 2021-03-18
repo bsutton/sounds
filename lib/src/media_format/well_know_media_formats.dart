@@ -15,16 +15,16 @@ import 'pcm_media_format.dart';
 /// in a real program as you need to check if they are supported on the OS/SDK combo.
 class WellKnownMediaFormats {
   /// Native MediaFormat for adts/aac
-  static AdtsAacMediaFormat adtsAac = AdtsAacMediaFormat();
+  static AdtsAacMediaFormat adtsAac = const AdtsAacMediaFormat();
 
   /// MediaFormat for caf/opus
-  static CafOpusMediaFormat cafOpus = CafOpusMediaFormat();
+  static CafOpusMediaFormat cafOpus = const CafOpusMediaFormat();
 
   /// MediaFormat pcm
-  static PCMMediaFormat pcm = PCMMediaFormat();
+  static PCMMediaFormat pcm = const PCMMediaFormat();
 
   /// MediaFormat ogg/opus
-  static OggOpusMediaFormat oggOpus = OggOpusMediaFormat();
+  static OggOpusMediaFormat oggOpus = const OggOpusMediaFormat();
 
   /// Native MediaFormat ogg/vorbis
   static OggVorbisMediaFormat oggVorbis = OggVorbisMediaFormat();

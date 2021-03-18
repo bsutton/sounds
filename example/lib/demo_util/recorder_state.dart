@@ -27,10 +27,10 @@ class RecorderState {
     recorderModule = SoundRecorder();
   }
 
-  /// [true] if we are currently recording.
+  /// true if we are currently recording.
   bool get isRecording => recorderModule.isRecording;
 
-  /// [true] if we are recording but currently paused.
+  /// true if we are recording but currently paused.
   bool get isPaused => recorderModule.isPaused;
 
   /// required to initialize the recording subsystem.
@@ -67,7 +67,7 @@ class RecorderState {
   /// starts the recorder.
   Future<void> startRecorder(BuildContext context) async {
     try {
-      var track = Track.fromFile(await FileUtil().tempFile(),
+      var track = Track.fromFile(FileUtil().tempFile(),
           mediaFormat: ActiveMediaFormat().mediaFormat);
       await recorderModule.record(track);
 
@@ -83,7 +83,7 @@ class RecorderState {
           content: Text('Failed to start recording: $err'));
       ScaffoldMessenger.of(context).showSnackBar(error);
 
-      stopRecorder();
+      await stopRecorder();
     }
   }
 

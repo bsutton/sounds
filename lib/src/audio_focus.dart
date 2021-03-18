@@ -1,4 +1,4 @@
-/// Used by [AudioPlayer.audioFocus]
+/// Used by SoundPlayer.audioFocus
 /// to control the focus mode.
 enum AudioFocus {
 //NOTE auto focus calls hushOthersWithResume and automatically abandons focus

@@ -62,12 +62,19 @@ public class SoundPlayer {
 	}
 
 	SoundPlayerPlugin getPlugin() {
-		return SoundPlayerPlugin.soundPlayerPlugin;
+		return SoundPlayerPlugin.getInstance();
 	}
 
 	void initializeSoundPlayer(final MethodCall call, final Result result) {
-		audioManager = (AudioManager) SoundPlayerPlugin.androidContext.getSystemService(Context.AUDIO_SERVICE);
+		Log.d(TAG, "iniializeSoundPlayer called for slotNo" + slotNo);
+		audioManager =  SoundPlayerPlugin.getInstance().getAudioManager();
+		Log.d(TAG, "iniializeSoundPlayer audioManager obtained");
 		result.success("Flutter Player Initialized");
+		Log.d(TAG, "result.sucess called.");
+
+		// We are fully initialiszed.
+		Log.d(TAG, "calling onPlayerReady called for slotNo" + slotNo);
+		getPlugin().invokeCallbackWithBoolean(slotNo, "onPlayerReady", true);
 	}
 
 	void releaseSoundPlayer(final MethodCall call, final Result result) {
@@ -79,14 +86,18 @@ public class SoundPlayer {
 		_startPlayer(path, result);
 	}
 
+	private boolean isPaused() {
+		return  !this.model.getMediaPlayer().isPlaying()
+		&& this.model.getMediaPlayer().getCurrentPosition() > 1;
+
+	}
+
 	public void _startPlayer(String path, final Result result) {
 		assert (path != null);
 		if (this.model.getMediaPlayer() != null) {
 			/// re-start after media has been paused
-			Boolean isPaused = !this.model.getMediaPlayer().isPlaying()
-					&& this.model.getMediaPlayer().getCurrentPosition() > 1;
-
-			if (isPaused) {
+		
+			if (isPaused()) {
 				this.model.getMediaPlayer().start();
 				result.success("player resumed.");
 				return;
@@ -317,6 +328,7 @@ public class SoundPlayer {
 	@UiThread
 	private void sendUpdateProgress(MediaPlayer mp) {
 		try {
+			Log.d(TAG, "Sending updateProgress paused: " + isPaused());
 			JSONObject json = new JSONObject();
 			json.put("duration", String.valueOf(mp.getDuration()));
 			json.put("current_position", String.valueOf(mp.getCurrentPosition()));

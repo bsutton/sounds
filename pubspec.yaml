@@ -8,29 +8,30 @@ environment:
   sdk: '>=2.12.0 <3.0.0'
   flutter: '>=1.17.0 <2.0.0'
 dependencies: 
+  completer_ex: ^3.0.0
   device_info: ^2.0.0
-  future_builder_ex: 1.0.0
+  flutter: 
+    sdk: flutter
   flutter_spinkit: ^5.0.0
+  future_builder_ex: 1.0.0
   meta: ^1.1.8
   path: ^1.8.0
-  path_provider: ^2.0.1
   provider: ^5.0.0
   sounds_common: #^1.0.0
     path: ../sounds_common
+  stacktrace_impl: ^2.0.0
   
   uuid: ^3.0.0
-  flutter: 
-    sdk: flutter
 dev_dependencies: 
-  # dart_numerics: ^0.0.5
-  pedantic: ^1.9.0
+  dcli: ^0.51.5
   effective_dart: ^1.2.1
-  dcli: ^0.50.0
-  # e2e: ^0.7.0
-  lint: ^1.1.1
-  pub_semver: ^2.0.0
   flutter_test: 
     sdk: flutter
+
+  # e2e: ^0.7.0
+  lint: ^1.1.1
+  pedantic: ^1.9.0
+  pub_semver: ^2.0.0
   # flutter_driver: 
   #   sdk: flutter
 

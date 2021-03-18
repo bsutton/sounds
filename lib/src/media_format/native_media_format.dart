@@ -28,12 +28,12 @@ abstract class NativeMediaFormat extends MediaFormat {
         );
 
   @override
-  Future<bool> get isNativeDecoder async =>
-      await NativeMediaFormats().isNativeDecoder(this);
+  Future<bool> get isNativeDecoder  =>
+       NativeMediaFormats().isNativeDecoder(this);
 
   @override
-  Future<bool> get isNativeEncoder async =>
-      await NativeMediaFormats().isNativeEncoder(this);
+  Future<bool> get isNativeEncoder  =>
+       NativeMediaFormats().isNativeEncoder(this);
 
   @override
   Future<Duration> getDuration(String path) =>
@@ -67,7 +67,7 @@ abstract class NativeMediaFormat extends MediaFormat {
   /// Sounds only records/playbacks using natively supported codecs.
   /// Use the sounds_codec package for utilities to convert to/from
   /// other codecs.
-  static NativeMediaFormat common = AdtsAacMediaFormat();
+  static NativeMediaFormat common = const AdtsAacMediaFormat();
 }
 
 // class AMRNBMediaContainer extends MediaContainer {

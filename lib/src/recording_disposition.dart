@@ -18,7 +18,7 @@ import 'package:flutter/foundation.dart';
 
 /// Holds point in time details of the recording disposition
 /// including the current duration and decibels.
-/// Use the [dispositionStream] method to subscribe to a stream
+/// Use the dispositionStream method to subscribe to a stream
 /// of [RecordingDisposition] will be emmited whilst recording.
 @immutable
 class RecordingDisposition {
@@ -31,12 +31,12 @@ class RecordingDisposition {
   final double decibels;
 
   /// ctor
-  RecordingDisposition(this.duration, this.decibels);
+  const RecordingDisposition(this.duration, this.decibels);
 
   /// use this ctor to as the initial value when building
-  /// a [StreamBuilder]
-  RecordingDisposition.zero()
-      : duration = Duration(seconds: 0),
+  /// a StreamBuilder.
+  const RecordingDisposition.zero()
+      : duration = const Duration(),
         decibels = 0;
 
   @override

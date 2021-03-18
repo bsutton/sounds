@@ -12,7 +12,7 @@ class NativeDurationProvider {
   NativeDurationProvider._internal();
 
   /// Returns the duration of the audio file at the given [path]
-  /// for natively supported [MediaFormats].
+  /// for natively supported MediaFormats.
   Future<Duration> getDuration(String path) async =>
       SoundPlayer.noUI().duration(path);
 }

@@ -16,6 +16,7 @@ package com.bsutton.sounds;
  */
 
 import java.util.HashMap;
+import android.util.Log;
 
 public class Track {
     private String path;
@@ -59,6 +60,7 @@ public class Track {
     }
 
     public String getAlbumArtUrl() {
+        Log.d("TRACK", "#######################albumArtUrl = " + albumArtUrl);
         return albumArtUrl;
     }
 

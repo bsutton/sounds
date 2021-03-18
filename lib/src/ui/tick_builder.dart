@@ -16,8 +16,6 @@ typedef OnTick = void Function(int index);
 /// The tick count is incremented each interval until it reaches the limit
 /// after which it is reset to zero.
 /// The default limit is null which means no limit.
-/// The build is called each [interval] period.
-///
 class TickBuilder extends StatefulWidget {
   final TickerBuilderBuilder _builder;
   final Duration _interval;
@@ -30,15 +28,17 @@ class TickBuilder extends StatefulWidget {
   /// [limit] the tick count will reset when we hit the limit.
   /// If limit is -1 then it will increment forever.
   /// If [active] is false the tick builder will stop ticking.
-  TickBuilder(
-      {required TickerBuilderBuilder builder,
+  const TickBuilder(
+      {Key? key,
+      required TickerBuilderBuilder builder,
       required Duration interval,
       int limit = -1,
       bool active = true})
       : _builder = builder,
         _interval = interval,
         _limit = limit,
-        _active = active;
+        _active = active,
+        super(key: key);
 
   @override
   State<StatefulWidget> createState() {

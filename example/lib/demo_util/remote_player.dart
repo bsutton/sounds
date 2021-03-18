@@ -37,7 +37,8 @@ class RemotePlayer extends StatelessWidget {
           backgroundColor: Colors.red,
           content: Text('You must set the MediaFormat to MP3 to '
               'play the "Remote Example File"'));
-      ScaffoldMessenger.of(context).showSnackBar(error);
+      Future.delayed(Duration.zero,
+          () => ScaffoldMessenger.of(context).showSnackBar(error));
     } else {
       // We have to play an example audio file loaded via a URL
       track = Track.fromURL(exampleAudioFilePath,

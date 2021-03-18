@@ -68,37 +68,47 @@ import com.bsutton.sounds.Track;
  */
 
 class ShadePlayerPlugin extends SoundPlayerPlugin implements MethodCallHandler {
-	public static MethodChannel channel;
-	static Context androidContext;
-	static ShadePlayerPlugin ShadePlayerPlugin; // singleton
+	private MethodChannel channel;
+	private Context androidContext;
+	static private  ShadePlayerPlugin self; // singleton
+
+	static ShadePlayerPlugin getInstance() {
+		return self;
+	}
+
 
 	public static void attachToEngine(Context ctx, BinaryMessenger messenger) {
-		assert (soundPlayerPlugin == null);
+		try
+		{
+			assert (self == null);
 
-		ShadePlayerPlugin = new ShadePlayerPlugin();
-		assert (slots == null);
-		slots = new ArrayList<SoundPlayer>();
-		channel = new MethodChannel(messenger, "com.bsutton.sounds.sounds_shade_player");
-		channel.setMethodCallHandler(ShadePlayerPlugin);
-		androidContext = ctx;
+			Log.e(TAG, "Attaching ShadePlayer to Engine");
+
+			self = new ShadePlayerPlugin();
+			self.channel = new MethodChannel(messenger, "com.bsutton.sounds.shade_player");
+			self.channel.setMethodCallHandler(self);
+			self.androidContext = ctx;
+		}
+		catch(Exception e)
+		{
+			Log.e(TAG, "Exception attaching ShadePlayerPlugin: " + e.toString());
+		}
 
 	}
 	
-	public void detachFromEngine()
+	public static void detachFromEngine()
 	{
-		channel.setMethodCallHandler(null);
+		self.channel.setMethodCallHandler(null);
+		self.androidContext = null;
 	}
 
 	void invokeCallback(String methodName, Map dic) {
 		channel.invokeMethod(methodName, dic);
 	}
 
-	void freeSlot(int slotNo) {
-		slots.set(slotNo, null);
-	}
 
 	SoundPlayerPlugin getManager() {
-		return soundPlayerPlugin;
+		return self;
 	}
 
 	@Override
@@ -128,10 +138,10 @@ class ShadePlayerPlugin extends SoundPlayerPlugin implements MethodCallHandler {
 			}
 				break;
 
-			case "releaseMediaPlayer": {
+			case "releaseMediaPlayer": 
 				aPlayer.releaseSoundPlayer(call, result);
+				freeSlot(slotNo);
 				Log.d("ShadePlayer", "************* release called");
-			}
 				break;
 
 			case "startShadePlayer":

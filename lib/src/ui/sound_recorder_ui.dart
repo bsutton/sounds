@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:completer_ex/completer_ex.dart';
 import 'package:flutter/material.dart';
 import 'package:sounds_common/sounds_common.dart';
 
@@ -21,7 +22,7 @@ typedef OnProgress = void Function(RecordedAudio media);
 /// recording a track.
 typedef OnStop = void Function(RecordedAudio media);
 
-/// The [requestPermissions] callback allows you to provide an
+/// The [UIRequestPermission] callback allows you to provide an
 /// UI informing the user that we are about to ask for a permission.
 ///
 typedef UIRequestPermission = Future<bool> Function(
@@ -31,7 +32,7 @@ void _onStartNoOp() {}
 
 void _onStopNoOp(RecordedAudio media) {}
 
-Future<bool> _onUIRequestPermission(BuildContext context, Track track) =>
+Future<bool> _onUIRequestPermissionNoOp(BuildContext context, Track track) =>
     Future.value(true);
 
 enum _RecorderState {
@@ -61,12 +62,12 @@ class SoundRecorderUI extends StatefulWidget {
   /// This callback gives you the opportunity to display a suitable
   /// notice and then request permissions.
   ///
-  /// Return [true] to indicate that the user has given permission
+  /// Return true to indicate that the user has given permission
   /// to record and that you have made the necessary calls to
   /// grant those permissions.
   ///
-  /// If [true] is returned the recording will proceed.
-  /// If [false] is returned then recording will not start.
+  /// If true is returned the recording will proceed.
+  /// If false is returned then recording will not start.
   ///
   /// This method will be called even if we have the necessary permissions
   /// as we make no checks.
@@ -89,7 +90,7 @@ class SoundRecorderUI extends StatefulWidget {
   ///
   /// The [onStopped] callback is called when the user stops recording. This
   /// method will be each time the user clicks the 'stop' button. It can
-  /// also be called if the [stop] method is called.
+  /// also be called if the [SoundRecorderUIState.stop] method is called.
   ///
   /// The [requestPermissions] callback allows you to request
   /// permissions just before they are required and if desired
@@ -124,7 +125,7 @@ class SoundRecorderUI extends StatefulWidget {
     Track track, {
     this.onStart = _onStartNoOp,
     this.onStopped = _onStopNoOp,
-    this.requestPermissions = _onUIRequestPermission,
+    this.requestPermissions = _onUIRequestPermissionNoOp,
     Key? key,
   })  : audio = RecordedAudio.recordTo(track),
         super(key: key);
@@ -147,6 +148,8 @@ class SoundRecorderUIState extends State<SoundRecorderUI> {
   SoundRecorderUIState() : _recorder = SoundRecorder() {
     _recorder.onStarted = _onStarted;
     _recorder.onStopped = _onStopped;
+    _recorder.onRequestPermissions =
+        (track) => _requestPermission(context, track);
   }
 
   @override
@@ -194,7 +197,8 @@ class SoundRecorderUIState extends State<SoundRecorderUI> {
             stream: _recorder.dispositionStream(),
 
             /// fakeStream.stream
-            initialData: RecordingDisposition.zero(), // was START_DECIBELS
+            initialData:
+                const RecordingDisposition.zero(), // was START_DECIBELS
             builder: (_, streamData) {
               var decibels = 0.09;
               if (streamData.hasData) {
@@ -204,16 +208,17 @@ class SoundRecorderUIState extends State<SoundRecorderUI> {
               //      onRecorderProgress(context, this, disposition.duration);
               return Stack(alignment: Alignment.center, children: [
                 AnimatedContainer(
-                  duration: Duration(milliseconds: 180),
+                  duration: const Duration(milliseconds: 180),
                   width: decibels * 2 + _minDbCircle,
                   height: decibels * 2 + _minDbCircle,
-                  constraints: BoxConstraints(
+                  constraints: const BoxConstraints(
                       maxHeight: 80.0 + _minDbCircle,
                       maxWidth: 80.0 + _minDbCircle),
-                  decoration:
-                      BoxDecoration(shape: BoxShape.circle, color: Colors.red),
+                  decoration: const BoxDecoration(
+                      shape: BoxShape.circle, color: Colors.red),
                 ),
-                InkWell(onTap: _onRecord, child: Icon(Icons.mic, size: 60))
+                InkWell(
+                    onTap: _onRecord, child: const Icon(Icons.mic, size: 60))
               ]);
             }));
   }
@@ -238,6 +243,7 @@ class SoundRecorderUIState extends State<SoundRecorderUI> {
 
   bool get _isRecording => _state == _RecorderState.isRecording;
 
+  @override
   void dispose() {
     _stop();
     _recorder.release();
@@ -261,7 +267,7 @@ class SoundRecorderUIState extends State<SoundRecorderUI> {
   }
 
   /// The [stop] methods stops the recording and calls
-  /// the [onStopped] callback.
+  /// the [SoundRecorderUI.onStopped] callback.
   ///
   void stop() {
     _stop();
@@ -282,7 +288,7 @@ class SoundRecorderUIState extends State<SoundRecorderUI> {
   /// permissions required for recording.
   /// ignore: avoid_types_on_closure_parameters
   Future<bool> _requestPermission(BuildContext context, Track track) async {
-    var requesting = Completer<bool>();
+    final requesting = CompleterEx<bool>();
 
     Future<bool> request;
 
@@ -291,7 +297,7 @@ class SoundRecorderUIState extends State<SoundRecorderUI> {
     /// permissions.
     request = widget.requestPermissions(context, track);
 
-    request.then((granted) async {
+    await request.then((granted) async {
       requesting.complete(granted);
 
       /// ignore: avoid_types_on_closure_parameters
@@ -303,7 +309,7 @@ class SoundRecorderUIState extends State<SoundRecorderUI> {
     return requesting.future;
   }
 
-  void _onStarted({required bool wasUser}) async {
+  Future<void> _onStarted({required bool wasUser}) async {
     Log.d(green('started Recording to: '
         '${widget.audio.track.identity})'));
 

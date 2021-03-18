@@ -2,19 +2,16 @@ import 'dart:async';
 import 'dart:convert' as convert;
 import 'dart:io';
 
+import 'package:completer_ex/completer_ex.dart';
 import 'package:flutter/services.dart';
 import 'package:sounds_common/sounds_common.dart';
 import 'package:uuid/uuid.dart';
 
 import '../ios/ios_session_category.dart';
 import '../ios/ios_session_mode.dart';
-import '../sound_player.dart' as audio_player;
+import '../sound_player.dart' as sound_player;
+import '../sound_player.dart';
 import 'base_plugin.dart';
-
-
-typedef _ConnectedCallback = void Function({required bool result});
-
-void _onPlayerReadyNoOp({bool result = false}) {}
 
 /// base for all plugins that provide Plaback services.
 abstract class PlayerBasePlugin extends BasePlugin {
@@ -25,13 +22,9 @@ abstract class PlayerBasePlugin extends BasePlugin {
   /// ignore: prefer_final_fields
   static var _slots = <SlotEntry>[];
 
-  /// Pass in the [_registeredName] which is the registered
+  /// Pass in the [registeredName] which is the registered
   /// name of the plugin.
-  PlayerBasePlugin(String registeredName)
-      : _onPlayerReady = _onPlayerReadyNoOp,
-        super(registeredName, _slots);
-
-  _ConnectedCallback _onPlayerReady;
+  PlayerBasePlugin(String registeredName) : super(registeredName, _slots);
 
   /// The callbackMap is used to map callbacks to a completer
   /// created by the originator of the callback.
@@ -47,14 +40,10 @@ abstract class PlayerBasePlugin extends BasePlugin {
   ///
   /// CONSIDER: adding a timeout to the completer so we are guarenteed that
   /// the callbacks complete.
-  final _callbackMap = <String, Completer<Duration>>{};
-
-  /// Allows you to register for connection events.
-  /// ignore: avoid_setters_without_getters
-  set onPlayerReady(_ConnectedCallback callback) => _onPlayerReady = callback;
+  final _callbackMap = <String, CompleterEx<Duration>>{};
 
   /// Over load this method to play audio.
-  Future<void> play(audio_player.SoundPlayer player, Track track);
+  Future<void> play(sound_player.SoundPlayer player, Track track);
 
   /// Each Player must be initialized and registered.
   Future<void> initializePlayer(SlotEntry player) async {
@@ -94,9 +83,9 @@ abstract class PlayerBasePlugin extends BasePlugin {
   Future<Duration> duration(SlotEntry player, String path) async {
     ArgumentError.checkNotNull(player, 'player');
     ArgumentError.checkNotNull(path, 'path');
-    var callbackUuid = Uuid().v4();
+    final callbackUuid = const Uuid().v4();
 
-    var completer = Completer<Duration>();
+    final completer = CompleterEx<Duration>();
     _callbackMap[callbackUuid] = completer;
 
     /// The results are completed via a callback to [_onDurationResults] or
@@ -109,11 +98,11 @@ abstract class PlayerBasePlugin extends BasePlugin {
 
   /// callback when the the platform call to 'getDuration' completes.
   void _onDurationResults(MethodCall call) {
-    var json = call.arguments['arg'] as Map<dynamic, dynamic>;
+    final json = call.arguments['arg'] as Map<dynamic, dynamic>;
 
     // var json = convert.jsonDecode(arguments) as Map<String, dynamic>;
-    var duration = Duration(milliseconds: json['milliseconds'] as int);
-    var uuid = json['callbackUuid'] as String;
+    final duration = Duration(milliseconds: json['milliseconds'] as int);
+    final uuid = json['callbackUuid'] as String;
 
     // complete the future waiting for this call to return.
     _callbackMap[uuid]!.complete(duration);
@@ -121,7 +110,7 @@ abstract class PlayerBasePlugin extends BasePlugin {
 
   ///
   Future<void> setVolume(SlotEntry player, double volume) async {
-    var indexedVolume = Platform.isIOS ? volume * 100 : volume;
+    final indexedVolume = Platform.isIOS ? volume * 100 : volume;
     if (volume < 0.0 || volume > 1.0) {
       throw RangeError('Value of volume should be between 0.0 and 1.0.');
     }
@@ -134,7 +123,7 @@ abstract class PlayerBasePlugin extends BasePlugin {
   Future<bool> iosSetCategory(SlotEntry player, IOSSessionCategory category,
       IOSSessionMode mode, int options) async {
     if (!Platform.isIOS) return false;
-    var r = await invokeMethod(player, 'iosSetCategory', <String, dynamic>{
+    final r = await invokeMethod(player, 'iosSetCategory', <String, dynamic>{
       'category': iosSessionCategory[category.index],
       'mode': iosSessionMode[mode.index],
       'options': options
@@ -171,7 +160,7 @@ abstract class PlayerBasePlugin extends BasePlugin {
   /// This is used internally to deserialise data coming
   /// up from the underlying OS.
   static PlaybackDisposition dispositionFromJSON(String serializedJson) {
-    var json = convert.jsonDecode(serializedJson) as Map<String, dynamic>;
+    final json = convert.jsonDecode(serializedJson) as Map<String, dynamic>;
     var duration = Duration(
         milliseconds: double.parse(json['duration'] as String).toInt());
     var position = Duration(
@@ -194,46 +183,47 @@ abstract class PlayerBasePlugin extends BasePlugin {
 
   /// Handles callbacks from the platform specific plugin
   /// The below methods are shared by all the playback plugins.
+  @override
   Future<dynamic> onMethodCallback(
-      covariant audio_player.SoundPlayer player, MethodCall call) {
-    Log.d('OS callback ${call.method}');
+      covariant sound_player.SoundPlayer player, MethodCall call) {
+    Log.d('OS callback ${call.method} for slotNo: ${player.slotNo}');
     switch (call.method) {
 
       ///TODO implement in the OS code for each player.
       case "onPlayerReady":
         {
-          var result = call.arguments['arg'] as bool;
+          final result = call.arguments['arg'] as bool;
           Log.d('onPlayerReady $result');
-          _onPlayerReady(result: result);
+          onPlayerReady(player, result: result);
         }
         break;
 
       case "updateProgress":
         {
-          var arguments = call.arguments['arg'] as String;
-          audio_player.updateProgress(
+          final arguments = call.arguments['arg'] as String;
+          sound_player.updateProgress(
               player, PlayerBasePlugin.dispositionFromJSON(arguments));
         }
         break;
 
       case "audioPlayerFinishedPlaying":
         {
-          var arguments = call.arguments['arg'] as String;
+          final arguments = call.arguments['arg'] as String;
 
-          audio_player.audioPlayerFinished(
+          sound_player.audioPlayerFinished(
               player, PlayerBasePlugin.dispositionFromJSON(arguments));
         }
         break;
 
       case 'pause':
         {
-          audio_player.onSystemPaused(player);
+          sound_player.onSystemPaused(player);
         }
         break;
 
       case 'resume':
         {
-          audio_player.onSystemResumed(player);
+          sound_player.onSystemResumed(player);
         }
         break;
 
@@ -246,15 +236,15 @@ abstract class PlayerBasePlugin extends BasePlugin {
       /// the OS media player encounted an error
       case 'onError':
         {
-          var json = convert.jsonDecode(call.arguments['arg'] as String)
+          final json = convert.jsonDecode(call.arguments['arg'] as String)
               as Map<String, dynamic>;
 
-          var description = json['description'] as String;
+          final description = json['description'] as String;
 
-          var callbackUuid = json['callbackUuid'] as String;
+          final callbackUuid = json['callbackUuid'] as String;
           if (Platform.isAndroid) {
-            var androidWhat = json['android_what'] as int;
-            var androidExtra = json['android_extra'] as int;
+            final androidWhat = json['android_what'] as int;
+            final androidExtra = json['android_extra'] as int;
             Log.e('onError: $description android_what $androidWhat '
                 'android_extra: $androidExtra');
           } else {
@@ -265,7 +255,7 @@ abstract class PlayerBasePlugin extends BasePlugin {
           /// so the UI doesn't hang.
           _callbackMap[callbackUuid]!.completeError(description);
 
-          audio_player.onSystemError(player, description);
+          sound_player.onSystemError(player, description);
         }
         break;
     }
@@ -275,23 +265,25 @@ abstract class PlayerBasePlugin extends BasePlugin {
 
   /// Called when the OS resumes our app.
   /// We need to broadcast this to all player SlotEntries.
+  @override
   void onSystemAppResumed() {
     forEachSlot((entry) {
       /// knowledge of the AudioPlayer at this level is a little
       /// ugly but I'm trying to keep the public api that
       /// AudioPlayer exposes clean.
-      audio_player.onSystemAppResumed(entry as audio_player.SoundPlayer);
+      sound_player.onSystemAppResumed(entry as sound_player.SoundPlayer);
     });
   }
 
   /// Called when the OS resumes our app.
   /// We need to broadcast this to all player SlotEntries.
+  @override
   void onSystemAppPaused() {
     forEachSlot((entry) {
       /// knowledge of the AudioPlayer at this level is a little
       /// ugly but I'm trying to keep the public api that
       /// AudioPlayer exposes clean.
-      audio_player.onSystemAppPaused(entry as audio_player.SoundPlayer);
+      sound_player.onSystemAppPaused(entry as sound_player.SoundPlayer);
     });
   }
 }

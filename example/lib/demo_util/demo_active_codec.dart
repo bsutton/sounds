@@ -26,9 +26,9 @@ class ActiveMediaFormat {
     this.mediaFormat = mediaFormat;
   }
 
-  /// [true] if the active coded is supported by the recorder
+  /// true if the active coded is supported by the recorder
   bool get encoderSupported => _encoderSupported;
 
-  /// [true] if the active coded is supported by the player
+  /// true if the active coded is supported by the player
   bool get decoderSupported => _decoderSupported;
 }

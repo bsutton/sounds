@@ -27,7 +27,7 @@ class PlaybarSlider extends StatefulWidget {
   final Stream<PlaybackDisposition> stream;
 
   ///
-  PlaybarSlider(this.stream, this._seek);
+  const PlaybarSlider(this.stream, this._seek, {Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -41,7 +41,7 @@ class PlaybarSliderState extends State<PlaybarSlider> {
   Widget build(BuildContext context) {
     return SliderTheme(
         data: SliderTheme.of(context).copyWith(
-            thumbShape: RoundSliderThumbShape(enabledThumbRadius: 6.0),
+            thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6.0),
             inactiveTrackColor: Colors.blueGrey),
         child: StreamBuilder<PlaybackDisposition>(
             stream: widget.stream,
@@ -50,7 +50,7 @@ class PlaybarSliderState extends State<PlaybarSlider> {
               var duration = Duration.zero;
               var position = Duration.zero;
               if (snapshot.hasData) {
-                var disposition = snapshot.data;
+                final disposition = snapshot.data;
                 duration = disposition!.duration;
                 position = disposition.position;
               }

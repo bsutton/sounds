@@ -57,25 +57,39 @@ import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 class SoundPlayerPlugin implements MethodCallHandler {
 	final static String TAG = "SoundPlayerPlugin";
-	public static MethodChannel channel;
-	public static List<SoundPlayer> slots;
-	static Context androidContext;
-	static SoundPlayerPlugin soundPlayerPlugin; // singleton
+	public  MethodChannel channel;
+	public static List<SoundPlayer> slots = new ArrayList<SoundPlayer>();
+	private Context androidContext;
+	static private SoundPlayerPlugin self; // singleton
+
+
+	static SoundPlayerPlugin getInstance() {
+		return self;
+	}
 
 	public static void attachToEngine(Context ctx, BinaryMessenger messenger) {
-		assert (soundPlayerPlugin == null);
-		soundPlayerPlugin = new SoundPlayerPlugin();
-		assert (slots == null);
-		slots = new ArrayList<SoundPlayer>();
-		channel = new MethodChannel(messenger, "com.bsutton.sounds.sound_player");
-		channel.setMethodCallHandler(soundPlayerPlugin);
-		androidContext = ctx;
+		try
+		{
+			assert (self == null);
+
+			Log.e(TAG, "Attaching SoundPlayer to Engine");
+
+			self = new SoundPlayerPlugin();
+			self.channel = new MethodChannel(messenger, "com.bsutton.sounds.sound_player");
+			self.channel.setMethodCallHandler(self);
+			self.androidContext = ctx;
+		}
+		catch(Exception e)
+		{
+			Log.e(TAG, "Exception attaching SoundPlayerPlugin: " + e.toString());
+		}
 
 	}
 
-	public void detachFromEngine()
+	public static void detachFromEngine()
 	{
-		channel.setMethodCallHandler(null);
+		self.channel.setMethodCallHandler(null);
+		self.androidContext = null;
 	}
 
 	void invokeCallback(String methodName, Map dic) {
@@ -84,11 +98,17 @@ class SoundPlayerPlugin implements MethodCallHandler {
 	}
 
 	void freeSlot(int slotNo) {
+		Log.d(TAG, "Freeing slot: " + slotNo);
 		slots.set(slotNo, null);
 	}
 
 	SoundPlayerPlugin getManager() {
-		return soundPlayerPlugin;
+		return self;
+	}
+
+	AudioManager getAudioManager()
+	{
+		return (AudioManager) androidContext.getSystemService(Context.AUDIO_SERVICE);
 	}
 
 	@Override
@@ -104,25 +124,25 @@ class SoundPlayerPlugin implements MethodCallHandler {
 			// requested slot no. even if we haven't seen initialisation
 			// for the lower numbered slots.
 			while (slotNo >= slots.size()) {
+				Log.d(TAG, "Expanding Slots count:" + slots.size() + 1);
 				slots.add(null);
 			}
 
 			SoundPlayer aPlayer = slots.get(slotNo);
 			switch (call.method) {
-				case "initializeMediaPlayer": {
+				case "initializeMediaPlayer":
 					assert (slots.get(slotNo) == null);
 					aPlayer = new SoundPlayer(slotNo);
+					Log.d(TAG, "Allocating slot: " + slotNo);
 					slots.set(slotNo, aPlayer);
 					aPlayer.initializeSoundPlayer(call, result);
-
-				}
+					Log.d(TAG, "************* initialize called");
 					break;
 
-				case "releaseMediaPlayer": {
+				case "releaseMediaPlayer": 
 					aPlayer.releaseSoundPlayer(call, result);
+					freeSlot(slotNo);
 					Log.d("SoundPlayer", "************* release called");
-					slots.set(slotNo, null);
-				}
 					break;
 
 				case "getDuration":
@@ -192,7 +212,22 @@ class SoundPlayerPlugin implements MethodCallHandler {
 		dic.put("arg", arg);
 		invokeCallback(methodName, dic);
 	}
+	
+	void invokeCallbackWithInteger(int slotNo, String methodName, int arg) {
+		Map<String, Object> dic = new HashMap<String, Object>();
+		dic.put("slotNo", slotNo);
+		dic.put("arg", arg);
+		invokeCallback(methodName, dic);
+	}
 
+	void invokeCallbackWithBoolean(int slotNo, String methodName, Boolean arg) {
+		Map<String, Object> dic = new HashMap<String, Object>();
+		dic.put("slotNo", slotNo);
+		dic.put("arg", arg);
+		invokeCallback(methodName, dic);
+	}
+
+	
 	void invokeCallbackWithDouble(int slotNo, String methodName, double arg) {
 		Map<String, Object> dic = new HashMap<String, Object>();
 		dic.put("slotNo", slotNo);

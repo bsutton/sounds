@@ -86,9 +86,9 @@ public class Sounds implements FlutterPlugin, ActivityAware {
 
 	@Override
 	public void onDetachedFromEngine(@NonNull FlutterPlugin.FlutterPluginBinding binding) {
-		SoundPlayerPlugin.detachSoundPlayer();
-		SoundRecorderPlugin.detchSoundRecorder();
-		ShadePlayerPlugin.detachShadePlayer();
+		SoundPlayerPlugin.detachFromEngine();
+		SoundRecorderPlugin.detachFromEngine();
+		ShadePlayerPlugin.detachFromEngine();
 	}
 
 	@Override

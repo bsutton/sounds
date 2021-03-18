@@ -21,7 +21,7 @@ class LocalContext extends StatefulWidget {
   final Widget Function(BuildContext context) _builder;
 
   ///
-  LocalContext(
+  const LocalContext(
       {Key? key, required Widget Function(BuildContext context) builder})
       : _builder = builder,
         super(key: key);

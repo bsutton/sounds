@@ -529,6 +529,8 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat
 				albumArt = BitmapFactory.decodeStream(istr);
 
 			} catch (IOException e) {
+				Log.w(TAG, "Unable to load Album art: " + currentTrack.getAlbumArtAsset());
+
 			}
 		} else if (currentTrack.getAlbumArtFile() != null) {
 			try {

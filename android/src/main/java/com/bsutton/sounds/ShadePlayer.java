@@ -84,17 +84,16 @@ public class ShadePlayer extends SoundPlayer {
 
 	ShadePlayer(int aSlotNo) {
 		super(aSlotNo);
-		// slotNo = aSlotNo;
 	}
 
 	SoundPlayerPlugin getPlugin() {
-		return ShadePlayerPlugin.ShadePlayerPlugin;
+		return ShadePlayerPlugin.getInstance();
 	}
 
 	@Override
 	void initializeSoundPlayer(final MethodCall call, final Result result) {
 		// super.initializeSoundPlayer( call, result );
-		audioManager = (AudioManager) SoundPlayerPlugin.androidContext.getSystemService(Context.AUDIO_SERVICE);
+		audioManager = SoundPlayerPlugin.getInstance().getAudioManager();
 		assert (Sounds.androidActivity != null);
 
 		// Initialize the media browser if it hasn't already been initialized
@@ -124,19 +123,6 @@ public class ShadePlayer extends SoundPlayer {
 		result.success("The player has been successfully released");
 	}
 
-	void invokeCallbackWithInteger(String methodName, int arg) {
-		Map<String, Object> dic = new HashMap<String, Object>();
-		dic.put("slotNo", slotNo);
-		dic.put("arg", arg);
-		getPlugin().invokeCallback(methodName, dic);
-	}
-
-	void invokeCallbackWithBoolean(String methodName, Boolean arg) {
-		Map<String, Object> dic = new HashMap<String, Object>();
-		dic.put("slotNo", slotNo);
-		dic.put("arg", arg);
-		getPlugin().invokeCallback(methodName, dic);
-	}
 
 	public void startShadePlayer(final MethodCall call, final Result result) {
 		final HashMap<String, Object> trackMap = call.argument("track");
@@ -349,9 +335,9 @@ public class ShadePlayer extends SoundPlayer {
 		public Void call() throws Exception {
 			if (mIsSuccessfulCallback) {
 				// mResult.success( "The media player has been successfully initialized" );
-				invokeCallbackWithBoolean("onPlayerReady", true);
+				getPlugin().invokeCallbackWithBoolean(slotNo, "onPlayerReady", true);
 			} else {
-				invokeCallbackWithBoolean("onPlayerReady", false);
+				getPlugin().invokeCallbackWithBoolean(slotNo, "onPlayerReady", false);
 				// mResult.error( TAG, "An error occurred while initializing the media player",
 				// null );
 			}
@@ -373,9 +359,9 @@ public class ShadePlayer extends SoundPlayer {
 		public Void call() throws Exception {
 			PlaybackStateCompat playbackState = mMediaBrowserHelper.mediaControllerCompat.getPlaybackState();
 			if (playbackState.getState() == PlaybackStateCompat.STATE_PLAYING)
-				invokeCallbackWithBoolean("pause", true);
+				getPlugin().invokeCallbackWithBoolean(slotNo, "pause", true);
 			else
-				invokeCallbackWithBoolean("resume", true);
+				getPlugin().invokeCallbackWithBoolean(slotNo, "resume", true);
 
 			return null;
 		}
@@ -411,7 +397,7 @@ public class ShadePlayer extends SoundPlayer {
 	private class PlaybackStateUpdater implements Function<BackgroundAudioService.SystemPlaybackState, Void> {
 		@Override
 		public Void apply(BackgroundAudioService.SystemPlaybackState newState) {
-			invokeCallbackWithInteger("updatePlaybackState", newState.stateNo);
+			getPlugin().invokeCallbackWithInteger(slotNo, "updatePlaybackState", newState.stateNo);
 			return null;
 		}
 	}
@@ -463,16 +449,19 @@ public class ShadePlayer extends SoundPlayer {
 							return;
 						}
 
-						long currentPosition = playbackState.getPosition();
+						// suppress updates if we are paused.
+						if (playbackState.getState() != PlaybackStateCompat.STATE_PAUSED) {
+							long currentPosition = playbackState.getPosition();
 
-						json.put("duration", String.valueOf(trackDuration));
-						json.put("current_position", String.valueOf(currentPosition));
-						mainHandler.post(new Runnable() {
-							@Override
-							public void run() {
-								getPlugin().invokeCallbackWithString(slotNo, "updateProgress", json.toString());
-							}
-						});
+							json.put("duration", String.valueOf(trackDuration));
+							json.put("current_position", String.valueOf(currentPosition));
+							mainHandler.post(new Runnable() {
+								@Override
+								public void run() {
+									getPlugin().invokeCallbackWithString(slotNo, "updateProgress", json.toString());
+								}
+							});
+						}
 
 					} catch (JSONException je) {
 						Log.d(TAG, "Json Exception: " + je.toString());
@@ -502,7 +491,7 @@ public class ShadePlayer extends SoundPlayer {
 			long trackDuration = mMediaBrowserHelper.mediaControllerCompat.getMetadata()
 					.getLong(MediaMetadataCompat.METADATA_KEY_DURATION);
 
-			Log.d(TAG, "Plays completed.");
+			Log.d(TAG, "Playback completed.");
 			try {
 				JSONObject json = new JSONObject();
 				long currentPosition = mMediaBrowserHelper.mediaControllerCompat.getPlaybackState().getPosition();

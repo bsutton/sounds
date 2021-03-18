@@ -41,7 +41,7 @@ class MediaPath {
     return _path[mediaFormat]!;
   }
 
-  /// [true] if a path for the give MediaFormat exists.
+  /// true if a path for the give MediaFormat exists.
   bool exists(MediaFormat mediaFormat) {
     return _path[mediaFormat] != null;
   }

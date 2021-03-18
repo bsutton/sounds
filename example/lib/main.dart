@@ -24,7 +24,7 @@ import 'package:logger/logger.dart';
 void main() {
   runApp(MyApp());
   ///Set logging level
-  Log.loggingLevel = Level.warning;
+  Log.loggingLevel = Level.debug;
 }
 
 /// Example app.

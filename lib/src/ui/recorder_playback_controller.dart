@@ -32,7 +32,7 @@ class RecorderPlaybackController extends InheritedWidget {
   ///
   RecorderPlaybackController({required Widget child, Key? key})
       : _state = _RecordPlaybackControllerState(),
-        super(child: child);
+        super(key: key, child: child);
 
   @override
   bool updateShouldNotify(InheritedWidget oldWidget) {
@@ -110,7 +110,7 @@ void registerRecorder(BuildContext context, SoundRecorderUIState recorder) {
 
 ///
 void registerPlayer(BuildContext context, SoundPlayerUIState player) {
-  var controller = RecorderPlaybackController.of(context)?._state;
+  final controller = RecorderPlaybackController.of(context)?._state;
   controller?._playerState = player;
 }
 

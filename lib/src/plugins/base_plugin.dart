@@ -22,7 +22,23 @@ import 'package:flutter/widgets.dart';
 import 'package:sounds_common/sounds_common.dart';
 
 /// Used to describe any class that can be placed into a slot.
-class SlotEntry {}
+class SlotEntry {
+  bool _active = false;
+
+  bool get _isInActive => !_active;
+
+  bool get _isActive => _active;
+
+  int slotNo = -1;
+
+  @override
+  bool operator ==(covariant SlotEntry other) {
+    return slotNo == other.slotNo;
+  }
+
+  @override
+  int get hashCode => _active.hashCode + slotNo.hashCode;
+}
 
 /// provides a set of common methods used by
 /// PluginInterfaces to talk to the underlying
@@ -33,8 +49,7 @@ class SlotEntry {}
 /// to the OS dependant plugins.
 // ignore: prefer_mixin
 abstract class BasePlugin with WidgetsBindingObserver {
-  /// ignore: prefer_final_fields
-  List<SlotEntry?> _slots;
+  final List<SlotEntry> _slots;
 
   ///
   @protected
@@ -85,14 +100,14 @@ abstract class BasePlugin with WidgetsBindingObserver {
   Future<dynamic> onMethodCallback(SlotEntry slotEntry, MethodCall call);
 
   Future<dynamic> _onMethodCallback(MethodCall call) {
-    var slotNo = call.arguments['slotNo'] as int;
-    var slotEntry = _slots[slotNo];
+    final slotNo = call.arguments['slotNo'] as int;
+    final slotEntry = _slots[slotNo];
 
-    if (slotEntry == null) {
+    if (slotEntry._isInActive) {
       Log.e(
           // ignore: lines_longer_than_80_chars
           "onMethodCallback for ${call.method} on slot $slotNo. The slot $slotNo doesn't exists");
-      return Future<dynamic>.value(null);
+      return Future<dynamic>.value();
 
       // Log.d(
       //     'Dart received ${call.method} on slotNo $slotNo for '
@@ -109,14 +124,16 @@ abstract class BasePlugin with WidgetsBindingObserver {
   Future<dynamic> invokeMethod(
       SlotEntry slotEntry, String methodName, Map<String, dynamic> call) async {
     /// allocate a slot for this call.
-    var slotNo = findSlot(slotEntry);
+    final slotNo = findSlot(slotEntry);
     if (slotNo == -1) {
       throw SlotEntryNotRegisteredException(
           'The SlotEntry for ${slotEntry.runtimeType} was not found.');
     }
 
+    Log.d('invokeMethod for $methodName slot: $slotNo');
     call['slotNo'] = slotNo;
-    var result = _channel.invokeMethod<dynamic>(methodName, call);
+    final dynamic result =
+        await _channel.invokeMethod<dynamic>(methodName, call);
 
     Log.d('invokeMethod returned for $methodName slot: $slotNo');
     return result;
@@ -129,29 +146,36 @@ abstract class BasePlugin with WidgetsBindingObserver {
   /// and finish by calling [release].
   void register(SlotEntry slotEntry) {
     var inserted = false;
+    slotEntry._active = true;
     for (var i = 0; i < _slots.length; ++i) {
-      if (_slots[i] == null) {
+      if (_slots[i]._isInActive) {
         _slots[i] = slotEntry;
+        slotEntry.slotNo = i;
         inserted = true;
         break;
       }
     }
     if (!inserted) {
       _slots.add(slotEntry);
+      slotEntry.slotNo = _slots.length - 1;
     }
     Log.d(red(
-        'registered ${slotEntry.runtimeType} to slot: ${_slots.length - 1}'));
+        'registered ${slotEntry.runtimeType} to slot: ${slotEntry.slotNo}'));
   }
 
   /// Checks if the given slot is registered.
-  bool isRegistered(SlotEntry slotEntry) => findSlot(slotEntry) != -1;
+  bool isRegistered(SlotEntry slotEntry) {
+    final int slot = findSlot(slotEntry);
+
+    return slot != -1 && _slots[slot]._isActive;
+  }
 
   ///
   void release(SlotEntry slotEntry) {
-    var slot = findSlot(slotEntry);
+    final slot = findSlot(slotEntry);
     Log.d(red('releasing slot ${slotEntry.runtimeType} from $slot'));
     if (slot != -1) {
-      _slots[slot] = null;
+      _slots[slot]._active = false;
     } else {
       throw SlotEntryNotRegisteredException(
           'The SlotEntry was not found when releasing '
@@ -175,9 +199,9 @@ abstract class BasePlugin with WidgetsBindingObserver {
   /// calls the [action] for each slot.
   void forEachSlot(void Function(SlotEntry) action) {
     for (var i = 0; i < _slots.length; ++i) {
-      var entry = _slots[i];
-      if (entry != null) {
-        action(entry);
+      final slotEntry = _slots[i];
+      if (slotEntry._isActive) {
+        action(slotEntry);
       }
     }
   }
@@ -197,5 +221,6 @@ class SlotEntryNotRegisteredException implements Exception {
   ///
   SlotEntryNotRegisteredException(this._message);
 
+  @override
   String toString() => _message;
 }

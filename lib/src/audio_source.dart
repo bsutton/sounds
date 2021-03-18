@@ -21,6 +21,7 @@
 class AudioSource {
   final int _value;
   const AudioSource._internal(this._value);
+  @override
   String toString() => 'AudioSource.$_value';
 
   ///

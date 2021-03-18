@@ -7,6 +7,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.util.Log;
+import androidx.annotation.NonNull;
 
 import androidx.annotation.UiThread;
 
@@ -28,6 +29,8 @@ import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 
+
+
 import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 
@@ -45,19 +48,28 @@ class SoundRecorderPlugin implements MethodCallHandler {
 	static final String ERR_RECORDER_IS_RECORDING = "ERR_RECORDER_IS_RECORDING";
 
 	public static void attachToEngine(Context ctx, BinaryMessenger messenger) {
-		assert (soundRecorderPlugin == null);
-		soundRecorderPlugin = new SoundRecorderPlugin();
-		assert (slots == null);
-		slots = new ArrayList<SoundRecorder>();
-		channel = new MethodChannel(messenger, CHANNEL_NAME);
-		channel.setMethodCallHandler(soundRecorderPlugin);
-		Log.d(TAG, "Registering channel: " + CHANNEL_NAME);
-		androidContext = ctx;
+		try
+		{
+			assert (soundRecorderPlugin == null);
+			soundRecorderPlugin = new SoundRecorderPlugin();
+			assert (slots == null);
+			slots = new ArrayList<SoundRecorder>();
+			channel = new MethodChannel(messenger, CHANNEL_NAME);
+			channel.setMethodCallHandler(soundRecorderPlugin);
+			Log.d(TAG, "Registering channel: " + CHANNEL_NAME);
+			androidContext = ctx;
+		}
+		catch(Exception e)
+		{
+			Log.e(TAG, "Exception attaching SoundRecorderPlugin: " + e.toString());
+		}
+
 	}
 
-	public void detachFromEngine()
+	public static void detachFromEngine()
 	{
 		channel.setMethodCallHandler(null);
+		androidContext = null;
 	}
 
 	void invokeCallback(String methodName, Map dic) {
