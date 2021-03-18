@@ -615,7 +615,7 @@ class SoundPlayer extends SlotEntry {
   /// from the last position - 1 second.
   void _onSystemAppResumed() {
     Log.d(red('onSystemAppResumed _playInBackground=$_playInBackground '
-        'track=$_track'));
+        'track=${_track ?? 'No Track'}'));
 
     if (_inSystemPause && !_playInBackground && _track != null) {
       _inSystemPause = false;
