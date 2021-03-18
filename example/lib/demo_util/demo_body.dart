@@ -9,6 +9,7 @@ import 'package:sounds_common/sounds_common.dart';
 
 import 'demo_active_codec.dart';
 import 'demo_asset_player.dart';
+import 'demo_common.dart';
 import 'demo_drop_downs.dart';
 import 'demo_player_state.dart';
 import 'recorder_state.dart';
@@ -91,6 +92,7 @@ class _MainBodyState extends State<MainBody> {
                 _buildRecorder(track),
                 dropdowns,
                 buildPlayBars(),
+                buildQuickPlay(),
                 buildHushOthers(),
               ],
             );
@@ -113,6 +115,24 @@ class _MainBodyState extends State<MainBody> {
             buildRemoteShadeButton(context),
           ],
         ));
+  }
+
+  Widget buildQuickPlay() {
+    return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Left("Quick Play"),
+            ElevatedButton(
+                onPressed: () => quickPlay(), child: Text('Quick Play'))
+          ],
+        ));
+  }
+
+  void quickPlay() {
+    QuickPlay.fromTrack(Track.fromAsset(
+        assetSample[ActiveMediaFormat().mediaFormat.name]!,
+        mediaFormat: ActiveMediaFormat().mediaFormat));
   }
 
   Widget _buildRecorder(Track track) {
