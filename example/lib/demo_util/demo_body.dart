@@ -55,6 +55,7 @@ class _MainBodyState extends State<MainBody> {
     return initialized;
   }
 
+  @override
   void dispose() {
     File(recordingFile).delete();
     super.dispose();
@@ -105,13 +106,13 @@ class _MainBodyState extends State<MainBody> {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            Left("Asset Playback"),
+            Left('Asset Playback'),
             AssetPlayer(),
-            Left("Remote Track Playback"),
+            Left('Remote Track Playback'),
             RemotePlayer(),
-            Left("Shade Playback"),
+            Left('Shade Playback'),
             buildShadePlayer(),
-            Left("Test Playback"),
+            Left('Test Playback'),
             buildRemoteShadeButton(context),
           ],
         ));
@@ -122,7 +123,7 @@ class _MainBodyState extends State<MainBody> {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            Left("Quick Play"),
+            Left('Quick Play'),
             ElevatedButton(
                 onPressed: () => quickPlay(), child: Text('Quick Play'))
           ],
@@ -145,7 +146,7 @@ class _MainBodyState extends State<MainBody> {
               track,
               requestPermissions: requestPermissions,
             ),
-            Left("Recording Playback"),
+            Left('Recording Playback'),
             SoundPlayerUI.fromTrack(track,
                 showTitle: true, autoFocus: PlayerState().hushOthers),
           ],
@@ -194,7 +195,7 @@ class _MainBodyState extends State<MainBody> {
 
     if (usingExternalStorage) {
       /// only required if track is on external storage
-      if (Permission.storage.status == PermissionStatus.denied) {
+      if (await Permission.storage.status == PermissionStatus.denied) {
         print('You are probably missing the storage permission '
             'in your manifest.');
       }
@@ -211,25 +212,25 @@ class _MainBodyState extends State<MainBody> {
         both = true;
       }
 
-      var reason = "To record a message we need permission ";
+      var reason = 'To record a message we need permission ';
 
       if (microphoneRequired) {
-        reason += "to access your microphone";
+        reason += 'to access your microphone';
       }
 
       if (both) {
-        reason += " and ";
+        reason += ' and ';
       }
 
       if (storageRequired) {
-        reason += "to store a file on your phone";
+        reason += 'to store a file on your phone';
       }
 
-      reason += ".";
+      reason += '.';
 
       if (both) {
         reason += " \n\nWhen prompted click the 'Allow' button on "
-            "each of the following prompts.";
+            'each of the following prompts.';
       } else {
         reason += " \n\nWhen prompted click the 'Allow' button.";
       }
@@ -273,17 +274,17 @@ class _MainBodyState extends State<MainBody> {
   Future<bool> showAlertDialog(BuildContext context, String prompt) async {
     // set up the buttons
     Widget cancelButton = TextButton(
-      child: Text("Cancel"),
       onPressed: () => Navigator.of(context).pop(false),
+      child: Text('Cancel'),
     );
     Widget continueButton = TextButton(
-      child: Text("Continue"),
       onPressed: () => Navigator.of(context).pop(true),
+      child: Text('Continue'),
     );
 
     // set up the AlertDialog
     var alert = AlertDialog(
-      title: Text("Recording Permissions"),
+      title: Text('Recording Permissions'),
       content: Text(prompt),
       actions: [
         cancelButton,
@@ -303,7 +304,6 @@ class _MainBodyState extends State<MainBody> {
 
   Widget buildShadePlayer() {
     return ElevatedButton(
-      child: Text('Play Asset via Shade'),
       onPressed: () {
         var player = SoundPlayer.withShadeUI(autoFocus: false);
         player.onStopped = ({required wasUser}) async {
@@ -316,9 +316,10 @@ class _MainBodyState extends State<MainBody> {
           player.audioFocus(AudioFocus.stopOthersWithResume);
         }
         player.play(createAssetTrack());
-        ScaffoldMessenger.of(context).showSnackBar(new SnackBar(
-            content: new Text("Playing via the OS's Media Player.")));
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Playing via the OS's Media Player.")));
       },
+      child: Text('Play Asset via Shade'),
     );
   }
 }
@@ -328,8 +329,8 @@ Track createAssetTrack() {
   track = Track.fromAsset('assets/samples/sample.aac',
       mediaFormat: WellKnownMediaFormats.adtsAac);
 
-  track.title = "Asset playback.";
-  track.artist = "By sounds";
+  track.title = 'Asset playback.';
+  track.artist = 'By sounds';
 
   if (Platform.isIOS) {
     track.albumArtAsset = 'AppIcon';
@@ -360,22 +361,22 @@ class Left extends StatelessWidget {
 
 Widget buildRemoteShadeButton(BuildContext context) {
   return ElevatedButton(
-    child: Text('Play Remote URL via Shade'),
     onPressed: () {
       playRemoteURL();
       ScaffoldMessenger.of(context).showSnackBar(
-          new SnackBar(content: new Text("Playing test OS's Media Player.")));
+          SnackBar(content: Text("Playing test OS's Media Player.")));
     },
+    child: Text('Play Remote URL via Shade'),
   );
 }
 
 /// test remote url on shade.
 void playRemoteURL() async {
-  SoundPlayer soundPlayer =
+  var soundPlayer =
       SoundPlayer.withShadeUI(canSkipBackward: false, playInBackground: true);
   soundPlayer.onStopped = ({required wasUser}) => soundPlayer.release();
 
-  Track track = Track.fromURL(
+  var track = Track.fromURL(
       'https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_2MG.mp3');
   await soundPlayer.play(track);
 }

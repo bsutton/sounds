@@ -71,9 +71,9 @@ class _DropdownsState extends State<Dropdowns> {
     return FutureBuilder<List<NativeMediaFormat>>(
         future: NativeMediaFormats().encoders,
         builder: (context, asynData) {
-          if (!asynData.hasData)
+          if (!asynData.hasData) {
             return Text('Loading MediaFormats');
-          else {
+          } else {
             var menuItems = <DropdownMenuItem<MediaFormat>>[];
 
             for (var mediaFormat in asynData.data!) {

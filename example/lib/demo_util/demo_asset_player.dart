@@ -29,8 +29,8 @@ class AssetPlayer extends StatelessWidget {
       mediaFormat: ActiveMediaFormat().mediaFormat,
     );
 
-    track.title = "Asset playback.";
-    track.artist = "By sounds";
+    track.title = 'Asset playback.';
+    track.artist = 'By sounds';
 
     if (Platform.isIOS) {
       track.albumArtAsset = 'AppIcon';

@@ -10,11 +10,11 @@ import 'demo_player_state.dart';
 
 /// path to remote auido file.
 const String exampleAudioFilePath =
-    "https://file-examples.com/wp-content/uploads/2017/11/file_example_MP3_700KB.mp3";
+    'https://file-examples.com/wp-content/uploads/2017/11/file_example_MP3_700KB.mp3';
 
 /// path to remote auido file artwork.
 final String albumArtPath =
-    "https://file-examples.com/wp-content/uploads/2017/10/file_example_PNG_500kB.png";
+    'https://file-examples.com/wp-content/uploads/2017/10/file_example_PNG_500kB.png';
 
 ///
 class RemotePlayer extends StatelessWidget {
@@ -25,8 +25,9 @@ class RemotePlayer extends StatelessWidget {
     if (track != null) {
       return SoundPlayerUI.fromTrack(track,
           showTitle: true, autoFocus: PlayerState().hushOthers);
-    } else
+    } else {
       return Text('No valid track selected');
+    }
   }
 
   Track? _createRemoteTrack(BuildContext context) {
@@ -44,8 +45,8 @@ class RemotePlayer extends StatelessWidget {
       track = Track.fromURL(exampleAudioFilePath,
           mediaFormat: ActiveMediaFormat().mediaFormat);
 
-      track.title = "Remote mpeg playback.";
-      track.artist = "By sounds";
+      track.title = 'Remote mpeg playback.';
+      track.artist = 'By sounds';
       track.albumArtUrl = albumArtPath;
 
       if (Platform.isIOS) {

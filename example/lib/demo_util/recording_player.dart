@@ -43,7 +43,7 @@ class RecordingPlayer extends StatelessWidget {
         }
 
         track.title = title;
-        track.artist = "By sounds";
+        track.artist = 'By sounds';
 
         if (Platform.isIOS) {
           track.albumArtAsset = 'AppIcon';
@@ -74,8 +74,9 @@ class RecordingPlayer extends StatelessWidget {
           MediaPath().pathForMediaFormat(ActiveMediaFormat().mediaFormat));
       track = Track.fromBuffer(dataBuffer,
           mediaFormat: ActiveMediaFormat().mediaFormat);
-    } else
+    } else {
       throw RecorderInvalidStateException("The recording file doesn't exist");
+    }
     return track;
   }
 

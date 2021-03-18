@@ -51,5 +51,6 @@ class UnknownMediaFormat implements Exception {
   MediaFormat mediaFormat;
   UnknownMediaFormat(this.mediaFormat);
 
+  @override
   String toString() => 'No audio for ${mediaFormat.name} ';
 }

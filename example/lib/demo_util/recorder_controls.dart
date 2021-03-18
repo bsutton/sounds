@@ -23,6 +23,7 @@ class _RecorderControlsState extends State<RecorderControls> {
   bool paused = false;
 
   /// detect hot reloads and stop the recorder
+  @override
   void reassemble() {
     super.reassemble();
     RecorderState().stopRecorder();
@@ -37,12 +38,12 @@ class _RecorderControlsState extends State<RecorderControls> {
           buildDurationText(),
           buildDBIndicator(),
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               buildStartStopButton(),
               buildRecorderPauseButton(),
             ],
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
           ),
         ]);
   }
@@ -74,7 +75,7 @@ class _RecorderControlsState extends State<RecorderControls> {
             .dispositionStream(interval: Duration(milliseconds: 50)),
         initialData: RecordingDisposition.zero(),
         builder: (context, snapshot) {
-          String txt = '';
+          var txt = '';
           if (snapshot.hasData) {
             RecordingDisposition disposition;
             disposition = snapshot.data!;
