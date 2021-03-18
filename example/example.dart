@@ -73,7 +73,7 @@ class SoundExampleApp extends StatelessWidget {
 
     if (usingExternalStorage) {
       /// only required if track is on external storage
-      if (Permission.storage.status == PermissionStatus.denied) {
+      if (await Permission.storage.status == PermissionStatus.denied) {
         print('You are probably missing the storage permission '
             'in your manifest.');
       }
@@ -90,25 +90,25 @@ class SoundExampleApp extends StatelessWidget {
         both = true;
       }
 
-      var reason = "To record a message we need permission ";
+      var reason = 'To record a message we need permission ';
 
       if (microphoneRequired) {
-        reason += "to access your microphone";
+        reason += 'to access your microphone';
       }
 
       if (both) {
-        reason += " and ";
+        reason += ' and ';
       }
 
       if (storageRequired) {
-        reason += "to store a file on your phone";
+        reason += 'to store a file on your phone';
       }
 
-      reason += ".";
+      reason += '.';
 
       if (both) {
         reason += " \n\nWhen prompted click the 'Allow' button on "
-            "each of the following prompts.";
+            'each of the following prompts.';
       } else {
         reason += " \n\nWhen prompted click the 'Allow' button.";
       }
@@ -152,17 +152,17 @@ class SoundExampleApp extends StatelessWidget {
   Future<bool> showAlertDialog(BuildContext context, String prompt) async {
     // set up the buttons
     Widget cancelButton = TextButton(
-      child: Text("Cancel"),
       onPressed: () => Navigator.of(context).pop(false),
+      child: Text('Cancel'),
     );
     Widget continueButton = TextButton(
-      child: Text("Continue"),
       onPressed: () => Navigator.of(context).pop(true),
+      child: Text('Continue'),
     );
 
     // set up the AlertDialog
     var alert = AlertDialog(
-      title: Text("Recording Permissions"),
+      title: Text('Recording Permissions'),
       content: Text(prompt),
       actions: [
         cancelButton,
