@@ -24,14 +24,12 @@ import 'player_base_plugin.dart';
 
 ///
 class SoundPlayerShadePlugin extends PlayerBasePlugin {
+  /// Factory
+  factory SoundPlayerShadePlugin() => _self;
+  SoundPlayerShadePlugin._internal() : super('com.bsutton.sounds.shade_player');
+
   static late final SoundPlayerShadePlugin _self =
       SoundPlayerShadePlugin._internal();
-
-  /// Factory
-  factory SoundPlayerShadePlugin() {
-    return _self;
-  }
-  SoundPlayerShadePlugin._internal() : super('com.bsutton.sounds.shade_player');
 
   /// Plays the given [track].
   ///
@@ -48,9 +46,9 @@ class SoundPlayerShadePlugin extends PlayerBasePlugin {
 
     /// buffer is only supported on iOS.
     if (track.isBuffer) {
-      trackMap["dataBuffer"] = trackBuffer(track);
+      trackMap['dataBuffer'] = trackBuffer(track);
     } else {
-      trackMap["path"] = trackStoragePath(track);
+      trackMap['path'] = trackStoragePath(track);
     }
 
     await invokeMethod(player, 'startShadePlayer', <String, dynamic>{
@@ -67,6 +65,7 @@ class SoundPlayerShadePlugin extends PlayerBasePlugin {
       covariant SoundPlayer player, MethodCall call) {
     switch (call.method) {
       case 'pause':
+        // ignore: avoid_dynamic_calls
         final b = call.arguments['arg'] as bool;
         if (b) {
           onSystemPaused(player);
@@ -88,6 +87,7 @@ class SoundPlayerShadePlugin extends PlayerBasePlugin {
       /// notifications from the os when the OS Media Player
       /// changes state.
       case 'updatePlaybackState':
+        // ignore: avoid_dynamic_calls
         final stateNo = call.arguments['arg'] as int;
 
         final playbackState = SystemPlaybackState.values[stateNo];

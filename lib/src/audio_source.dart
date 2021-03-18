@@ -19,8 +19,9 @@
 /// Currently these are only supported by android.
 /// For iOS we always record from the microphone.
 class AudioSource {
+    const AudioSource._internal(this._value);
   final int _value;
-  const AudioSource._internal(this._value);
+
   @override
   String toString() => 'AudioSource.$_value';
 

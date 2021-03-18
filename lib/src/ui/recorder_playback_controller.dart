@@ -27,17 +27,15 @@ import 'sound_recorder_ui.dart';
 /// as it grows.
 ///
 class RecorderPlaybackController extends InheritedWidget {
-  final _RecordPlaybackControllerState _state;
-
   ///
   RecorderPlaybackController({required Widget child, Key? key})
       : _state = _RecordPlaybackControllerState(),
         super(key: key, child: child);
 
+  final _RecordPlaybackControllerState _state;
+
   @override
-  bool updateShouldNotify(InheritedWidget oldWidget) {
-    return true;
-  }
+  bool updateShouldNotify(InheritedWidget oldWidget) => true;
 
   /// stops both the player and the recorder.
   void stop() => _state.stop();

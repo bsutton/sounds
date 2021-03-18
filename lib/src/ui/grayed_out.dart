@@ -14,6 +14,7 @@
  *   along with Sounds.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 /// GreyedOut optionally grays out the given child widget.
@@ -27,6 +28,11 @@ import 'package:flutter/material.dart';
 /// The default value of [opacity] is 0.3.
 class GrayedOut extends StatelessWidget {
   ///
+  const GrayedOut({required this.child, Key? key, this.grayedOut = true})
+      : opacity = grayedOut == true ? 0.3 : 1.0,
+        super(key: key);
+
+  ///
   final Widget child;
 
   ///
@@ -35,14 +41,15 @@ class GrayedOut extends StatelessWidget {
   ///
   final double opacity;
 
-  ///
-  const GrayedOut({Key? key, required this.child, this.grayedOut = true})
-      : opacity = grayedOut == true ? 0.3 : 1.0,
-        super(key: key);
+  @override
+  Widget build(BuildContext context) => AbsorbPointer(
+      absorbing: grayedOut, child: Opacity(opacity: opacity, child: child));
 
   @override
-  Widget build(BuildContext context) {
-    return AbsorbPointer(
-        absorbing: grayedOut, child: Opacity(opacity: opacity, child: child));
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty<bool>('grayedOut', grayedOut))
+      ..add(DoubleProperty('opacity', opacity));
   }
 }

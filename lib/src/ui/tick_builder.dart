@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 /// Function typedef for the [TickBuilder] builder callback.
@@ -17,11 +18,6 @@ typedef OnTick = void Function(int index);
 /// after which it is reset to zero.
 /// The default limit is null which means no limit.
 class TickBuilder extends StatefulWidget {
-  final TickerBuilderBuilder _builder;
-  final Duration _interval;
-  final int _limit;
-  final bool _active;
-
   /// Create a TickBuilder
   /// [interval] is the time between each tick. We could the [builder]
   ///  for each tick.
@@ -29,9 +25,9 @@ class TickBuilder extends StatefulWidget {
   /// If limit is -1 then it will increment forever.
   /// If [active] is false the tick builder will stop ticking.
   const TickBuilder(
-      {Key? key,
-      required TickerBuilderBuilder builder,
+      {required TickerBuilderBuilder builder,
       required Duration interval,
+      Key? key,
       int limit = -1,
       bool active = true})
       : _builder = builder,
@@ -40,10 +36,13 @@ class TickBuilder extends StatefulWidget {
         _active = active,
         super(key: key);
 
+  final TickerBuilderBuilder _builder;
+  final Duration _interval;
+  final int _limit;
+  final bool _active;
+
   @override
-  State<StatefulWidget> createState() {
-    return _TickBuilderState();
-  }
+  State<StatefulWidget> createState() => _TickBuilderState();
 }
 
 class _TickBuilderState extends State<TickBuilder> {
@@ -56,9 +55,7 @@ class _TickBuilderState extends State<TickBuilder> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return widget._builder(context, tickCount);
-  }
+  Widget build(BuildContext context) => widget._builder(context, tickCount);
 
   void queueTicker() {
     Future.delayed(widget._interval, () {
@@ -72,5 +69,10 @@ class _TickBuilderState extends State<TickBuilder> {
         queueTicker();
       }
     });
+  }
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(IntProperty('tickCount', tickCount));
   }
 }

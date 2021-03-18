@@ -22,6 +22,9 @@ import '../sound_recorder.dart';
 /// An internal class which manages the RecordingDisposition stream.
 /// Its main job is turn plugin updates into a stream.
 class RecordingDispositionManager {
+  /// ctor
+  RecordingDispositionManager(this._recorder);
+
   final SoundRecorder _recorder;
   bool _streamCreated = false;
   late final StreamController<RecordingDisposition> _dispositionController;
@@ -33,9 +36,6 @@ class RecordingDispositionManager {
   /// We cache the last duration (length of recording) we have seen as
   /// its needed during wrap up.
   Duration lastDuration = Duration.zero;
-
-  /// ctor
-  RecordingDispositionManager(this._recorder);
 
   /// Returns a stream of RecordingDispositions
   /// The stream is a broadcast stream and can be called
@@ -70,7 +70,7 @@ class RecordingDispositionManager {
   /// we last sent the data.
   void updateDisposition(Duration duration, double decibels) {
     lastDuration = duration;
-    assert(_streamCreated);
+    assert(_streamCreated, 'The stream has not been created');
     _dispositionController.add(RecordingDisposition(duration, decibels));
   }
 

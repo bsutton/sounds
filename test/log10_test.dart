@@ -9,18 +9,18 @@ void main() {
     final track =
         Track.fromFile(recording, mediaFormat: WellKnownMediaFormats.adtsAac);
     final recorder = SoundRecorder();
-    recorder.onStopped = ({wasUser = false}) {
-      recorder.release();
+    recorder
+      ..onStopped = ({wasUser = false}) {
+        recorder.release();
 
-      /// recording has finished so play it back to the user.
-      QuickPlay.fromTrack(track, onStopped: () {
-        /// delete the temp file now we are done with it.
-        File(recording).delete();
-      });
-    };
-    recorder.record(track);
-
-    recorder.stop();
+        /// recording has finished so play it back to the user.
+        QuickPlay.fromTrack(track, onStopped: () {
+          /// delete the temp file now we are done with it.
+          File(recording).delete();
+        });
+      }
+      ..record(track)
+      ..stop();
   });
 
   test('Sound Recorder permissions example', () {
@@ -28,10 +28,9 @@ void main() {
     final track =
         Track.fromFile(recording, mediaFormat: WellKnownMediaFormats.adtsAac);
 
-    final recorder = SoundRecorder();
-    // ignore: unnecessary_lambdas
-    recorder.onRequestPermissions = (track) => askUserForPermission(track);
-    recorder.record(track);
+    SoundRecorder()
+      ..onRequestPermissions = askUserForPermission
+      ..record(track);
   });
 
   test('Sound Recorder #Recording Quality', () {
@@ -40,11 +39,11 @@ void main() {
         Track.fromFile(recording, mediaFormat: const AdtsAacMediaFormat());
 
     final recorder = SoundRecorder();
-    recorder.onStopped = ({wasUser = false}) {
-      recorder.release();
-    };
-
-    recorder.record(track);
+    recorder
+      ..onStopped = ({wasUser = false}) {
+        recorder.release();
+      }
+      ..record(track);
   });
 
   test('Sound Recorder #AudioSource ', () {
@@ -52,23 +51,20 @@ void main() {
     final track =
         Track.fromFile(recording, mediaFormat: WellKnownMediaFormats.adtsAac);
 
-    final recorder = SoundRecorder();
-    recorder.record(track);
+    SoundRecorder().record(track);
   });
 
   test('Sound Recorder #Monitoring progress ', () {
-    // ignore: omit_local_variable_types
-    final Stream<RecordingDisposition> stream = SoundRecorder()
-        .dispositionStream(interval: const Duration(milliseconds: 100));
-    stream.listen((disposition) {});
+    SoundRecorder()
+        .dispositionStream(interval: const Duration(milliseconds: 100))
+        .listen((disposition) {});
   });
 
   test('Sound Recorder #Stopping a recording ', () {
-    final recorder = SoundRecorder();
-    recorder.record(Track.fromFile('path to file',
-        mediaFormat: WellKnownMediaFormats.adtsAac));
-
-    recorder.resume();
+    final recorder = SoundRecorder()
+      ..record(Track.fromFile('path to file',
+          mediaFormat: WellKnownMediaFormats.adtsAac))
+      ..resume();
 
     /// some widget event
     // ignore: unused_element
@@ -81,6 +77,4 @@ void main() {
   test('Sound Recorder #AudioSource ', () {});
 }
 
-Future<bool> askUserForPermission(Track _) async {
-  return true;
-}
+Future<bool> askUserForPermission(Track _) async => true;

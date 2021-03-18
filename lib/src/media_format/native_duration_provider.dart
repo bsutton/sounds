@@ -3,13 +3,13 @@ import '../sound_player.dart';
 /// Provides a method to determine the duration of a natively supported
 /// audio file.
 class NativeDurationProvider {
-  static final NativeDurationProvider _self =
-      NativeDurationProvider._internal();
-
   ///
   factory NativeDurationProvider() => _self;
 
   NativeDurationProvider._internal();
+
+  static final NativeDurationProvider _self =
+      NativeDurationProvider._internal();
 
   /// Returns the duration of the audio file at the given [path]
   /// for natively supported MediaFormats.

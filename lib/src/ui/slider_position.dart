@@ -30,7 +30,9 @@ class SliderPosition extends ChangeNotifier {
   set position(Duration position) {
     _position = position;
 
-    if (!_disposed) notifyListeners();
+    if (!_disposed) {
+      notifyListeners();
+    }
   }
 
   @override
@@ -40,7 +42,5 @@ class SliderPosition extends ChangeNotifier {
   }
 
   ///
-  Duration get position {
-    return _position;
-  }
+  Duration get position => _position;
 }

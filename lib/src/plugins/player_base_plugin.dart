@@ -15,16 +15,16 @@ import 'base_plugin.dart';
 
 /// base for all plugins that provide Plaback services.
 abstract class PlayerBasePlugin extends BasePlugin {
-  /// The java ShadePlayer and SoundPlayer share a static
-  /// array of slots. As such so must we.
-  /// TODO: get the java/swift code so that each plugin has its own
-  /// slots.
-  /// ignore: prefer_final_fields
-  static var _slots = <SlotEntry>[];
-
   /// Pass in the [registeredName] which is the registered
   /// name of the plugin.
   PlayerBasePlugin(String registeredName) : super(registeredName, _slots);
+
+  /// The java ShadePlayer and SoundPlayer share a static
+  /// array of slots. As such so must we.
+  /// TODO(bsutton): get the java/swift code so that each plugin has its own
+  /// slots.
+  /// ignore: prefer_final_fields
+  static var _slots = <SlotEntry>[];
 
   /// The callbackMap is used to map callbacks to a completer
   /// created by the originator of the callback.
@@ -98,6 +98,7 @@ abstract class PlayerBasePlugin extends BasePlugin {
 
   /// callback when the the platform call to 'getDuration' completes.
   void _onDurationResults(MethodCall call) {
+    // ignore: avoid_dynamic_calls
     final json = call.arguments['arg'] as Map<dynamic, dynamic>;
 
     // var json = convert.jsonDecode(arguments) as Map<String, dynamic>;
@@ -122,7 +123,9 @@ abstract class PlayerBasePlugin extends BasePlugin {
   ///
   Future<bool> iosSetCategory(SlotEntry player, IOSSessionCategory category,
       IOSSessionMode mode, int options) async {
-    if (!Platform.isIOS) return false;
+    if (!Platform.isIOS) {
+      return false;
+    }
     final r = await invokeMethod(player, 'iosSetCategory', <String, dynamic>{
       'category': iosSessionCategory[category.index],
       'mode': iosSessionMode[mode.index],
@@ -134,7 +137,9 @@ abstract class PlayerBasePlugin extends BasePlugin {
 
   ///
   Future<bool> androidFocusRequest(SlotEntry player, int focusGain) async {
-    if (!Platform.isAndroid) return false;
+    if (!Platform.isAndroid) {
+      return false;
+    }
     return await invokeMethod(player, 'androidAudioFocusRequest',
         <String, dynamic>{'focusGain': focusGain}) as bool;
   }
@@ -168,8 +173,12 @@ abstract class PlayerBasePlugin extends BasePlugin {
 
     /// looks like the android subsystem can generate -ve values
     /// during some transitions so we protect ourselves.
-    if (duration.inMilliseconds < 0) duration = Duration.zero;
-    if (position.inMilliseconds < 0) position = Duration.zero;
+    if (duration.inMilliseconds < 0) {
+      duration = Duration.zero;
+    }
+    if (position.inMilliseconds < 0) {
+      position = Duration.zero;
+    }
 
     /// when playing an mp3 I've seen occurances where the position is after
     /// the duration. So I've added this protection.
@@ -190,24 +199,27 @@ abstract class PlayerBasePlugin extends BasePlugin {
     switch (call.method) {
 
       ///TODO implement in the OS code for each player.
-      case "onPlayerReady":
+      case 'onPlayerReady':
         {
+          // ignore: avoid_dynamic_calls
           final result = call.arguments['arg'] as bool;
           Log.d('onPlayerReady $result');
           onPlayerReady(player, result: result);
         }
         break;
 
-      case "updateProgress":
+      case 'updateProgress':
         {
+          // ignore: avoid_dynamic_calls
           final arguments = call.arguments['arg'] as String;
           sound_player.updateProgress(
               player, PlayerBasePlugin.dispositionFromJSON(arguments));
         }
         break;
 
-      case "audioPlayerFinishedPlaying":
+      case 'audioPlayerFinishedPlaying':
         {
+          // ignore: avoid_dynamic_calls
           final arguments = call.arguments['arg'] as String;
 
           sound_player.audioPlayerFinished(
@@ -229,13 +241,14 @@ abstract class PlayerBasePlugin extends BasePlugin {
 
       /// Callback in response to call to getDuration.
       /// The OS has calculated the duration and we now have the results.
-      case "durationResults":
+      case 'durationResults':
         _onDurationResults(call);
         break;
 
       /// the OS media player encounted an error
       case 'onError':
         {
+          // ignore: avoid_dynamic_calls
           final json = convert.jsonDecode(call.arguments['arg'] as String)
               as Map<String, dynamic>;
 

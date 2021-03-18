@@ -30,17 +30,15 @@ import 'base_plugin.dart';
 /// Provides communications with the platform
 /// specific plugin.
 class SoundRecorderPlugin extends BasePlugin {
+  /// Factory
+  factory SoundRecorderPlugin() => _self;
+  SoundRecorderPlugin._internal()
+      : super('com.bsutton.sounds.sound_recorder', _slots);
+
   /// ignore: prefer_final_fields
   static var _slots = <SlotEntry>[];
 
   static late final SoundRecorderPlugin _self = SoundRecorderPlugin._internal();
-
-  /// Factory
-  factory SoundRecorderPlugin() {
-    return _self;
-  }
-  SoundRecorderPlugin._internal()
-      : super('com.bsutton.sounds.sound_recorder', _slots);
 
   ///
   Future<void> initializeRecorder(
@@ -107,16 +105,17 @@ class SoundRecorderPlugin extends BasePlugin {
 
   @override
   Future<dynamic> onMethodCallback(
-      covariant sound_recorder.SoundRecorder recorder, MethodCall call) {
+      covariant sound_recorder.SoundRecorder slotEntry, MethodCall call) {
     switch (call.method) {
-      case "updateProgress":
-        _updateProgress(call, recorder);
+      case 'updateProgress':
+        _updateProgress(call, slotEntry);
         break;
     }
     throw ArgumentError('Unknown method ${call.method}');
   }
 
   void _updateProgress(MethodCall call, sound_recorder.SoundRecorder recorder) {
+    // ignore: avoid_dynamic_calls
     final result = convert.json.decode(call.arguments['arg'] as String)
         as Map<String, dynamic>;
 

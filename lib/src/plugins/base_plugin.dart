@@ -29,14 +29,15 @@ class SlotEntry {
 
   bool get _isActive => _active;
 
+  /// The slot this entry is allocated to.
   int slotNo = -1;
 
   @override
-  bool operator ==(covariant SlotEntry other) {
-    return slotNo == other.slotNo;
-  }
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  bool operator ==(covariant SlotEntry other) => slotNo == other.slotNo;
 
   @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => _active.hashCode + slotNo.hashCode;
 }
 
@@ -49,15 +50,6 @@ class SlotEntry {
 /// to the OS dependant plugins.
 // ignore: prefer_mixin
 abstract class BasePlugin with WidgetsBindingObserver {
-  final List<SlotEntry> _slots;
-
-  ///
-  @protected
-  late final MethodChannel _channel;
-
-  /// The registered name of the plugin.
-  final String _registeredName;
-
   /// Pass in the [_registeredName] which is the registered
   /// name of the plugin.
   BasePlugin(this._registeredName, this._slots) {
@@ -67,6 +59,15 @@ abstract class BasePlugin with WidgetsBindingObserver {
 
     WidgetsBinding.instance?.addObserver(this);
   }
+
+  final List<SlotEntry> _slots;
+
+  ///
+  @protected
+  late final MethodChannel _channel;
+
+  /// The registered name of the plugin.
+  final String _registeredName;
 
   /// This method is currently not used as we are a singleton
   /// which has the same lifecycle as the app so there
@@ -100,6 +101,7 @@ abstract class BasePlugin with WidgetsBindingObserver {
   Future<dynamic> onMethodCallback(SlotEntry slotEntry, MethodCall call);
 
   Future<dynamic> _onMethodCallback(MethodCall call) {
+    // ignore: avoid_dynamic_calls
     final slotNo = call.arguments['slotNo'] as int;
     final slotEntry = _slots[slotNo];
 
@@ -165,7 +167,7 @@ abstract class BasePlugin with WidgetsBindingObserver {
 
   /// Checks if the given slot is registered.
   bool isRegistered(SlotEntry slotEntry) {
-    final int slot = findSlot(slotEntry);
+    final slot = findSlot(slotEntry);
 
     return slot != -1 && _slots[slot]._isActive;
   }
@@ -216,10 +218,10 @@ abstract class BasePlugin with WidgetsBindingObserver {
 /// Thrown if you try to release or access a connector that isn't
 /// registered.
 class SlotEntryNotRegisteredException implements Exception {
-  final String _message;
-
   ///
   SlotEntryNotRegisteredException(this._message);
+
+  final String _message;
 
   @override
   String toString() => _message;

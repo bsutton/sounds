@@ -16,6 +16,7 @@
 
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
@@ -41,21 +42,6 @@ typedef OnLoad = Future<Track> Function(BuildContext context);
 ///   optionally displays the album title and track if the
 ///   [Track] contains those details.
 class SoundPlayerUI extends StatefulWidget {
-  static const int _barHeight = 60;
-
-  final bool _showTitle;
-
-  /// The [Track] passed when [SoundPlayerUI.fromTrack] is called.
-  ///
-  /// If the fromLoader ctor is used this will be null.
-  final Track? _track;
-
-  final OnLoad _onLoad;
-
-  final bool _enabled;
-
-  final bool _autoFocus;
-
   ///
   /// [SoundPlayerUI.fromTrack] Constructs a Playbar with a Track.
   /// [track] is the Track that contains the audio to play.
@@ -117,6 +103,21 @@ class SoundPlayerUI extends StatefulWidget {
         _track = null,
         super(key: key);
 
+  static const int _barHeight = 60;
+
+  final bool _showTitle;
+
+  /// The [Track] passed when [SoundPlayerUI.fromTrack] is called.
+  ///
+  /// If the fromLoader ctor is used this will be null.
+  final Track? _track;
+
+  final OnLoad _onLoad;
+
+  final bool _enabled;
+
+  final bool _autoFocus;
+
   @override
   State<StatefulWidget> createState() =>
       // ignore: no_logic_in_create_state
@@ -125,6 +126,22 @@ class SoundPlayerUI extends StatefulWidget {
 
 /// internal state.
 class SoundPlayerUIState extends State<SoundPlayerUI> {
+  ///
+  SoundPlayerUIState(Track? track, {required bool enabled})
+      : _player = SoundPlayer.noUI(),
+        _track = track,
+        _enabled = enabled,
+        _localController = StreamController<PlaybackDisposition>.broadcast() {
+    _sliderPosition
+      ..position = const Duration()
+      ..maxPosition = const Duration();
+    if (_enabled) {
+      __playState = PlayState.disabled;
+    }
+
+    _setCallbacks();
+  }
+
   final SoundPlayer _player;
   final _sliderPosition = SliderPosition();
 
@@ -149,27 +166,14 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
   /// If the widget was constructed with a call to [SoundPlayerUI.fromTrack]
   /// then this holds that value.
   ///
-  /// If the widget was constructed with a call to  [SoundPlayerUI.fromLoader] then
-  /// this value won't be initialised until [SoundPlayerUI._onLoad] is called.
+  /// If the widget was constructed with a call to  [SoundPlayerUI.fromLoader]
+  /// then this value won't be initialised until [SoundPlayerUI._onLoad]
+  /// is called.
   Track? _track;
 
-  ///
-  SoundPlayerUIState(Track? track, {required bool enabled})
-      : _player = SoundPlayer.noUI(),
-        _track = track,
-        _enabled = enabled,
-        _localController = StreamController<PlaybackDisposition>.broadcast() {
-    _sliderPosition.position = const Duration();
-    _sliderPosition.maxPosition = const Duration();
-    if (_enabled) {
-      __playState = PlayState.disabled;
-    }
-
-    _setCallbacks();
-  }
-
   /// returns the active track.
-  /// If [SoundPlayerUI.fromLoader] was called then this may return null if if you haven't
+  /// If [SoundPlayerUI.fromLoader] was called then this may return null
+  ///  if if you haven't
   /// called play or fromLoader returned null.
   Track? get track => _track;
 
@@ -186,10 +190,8 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
 
   /// We can play if we have a non-zero track length or we are dynamically
   /// loading tracks via _onLoad.
-  Future<bool> get canPlay async {
-    return widget._onLoad != _onLoadNoOp ||
-        (track != null && (track!.length > 0));
-  }
+  Future<bool> get canPlay async =>
+      widget._onLoad != _onLoadNoOp || (track != null && (track!.length > 0));
 
   /// detect hot reloads when debugging and stop the player.
   /// If we don't the platform specific code keeps running
@@ -219,8 +221,9 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
     /// TODO
     /// should we chain these events incase the user of our api
     /// also wants to see these events?
-    _player.onStarted = ({required wasUser}) => _onStarted();
-    _player.onStopped = ({required wasUser}) => _onStopped();
+    _player
+      ..onStarted = (({required wasUser}) => _onStarted())
+      ..onStopped = ({required wasUser}) => _onStopped();
 
     /// pipe the new sound players stream to our local controller.
     _player.dispositionStream().listen(_localController.add);
@@ -278,9 +281,12 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
   }
 
   Widget _buildPlayBar() {
-    final rows = <Widget>[];
-    rows.add(Row(children: [_buildDuration(), _buildSlider()]));
-    if (widget._showTitle && track != null) rows.add(_buildTitle());
+    final rows = <Widget>[
+      Row(children: [_buildDuration(), _buildSlider()])
+    ];
+    if (widget._showTitle && track != null) {
+      rows.add(_buildTitle());
+    }
 
     return Container(
         decoration: BoxDecoration(
@@ -293,9 +299,7 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
   }
 
   /// Returns the players current state.
-  PlayState get _playState {
-    return __playState;
-  }
+  PlayState get _playState => __playState;
 
   set _playState(PlayState state) {
     setState(() => __playState = state);
@@ -307,7 +311,8 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
   ///
   /// Cannot toggle this whilst the player is playing or paused.
   void enablePlayback({required bool enabled}) {
-    assert(__playState != PlayState.playing && __playState != PlayState.paused);
+    assert(__playState != PlayState.playing && __playState != PlayState.paused,
+        'Cannot toggle playback whilst the player is playing or paused.');
     setState(() {
       if (enabled == true) {
         __playState = PlayState.stopped;
@@ -421,7 +426,7 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
         await _player.audioFocus(AudioFocus.hushOthersWithResume);
       }
       if (track != null) {
-        await _player.setVolume(1.0);
+        await _player.setVolume(1);
         await _player.play(track!);
         _playState = PlayState.playing;
       }
@@ -471,9 +476,7 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
   }
 
   /// current loading state.
-  bool get _loading {
-    return __loading;
-  }
+  bool get _loading => __loading;
 
   /// When we are moving between states we mark
   /// ourselves as 'transition' to block other
@@ -500,7 +503,7 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
                   builder: (context, asyncData) {
                     // Log.e(yellow('state ${disposition.state} '
                     //     'progress: ${disposition.progress}'));
-                    double? progress = 0.0;
+                    double? progress = 0;
                     if (asyncData.hasData) {
                       final disposition = asyncData.data!;
 
@@ -511,13 +514,14 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
                         case PlaybackDispositionState.loading:
                           progress = disposition.progress;
                           break;
+                        // ignore: no_default_cases
                         default:
                           progress = null;
                           break;
                       }
                     }
                     return Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(8),
                       child: CircularProgressIndicator(
                           strokeWidth: 5, value: progress),
                     );
@@ -576,35 +580,31 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
     return button;
   }
 
-  Widget _buildDuration() {
-    return StreamBuilder<PlaybackDisposition>(
-        stream: _localController.stream,
-        initialData: PlaybackDisposition.zero(),
-        builder: (context, snapshot) {
-          var duration = Duration.zero;
-          var position = Duration.zero;
+  Widget _buildDuration() => StreamBuilder<PlaybackDisposition>(
+      stream: _localController.stream,
+      initialData: PlaybackDisposition.zero(),
+      builder: (context, snapshot) {
+        var duration = Duration.zero;
+        var position = Duration.zero;
 
-          if (snapshot.hasData) {
-            duration = snapshot.data!.duration;
-            position = snapshot.data!.position;
-          }
+        if (snapshot.hasData) {
+          duration = snapshot.data!.duration;
+          position = snapshot.data!.position;
+        }
 
-          return Text('${Format.duration(position, showSuffix: false)}'
-              ' / '
-              '${Format.duration(duration)}');
-        });
-  }
+        return Text('${Format.duration(position, showSuffix: false)}'
+            ' / '
+            '${Format.duration(duration)}');
+      });
 
-  Widget _buildSlider() {
-    return Expanded(
-        child: PlaybarSlider(
-      _localController.stream,
-      (position) {
-        _sliderPosition.position = position;
-        _player.seekTo(position);
-      },
-    ));
-  }
+  Widget _buildSlider() => Expanded(
+          child: PlaybarSlider(
+        _localController.stream,
+        (position) {
+          _sliderPosition.position = position;
+          _player.seekTo(position);
+        },
+      ));
 
   Widget _buildTitle() {
     final columns = <Widget>[];
@@ -624,6 +624,14 @@ class SoundPlayerUIState extends State<SoundPlayerUI> {
       margin: const EdgeInsets.only(bottom: 5),
       child: Row(children: columns),
     );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty<Future<bool>>('canPlay', canPlay))
+      ..add(DiagnosticsProperty<Track?>('track', track));
   }
 }
 
@@ -655,14 +663,14 @@ void connectPlayerToRecorderStream(SoundPlayerUIState playerState,
 }
 
 class _TrackLoaderException implements Exception {
-  final String _message;
-
   ///
   _TrackLoaderException(this._message);
+
+  final String _message;
 
   @override
   String toString() => _message;
 }
 
 Future<Track> _onLoadNoOp(BuildContext context) => throw _TrackLoaderException(
-    "The onLoad method was not initialised so no tracks are available.");
+    'The onLoad method was not initialised so no tracks are available.');

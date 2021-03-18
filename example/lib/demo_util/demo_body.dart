@@ -349,7 +349,6 @@ class Left extends StatelessWidget {
   Left(this.label);
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Padding(
       padding: const EdgeInsets.only(top: 16.0, bottom: 4, left: 8),
       child: Container(

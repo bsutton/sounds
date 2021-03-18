@@ -8,12 +8,6 @@ import '../sound_recorder.dart';
 
 /// a track.
 class RecordingTrack {
-  ///
-  Track track;
-
-  /// The [MediaFormat] to record to.
-  NativeMediaFormat mediaFormat;
-
   /// Create a [RecordingTrack] from a [Track] for tracks
   /// that were created via [Track.fromFile].
   ///
@@ -22,13 +16,19 @@ class RecordingTrack {
   ///
   RecordingTrack(this.track, this.mediaFormat) {
     if (!track.isFile) {
-      ArgumentError("Only Tracks created via [Track.fromFile] are supported");
+      ArgumentError('Only Tracks created via [Track.fromFile] are supported');
     }
 
     if (FileUtil().exists(track.path!)) {
       FileUtil().truncate(track.path!);
     }
   }
+
+  ///
+  Track track;
+
+  /// The [MediaFormat] to record to.
+  NativeMediaFormat mediaFormat;
 
   /// Used by the [SoundRecorder] to update the [Track]'s duration
   /// as the track is recorded into.

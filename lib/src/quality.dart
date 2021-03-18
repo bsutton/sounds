@@ -17,8 +17,10 @@
 /// Used to control the audio quality.
 ///  Currently it only applies to iOS.
 class Quality {
-  final int _value;
   const Quality._internal(this._value);
+
+  final int _value;
+
   @override
   String toString() => 'IOSQuality.$_value';
 

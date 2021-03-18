@@ -25,13 +25,12 @@ import 'player_base_plugin.dart';
 ///
 // ignore: prefer_mixin
 class SoundPlayerPlugin extends PlayerBasePlugin {
-  static late final SoundPlayerPlugin _self = SoundPlayerPlugin._internal();
-
   /// Factory
-  factory SoundPlayerPlugin() {
-    return _self;
-  }
+  factory SoundPlayerPlugin() => _self;
+
   SoundPlayerPlugin._internal() : super('com.bsutton.sounds.sound_player');
+
+  static late final SoundPlayerPlugin _self = SoundPlayerPlugin._internal();
 
   @override
   Future<void> play(player.SoundPlayer player, Track track) async {

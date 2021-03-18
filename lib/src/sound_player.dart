@@ -49,87 +49,6 @@ import 'plugins/sound_player_shade_plugin.dart';
 /// [SoundPlayer.release] to free up any resources.
 ///
 class SoundPlayer extends SlotEntry {
-  final PlayerBasePlugin _plugin;
-
-  PlayerEvent _onSkipForward;
-  PlayerEvent _onSkipBackward;
-  OSPlayerStateEvent _onUpdatePlaybackState;
-  PlayerEventWithCause _onPaused;
-  PlayerEventWithCause _onResumed;
-  PlayerEventWithCause _onStarted;
-  PlayerEventWithCause _onStopped;
-  final bool _autoFocus;
-
-  /// When the [SoundPlayer.withShadeUI] ctor is called this field
-  /// controls whether the OSs' UI displays the pause button.
-  /// If you change this value it won't take affect until the
-  /// next call to [play].
-  bool canPause;
-
-  /// When the [SoundPlayer.withShadeUI] ctor is called this field
-  /// controls whether the OSs' UI displays the skip Forward button.
-  /// If you change this value it won't take affect until the
-  /// next call to [play].
-  bool canSkipForward;
-
-  /// When the [SoundPlayer.withShadeUI] ctor is called this field
-  /// controls whether the OSs' UI displays the skip back button.
-  /// If you change this value it won't take affect until the
-  /// next call to [play].
-  bool canSkipBackward;
-
-  /// If true then the media is being played in the background
-  /// and will continue playing even if our app is paused.
-  /// If false the audio will automatically be paused if
-  /// the audio is placed into the back ground and resumed
-  /// when your app becomes the foreground app.
-  final bool _playInBackground;
-
-  /// If the user calls seekTo before starting the track
-  /// we cache the value until we start the player and
-  /// then we apply the seek offset.
-  Duration _seekTo = Duration.zero;
-
-  /// When play is called we call set volume passing this value.
-  double _volume = 1.0;
-
-  /// The track that we are currently playing.
-  Track? _track;
-
-  ///
-  PlayerState playerState = PlayerState.isStopped;
-
-  ///
-  /// Disposition stream components
-  ///
-
-  /// The stream source
-  final StreamController<PlaybackDisposition> _playerController =
-      StreamController<PlaybackDisposition>.broadcast();
-
-  /// The current playback position as last sent on the stream.
-  Duration _currentPosition = Duration.zero;
-
-  /// Used to flag that the player is ready to play.
-  /// When this completion completes [_playerReady] is set
-  /// to true.
-  CompleterEx<bool>? _pluginInitialiser;
-
-  /// Used to wait for the plugin to connect us to an OS MediaPlayer
-  late Future<bool> _playerReady;
-
-  /// When we do a [_softRelease] we need to flag that the plugin
-  /// needs to be re-initialized so we set this to true.
-  /// Its also true on construction to force the initial initialisation.
-  bool _pluginInitRequired = true;
-
-  /// hack until we implement onConnect in the all the plugins.
-  final bool _fakePlayerReady;
-
-  /// Used to track when we have been paused when the app is paused.
-  /// We should only resume playing if we wer playing when paused.
-  bool _inSystemPause = false;
-
   /// Create a [SoundPlayer] that displays the OS' audio UI (often
   /// referred to as a shade).
   ///
@@ -221,6 +140,87 @@ class SoundPlayer extends SlotEntry {
     _commonInit();
   }
 
+  final PlayerBasePlugin _plugin;
+
+  PlayerEvent _onSkipForward;
+  PlayerEvent _onSkipBackward;
+  OSPlayerStateEvent _onUpdatePlaybackState;
+  PlayerEventWithCause _onPaused;
+  PlayerEventWithCause _onResumed;
+  PlayerEventWithCause _onStarted;
+  PlayerEventWithCause _onStopped;
+  final bool _autoFocus;
+
+  /// When the [SoundPlayer.withShadeUI] ctor is called this field
+  /// controls whether the OSs' UI displays the pause button.
+  /// If you change this value it won't take affect until the
+  /// next call to [play].
+  bool canPause;
+
+  /// When the [SoundPlayer.withShadeUI] ctor is called this field
+  /// controls whether the OSs' UI displays the skip Forward button.
+  /// If you change this value it won't take affect until the
+  /// next call to [play].
+  bool canSkipForward;
+
+  /// When the [SoundPlayer.withShadeUI] ctor is called this field
+  /// controls whether the OSs' UI displays the skip back button.
+  /// If you change this value it won't take affect until the
+  /// next call to [play].
+  bool canSkipBackward;
+
+  /// If true then the media is being played in the background
+  /// and will continue playing even if our app is paused.
+  /// If false the audio will automatically be paused if
+  /// the audio is placed into the back ground and resumed
+  /// when your app becomes the foreground app.
+  final bool _playInBackground;
+
+  /// If the user calls seekTo before starting the track
+  /// we cache the value until we start the player and
+  /// then we apply the seek offset.
+  Duration _seekTo = Duration.zero;
+
+  /// When play is called we call set volume passing this value.
+  double _volume = 1;
+
+  /// The track that we are currently playing.
+  Track? _track;
+
+  ///
+  PlayerState playerState = PlayerState.isStopped;
+
+  ///
+  /// Disposition stream components
+  ///
+
+  /// The stream source
+  final StreamController<PlaybackDisposition> _playerController =
+      StreamController<PlaybackDisposition>.broadcast();
+
+  /// The current playback position as last sent on the stream.
+  Duration _currentPosition = Duration.zero;
+
+  /// Used to flag that the player is ready to play.
+  /// When this completion completes [_playerReady] is set
+  /// to true.
+  CompleterEx<bool>? _pluginInitialiser;
+
+  /// Used to wait for the plugin to connect us to an OS MediaPlayer
+  late Future<bool> _playerReady;
+
+  /// When we do a [_softRelease] we need to flag that the plugin
+  /// needs to be re-initialized so we set this to true.
+  /// Its also true on construction to force the initial initialisation.
+  bool _pluginInitRequired = true;
+
+  /// hack until we implement onConnect in the all the plugins.
+  final bool _fakePlayerReady;
+
+  /// Used to track when we have been paused when the app is paused.
+  /// We should only resume playing if we wer playing when paused.
+  bool _inSystemPause = false;
+
   /// once off initialisation used by all ctors.
   void _commonInit() {
     _plugin.register(this);
@@ -242,7 +242,8 @@ class SoundPlayer extends SlotEntry {
     if (_pluginInitRequired) {
       _pluginInitRequired = false;
 
-      assert(_pluginInitialiser == null || _pluginInitialiser!.isCompleted);
+      assert(_pluginInitialiser == null || _pluginInitialiser!.isCompleted,
+          'pluginInitialiser has already been initialised');
 
       Log.d('Creating pluginInitialiser slotNo: $slotNo');
       _pluginInitialiser = CompleterEx<bool>();
@@ -266,7 +267,9 @@ class SoundPlayer extends SlotEntry {
 
       /// hack until we implement [onPlayerReady] in all the OS
       /// native plugins.
-      if (_fakePlayerReady) _onPlayerReady(result: true);
+      if (_fakePlayerReady) {
+        _onPlayerReady(result: true);
+      }
     }
 
     /// wait for the OS player to complee initialisation.
@@ -293,7 +296,7 @@ class SoundPlayer extends SlotEntry {
   Future<void> release() async {
     if (!_plugin.isRegistered(this)) {
       throw PlayerInvalidStateException(
-          "The player is no longer registered. Did you call release() twice?");
+          'The player is no longer registered. Did you call release() twice?');
     }
     return _initializeAndRun(() async {
       _closeDispositionStream();
@@ -348,7 +351,7 @@ class SoundPlayer extends SlotEntry {
     }
 
     if (!isStopped) {
-      throw PlayerInvalidStateException("The player must not be running.");
+      throw PlayerInvalidStateException('The player must not be running.');
     }
 
     final started = CompleterEx<void>();
@@ -474,15 +477,13 @@ class SoundPlayer extends SlotEntry {
   /// If you call [seekTo] before calling [play] then when you call
   /// [play] we will start playing the recording from the [position]
   /// passed to [seekTo].
-  Future<void> seekTo(Duration position) async {
-    return _initializeAndRun(() async {
-      if (!isPlaying) {
-        _seekTo = position;
-      } else {
-        await _plugin.seekToPlayer(this, position);
-      }
-    });
-  }
+  Future<void> seekTo(Duration position) async => _initializeAndRun(() async {
+        if (!isPlaying) {
+          _seekTo = position;
+        } else {
+          await _plugin.seekToPlayer(this, position);
+        }
+      });
 
   /// Rewinds the current track by the given interval
   Future<void> rewind(Duration interval) {
@@ -536,9 +537,7 @@ class SoundPlayer extends SlotEntry {
   ///
   /// If you pause the audio then no updates will be sent to the
   /// stream.
-  Stream<PlaybackDisposition> dispositionStream() {
-    return _playerController.stream;
-  }
+  Stream<PlaybackDisposition> dispositionStream() => _playerController.stream;
 
   /// TODO does this need to be exposed?
   /// The simple action of stopping the playback may be sufficient
@@ -557,12 +556,12 @@ class SoundPlayer extends SlotEntry {
 
   /// Sets the time between callbacks from the platform specific code
   /// used to notify us of playback progress.
-  Future<void> setProgressInterval(Duration interval) async {
-    return _initializeAndRun(() async {
-      assert(interval.inMilliseconds > 0);
-      await _plugin.setProgressInterval(this, interval);
-    });
-  }
+  Future<void> setProgressInterval(Duration interval) async =>
+      _initializeAndRun(() async {
+        assert(
+            interval.inMilliseconds > 0, 'interval must be greater than zero');
+        await _plugin.setProgressInterval(this, interval);
+      });
 
   /// internal method.
   /// Called by the Platform plugin to notify us that
@@ -785,18 +784,16 @@ class SoundPlayer extends SlotEntry {
   /// We should try to avoid any OS specific api's being exposed as
   /// part of the public api.
   ///
-  Future<bool> iosSetCategory(
-      IOSSessionCategory category, IOSSessionMode mode, int options) async {
-    return _initializeAndRun<bool>(() async {
-      return _plugin.iosSetCategory(this, category, mode, options);
-    });
-  }
+  Future<bool> iosSetCategory(IOSSessionCategory category, IOSSessionMode mode,
+          int options) async =>
+      _initializeAndRun<bool>(
+          () async => _plugin.iosSetCategory(this, category, mode, options));
 
   ///  The caller can manage the audio focus with this function.
   /// Depending on your configuration this will either make
   /// this player the loudest stream or it will silence all other stream.
   Future<void> audioFocus(AudioFocus mode) async {
-    assert(_plugin.isRegistered(this));
+    assert(_plugin.isRegistered(this), 'The sound player must be registered');
     return _initializeAndRun(() async {
       switch (mode) {
         case AudioFocus.stopOthersNoResume:
@@ -859,11 +856,9 @@ class SoundPlayer extends SlotEntry {
   /// This method allows us to set the audio gain.
   ///
 
-  Future<bool> _androidFocusRequest(int focusGain) async {
-    return _initializeAndRun<bool>(() async {
-      return _plugin.androidFocusRequest(this, focusGain);
-    });
-  }
+  Future<bool> _androidFocusRequest(int focusGain) async =>
+      _initializeAndRun<bool>(
+          () async => _plugin.androidFocusRequest(this, focusGain));
 
   /// Callback for when a system error occured in the OS player.
   /// The OS Player will have been stopped so we try to reflect
@@ -882,9 +877,7 @@ class SoundPlayer extends SlotEntry {
   /// The [path] MUST be stored on the local file system
   /// otherwise an [ArgumentError] will be thrown.
   /// An Asset is not considered to be on the local file system.
-  Future<Duration> duration(String path) {
-    return _plugin.duration(this, path);
-  }
+  Future<Duration> duration(String path) => _plugin.duration(this, path);
 }
 
 ///
@@ -917,10 +910,10 @@ typedef UpdatePlayerProgress = void Function(int current, int max);
 /// to change it state.
 /// e.g. you tried to pause when the player was stopped.
 class PlayerInvalidStateException implements Exception {
-  final String _message;
-
   ///
   PlayerInvalidStateException(this._message);
+
+  final String _message;
 
   @override
   String toString() => _message;
@@ -929,10 +922,10 @@ class PlayerInvalidStateException implements Exception {
 /// Thrown if the user tries to call an api method which
 /// is currently not implemented.
 class NotImplementedException implements Exception {
-  final String _message;
-
   ///
   NotImplementedException(this._message);
+
+  final String _message;
 
   @override
   String toString() => _message;
@@ -945,6 +938,7 @@ class NotImplementedException implements Exception {
 void onPlayerReady(SoundPlayer player, {required bool result}) =>
     player._onPlayerReady(result: result);
 
+/// Called by the plugin to allow us to track progress.
 void updateProgress(SoundPlayer player, PlaybackDisposition disposition) =>
     player._updateProgress(disposition);
 

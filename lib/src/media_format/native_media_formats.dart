@@ -20,8 +20,6 @@ import 'pcm_media_format.dart';
 /// https://developer.android.com/guide/topics/media/media-formats
 ///
 class NativeMediaFormats implements MediaProvider {
-  static final _self = NativeMediaFormats._internal();
-
   /// Factory constructors
   factory NativeMediaFormats() => _self;
 
@@ -29,16 +27,18 @@ class NativeMediaFormats implements MediaProvider {
     _register();
   }
 
+  static final _self = NativeMediaFormats._internal();
+
   /// The set of decoders we support on this OS/SDK version
   /// for playback.
   @override
   Future<List<NativeMediaFormat>> get decoders async {
-    final supported = <NativeMediaFormat>[];
-
-    /// common formats
-    supported.add(const AdtsAacMediaFormat());
-    supported.add(MP3MediaFormat());
-    supported.add(const PCMMediaFormat());
+    final supported = <NativeMediaFormat>[
+      /// common formats
+      const AdtsAacMediaFormat(),
+      MP3MediaFormat(),
+      const PCMMediaFormat()
+    ];
 
     if (Platform.isIOS) {
       // ios specific formats
@@ -60,22 +60,20 @@ class NativeMediaFormats implements MediaProvider {
   /// for recording.
   @override
   Future<List<NativeMediaFormat>> get encoders async {
-    final supported = <NativeMediaFormat>[];
-
-    /// common formats
-    supported.add(const AdtsAacMediaFormat());
+    final supported = <NativeMediaFormat>[
+      /// common formats
+      const AdtsAacMediaFormat()
+    ];
 
     if (Platform.isIOS) {
       // ios specific formats
-      supported.add(const CafOpusMediaFormat());
-      supported.add(const PCMMediaFormat());
+      supported..add(const CafOpusMediaFormat())..add(const PCMMediaFormat());
     } else {
       // android
       final deviceInfo = DeviceInfoPlugin();
       final androidInfo = await deviceInfo.androidInfo;
       if (androidInfo.version.sdkInt >= 29) {
-        supported.add(const OggOpusMediaFormat());
-        supported.add(OggVorbisMediaFormat());
+        supported..add(const OggOpusMediaFormat())..add(OggVorbisMediaFormat());
       }
     }
     return supported;
@@ -130,8 +128,6 @@ class NativeMediaFormats implements MediaProvider {
   /// This method also registered the [NativeDurationProvider].
   void _register() {
     /// add the set of native codecs.
-    for (final mediaFormat in _mediaFormats) {
-      MediaFormatManager().register(mediaFormat);
-    }
+    _mediaFormats.forEach(MediaFormatManager().register);
   }
 }

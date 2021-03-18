@@ -47,6 +47,21 @@ enum _RecorderState {
 
 /// Provide an API for recording audio.
 class SoundRecorder extends SlotEntry {
+  /// Create a [SoundRecorder] to record audio.
+  ///
+
+  SoundRecorder({bool playInBackground = false})
+      : _playInBackground = playInBackground,
+        _plugin = SoundRecorderPlugin(),
+        _onStarted = _onStartedNoOp,
+        _onStopped = _onStoppedNoOp,
+        _onPaused = _onPausedNoOp,
+        _onResumed = _onResumedNoOp,
+        onRequestPermissions = _onUIRequestPermissionNoOp {
+    _plugin.register(this);
+    _dispositionManager = RecordingDispositionManager(this);
+  }
+
   final SoundRecorderPlugin _plugin;
 
   RecorderEventWithCause _onPaused;
@@ -116,21 +131,6 @@ class SoundRecorder extends SlotEntry {
   /// resume recording when the app is resumed.
   final bool _playInBackground;
 
-  /// Create a [SoundRecorder] to record audio.
-  ///
-
-  SoundRecorder({bool playInBackground = false})
-      : _playInBackground = playInBackground,
-        _plugin = SoundRecorderPlugin(),
-        _onStarted = _onStartedNoOp,
-        _onStopped = _onStoppedNoOp,
-        _onPaused = _onPausedNoOp,
-        _onResumed = _onResumedNoOp,
-        onRequestPermissions = _onUIRequestPermissionNoOp {
-    _plugin.register(this);
-    _dispositionManager = RecordingDispositionManager(this);
-  }
-
   /// initialize the SoundRecorder
   /// You do not need to call this as the recorder auto initializes itself
   /// and in fact has to re-initialize its self after an app pause.
@@ -143,8 +143,10 @@ class SoundRecorder extends SlotEntry {
       _pluginInitRequired = false;
 
       // place [_recorderReady] into a non-completed state.
-      assert(_recorderReadyCompletion == null ||
-          _recorderReadyCompletion!.isCompleted);
+      assert(
+          _recorderReadyCompletion == null ||
+              _recorderReadyCompletion!.isCompleted,
+          '_recorderReadyCompletion has already been initialised');
       _recorderReadyCompletion = CompleterEx<bool>();
       _recorderReady = _recorderReadyCompletion!.future;
 
@@ -167,7 +169,7 @@ class SoundRecorder extends SlotEntry {
       } else {
         /// This can happen if you have a breakpoint in you code and
         /// you don't let the initialisation logic complete.
-        throw RecorderInvalidStateException("Recorder initialisation timeout");
+        throw RecorderInvalidStateException('Recorder initialisation timeout');
       }
     });
   }
@@ -276,7 +278,7 @@ class SoundRecorder extends SlotEntry {
 
     if (!track.isFile) {
       final exception = RecorderException(
-          "Only file based tracks are supported. Used Track.fromFile().");
+          'Only file based tracks are supported. Used Track.fromFile().');
       started.completeError(exception);
       throw exception;
     }
@@ -333,9 +335,8 @@ class SoundRecorder extends SlotEntry {
   /// Set the [interval] to control the time between each
   /// event. [interval] defaults to 10ms.
   Stream<RecordingDisposition> dispositionStream(
-      {Duration interval = const Duration(milliseconds: 10)}) {
-    return _dispositionManager.stream(interval: interval);
-  }
+          {Duration interval = const Duration(milliseconds: 10)}) =>
+      _dispositionManager.stream(interval: interval);
 
   /// Stops the current recording.
   /// An exception is thrown if the recording can't be stopped.
@@ -346,7 +347,7 @@ class SoundRecorder extends SlotEntry {
   Future<void> stop() async {
     if (isStopped) {
       throw RecorderNotRunningException(
-          "You cannot stop recording when the recorder is not running.");
+          'You cannot stop recording when the recorder is not running.');
     }
 
     await _initializeAndRun(() async {
@@ -368,7 +369,7 @@ class SoundRecorder extends SlotEntry {
   Future<void> pause() async {
     if (!isRecording) {
       throw RecorderNotRunningException(
-          "You cannot pause recording when the recorder is not running.");
+          'You cannot pause recording when the recorder is not running.');
     }
 
     await _initializeAndRun(() async {
@@ -385,7 +386,7 @@ class SoundRecorder extends SlotEntry {
   Future<void> resume() async {
     if (!isPaused) {
       throw RecorderNotPausedException(
-          "You cannot resume recording when the recorder is not paused.");
+          'You cannot resume recording when the recorder is not paused.');
     }
 
     await _initializeAndRun(() async {
@@ -394,7 +395,7 @@ class SoundRecorder extends SlotEntry {
       try {
         await _plugin.resume(this);
       } on Object catch (e) {
-        Log.d("Exception throw trying to resume the recorder $e");
+        Log.d('Exception throw trying to resume the recorder $e');
         await stop();
         rethrow;
       }
@@ -427,7 +428,9 @@ class SoundRecorder extends SlotEntry {
     final duration = elapsedDuration - _timePaused;
     // Log.d('update duration called: $elapsedDuration');
     _dispositionManager.updateDisposition(duration, decibels);
-    if (_recordingTrack != null) _recordingTrack!.duration = duration;
+    if (_recordingTrack != null) {
+      _recordingTrack!.duration = duration;
+    }
   }
 
   ///
@@ -524,10 +527,10 @@ void onSystemAppResumed(SoundRecorder recorder) =>
 /// Base class for all exeception throw via
 /// the recorder.
 class RecorderException implements Exception {
-  final String _message;
-
   ///
   RecorderException(this._message);
+
+  final String _message;
 
   @override
   String toString() => _message;

@@ -10,6 +10,46 @@ typedef TrackChange = Track Function(int currentTrackIndex, Track? current);
 /// the OS's builtin audio UI.
 ///
 class Album {
+  /// Creates an album of tracks which will be played
+  /// via the OS' built in player.
+  /// The tracks will be played in order and the user
+  /// has the ability to skip forward/backwards.
+  /// By default the Album displays on the OS' audio player.
+  /// To suppress the OS' audio player pass [SoundPlayer.noUI()]
+  /// to [player].
+  Album.fromTracks(this._tracks, SoundPlayer? player)
+      : _virtualAlbum = false,
+        onFirstTrack = _onFirstTrackNoOp,
+        onSkipForward = _onSkipForwardNoOp,
+        onSkipBackward = _onSkipBackwardNoOp {
+    _internal(player);
+
+    if (_tracks.isEmpty) {
+      throw NoTracksAlbumException('You must pass at least one track');
+    }
+  }
+
+  /// Creates a virtual album which will be played
+  /// via the OS' built in player.
+  /// Each time the album needs a new track the [onSkipForward]
+  /// method is called and you need to return the track to be played.
+  /// When you [play] an album [onSkipForward] is called immediately
+  /// to get the first track.
+  /// If the user clicks the skip back button on the OS UI then
+  /// the [onSkipBackward] method is called and you need to supply
+  /// the new track to play.
+  /// The Album will not allow the user to skip back past the first
+  /// track you supplied so there is no looping back over the start
+  /// of an album.
+  Album.virtual(SoundPlayer player)
+      : _virtualAlbum = true,
+        _tracks = <Track>[],
+        onFirstTrack = _onFirstTrackNoOp,
+        onSkipForward = _onSkipForwardNoOp,
+        onSkipBackward = _onSkipBackwardNoOp {
+    _internal(player);
+  }
+
   late final SoundPlayer _player;
 
   final bool _virtualAlbum;
@@ -40,59 +80,21 @@ class Album {
   /// see [Album.virtual()] for details.
   TrackChange onSkipBackward;
 
-  /// Creates an album of tracks which will be played
-  /// via the OS' built in player.
-  /// The tracks will be played in order and the user
-  /// has the ability to skip forward/backwards.
-  /// By default the Album displays on the OS' audio player.
-  /// To suppress the OS' audio player pass [SoundPlayer.noUI()]
-  /// to [player].
-  Album.fromTracks(this._tracks, SoundPlayer? player)
-      : _virtualAlbum = false,
-        onFirstTrack = _onFirstTrackNoOp,
-        onSkipForward = _onSkipForwardNoOp,
-        onSkipBackward = _onSkipBackwardNoOp {
-    _internal(player);
-
-    if (_tracks.isEmpty) {
-      throw NoTracksAlbumException('You must pass at least one track');
-    }
-  }
-
   void _internal(SoundPlayer? player) {
     _player = player ?? SoundPlayer.withShadeUI();
 
-    _player.onSkipBackward = _skipBackward;
-    _player.onSkipForward = _skipForward;
-    _player.onStopped = _onStopped;
-  }
-
-  /// Creates a virtual album which will be played
-  /// via the OS' built in player.
-  /// Each time the album needs a new track the [onSkipForward]
-  /// method is called and you need to return the track to be played.
-  /// When you [play] an album [onSkipForward] is called immediately
-  /// to get the first track.
-  /// If the user clicks the skip back button on the OS UI then
-  /// the [onSkipBackward] method is called and you need to supply
-  /// the new track to play.
-  /// The Album will not allow the user to skip back past the first
-  /// track you supplied so there is no looping back over the start
-  /// of an album.
-  Album.virtual(SoundPlayer player)
-      : _virtualAlbum = true,
-        _tracks = <Track>[],
-        onFirstTrack = _onFirstTrackNoOp,
-        onSkipForward = _onSkipForwardNoOp,
-        onSkipBackward = _onSkipBackwardNoOp {
-    _internal(player);
+    _player
+      ..onSkipBackward = _skipBackward
+      ..onSkipForward = _skipForward
+      ..onStopped = _onStopped;
   }
 
   void _onStopped({required bool wasUser}) {}
 
   void _skipBackward() {
     if (_currentTrackIndex > 1) {
-      /// TODO: we should suppress onStopped events being generated form
+      /// TODO(bsutton): we should suppress onStopped events being
+      /// generated form
       /// indirect actions like skip that causes a stop as a side effect.
       /// onStop should only be called if it is the 'end state'.
       stop(wasUser: true);
@@ -103,7 +105,9 @@ class Album {
       /// when stoping one track and starting the next.
       /// This may require us to monitor the playback progression
       /// and start the transition before the playback completes (e.g. fadeout)
-      if (_currentTrack != null) play();
+      if (_currentTrack != null) {
+        play();
+      }
     }
   }
 
@@ -117,7 +121,9 @@ class Album {
       /// when stoping one track and starting the next.
       /// This may require us to monitor the playback progression
       /// and start the transition before the playback completes (e.g. fadeout)
-      if (_currentTrack != null) play();
+      if (_currentTrack != null) {
+        play();
+      }
     }
   }
 
@@ -191,10 +197,10 @@ class Album {
 
 /// throw if you try to create an album with no tracks.
 class NoTracksAlbumException implements Exception {
-  final String _message;
-
   ///
   NoTracksAlbumException(this._message);
+
+  final String _message;
 
   @override
   String toString() => _message;

@@ -22,14 +22,6 @@ import 'package:flutter/foundation.dart';
 /// of [RecordingDisposition] will be emmited whilst recording.
 @immutable
 class RecordingDisposition {
-  /// The total duration of the recording at this point in time.
-  final Duration duration;
-
-  /// The volume of the audio being captured
-  /// at this point in time.
-  /// Value ranges from 0 to 120
-  final double decibels;
-
   /// ctor
   const RecordingDisposition(this.duration, this.decibels);
 
@@ -39,8 +31,14 @@ class RecordingDisposition {
       : duration = const Duration(),
         decibels = 0;
 
+  /// The total duration of the recording at this point in time.
+  final Duration duration;
+
+  /// The volume of the audio being captured
+  /// at this point in time.
+  /// Value ranges from 0 to 120
+  final double decibels;
+
   @override
-  String toString() {
-    return 'duration: $duration decibels: $decibels';
-  }
+  String toString() => 'duration: $duration decibels: $decibels';
 }
