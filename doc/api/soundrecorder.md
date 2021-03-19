@@ -231,8 +231,8 @@ You MUST also ensure that the recorder has been stopped when your widget is deta
 ```dart
 @override
 void dispose() {
-	recorder.release();
-	super.dispose();
+    recorder.release();
+    super.dispose();
 }
 ```
 

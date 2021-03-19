@@ -121,7 +121,7 @@ You can modify the the state of these buttons with the `SoundPlayer.withShadeUI`
 
 ```dart
 var player = SoundPlayer.withShadeUI(canPause:true, canSkipBackward:false
-	, canSkipForward: true);
+    , canSkipForward: true);
 player.onStopped =  ({wasUser}) => player.release();
 player.play(Track.fromFile('sample.blit'));
 ```
@@ -232,8 +232,8 @@ You will often do this in a widgets dispose method:
 ```dart
 @override
 void dispose() {
-	player.release();
-	super.dispose();
+    player.release();
+    super.dispose();
 }
 ```
 

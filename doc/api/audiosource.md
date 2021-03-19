@@ -10,13 +10,13 @@ Note: not all sources are supported on all devices or platforms.
 | :--- | :--- |
 | defaultSource |  |
 | mic | The microphone. |
-| voiceUplink |   |
-| voiceDownlink |   |
-| camcorder |   |
+| voiceUplink |  |
+| voiceDownlink |  |
+| camcorder |  |
 | voiceRecognition |  |
 | voiceCommunication |  |
 | remoteSubmix |  |
-| unprocessed |   |
-| radioTuner |   |
+| unprocessed |  |
+| radioTuner |  |
 | hotword |  |
 

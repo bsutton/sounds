@@ -16,8 +16,8 @@ If you want to play a collection of tracks then you can create an Album with a s
 
 ```dart
 var album = Album.fromTracks([
-	Track.fromFile('sample.acc'),
-	Track.fromURL('http://fqdn/sample.mp3'),
+    Track.fromFile('sample.acc'),
+    Track.fromURL('http://fqdn/sample.mp3'),
 ]);
 player.onStopped = ({wasUser}) => player.release();
 album.play();
@@ -27,8 +27,8 @@ By default an Ablum displays the OSs' audio UI \(Shade\). You can suppress the U
 
 ```dart
 var album = Album.fromTracks([
-	Track.fromFile('sample.acc'),
-	Track.fromURL('http://fqdn/sample.mp3'),
+    Track.fromFile('sample.acc'),
+    Track.fromURL('http://fqdn/sample.mp3'),
 ]
 , session: SoundPlayer.noUI());
 player.onStopped = ({wasUser}) => player.release();
@@ -44,11 +44,11 @@ If you create a virtual album you MUST implement the `onSkipForward` , `onSkipBa
 ```dart
  var album = Album.virtual();
  album.onFirstTrack = (int currentTrackIndex, Track current)
-		=> Track('http://random/xxxx');
+        => Track('http://random/xxxx');
 album.onSkipForward = (int currentTrackIndex, Track current)
-		=> Track('http://random/xxxx');
+        => Track('http://random/xxxx');
 album.onSkipBackwards = (int currentTrackIndex, Track current)
-		=> Track('http://random/xxxx');
+        => Track('http://random/xxxx');
 player.onStopped = ({wasUser}) => player.release();
 album.play();
 ```

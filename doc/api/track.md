@@ -71,8 +71,8 @@ To play a track from a buffer use:
 Uint8List buffer = ....
 // Load a local audio file and get it as a buffer
 Uint8List buffer = (await rootBundle.load('assets/samples/audio.mp3'))
-    	.buffer
-    	.asUint8List();
+        .buffer
+        .asUint8List();
 
 Track.fromBuffer(buffer)
 QuickPlay.fromTrack(track, volume: 1.0);

@@ -40,5 +40,3 @@ Note: what `MediaFormat` is actually supported on the running OS is often SDK de
 
 This table will be updated as MediaFormats are added.
 
-
-

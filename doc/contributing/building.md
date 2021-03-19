@@ -116,14 +116,29 @@ If the `Make Project` setting is still disabled then the gradle sync probably ha
 Tools
 
 * java - I used brew to install java.
-* xcode
+* xcode - install from the app store.
+
+Once you have installed xcode run:
+
+```text
+flutter doctor -v
+```
+
+Then following the instructions for Xcode to complete xcodes configuration.
+
+Now install cocoapods:
+
+{% embed url="https://guides.cocoapods.org/using/getting-started.html" %}
+
+I had trouble after installing cocoapods and had to follow these instructions to install the ruby build tools
+
+[https://stackoverflow.com/questions/53135863/macos-mojave-ruby-config-h-file-not-found](https://stackoverflow.com/questions/53135863/macos-mojave-ruby-config-h-file-not-found)
 
 Run
 
 ```text
 cd sounds\example
 flutter build ios --no-codesign
-
 ```
 
 Now import the project into xcode and build.
